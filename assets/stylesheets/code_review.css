@@ -1,0 +1,42 @@
+#review-form-frame {
+    width: 50%;
+}
+
+table.filecontent th.line-num {
+    white-space: nowrap;
+    vertical-align: bottom;
+    padding-top: 0;
+    padding-bottom: 0;
+    text-align:left;
+}
+
+table.filecontent th.line-num img{
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+
+.code-review-form-title {
+    background-color: #002059;
+    color: white;
+    padding-left: 2px;
+    padding-right: 2px;
+    cursor: default;
+}
+
+.code-review-form-title table, tr, td {
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+.code_review_viewer {
+    /*
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    padding: 2px;
+    */
+    min-width: 200px;
+}

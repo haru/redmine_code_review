@@ -1,0 +1,48 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<div>
+
+  <div class="code-review-form-title drag-handle" id="add-review-title">
+  <table border="0" width="100%">
+    <tr>
+      <td><%= l(:label_add_review) %></td>
+      <td align="right">
+        <%= link_to_function image_tag('close.png'), "$('review-form-frame').hide();" %>
+      </td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+</div>
+<div class="box">
+  <h2>
+  <%= @review.line %>行目
+</h2>
+<% form_for :review, @review,
+  :url => {:controller => 'code_review', :action => 'new', :id=>@project} do |f|  %>
+<%= error_messages_for 'review' %>
+<%= f.hidden_field(:change_id) %>
+<%= f.hidden_field(:line) %>
+<p>
+  <%= f.text_area :comment,
+                   :cols => 30,
+                   :rows => 10,
+                   :accesskey => accesskey(:edit),
+                   :class => 'wiki-edit' %>
+ 
+</p>
+<p>
+      <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
+        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :change_id => @change.id, :line => @line}, :method => :post, 220 => "$('review-form-frame').hide();" %>
+      <input type="button" value="<%=h l(:button_cancel) %> " onclick="$('review-form-frame').hide();"/>
+</p>
+ <%= wikitoolbar_for 'review_comment' %>
+<% end %>
+
+</div>
+</div>
+

@@ -1,0 +1,34 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<h2>
+  <%=h l(:code_reviews) %>
+</h2>
+<table class="list">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>path</th>
+      <th>line</th>
+      <th>rev</th>
+      <th>committer</th>
+      <th>reviewer</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for review in @reviews %>
+      <tr>
+        <td><%=  review.id %></td>
+        <td><%= link_to review.change.path, :controller => 'repositories', :action => 'diff', :id => @project, :path => review.change.path.sub(/^\//, ''), :rev => review.change.changeset.revision, :review_id => @review.id %></td>
+        <td><%=h review.line %></td>
+        <td><%=h review.change.changeset.revision %></td>
+        <td><%=h review.change.changeset.author %></td>
+        <td><%=h review.user.name %></td>
+        <td><%=h review.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

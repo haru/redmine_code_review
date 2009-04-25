@@ -1,0 +1,29 @@
+
+<div class="code-review-form-title drag-handle" >
+  <table border="0" width="100%">
+    <tr>
+      <td><%= l(:code_review) %></td>
+      <td align="right">
+        <%= link_to_function image_tag('close.png'), "$('show_review_#{@review.id}').hide();" %>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="code_review_viewer issue">
+
+  <h2>
+    <%= @review.line %>行目
+  </h2>
+<p class="author">
+        <%= authoring @review.created_at, @review.user %>.
+        <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
+        </p>
+  <h3>
+    <%=  l(:label_comment) %>
+  </h3>
+  <div class="wiki">
+<%= textilizable @review, :comment %>
+</div>
+  
+</div>
