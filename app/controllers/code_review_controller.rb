@@ -31,9 +31,11 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.new
     @rev = params[:rev].to_i unless params[:rev].blank?
     @path = params[:path]
-    changeset = Changeset.find_by_revision(@rev)
+    changeset = Changeset.find_by_revision(@rev, :conditions => ['repository_id = (?)',@project.repository.id])
     @change = nil
-    changeset.changes.each{|change| @change = change if change.path == @path}
+    changeset.changes.each{|change|
+      @change = change if change.path == @path
+    }
     @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and parent_id is NULL', @change.id])
     @review.change_id = @change.id
     render :partial => 'update_diff_view'
