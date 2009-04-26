@@ -24,6 +24,28 @@
   </h3>
   <div class="wiki">
 <%= textilizable @review, :comment %>
+  </div>
+  
+<%= render :partial => 'reply', :collection => @review.children.sort{|a, b| a.id <=> b.id} %>
+
+<p><%= toggle_link l(:button_reply), "reply", :focus => 'reply_comment' %></p>
+<div id="reply" style="display:none;" class="box">
+<% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :parent_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
+  <%= hidden_field_tag :parent_id, @review.id %>
+<p>
+  <%= f.text_area :comment,
+                   :cols => 30,
+                   :rows => 10,
+                   :accesskey => accesskey(:edit),
+                   :class => 'wiki-edit' %>
+ 
+</p>
+<p>
+  <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
+        :url => {:controller => 'code_review', :action => 'reply', :id=>@project}, :method => :post %>
+</p>
+<%= wikitoolbar_for 'reply_comment' %>
+<% end %>
 </div>
   
 </div>

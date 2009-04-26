@@ -46,6 +46,20 @@ class CodeReviewController < ApplicationController
     render :partial => 'show'
   end
 
+  def reply
+    @parent = CodeReview.find(params[:parent_id].to_i)
+    @review = @parent.root
+    comment = params[:reply][:comment]
+    reply = CodeReview.new
+    reply.user_id = @user.id
+    reply.project_id = @project.id
+    reply.change_id = @review.change_id
+    reply.comment = comment
+    @parent.children << reply
+    @parent.save!
+    render :partial => 'show'
+  end
+
   def update
   end
 

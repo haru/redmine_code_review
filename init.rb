@@ -10,7 +10,7 @@ Redmine::Plugin.register :redmine_code_review do
 
   project_module :code_review do
     permission :view_code_review, {:code_review => [:update_diff_view, :index, :show]}
-    permission :add_code_review, {:code_review => [:new]}, :require => :member
+    permission :add_code_review, {:code_review => [:new, :reply]}, :require => :member
   end
 
   menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews
