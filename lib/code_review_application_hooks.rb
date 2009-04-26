@@ -5,9 +5,16 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
       return
     end
+    controller = context[:controller]
+    action_name = controller.action_name
+    return controller.class.name + '/' + action_name unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
+
     o = ""
     o << javascript_include_tag("code_review.js", :plugin => "redmine_code_review")
-    o << javascript_include_tag("jstoolbar/jstoolbar.js")
+    o << javascript_include_tag('jstoolbar/jstoolbar')
+    o << javascript_include_tag('jstoolbar/textile')
+    o << javascript_include_tag("jstoolbar/lang/jstoolbar-#{project.current_language}")
+
     o << stylesheet_link_tag("code_review.css", :plugin => "redmine_code_review", :media => "screen")
 
     return o
@@ -19,7 +26,6 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       return
     end
     controller = context[:controller]
-    project = context[:project]
     action_name = controller.action_name
     return controller.class.name + '/' + action_name unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
     request = context[:request]
@@ -31,7 +37,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     path = url_encode(path)
     o = ''
     o << '<div id="code_review">' + "\n"
-    o << '<div id="review_comment"/>' + "\n"
+    #o << '<div id="review_comment"/>' + "\n"
     o << '</div>' + "\n"
     url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project
     o << '<script type="text/javascript">' + "\n"
@@ -39,7 +45,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}'});\n"
     o << "});\n"
     o << '</script>'
-    o <<  wikitoolbar_for('review_comment')
+    #o <<  wikitoolbar_for('review_comment')
 
     return o
   end
