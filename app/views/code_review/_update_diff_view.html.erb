@@ -1,6 +1,5 @@
 <div class="code_review">
-  <%= @rev %><br/>
-  <%= @change.path %>
+  
 </div>
 <div id="review-form-frame" style="position:absolute;display:none;top:0px" class="draggable">
   <div id="review-form">
@@ -8,7 +7,6 @@
   </div>
 </div>
 
-<%= link_to_remote 'aaa', :controller => 'code_review', :action => 'new', :id=>@project %>
 <% javascript_tag do %>
   var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id=>@project %>';
   //var remote_function = new function() {

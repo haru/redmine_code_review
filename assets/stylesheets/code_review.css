@@ -2,7 +2,7 @@
     width: 50%;
 }
 
-table.filecontent th.line-num {
+.autoscroll table.filecontent th.line-num {
     white-space: nowrap;
     vertical-align: bottom;
     padding-top: 0;

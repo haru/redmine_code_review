@@ -16,7 +16,7 @@ class CodeReviewController < ApplicationController
         render :partial => 'new_form', :status => 250
         return
       end
-      render :partial => 'new_form', :status => 220
+      render :partial => 'add_success', :status => 220
       return
     else
       @review.change_id = params[:change_id].to_i unless params[:change_id].blank?

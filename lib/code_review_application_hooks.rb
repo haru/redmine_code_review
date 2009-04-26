@@ -7,7 +7,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     end
     controller = context[:controller]
     action_name = controller.action_name
-    return controller.class.name + '/' + action_name unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
+    return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
 
     o = ""
     o << javascript_include_tag("code_review.js", :plugin => "redmine_code_review")
@@ -27,7 +27,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     end
     controller = context[:controller]
     action_name = controller.action_name
-    return controller.class.name + '/' + action_name unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
+    return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
     request = context[:request]
     parameters = request.parameters
     rev = parameters['rev']
