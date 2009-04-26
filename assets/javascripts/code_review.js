@@ -31,20 +31,23 @@ function setAddReviewButton(url, change_id, image_tag){
   });
 }
 
-function setShowReviewButton(url, line, review_id, image_tag) {
+var showReviewUrl = null;
+var showReviewImageTag = null;
+
+function setShowReviewButton(line, review_id) {
   var span = $('review_span_' + line);
   var innerSpan = new Element('span');
   //alert('review_id = ' + review_id);
   innerSpan.id = 'review_' + review_id;
   span.insert(innerSpan);
-  innerSpan.innerHTML = image_tag;
+  innerSpan.innerHTML = showReviewImageTag;
   var div = new Element('div', {style:'position:absolute; display:none;', 'class':'draggable'});
   div.id = 'show_review_' + review_id;
   $('content').insert(div);
   innerSpan.down('img').observe('click', function(e) {
       var review_id = e.element().up().id.match(/[0-9]+/);
       var target = $('show_review_' + review_id);
-      showReview(url, review_id, target);
+      showReview(showReviewUrl, review_id, target);
       target.style.top = e.pointerY() + 'px';
       target.style.left = (e.pointerX() + 5) + 'px';
       Effect.Grow(target.id, {direction: 'top-left'});
@@ -75,7 +78,7 @@ function hideFrom() {
 }
 function addReview(url) {
     //alert('aaa');
-    new Ajax.Updater('review-form', url, {asynchronous:true, evalScripts:true, method:'get'});    
+    new Ajax.Updater('review-form', url, {asynchronous:false, evalScripts:true, method:'get'});
 }
 
 function releaseDraggables() {
