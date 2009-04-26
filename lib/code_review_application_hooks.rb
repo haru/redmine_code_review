@@ -1,6 +1,10 @@
 class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
   def view_layouts_base_html_head(context = {})
+    project = context[:project]
+    unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
+      return
+    end
     o = ""
     o << javascript_include_tag("code_review.js", :plugin => "redmine_code_review")
     o << javascript_include_tag("jstoolbar/jstoolbar.js")
@@ -10,6 +14,10 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
   end
   
   def view_layouts_base_body_bottom(context = { })
+    project = context[:project]
+    unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
+      return
+    end
     controller = context[:controller]
     project = context[:project]
     action_name = controller.action_name
