@@ -3,9 +3,10 @@ require 'code_review_application_hooks'
 
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
-  author 'Author name'
-  description 'This is a plugin for Redmine'
+  author 'Haru Iida'
+  description 'This is a Code Review plugin for Redmine'
   version '0.0.1'
+  requires_redmine :version_or_higher => '0.8.3'
 
   project_module :code_review do
     permission :view_code_review, {:code_review => [:update_diff_view, :index, :show]}
