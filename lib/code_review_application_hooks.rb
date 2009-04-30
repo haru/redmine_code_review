@@ -9,13 +9,14 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     action_name = controller.action_name
     return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
 
+    baseurl = url_for(:controller => 'code_review', :action => 'index', :id => project) + '/../../..'
     o = ""
-    o << javascript_include_tag("code_review.js", :plugin => "redmine_code_review")
-    o << javascript_include_tag('jstoolbar/jstoolbar')
-    o << javascript_include_tag('jstoolbar/textile')
-    o << javascript_include_tag("jstoolbar/lang/jstoolbar-#{project.current_language}")
+    o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
+    o << javascript_include_tag(baseurl + '/javascripts/jstoolbar/jstoolbar.js')
+    o << javascript_include_tag(baseurl + '/javascripts/jstoolbar/textile.js')
+    o << javascript_include_tag(baseurl + "/javascripts/jstoolbar/lang/jstoolbar-#{project.current_language}.js") 
 
-    o << stylesheet_link_tag("code_review.css", :plugin => "redmine_code_review", :media => "screen")
+    o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/code_review.css") 
 
     return o
   end
