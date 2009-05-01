@@ -10,6 +10,8 @@
   </table>
 </div>
 
+<div class="code_review_body">
+
 <div class="code_review_viewer issue">
 <div class="contextual">
 <%= link_to_if_authorized(l(:button_update), {:controller => 'code_review', :action => 'update', :id => @project, :review_id => @review}, :class => 'icon icon-edit', :accesskey => accesskey(:edit)) %>
@@ -34,7 +36,7 @@
   <div class="wiki">
 <%= textilizable @review, :comment %>
   </div>
-  
+</div>
 <%= render :partial => 'reply', :collection => @review.children.sort{|a, b| a.id <=> b.id} %>
 
 <p><%= toggle_link l(:button_reply), "reply", :focus => 'reply_comment' %></p>

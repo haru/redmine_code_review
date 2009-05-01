@@ -32,11 +32,19 @@ table.filecontent th.line-num img{
     padding-top: 0;
 }
 .code_review_viewer {
-    /*
-    background-color: white;
-    border-style: solid;
-    border-width: 1px;
-    padding: 2px;
-    */
+
     min-width: 200px;
 }
+
+.code_review_body {
+    background-color: white;
+    padding: 2px;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    max-height: 60%;
+    overflow: auto;
+}
+

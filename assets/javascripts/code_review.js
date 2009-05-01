@@ -55,6 +55,7 @@ function setShowReviewButton(line, review_id) {
       target.style.top = e.pointerY() + 'px';
       target.style.left = (e.pointerX() + 5) + 'px';
       Effect.Grow(target.id, {direction: 'top-left'});
+      setDraggables();
           //formPopup(e, $('review-form-frame'));
           //e.preventDefault();
       });
@@ -66,13 +67,13 @@ function showReview(url, review_id, element) {
         evalScripts:true,
         parameters: 'review_id=' + review_id,
         method:'get'});
-
 }
 
 function formPopup(evt, popup){
     popup.style.top = evt.pointerY() + 'px';
     popup.style.left = (evt.pointerX() + 5) + 'px';
     Effect.Grow(popup.id, {direction: 'top-left'});
+    setDraggables();
     return false;
 }
 
@@ -87,7 +88,7 @@ function addReview(url) {
 
 function releaseDraggables() {
     for (var i = 0; i < draggables.length; i++) {
-        Draggables.remove(draggables[i]);
+        draggables[i].destroy();
     }
     draggables = [];
 }
@@ -96,8 +97,14 @@ function setDraggables() {
     releaseDraggables();
     var list = $$('.draggable');
     for(var i = 0; i < list.length; i++) {
-        new Draggable(list[i]);
-        draggables[i] = list[i];
+        var draggable = list[i];
+        //alert(draggable.inspect());
+        var draghandle = draggable.down('.drag-handle');
+        if (draghandle == null) {
+            continue;
+        }
+        draggables[i] = new Draggable(draggable, {handle:'drag-handle'});
+
     }
 }
 
