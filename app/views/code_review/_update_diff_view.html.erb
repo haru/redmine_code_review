@@ -9,10 +9,12 @@
 
 <% javascript_tag do %>
   var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id=>@project %>';
-  //var remote_function = new function() {
-    // <%= remote_function :update => 'comment-form', :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :class => "icon icon-edit", :title => l(:label_comment_add) %>;
-  //}
-  setAddReviewButton(addReviewUrl, <%= @change.id %>, '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>');
+  var is_readonly = true;
+  <% if authorize_for('code_review', 'new') -%>
+    is_readonly = false;
+  <% end %>
+  setAddReviewButton(addReviewUrl, <%= @change.id %>, '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly);
+
   showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
   showReviewImageTag = '<%= image_tag('comment.png', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
   <% for review in @reviews do %>

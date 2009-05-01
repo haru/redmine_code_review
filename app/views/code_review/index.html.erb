@@ -20,12 +20,12 @@
       <th>rev</th>
       <th>committer</th>
       <th>reviewer</th>
-      <th>date</th>
+      <th><%=h l(:label_date) %></th>
     </tr>
   </thead>
   <tbody>
     <% for review in @reviews %>
-      <tr>
+      <tr class="<%= cycle 'odd', 'even' %>">
         <td><%=  review.id %></td>
         <td><%= link_to review.change.path, :controller => 'repositories', :action => 'diff', :id => @project, :path => review.change.path.sub(/^\//, ''), :rev => review.change.changeset.revision, :review_id => @review.id %></td>
         <td><%=h review.line %></td>

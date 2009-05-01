@@ -1,6 +1,6 @@
 var draggables = [];
 
-function setAddReviewButton(url, change_id, image_tag){
+function setAddReviewButton(url, change_id, image_tag, is_readonly){
   var trs = $$('table.filecontent tr');
   trs.each(function(tr){
       th = tr.down('th', 1);
@@ -16,8 +16,12 @@ function setAddReviewButton(url, change_id, image_tag){
       var newurl = url + '?change_id=' + change_id;
       var span = new Element('span', {'white-space': 'nowrap'});
       span.id = 'review_span_' + line;
-      span.insert(image_tag);
       th.insert(span);
+
+      if (is_readonly) {
+          return;
+      }
+      span.insert(image_tag);      
       var img = span.down('img');
       img.id = 'add_revew_img_' + line;
       //img.oncontextmenu = 'return false;';
