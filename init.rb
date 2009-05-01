@@ -16,5 +16,6 @@ Redmine::Plugin.register :redmine_code_review do
     permission :delete_code_review, {:code_review => [:destroy]}, :require => :member
   end
 
-  menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews
+  menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
+    :if => Proc.new{|project| project.repository != nil}
 end
