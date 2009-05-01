@@ -83,7 +83,7 @@ function addReview(url) {
 
 function releaseDraggables() {
     for (var i = 0; i < draggables.length; i++) {
-        draggables[i].remove();
+        Draggables.remove(draggables[i]);
     }
     draggables = [];
 }
@@ -92,7 +92,13 @@ function setDraggables() {
     releaseDraggables();
     var list = $$('.draggable');
     for(var i = 0; i < list.length; i++) {
-        draggables[i] = new Draggable(list[i]);
+        new Draggable(list[i]);
+        draggables[i] = list[i];
     }
 }
 
+function deleteReview(review_id) {
+    $('show_review_' + review_id).remove();
+    $('review_' + review_id).remove();
+    setDraggables();
+}

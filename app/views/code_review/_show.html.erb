@@ -11,7 +11,16 @@
 </div>
 
 <div class="code_review_viewer issue">
-
+<div class="contextual">
+<%= link_to_if_authorized(l(:button_update), {:controller => 'code_review', :action => 'update', :id => @project, :review_id => @review}, :class => 'icon icon-edit', :accesskey => accesskey(:edit)) %>
+<% if authorize_for('nikoniko', 'edit') -%>
+<%= link_to_remote(l(:button_delete), :update => "show_review_#{@review.id}",
+  :url => {:controller => 'code_review', :action => 'destroy', :id => @project, :review_id => @review},
+  :confirm => l(:text_are_you_sure),
+  :success => "deleteReview(#{@review.id})",
+  :html => {:class => 'icon icon-del'}) %>
+<% end -%>
+</div>
   <h2>
     <%= @review.line %>行目
   </h2>
