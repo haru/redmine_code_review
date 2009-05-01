@@ -7,7 +7,7 @@ Redmine::Plugin.register :redmine_code_review do
   author 'Haru Iida'
   description 'This is a Code Review plugin for Redmine'
   version '0.0.1'
-  requires_redmine :version_or_higher => '0.8.3'
+  requires_redmine :version_or_higher => '0.8.0'
 
   project_module :code_review do
     permission :view_code_review, {:code_review => [:update_diff_view, :index, :show]}
