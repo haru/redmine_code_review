@@ -35,7 +35,7 @@
         <td><%=h review.change.changeset.revision %></td>
         <td><%=h review.change.changeset.author %></td>
         <td><%=h review.user.name %></td>
-        <td><%=h l_datetime(review.created_at) %></td>
+        <td><%=h format_time(review.created_at) %></td>
       </tr>
     <% end %>
   </tbody>
