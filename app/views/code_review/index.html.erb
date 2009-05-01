@@ -27,7 +27,10 @@
     <% for review in @reviews %>
       <tr class="<%= cycle 'odd', 'even' %>">
         <td><%=  review.id %></td>
-        <td><%= link_to review.change.path, :controller => 'repositories', :action => 'diff', :id => @project, :path => review.change.path.sub(/^\//, ''), :rev => review.change.changeset.revision, :review_id => @review.id %></td>
+        <%
+        url = url_for(:controller => 'repositories', :action => 'diff', :id => @project) + review.change.path + '?rev=' + review.change.changeset.revision + '&review_id=' + @review.id.to_s
+        %>
+        <td><%= link_to review.change.path, url %></td>
         <td><%=h review.line %></td>
         <td><%=h review.change.changeset.revision %></td>
         <td><%=h review.change.changeset.author %></td>
