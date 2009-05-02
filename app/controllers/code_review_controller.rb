@@ -9,7 +9,8 @@ class CodeReviewController < ApplicationController
   def new
     @review = CodeReview.new(params[:review])
     @review.project_id = @project.id
-    @review.user_id = @user.id 
+    @review.user_id = @user.id
+    @review.status = CodeReview::STATUS_OPEN
      
     if request.post?
       if (!@review.save)
@@ -55,6 +56,7 @@ class CodeReviewController < ApplicationController
     reply.project_id = @project.id
     reply.change_id = @review.change_id
     reply.comment = comment
+    reply.line = @review.line
     @parent.children << reply
     @parent.save!
     render :partial => 'show'

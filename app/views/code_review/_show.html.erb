@@ -30,17 +30,35 @@
 <p class="author">
         <%= authoring @review.created_at, @review.user %>.
         <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
-        </p>
+</p>
+
+
+<table>
+<tr>
+    <td style="width:15%" class="status"><b><%=h l(:field_status) %>:</b>
+    </td>
+    <td style="width:35%" class="status">
+      <%=h l(:label_review_closed) if @review.is_closed? %>
+<%=h l(:label_review_open) unless @review.is_closed? %>
+    </td>
+</tr>
+ </table>
  
+<hr/>
   <div class="wiki">
 <%= textilizable @review, :comment %>
   </div>
 </div>
+<% if @review.children.length > 0 %>
  <h3>
     <%=  l(:label_comment) %>
   </h3>
+<% end %>
+
 <%= render :partial => 'reply', :collection => @review.children.sort{|a, b| a.id <=> b.id} %>
 
+
+<% if authorize_for('code_review', 'reply') -%>
 <p><%= toggle_link l(:button_reply), "reply", :focus => 'reply_comment' %></p>
 <div id="reply" style="display:none;" class="box">
 <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :parent_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
@@ -60,7 +78,8 @@
 <%= wikitoolbar_for 'reply_comment' %>
 <% end %>
 </div>
-  
+
+<% end %>
 </div>
 </div>
 </div>

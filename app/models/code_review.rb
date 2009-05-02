@@ -8,4 +8,15 @@ class CodeReview < ActiveRecord::Base
   validates_presence_of :project_id
   validates_presence_of :user_id
   validates_presence_of :change_id
+
+  STATUS_OPEN = 0
+  STATUS_CLOSED = 1
+
+  def is_closed?
+    self.root.status == STATUS_CLOSED
+  end
+
+  def close
+    self.root.status = STATUS_CLOSED
+  end
 end

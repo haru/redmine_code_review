@@ -15,6 +15,7 @@
   <thead>
     <tr>
       <th>#</th>
+      <th><%=h l(:field_status)%></th>
       <th>path</th>
       <th>line</th>
       <th>rev</th>
@@ -30,6 +31,11 @@
         <%
         url = url_for(:controller => 'repositories', :action => 'diff', :id => @project) + review.change.path + '?rev=' + review.change.changeset.revision + '&review_id=' + @review.id.to_s
         %>
+        
+        <td class="status">
+          <%=h l(:label_review_closed) if review.is_closed? -%>
+          <%=h l(:label_review_open) unless review.is_closed? -%>
+        </td>
         <td><%= link_to review.change.path, url %></td>
         <td><%=h review.line %></td>
         <td><%=h review.change.changeset.revision %></td>
