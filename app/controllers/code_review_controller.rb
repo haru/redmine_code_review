@@ -72,6 +72,21 @@ class CodeReviewController < ApplicationController
     render :partial => 'destroy'
   end
 
+  def close
+    @review = CodeReview.find(params[:review_id].to_i)
+    @review.close
+    @review.save
+    render :partial => 'show'
+  end
+
+  def reopen
+    @review = CodeReview.find(params[:review_id].to_i)
+    @review.reopen
+    @review.save
+    render :partial => 'show'
+  end
+
+
   private
   def find_project
     # @project variable must be set before calling the authorize filter
@@ -82,4 +97,5 @@ class CodeReviewController < ApplicationController
     @user = User.current
   end
 
+ 
 end

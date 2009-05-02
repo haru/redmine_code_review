@@ -19,4 +19,8 @@ class CodeReview < ActiveRecord::Base
   def close
     self.root.status = STATUS_CLOSED
   end
+
+  def reopen
+    self.root.status = STATUS_OPEN
+  end
 end

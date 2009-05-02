@@ -6,3 +6,6 @@ project_module_code_review: コードレビュー
 
 label_review_open: オープン中
 label_review_closed: クローズ
+
+label_reopen_review: 再オープンする
+label_close_review: クローズする
