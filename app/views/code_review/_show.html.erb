@@ -1,4 +1,4 @@
-
+<div>
 <div class="code-review-form-title drag-handle" >
   <table border="0" width="100%">
     <tr>
@@ -11,6 +11,7 @@
 </div>
 
 <div class="code_review_body">
+  <div class="code_review_body-scrollarea">
 
 <div class="code_review_viewer issue">
 <div class="contextual">
@@ -30,13 +31,14 @@
         <%= authoring @review.created_at, @review.user %>.
         <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
         </p>
-  <h3>
-    <%=  l(:label_comment) %>
-  </h3>
+ 
   <div class="wiki">
 <%= textilizable @review, :comment %>
   </div>
 </div>
+ <h3>
+    <%=  l(:label_comment) %>
+  </h3>
 <%= render :partial => 'reply', :collection => @review.children.sort{|a, b| a.id <=> b.id} %>
 
 <p><%= toggle_link l(:button_reply), "reply", :focus => 'reply_comment' %></p>
@@ -59,4 +61,6 @@
 <% end %>
 </div>
   
+</div>
+</div>
 </div>

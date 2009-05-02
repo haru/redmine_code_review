@@ -52,8 +52,15 @@ function setShowReviewButton(line, review_id) {
       var review_id = e.element().up().id.match(/[0-9]+/);
       var target = $('show_review_' + review_id);
       showReview(showReviewUrl, review_id, target);
+      
       target.style.top = e.pointerY() + 'px';
       target.style.left = (e.pointerX() + 5) + 'px';
+      var targetBody = target.down('.code_review_body');
+      var maxHeight = (document.viewport.getHeight() * 7) / 10;
+      //alert('maxHeight = ' + maxHeight);
+      if (targetBody.getHeight() > maxHeight) {
+          targetBody.setStyle({height: '' + maxHeight + 'px'});
+      }
       Effect.Grow(target.id, {direction: 'top-left'});
       setDraggables();
           //formPopup(e, $('review-form-frame'));
