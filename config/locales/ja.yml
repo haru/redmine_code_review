@@ -1,5 +1,14 @@
 ja:
   label_add_review: レビューを書く
+  label_show_review: レビューを見る
   code_reviews: コードレビュー
   code_review: コードレビュー
   project_module_code_review: コードレビュー
+
+  label_review_open: オープン中
+  label_review_closed: クローズ
+
+  label_reopen_review: 再オープンする
+  label_close_review: クローズする
+
+  label_code_review_plural: コードレビュー
