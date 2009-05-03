@@ -42,6 +42,7 @@ class CodeReviewController < ApplicationController
 
 
   def update_diff_view
+    @show_review_id = params[:review_id].to_i unless params[:review_id].blank?
     @review = CodeReview.new
     @rev = params[:rev].to_i unless params[:rev].blank?
     @path = params[:path]
@@ -57,7 +58,12 @@ class CodeReviewController < ApplicationController
 
   def show
     @review = CodeReview.find(params[:review_id].to_i)
-    render :partial => 'show'
+    if request.xhr?
+      render :partial => 'show'
+    else
+      redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + @review.change.path + '?rev=' + @review.change.changeset.revision + '&review_id=' + @review.id.to_s
+
+    end
   end
 
   def reply

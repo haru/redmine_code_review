@@ -68,6 +68,19 @@ function setShowReviewButton(line, review_id) {
       });
 }
 
+function popupReview(line, review_id) {
+  var target = $('show_review_' + review_id);
+  var span = $('review_' + review_id);
+
+  target.style.top = span.positionedOffset().top + 'px';
+  target.style.left = (span.positionedOffset().left + 10) + 'px';
+  showReview(showReviewUrl, review_id, target);
+  
+  Effect.Grow(target.id, {direction: 'top-left'});
+  span.scrollTo();
+  setDraggables();
+}
+
 function showReview(url, review_id, element) {
     new Ajax.Updater(element, url, {
         asynchronous:false,

@@ -28,15 +28,12 @@
     <% for review in @reviews %>
       <tr class="<%= cycle 'odd', 'even' %>">
         <td><%=  review.id %></td>
-        <%
-        url = url_for(:controller => 'repositories', :action => 'diff', :id => @project) + review.change.path + '?rev=' + review.change.changeset.revision + '&review_id=' + @review.id.to_s
-        %>
-        
+                
         <td class="status">
           <%=h l(:label_review_closed) if review.is_closed? -%>
           <%=h l(:label_review_open) unless review.is_closed? -%>
         </td>
-        <td><%= link_to review.change.path, url %></td>
+        <td><%= link_to review.change.path, :controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id %></td>
         <td><%=h review.line %></td>
         <td><%=h review.change.changeset.revision %></td>
         <td><%=h review.change.changeset.author %></td>

@@ -21,4 +21,7 @@
     setShowReviewButton(<%= review.line %>, <%= review.id %>);
   <% end %>
   setDraggables();
+  <% if @show_review_id -%>
+  popupReview(<%= review.line %>, <%= @show_review_id %>);
+  <% end -%>
 <% end %>
