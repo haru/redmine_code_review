@@ -2,8 +2,21 @@ class CodeReviewController < ApplicationController
 
   before_filter :find_project, :authorize, :find_user
 
+  helper :sort
+  include SortHelper
+
   def index
-    @reviews = CodeReview.find(:all, :conditions => ['project_id = ? and parent_id is NULL', @project.id])
+    sort_init 'id', 'desc'
+    #sort_update({'id' => "#{CodeReview.table_name}.id"}.merge(@query.columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
+
+    limit = per_page_option
+    @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
+    @review_pages = Paginator.new self, @review_count, limit, params['page']
+    @reviews = CodeReview.find :all, :order => sort_clause,
+      :conditions => ['project_id = ? and parent_id is NULL', @project.id],
+      :limit  =>  limit,
+      :offset =>  @review_pages.current.offset
+    render :template => 'code_review/index.html.erb', :layout => !request.xhr?
   end
 
   def new
