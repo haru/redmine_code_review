@@ -96,18 +96,18 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.find(params[:review_id].to_i)
     @review.close
     @review.save
-    flash[:notice] = l(:notice_review_updated)
-    #render :partial => 'show'
-    redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
+    @notice = l(:notice_review_updated)
+    render :partial => 'show'
+    #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
   end
 
   def reopen
     @review = CodeReview.find(params[:review_id].to_i)
     @review.reopen
     @review.save
-    flash[:notice] = l(:notice_review_updated)
-    #render :partial => 'show'
-    redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
+    @notice = l(:notice_review_updated)
+    render :partial => 'show'
+    #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
   end
 
 

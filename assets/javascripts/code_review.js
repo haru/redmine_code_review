@@ -1,4 +1,4 @@
-var draggables = [];
+ var draggables = [];
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly){
   var trs = $$('table.filecontent tr');
@@ -108,12 +108,15 @@ function addReview(url) {
 
 function releaseDraggables() {
     for (var i = 0; i < draggables.length; i++) {
-        draggables[i].destroy();
+        if (draggables[i] != undefined) {
+            draggables[i].destroy();
+        }
     }
     draggables = [];
 }
 
 function setDraggables() {
+    //alert('here');
     releaseDraggables();
     var list = $$('.draggable');
     for(var i = 0; i < list.length; i++) {

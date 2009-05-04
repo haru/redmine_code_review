@@ -12,7 +12,9 @@
 
 <div class="code_review_body">
   <div class="code_review_body-scrollarea">
-<div class="flash notice"><%= flash[:notice] -%></div>
+    <% if @notice -%>
+      <div class="flash notice"><%= @notice -%></div>
+    <% end -%>
 <div class="code_review_viewer issue">
 <div class="contextual">
 <%= link_to_if_authorized(l(:button_update), {:controller => 'code_review', :action => 'update', :id => @project, :review_id => @review}, :class => 'icon icon-edit', :accesskey => accesskey(:edit)) %>
@@ -44,7 +46,8 @@
         </td>
         <td>
         <%= link_to_remote l(:label_reopen_review), :update => "show_review_#{@review.id}",
-          :url => {:controller => 'code_review', :action => 'reopen', :id => @project, :review_id => @review} if authorize_for('code_review', 'reopen')%>
+          :url => {:controller => 'code_review', :action => 'reopen', :id => @project, :review_id => @review},
+          :success => "setDraggables()"  if authorize_for('code_review', 'reopen')%>
         </td>
       <% else -%>
         <td style="width:20%" class="status">
@@ -98,3 +101,5 @@
 </div>
 </div>
 </div>
+
+<%= javascript_tag("setDraggables();") %>
