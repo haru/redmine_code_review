@@ -69,3 +69,10 @@ table.filecontent th.line-num img{
 
 }
 
+#code_review_list table.list td {
+    text-align: center;
+}
+
+#code_review_list table.list td.path {
+    text-align: left;
+}

@@ -5,6 +5,8 @@ code_review: Code review
 project_module_code_review: Code reviews
 label_code_path: Path
 label_code_reviewer: Reviewer
+label_code_author: Committer
+label_code_line: Line
 
 label_review_open: Open
 label_review_closed: Closed

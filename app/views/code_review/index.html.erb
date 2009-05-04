@@ -3,6 +3,7 @@
 # and open the template in the editor.
 %>
 
+<div id="code_review_list">
 <h2>
   <%=h l(:code_reviews) %>
 </h2>
@@ -23,9 +24,15 @@
       <th>
         <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
       </th>
-      <th>line</th>
-      <th>rev</th>
-      <th>committer</th>
+      <th>
+        <%=h l(:label_code_line)%>
+      </th>
+      <th>
+        <%= sort_header_tag 'changesets.revision', :caption => l(:label_revision)%>
+      </th>
+      <th>
+        <%= sort_header_tag 'changesets.committer', :caption => l(:label_code_author)%>
+      </th>
       <th>
         <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
       </th>
@@ -43,10 +50,18 @@
           <%=h l(:label_review_closed) if review.is_closed? -%>
           <%=h l(:label_review_open) unless review.is_closed? -%>
         </td>
-        <td colspan="2"><%= link_to review.change.path, :controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id %></td>
+        <td colspan="2" class="path">
+          <%
+            codepath = review.change.path
+            if (review.change.path.length > 55)
+              codepath = review.change.path[0, 15] + '...' + review.change.path[review.change.path.length - 35, 35]
+            end
+          -%>
+<%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.change.path) -%>
+      　</td>
         <td><%=h review.line %></td>
-        <td><%=h review.change.changeset.revision %></td>
-        <td><%=h review.change.changeset.author %></td>
+        <td colspan="2"><%=h review.change.changeset.revision %></td>
+        <td colspan="2"><%=h review.change.changeset.author %></td>
         <td colspan="2"><%=h review.user.name %></td>
         <td colspan="2"><%=h format_time(review.created_at) %></td>
       </tr>
@@ -56,3 +71,8 @@
 <p class="pagination"><%= pagination_links_full @review_pages, @review_count %></p>
 
 <% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag "code_review.css", :plugin => "redmine_code_review", :media => "screen" %>
+<% end %>
+</div>
