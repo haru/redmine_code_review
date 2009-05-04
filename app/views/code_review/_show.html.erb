@@ -25,7 +25,7 @@
 <% end -%>
 </div>
   <h2>
-    <%= @review.line %>行目
+    <%= l(:label_line_number, @review.line) %>
   </h2>
 <p class="author">
         <%= authoring @review.created_at, @review.user %>.

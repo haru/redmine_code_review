@@ -16,7 +16,7 @@
 
 <div class="box">
   <h2>
-  <%= @review.line %>行目
+  <%= l(:label_line_number, @review.line) %>
 </h2>
 <% form_for :review, @review,
   :url => {:controller => 'code_review', :action => 'new', :id=>@project} do |f|  %>

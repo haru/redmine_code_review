@@ -11,3 +11,5 @@ label_reopen_review: 再オープンする
 label_close_review: クローズする
 
 label_code_review_plural: コードレビュー
+
+label_line_number: %d行目

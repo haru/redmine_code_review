@@ -1,2 +1,15 @@
-# English strings go here
-my_label: "My label"
+label_add_review: Add review
+label_show_review: View review
+code_reviews: Code reviews
+code_review: Code review
+project_module_code_review: Code reviews
+
+label_review_open: Open
+label_review_closed: Closed
+
+label_reopen_review: Reopen this review
+label_close_review: Close this review
+
+label_code_review_plural: Code reviews
+
+label_line_number: 'Line: %d'
