@@ -14,31 +14,41 @@
 <table class="list">
   <thead>
     <tr>
-      <th>#</th>
-      <th><%=h l(:field_status)%></th>
-      <th>path</th>
+      <th>
+        <%= sort_header_tag('id', :caption => '#') %>
+      </th>
+      <th>
+        <%= sort_header_tag 'status', :caption => l(:field_status)%>
+      </th>
+      <th>
+        <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
+      </th>
       <th>line</th>
       <th>rev</th>
       <th>committer</th>
-      <th>reviewer</th>
-      <th><%=h l(:label_date) %></th>
+      <th>
+        <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
+      </th>
+      <th>
+        <%= sort_header_tag 'updated_at', :caption => l(:label_date) %>
+      </th>
     </tr>
   </thead>
   <tbody>
     <% for review in @reviews %>
       <tr class="<%= cycle 'odd', 'even' %>">
-        <td><%=  review.id %></td>
+        <td colspan="2"><%=  review.id %></td>
                 
-        <td class="status">
+        <td colspan="2" class="status">
           <%=h l(:label_review_closed) if review.is_closed? -%>
           <%=h l(:label_review_open) unless review.is_closed? -%>
         </td>
-        <td><%= link_to review.change.path, :controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id %></td>
+        <td colspan="2"><%= link_to review.change.path, :controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id %></td>
         <td><%=h review.line %></td>
         <td><%=h review.change.changeset.revision %></td>
         <td><%=h review.change.changeset.author %></td>
-        <td><%=h review.user.name %></td>
-        <td><%=h format_time(review.created_at) %></td>
+        <td colspan="2"><%=h review.user.name %></td>
+        <td colspan="2"><%=h format_time(review.created_at) %></td>
       </tr>
     <% end %>
   </tbody>

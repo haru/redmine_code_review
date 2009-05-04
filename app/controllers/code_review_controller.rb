@@ -7,7 +7,7 @@ class CodeReviewController < ApplicationController
 
   def index
     sort_init 'id', 'desc'
-    #sort_update({'id' => "#{CodeReview.table_name}.id"}.merge(@query.columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
+    sort_update %w(id status path updated_at user_id)
 
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
@@ -15,6 +15,7 @@ class CodeReviewController < ApplicationController
     @reviews = CodeReview.find :all, :order => sort_clause,
       :conditions => ['project_id = ? and parent_id is NULL', @project.id],
       :limit  =>  limit,
+      :joins => 'inner join changes on change_id = changes.id',
       :offset =>  @review_pages.current.offset
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?
   end
