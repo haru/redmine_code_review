@@ -18,3 +18,4 @@ ja:
   label_code_review_plural: コードレビュー
 
   label_line_number: %d行目
+  notice_review_updated: レビューが更新されました。

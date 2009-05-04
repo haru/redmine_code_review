@@ -17,3 +17,4 @@ label_close_review: Close this review
 label_code_review_plural: Code reviews
 
 label_line_number: 'Line: %d'
+notice_review_updated: Review was successfully updated.

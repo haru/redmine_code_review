@@ -59,7 +59,7 @@ class CodeReviewController < ApplicationController
 
   def show
     @review = CodeReview.find(params[:review_id].to_i)
-    if request.xhr?
+    if request.xhr? or !params[:update].blank?
       render :partial => 'show'
     else
       redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + @review.change.path + '?rev=' + @review.change.changeset.revision + '&review_id=' + @review.id.to_s
@@ -96,14 +96,18 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.find(params[:review_id].to_i)
     @review.close
     @review.save
-    render :partial => 'show'
+    flash[:notice] = l(:notice_review_updated)
+    #render :partial => 'show'
+    redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
   end
 
   def reopen
     @review = CodeReview.find(params[:review_id].to_i)
     @review.reopen
     @review.save
-    render :partial => 'show'
+    flash[:notice] = l(:notice_review_updated)
+    #render :partial => 'show'
+    redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
   end
 
 
