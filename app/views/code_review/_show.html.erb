@@ -30,12 +30,16 @@
 
 <div class="code_review_body">
   <div class="code_review_body-scrollarea">
+    <%= error_messages_for 'review' -%>
+    <%= error_messages_for 'reply' -%>
     <% if @notice -%>
       <div class="flash notice"><%= @notice -%></div>
     <% end -%>
 <div class="code_review_viewer issue">
 <div class="contextual">
-<%= link_to_if_authorized(l(:button_update), {:controller => 'code_review', :action => 'update', :id => @project, :review_id => @review}, :class => 'icon icon-edit', :accesskey => accesskey(:edit)) %>
+  <% if authorize_for('code_review', 'update') -%>
+    <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;" %>
+  <% end %>
 <% if authorize_for('code_review', 'destroy') -%>
 <%= link_to_remote(l(:button_delete), :update => "show_review_#{@review.id}",
   :url => {:controller => 'code_review', :action => 'destroy', :id => @project, :review_id => @review},
@@ -85,6 +89,29 @@
   <div class="wiki">
 <%= textilizable @review, :comment %>
   </div>
+  <div class="box" id="update-form-<%= @review.id %>" style="display:none;">
+
+<% remote_form_for :review, @review,
+  :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
+  :update => "show_review_#{@review.id}" do |f|  %>
+
+<p>
+  <%= f.text_area :comment,
+                   :cols => 30,
+                   :rows => 10,
+                   :accesskey => accesskey(:edit),
+                   :class => 'wiki-edit' %>
+
+</p>
+<p>
+      <%= submit_tag l(:button_apply) %>
+      <input type="button" value="<%=h l(:button_cancel) %> " onclick='$("update-form-<%= @review.id %>").hide();'/>
+</p>
+ <%= wikitoolbar_for 'review_comment' %>
+<% end %>
+
+</div>
+
 </div>
 <% if @review.children.length > 0 %>
  <h3>
