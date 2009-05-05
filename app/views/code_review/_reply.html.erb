@@ -4,12 +4,14 @@
 %>
 
 <p class="author">
+
         <%= authoring reply.created_at, reply.user %>.
         <%= l(:label_updated_time, distance_of_time_in_words(Time.now, reply.updated_at)) + '.' if reply.created_at != reply.updated_at %>
 </p>
+
 <div class="wiki">
-<%= textilizable reply, :comment %>
+          <%= avatar(reply.user, :size => "32") %><%= textilizable reply, :comment %>
   </div>
 
-<%= render :partial => 'reply', :collection => reply.children.sort{|a, b| a.id <=> b.id}
+<%= render :partial => 'reply', :collection => reply.children.sort{|a, b| a.id <=> b.id} %>
 <hr/>

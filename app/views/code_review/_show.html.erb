@@ -30,6 +30,7 @@
     <%= l(:label_line_number, @review.line) %>
   </h2>
 <p class="author">
+  <%= avatar(@review.user, :size => "64") %>
         <%= authoring @review.created_at, @review.user %>.
         <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
 </p>
