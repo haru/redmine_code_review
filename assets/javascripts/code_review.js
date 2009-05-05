@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 var draggables = [];
+var topZindex = 1000;
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly){
   var trs = $$('table.filecontent tr');
@@ -51,6 +52,8 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly){
       });
       
   });
+
+  
 }
 
 var showReviewUrl = null;
@@ -105,6 +108,16 @@ function showReview(url, review_id, element) {
         evalScripts:true,
         parameters: 'review_id=' + review_id,
         method:'get'});
+    
+    element.observe('click', function(e){
+        toTopLayer(e.element().up('.draggable'));
+    });
+}
+
+function toTopLayer(element) {
+    //alert('aaa');
+    element.setStyle('z-index:' + topZindex + ';');
+    topZindex += 10;
 }
 
 function formPopup(evt, popup){
@@ -112,6 +125,8 @@ function formPopup(evt, popup){
     popup.style.left = (evt.pointerX() + 5) + 'px';
     Effect.Grow(popup.id, {direction: 'top-left'});
     setDraggables();
+    toTopLayer(popup);
+    
     return false;
 }
 
@@ -144,7 +159,7 @@ function setDraggables() {
         if (draghandle == null) {
             continue;
         }
-        draggables[i] = new Draggable(draggable, {handle:'drag-handle'});
+        draggables[i] = new Draggable(draggable, {handle:'drag-handle', zindex: 2000});
 
     }
 }
