@@ -35,6 +35,9 @@
     <% if @notice -%>
       <div class="flash notice"><%= @notice -%></div>
     <% end -%>
+    <% if @error -%>
+      <div class="flash error"><%= @error -%></div>
+    <% end -%>
 <div class="code_review_viewer issue">
 <div class="contextual">
   <% if authorize_for('code_review', 'update') -%>
@@ -94,7 +97,7 @@
 <% remote_form_for :review, @review,
   :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
   :update => "show_review_#{@review.id}" do |f|  %>
-
+<%= f.hidden_field :lock_version %>
 <p>
   <%= f.text_area :comment,
                    :cols => 30,

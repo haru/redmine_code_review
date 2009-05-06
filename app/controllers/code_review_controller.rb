@@ -104,11 +104,18 @@ class CodeReviewController < ApplicationController
   end
 
   def update
-    @review = CodeReview.find(params[:review_id].to_i)
-    @review.comment = params[:review][:comment]
-    @review.updated_by_id = @user.id
-    @review.save
-    render :partial => 'show'
+    begin
+      @review = CodeReview.find(params[:review_id].to_i)
+      @review.comment = params[:review][:comment]
+      @review.lock_version = params[:review][:lock_version].to_i
+      @review.updated_by_id = @user.id
+      @review.save
+      render :partial => 'show'
+    rescue ActiveRecord::StaleObjectError
+      # Optimistic locking exception
+      @error = l(:notice_locking_conflict)
+      render :partial => 'show'
+    end
   end
 
 
