@@ -128,6 +128,7 @@ class CodeReviewController < ApplicationController
   def close
     @review = CodeReview.find(params[:review_id].to_i)
     @review.close
+    @review.updated_by_id = @user.id
     @review.save
     @notice = l(:notice_review_updated)
     render :partial => 'show'

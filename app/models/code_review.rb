@@ -30,7 +30,7 @@ class CodeReview < ActiveRecord::Base
   acts_as_event :title => Proc.new {|o| "#{l(:code_review)}: #{'#' + o.id.to_s}" },
                   :description => Proc.new {|o| "#{o.comment}"},
                   :datetime => :updated_at,
-                  :author => :user,
+                  :author => :updated_by,
                   :type => 'code_review',
                   :url => Proc.new {|o| {:controller => 'code_review', :action => 'show', :id => o.project, :review_id => o.id} }
 
