@@ -29,8 +29,13 @@ class CodeReviewController < ApplicationController
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
     @review_pages = Paginator.new self, @review_count, limit, params['page']
+    @show_closed = (params['show_closed'] == 'true')
+    show_closed_option = " and status not in (1)"
+    if (@show_closed)
+      show_closed_option = ''
+    end
     @reviews = CodeReview.find :all, :order => sort_clause,
-      :conditions => ['project_id = ? and parent_id is NULL', @project.id],
+      :conditions => ['project_id = ? and parent_id is NULL' + show_closed_option, @project.id],
       :limit  =>  limit,
       :joins => 'left join changes on change_id = changes.id  left join changesets on changes.changeset_id = changesets.id',
       :offset =>  @review_pages.current.offset

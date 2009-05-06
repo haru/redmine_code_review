@@ -19,3 +19,4 @@ en:
 
   label_line_number: 'Line: %d'
   notice_review_updated: Review was successfully updated.
+  label_show_closed_reviews: Show closed reviews.
