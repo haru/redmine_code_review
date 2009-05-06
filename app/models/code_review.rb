@@ -18,12 +18,14 @@ class CodeReview < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   belongs_to :change
+  belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   acts_as_tree
 
   validates_presence_of :comment
   validates_presence_of :project_id
   validates_presence_of :user_id
   validates_presence_of :change_id
+  validates_presence_of :updated_by_id
 
   acts_as_event :title => Proc.new {|o| "#{l(:code_review)}: #{'#' + o.id.to_s}" },
                   :description => Proc.new {|o| "#{o.comment}"},

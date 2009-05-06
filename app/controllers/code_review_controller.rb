@@ -41,6 +41,7 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.new(params[:review])
     @review.project_id = @project.id
     @review.user_id = @user.id
+    @review.updated_by_id = @user.id
     @review.status = CodeReview::STATUS_OPEN
      
     if request.post?
@@ -90,6 +91,7 @@ class CodeReviewController < ApplicationController
     comment = params[:reply][:comment]
     @reply = CodeReview.new
     @reply.user_id = @user.id
+    @reply.updated_by_id = @user.id
     @reply.project_id = @project.id
     @reply.change_id = @review.change_id
     @reply.comment = comment
@@ -104,6 +106,7 @@ class CodeReviewController < ApplicationController
   def update
     @review = CodeReview.find(params[:review_id].to_i)
     @review.comment = params[:review][:comment]
+    @review.updated_by_id = @user.id
     @review.save
     render :partial => 'show'
   end
@@ -127,6 +130,7 @@ class CodeReviewController < ApplicationController
   def reopen
     @review = CodeReview.find(params[:review_id].to_i)
     @review.reopen
+    @review.updated_by_id = @user.id
     @review.save
     @notice = l(:notice_review_updated)
     render :partial => 'show'
