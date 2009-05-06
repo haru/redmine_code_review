@@ -80,6 +80,7 @@ class CodeReviewController < ApplicationController
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
     else
+      @review = @review.root
       redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + @review.change.path + '?rev=' + @review.change.changeset.revision + '&review_id=' + @review.id.to_s
 
     end

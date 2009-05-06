@@ -27,7 +27,11 @@ class CodeReview < ActiveRecord::Base
   validates_presence_of :change_id
   validates_presence_of :updated_by_id
 
-  acts_as_event :title => Proc.new {|o| "#{l(:code_review)}: #{'#' + o.id.to_s}" },
+  acts_as_event :title => Proc.new {|o|
+                       title = "#{l(:code_review)}: #{'#' + o.root.id.to_s}"
+                       title += ": #{l(:label_reply_plural)}" if o.parent
+                       title
+                  },
                   :description => Proc.new {|o| "#{o.comment}"},
                   :datetime => :updated_at,
                   :author => :updated_by,
