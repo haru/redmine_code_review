@@ -19,11 +19,33 @@
 var draggables = [];
 var topZindex = 1000;
 
+function getIEversion() {
+    if (!Prototype.Browser.IE) {
+        return -1;
+    }
+    var ienum = navigator.userAgent.match(new RegExp("MSIE [0-9]{1,2}\.[0-9]{1,3}"));
+    return parseInt(String(ienum).replace("MSIE ",""));
+}
+
+function isIE6() {
+    if (getIEversion() == 6) {
+        return true;
+    }
+    return false;
+}
+
+function isIE7() {
+    if (getIEversion() == 7) {
+        return true;
+    }
+    return false;
+}
+
 function setAddReviewButton(url, change_id, image_tag, is_readonly){
   var trs = $$('table.filecontent tr');
   trs.each(function(tr){
       th = tr.down('th', 1);
-      if (th == undefined) {
+      if (th == null) {
           return;
       }
       th.setStyle({'text-align':'left'});
@@ -68,7 +90,7 @@ function setShowReviewButton(line, review_id) {
   innerSpan.innerHTML = showReviewImageTag;
   var div = new Element('div', {style:'position:absolute; display:none;', 'class':'draggable'});
   div.id = 'show_review_' + review_id;
-  $('content').insert(div);
+  $('code_review').insert(div);
   innerSpan.down('img').observe('click', function(e) {
       var review_id = e.element().up().id.match(/[0-9]+/);
       var target = $('show_review_' + review_id);
@@ -76,14 +98,24 @@ function setShowReviewButton(line, review_id) {
       
       target.style.top = e.pointerY() + 'px';
       target.style.left = (e.pointerX() + 5) + 'px';
-      var targetBody = target.down('.code_review_body');
-      var maxHeight = (document.viewport.getHeight() * 7) / 10;
-      //alert('maxHeight = ' + maxHeight);
-      if (targetBody.getHeight() > maxHeight) {
-          targetBody.setStyle({height: '' + maxHeight + 'px'});
+//      var targetBody = target.down('.code_review_body');
+//      var maxHeight = (document.viewport.getHeight() * 7) / 10;
+//      if (targetBody.getHeight() > maxHeight) {
+//          targetBody.setStyle({height: '' + maxHeight + 'px'});
+//      }
+      
+      setDraggables();
+      var code_review_body = target.down('.code_review_body');
+      var header_table = target.down('.header_table');
+      if (isIE6()) {
+          code_review_body.setStyle('width: 50%;');
+          header_table.setStyle('width: 50%;');
+      }
+      if (isIE7()) {
+          code_review_body.setStyle('width: 500px;');
+          header_table.setStyle('width: 500px;');
       }
       Effect.Grow(target.id, {direction: 'top-left'});
-      setDraggables();
           //formPopup(e, $('review-form-frame'));
           //e.preventDefault();
       });
@@ -96,7 +128,16 @@ function popupReview(line, review_id) {
   target.style.top = span.positionedOffset().top + 'px';
   target.style.left = (span.positionedOffset().left + 10) + 'px';
   showReview(showReviewUrl, review_id, target);
-  
+  var code_review_body = target.down('.code_review_body');
+  var header_table = target.down('.header_table');
+  if (isIE6()) { 
+      code_review_body.setStyle('width: 50%;');
+      header_table.setStyle('width: 50%;');
+  }
+  if (isIE7()) {
+      code_review_body.setStyle('width: 500px;');
+      header_table.setStyle('width: 500px;');
+  }
   Effect.Grow(target.id, {direction: 'top-left'});
   span.scrollTo();
   setDraggables();
@@ -110,12 +151,13 @@ function showReview(url, review_id, element) {
         method:'get'});
     
     element.observe('click', function(e){
+        //alert(e.element().inspect());
         toTopLayer(e.element().up('.draggable'));
     });
 }
 
 function toTopLayer(element) {
-    //alert('aaa');
+    //alert(element);
     element.setStyle('z-index:' + topZindex + ';');
     topZindex += 10;
 }
@@ -141,7 +183,7 @@ function addReview(url) {
 
 function releaseDraggables() {
     for (var i = 0; i < draggables.length; i++) {
-        if (draggables[i] != undefined) {
+        if (draggables[i] != null) {
             draggables[i].destroy();
         }
     }
