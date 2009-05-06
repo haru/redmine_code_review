@@ -41,6 +41,13 @@ function isIE7() {
     return false;
 }
 
+function isIE8() {
+    if (getIEversion() == 8) {
+        return true;
+    }
+    return false;
+}
+
 function setAddReviewButton(url, change_id, image_tag, is_readonly){
   var trs = $$('table.filecontent tr');
   trs.each(function(tr){
@@ -152,12 +159,21 @@ function showReview(url, review_id, element) {
     
     element.observe('click', function(e){
         //alert(e.element().inspect());
-        toTopLayer(e.element().up('.draggable'));
+        if (isIE8()) {
+            toTopLayer(e.element().up('.code-review-dialog'));
+        }
+        else {
+            toTopLayer(e.element().up('.draggable'));
+        }
+
     });
 }
 
 function toTopLayer(element) {
     //alert(element);
+    if (element == null) {
+        return;
+    }
     element.setStyle('z-index:' + topZindex + ';');
     topZindex += 10;
 }
@@ -193,16 +209,25 @@ function releaseDraggables() {
 function setDraggables() {
     //alert('here');
     releaseDraggables();
-    var list = $$('.draggable');
+    var list = null;
+    if (isIE8()) {
+        list = $$('.code-review-dialog');
+        list[list.length] = $('review-form-frame');
+    }
+    else {
+        list = $$('.draggable');
+    }
     for(var i = 0; i < list.length; i++) {
-        var draggable = list[i];
-        //alert(draggable.inspect());
+        var draggable = list[i];       
         var draghandle = draggable.down('.drag-handle');
         if (draghandle == null) {
             continue;
         }
-        draggables[i] = new Draggable(draggable, {handle:'drag-handle', zindex: 2000});
-
+        draggables[i] = new Draggable(draggable, {
+            handle:'drag-handle',
+            zindex: 2000
+        });
+        
     }
 }
 
