@@ -100,14 +100,15 @@
                    :cols => 30,
                    :rows => 10,
                    :accesskey => accesskey(:edit),
-                   :class => 'wiki-edit' %>
+                   :class => 'wiki-edit',
+                   :id => 'review_comment_' + @review.id.to_s%>
 
 </p>
 <p>
       <%= submit_tag l(:button_apply) %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick='$("update-form-<%= @review.id %>").hide();'/>
 </p>
- <%= wikitoolbar_for 'review_comment' %>
+ <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
 <% end %>
 
 </div>
@@ -123,8 +124,8 @@
 
 
 <% if authorize_for('code_review', 'reply') -%>
-<p><%= toggle_link l(:button_reply), "reply", :focus => 'reply_comment' %></p>
-<div id="reply" style="display:none;" class="box">
+<p><%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %></p>
+<div id="reply_<%= @review.id  %>" style="display:none;" class="box">
 <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :parent_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
   <%= hidden_field_tag :parent_id, @review.id %>
 <p>
@@ -132,14 +133,15 @@
                    :cols => 30,
                    :rows => 10,
                    :accesskey => accesskey(:edit),
-                   :class => 'wiki-edit' %>
+                   :class => 'wiki-edit',
+                   :id => 'reply_comment_' + @review.id.to_s %>
  
 </p>
 <p>
   <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
         :url => {:controller => 'code_review', :action => 'reply', :id=>@project}, :method => :post %>
 </p>
-<%= wikitoolbar_for 'reply_comment' %>
+<%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>
 <% end %>
 </div>
 
