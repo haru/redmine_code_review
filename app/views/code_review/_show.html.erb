@@ -41,7 +41,7 @@
 <div class="code_review_viewer issue">
 <div class="contextual">
   <% if authorize_for('code_review', 'update') -%>
-    <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;" %>
+      <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;", :class => 'icon icon-edit' %>
   <% end %>
 <% if authorize_for('code_review', 'destroy') -%>
 <%= link_to_remote(l(:button_delete), :update => "show_review_#{@review.id}",
