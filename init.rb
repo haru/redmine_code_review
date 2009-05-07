@@ -35,7 +35,7 @@ Redmine::Plugin.register :redmine_code_review do
   end
 
   menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
-    :if => Proc.new{|project| project.repository != nil}
+    :if => Proc.new{|project| project.repository != nil}, :after => :repository
 
   activity_provider :code_review, :class_name => 'CodeReview', :default => false
 
