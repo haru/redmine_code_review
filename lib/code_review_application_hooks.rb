@@ -19,14 +19,21 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
   def view_layouts_base_html_head(context = {})
     project = context[:project]
+    controller = context[:controller]
+    action_name = controller.action_name
+    baseurl = url_for(:controller => 'code_review', :action => 'index', :id => project) + '/../../..'
+
+    if (controller.class.name == 'ProjectsController' and action_name == 'activity')
+      o = ""
+      o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/activity.css")
+      return o
+    end
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
       return
     end
-    controller = context[:controller]
-    action_name = controller.action_name
+    
     return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
 
-    baseurl = url_for(:controller => 'code_review', :action => 'index', :id => project) + '/../../..'
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
     o << javascript_include_tag(baseurl + '/javascripts/jstoolbar/jstoolbar.js')
