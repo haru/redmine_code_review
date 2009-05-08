@@ -27,7 +27,7 @@
 <% else %>
 
 <p>
-<% form_tag 'show_option', :controller => 'code_review', :action=>'index', :id => @project.id, :review_id => @review.id do %>
+<% form_tag 'show_option', :controller => 'code_review', :action=>'index', :id => @project do %>
     <%= check_box_tag 'show_closed', 'true', @show_closed %> <%=h l(:label_show_closed_reviews) %>
 <% end %>
 <%= observe_field 'show_closed', :with => 'show_closed', :update => 'content' %>
