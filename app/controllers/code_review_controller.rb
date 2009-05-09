@@ -71,12 +71,12 @@ class CodeReviewController < ApplicationController
   def update_diff_view
     @show_review_id = params[:review_id].to_i unless params[:review_id].blank?
     @review = CodeReview.new
-    @rev = params[:rev].to_i unless params[:rev].blank?
+    @rev = params[:rev] unless params[:rev].blank?
     @path = params[:path]
     changeset = Changeset.find_by_revision(@rev, :conditions => ['repository_id = (?)',@project.repository.id])
     @change = nil
     changeset.changes.each{|change|
-      @change = change if change.path == @path
+      @change = change if ((change.path == @path) or ('/' + change.path == @path))
     }
     @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and parent_id is NULL', @change.id])
     @review.change_id = @change.id
@@ -89,7 +89,9 @@ class CodeReviewController < ApplicationController
       render :partial => 'show'
     else
       @review = @review.root
-      redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + @review.change.path + '?rev=' + @review.change.changeset.revision + '&review_id=' + @review.id.to_s
+      path = @review.change.path
+      path = '/' + path unless path.match(/^\//)
+      redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + path + '?rev=' + @review.change.changeset.revision + '&review_id=' + @review.id.to_s
 
     end
   end

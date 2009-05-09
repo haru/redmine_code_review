@@ -47,7 +47,7 @@
 </p>
 <p>
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
-        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, 220 => "$('review-form-frame').hide();" %>
+        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @change.id, 220 => "$('review-form-frame').hide();" %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="$('review-form-frame').hide();"/>
 </p>
  <%= wikitoolbar_for 'review_comment' %>
