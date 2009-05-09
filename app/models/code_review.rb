@@ -14,7 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+require 'user'
+require 'changeset'
+require 'change'
 class CodeReview < ActiveRecord::Base
+  unloadable
   belongs_to :project
   belongs_to :user
   belongs_to :change
@@ -59,5 +63,17 @@ class CodeReview < ActiveRecord::Base
 
   def reopen
     self.root.status = STATUS_OPEN
+  end
+  
+  def committer
+    changeset = change.changeset
+    return changeset.author if changeset.respond_to?('author')
+
+    # For development mode. I don't know why "changeset.respond_to?('author')"
+    # is false in development mode.
+    if changeset.user_id
+      return User.find(changeset.user_id)
+    end
+    changeset.committer.to_s.split('<').first
   end
 end
