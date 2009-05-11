@@ -22,7 +22,7 @@ Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
   description 'This is a Code Review plugin for Redmine'
-  version '0.1.0'
+  version '0.1.1'
   requires_redmine :version_or_higher => '0.8.0'
 
   project_module :code_review do
