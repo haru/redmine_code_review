@@ -1,0 +1,21 @@
+fr:
+  label_add_review: Ajouter une revue
+  label_show_review: Voir une revue
+  code_reviews: Revues de code
+  code_review: Revue de code
+  project_module_code_review: Revues de Code
+  label_code_path: Chemin
+  label_code_reviewer: Relecteur
+  label_code_author: Auteur
+  label_code_line: Ligne
+  label_review_open: Ouvert
+  label_review_closed: Ferme
+  
+  label_reopen_review: Re-ouvrir cette revue
+  label_close_review: Fermer cette revue
+  
+  label_code_review_plural: Revues de code
+  
+  label_line_number: 'Ligne: %d'
+  notice_review_updated: La revue a ete mise a jour avec succes.
+  label_show_closed_reviews: Voir les revues fermees.
