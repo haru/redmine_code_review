@@ -55,6 +55,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
     request = context[:request]
     parameters = request.parameters
+    return unless parameters['rev_to'].blank?
     review_id = parameters['review_id']
     rev = parameters['rev']
     patharray = parameters['path']
