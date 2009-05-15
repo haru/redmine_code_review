@@ -31,6 +31,7 @@ class CodeReviewController < ApplicationController
 
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
+    @all_review_count = CodeReview.count(:conditions => ['project_id = ?', @project.id])
     @review_pages = Paginator.new self, @review_count, limit, params['page']
     @show_closed = (params['show_closed'] == 'true')
     show_closed_option = " and status not in (1)"
