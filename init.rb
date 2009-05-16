@@ -21,7 +21,7 @@ require 'code_review_application_hooks'
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
-  url "http://www.r-labs.org/code_review/index/codereview" if respond_to?(:url)
+  url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
   version '0.1.3'
   requires_redmine :version_or_higher => '0.8.0'
