@@ -20,3 +20,4 @@ ja:
   label_line_number: %d行目
   notice_review_updated: レビューが更新されました。
   label_show_closed_reviews: 完了したレビューも表示する。
+  label_review: レビュー

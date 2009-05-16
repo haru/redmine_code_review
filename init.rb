@@ -48,7 +48,7 @@ Redmine::Plugin.register :redmine_code_review do
       return nil if review_id == 0
       review = CodeReview.find(review_id)
       return nil unless review
-      link_to(l(:code_review) + '#' + review.id.to_s, :controller => 'code_review', :action => 'show', :id => review.project, :review_id => review.id)
+      link_to(l(:label_review) + '#' + review.id.to_s, :controller => 'code_review', :action => 'show', :id => review.project, :review_id => review.id)
       
     end
   end

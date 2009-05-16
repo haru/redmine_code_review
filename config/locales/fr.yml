@@ -19,3 +19,4 @@ fr:
   label_line_number: 'Ligne: %d'
   notice_review_updated: La revue a ete mise a jour avec succes.
   label_show_closed_reviews: Voir les revues fermees.
+  label_review: revue
