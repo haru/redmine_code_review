@@ -20,7 +20,7 @@
 <div class="code-review-form-title drag-handle" >
   <table border="0" width="100%" class="header_table">
     <tr>
-      <td><span class="icon icon-review"><%= l(:code_review) %></span></td>
+      <td><span class="icon icon-review"><%=h l(:code_review) %> #<%=@review.id %></span></td>
       <td align="right">
         <%= link_to_function image_tag('close.png'), "$('show_review_#{@review.id}').hide();" %>
       </td>

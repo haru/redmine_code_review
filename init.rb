@@ -23,7 +23,7 @@ Redmine::Plugin.register :redmine_code_review do
   author 'Haruyuki Iida'
   url "http://www.r-labs.org/projects/show/r-labs" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.1.2'
+  version '0.1.3'
   requires_redmine :version_or_higher => '0.8.0'
 
   project_module :code_review do
@@ -39,5 +39,18 @@ Redmine::Plugin.register :redmine_code_review do
     :if => Proc.new{|project| project.repository != nil}, :after => :repository
 
   activity_provider :code_review, :class_name => 'CodeReview', :default => false
+
+  Redmine::WikiFormatting::Macros.register do
+    desc "This is my macro link to code review"
+    macro :review do |obj, args|
+      return nil if args.length == 0
+      review_id = args[0].to_i
+      return nil if review_id == 0
+      review = CodeReview.find(review_id)
+      return nil unless review
+      link_to(l(:code_review) + '#' + review.id.to_s, :controller => 'code_review', :action => 'show', :id => review.project, :review_id => review.id)
+      
+    end
+  end
 
 end
