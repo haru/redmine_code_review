@@ -139,9 +139,22 @@ class CodeReviewController < ApplicationController
 
   def close
     @review = CodeReview.find(params[:review_id].to_i)
+    
+    closed_message = CodeReview.new
+    closed_message.user_id = @user.id
+    closed_message.updated_by_id = @user.id
+    closed_message.project_id = @project.id
+    closed_message.line = @review.line
+    closed_message.change_id = @review.change_id
+    closed_message.comment = 'closed.'
+    closed_message.status_changed_from = @review.status
+    closed_message.status_changed_to = CodeReview::STATUS_CLOSED
+    
+    @review.children << closed_message
+  
     @review.close
     @review.updated_by_id = @user.id
-    @review.save
+    @review.save!
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
@@ -149,6 +162,18 @@ class CodeReviewController < ApplicationController
 
   def reopen
     @review = CodeReview.find(params[:review_id].to_i)
+
+    reopen_message = CodeReview.new
+    reopen_message.user_id = @user.id
+    reopen_message.updated_by_id = @user.id
+    reopen_message.project_id = @project.id
+    reopen_message.line = @review.line
+    reopen_message.change_id = @review.change_id
+    reopen_message.comment = 'reopen.'
+    reopen_message.status_changed_from = @review.status
+    reopen_message.status_changed_to = CodeReview::STATUS_OPEN
+
+    @review.children << reopen_message
     @review.reopen
     @review.updated_by_id = @user.id
     @review.save

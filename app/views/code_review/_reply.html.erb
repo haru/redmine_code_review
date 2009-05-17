@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-
+<% if reply.status_changed_from == nil %>
 <p class="author">
 
         <%= authoring reply.created_at, reply.user %>.
@@ -28,4 +28,28 @@
   </div>
 
 <%= render :partial => 'reply', :collection => reply.children.sort{|a, b| a.id <=> b.id} %>
+<% else %>
+<p class="author">
+  <%= authoring reply.created_at, reply.user %>.
+</p>
+<%
+  if (reply.status_changed_from == CodeReview::STATUS_CLOSED)
+    status_from = l(:label_review_closed)
+  else
+    status_from = l(:label_review_open)
+  end
+
+  if (reply.status_changed_to == CodeReview::STATUS_CLOSED)
+    status_to = l(:label_review_closed)
+  else
+    status_to = l(:label_review_open)
+  end
+%>
+<ul>
+  <li>
+    <strong><%=h l(:field_status) %></strong>
+<%=h l(:text_journal_changed, status_from, status_to) %>
+  </li>
+</ul>
+<% end %>
 <hr/>

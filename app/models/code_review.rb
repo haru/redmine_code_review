@@ -33,17 +33,19 @@ class CodeReview < ActiveRecord::Base
 
   acts_as_event :title => Proc.new {|o|
                        title = "#{l(:code_review)}: #{'#' + o.root.id.to_s}"
-                       title += ": #{l(:label_reply_plural)}" if o.parent
+                       title += ": #{l(:label_reply_plural)}" if o.parent and o.status_changed_from == nil
+                       title += "(#{l(:label_review_closed)})" if o.status_changed_to == STATUS_CLOSED
+                       title += "(#{l(:label_review_open)})" if o.status_changed_to == STATUS_OPEN
                        title
                   },
                   :description => Proc.new {|o| "#{o.comment}"},
-                  :datetime => :updated_at,
-                  :author => :updated_by,
+                  :datetime => :created_at,
+                  :author => :user,
                   :type => 'code_review',
                   :url => Proc.new {|o| {:controller => 'code_review', :action => 'show', :id => o.project, :review_id => o.id} }
 
   acts_as_activity_provider :type => 'code_review',
-                              :timestamp => "#{CodeReview.table_name}.updated_at",
+                              :timestamp => "#{CodeReview.table_name}.created_at",
                               :author_key => "#{CodeReview.table_name}.user_id",
                               :permission => :view_code_review,
                               :find_options => {:joins => "LEFT JOIN #{Project.table_name} ON #{Project.table_name}.id = #{CodeReview.table_name}.project_id"}
@@ -75,5 +77,13 @@ class CodeReview < ActiveRecord::Base
       return User.find(changeset.user_id)
     end
     changeset.committer.to_s.split('<').first
+  end
+
+  def lastchild
+    return self if children.length == 0
+    list = self.descendants.sort{|a, b|
+      a.created_at <=> b.created_at
+    }
+    list.pop
   end
 end
