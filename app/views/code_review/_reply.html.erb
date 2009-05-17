@@ -44,11 +44,17 @@
   else
     status_to = l(:label_review_open)
   end
+  begin
+    message = l(:text_journal_changed, :old => status_from, :new => status_to)
+  rescue
+    # for rails 2.1.2
+    message = l(:text_journal_changed, status_from, status_to)
+  end
 %>
 <ul>
   <li>
     <strong><%=h l(:field_status) %></strong>
-<%=h l(:text_journal_changed, status_from, status_to) %>
+<%=h message %>
   </li>
 </ul>
 <% end %>
