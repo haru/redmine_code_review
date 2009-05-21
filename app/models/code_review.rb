@@ -21,7 +21,7 @@ class CodeReview < ActiveRecord::Base
   unloadable
   belongs_to :project
   belongs_to :user
-  belongs_to :change
+  #belongs_to :change
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   acts_as_tree
 
@@ -68,16 +68,19 @@ class CodeReview < ActiveRecord::Base
   end
   
   def committer
-    changeset = change.changeset
-    return changeset.author if changeset.respond_to?('author')
+    begin
+      return changeset.author if changeset.respond_to?('author')
 
-    # For development mode. I don't know why "changeset.respond_to?('author')"
-    # is false in development mode.
-    if changeset.user_id
-      return User.find(changeset.user_id)
+      # For development mode. I don't know why "changeset.respond_to?('author')"
+      # is false in development mode.
+      if changeset.user_id
+        return User.find(changeset.user_id)
+      end
+      changeset.committer.to_s.split('<').first
+    rescue
     end
-    changeset.committer.to_s.split('<').first
   end
+
 
   def lastchild
     return self if children.length == 0
@@ -86,4 +89,48 @@ class CodeReview < ActiveRecord::Base
     }
     list.pop
   end
+
+
+  def path
+    begin
+      return @path if @path
+      repository = changeset.repository
+      url = repository.url
+      root_url = repository.root_url
+      if (url == nil || root_url == nil)
+        @path = change.path
+        return @path
+      end
+      rootpath = url[root_url.length, url.length - root_url.length]
+      if rootpath == '/' || rootpath.blank?
+        @path = change.path
+      else
+        @path = change.path[rootpath.length, change.path.length - rootpath.length]
+      end      
+    rescue => ex
+      return ex.to_s
+    end
+  end
+
+  def revision
+    begin
+      changeset.revision
+    rescue
+    end
+  end
+
+  private
+
+  def change
+    @change ||= Change.find(change_id)
+  end
+
+  def changeset
+    @changeset ||= Changeset.find(change.changeset_id)
+  end
+
+  def repository
+    @repository ||= changeset.repository
+  end
+
 end

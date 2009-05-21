@@ -1,0 +1,24 @@
+<div id="error_message_div">
+  <h1>Error</h1>
+
+  <p>change not found.</p>
+  
+  @path = '<%=h @path %>'<br/>
+  @changeset = <%=h @changeset %><br/>
+  @rev = <%=h @rev %><br/>
+  <% if @changeset %>
+    <ul>
+    <% for change in @changeset.changes do%>
+      <li>
+      '<%=h change.path%>'
+      </li>
+    <% end %>
+    </ul>
+  <% end %>
+</div>
+
+<script>
+  var innerhtml = $('content').innerHTML;
+  $('content').innerHTML = $('error_message_div').innerHTML + innerhtml;
+  $('error_message_div').innerHTML = "";
+</script>

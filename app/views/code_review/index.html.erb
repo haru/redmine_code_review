@@ -76,15 +76,15 @@
         </td>
         <td colspan="2" class="path">
           <%
-            codepath = review.change.path
-            if (review.change.path.length > 55)
-              codepath = review.change.path[0, 15] + '...' + review.change.path[review.change.path.length - 35, 35]
+            codepath = review.path
+            if (review.path.length > 55)
+              codepath = review.path[0, 15] + '...' + review.path[review.path.length - 35, 35]
             end
           -%>
-<%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.change.path) -%>
+<%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.path) -%>
       　</td>
         <td><%=h review.line %></td>
-        <td colspan="2"><%=h review.change.changeset.revision %></td>
+        <td colspan="2"><%=h review.revision %></td>
         <td colspan="2"><%=h review.committer %></td>
         <td colspan="2"><%=h review.user.name %></td>
         <td colspan="2"><%=h format_time(review.created_at) %></td>

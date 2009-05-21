@@ -75,10 +75,28 @@ class CodeReviewController < ApplicationController
     @rev = params[:rev] unless params[:rev].blank?
     @path = params[:path]
     changeset = Changeset.find_by_revision(@rev, :conditions => ['repository_id = (?)',@project.repository.id])
+    repository = @project.repository
+    url = repository.url
+    root_url = repository.root_url
+    if (url == nil || root_url == nil)
+        fullpath = @path
+    else
+        rootpath = url[root_url.length, url.length - root_url.length]
+        if rootpath.blank?
+            fullpath = @path
+        else
+            fullpath = (rootpath + '/' + @path).gsub(/[\/]+/, '/')
+        end
+    end
     @change = nil
-    changeset.changes.each{|change|
-      @change = change if ((change.path == @path) or ('/' + change.path == @path))
+    changeset.changes.each{|chg|
+      @change = chg if ((chg.path == fullpath) or ('/' + chg.path == fullpath))
     }
+    unless @change
+      @changeset = changeset
+      render :partial => 'show_error'
+      return
+    end
     @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and parent_id is NULL', @change.id])
     @review.change_id = @change.id
     render :partial => 'update_diff_view'
@@ -90,9 +108,9 @@ class CodeReviewController < ApplicationController
       render :partial => 'show'
     else
       @review = @review.root
-      path = @review.change.path
+      path = @review.path
       path = '/' + path unless path.match(/^\//)
-      redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + path + '?rev=' + @review.change.changeset.revision + '&review_id=' + @review.id.to_s
+      redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s
 
     end
   end
