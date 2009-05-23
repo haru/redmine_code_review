@@ -61,7 +61,7 @@ class CodeReviewController < ApplicationController
       end
       lang = current_language
       ReviewMailer.deliver_review_add(@project, @review)
-      set_language lang
+      set_language lang if respond_to? 'set_language'
       render :partial => 'add_success', :status => 220
       return
     else
@@ -136,7 +136,7 @@ class CodeReviewController < ApplicationController
     end
     lang = current_language
     ReviewMailer.deliver_review_reply(@project, @reply)
-    set_language lang
+    set_language lang if respond_to? 'set_language'
     @reply = nil
     @notice = l(:notice_review_updated)
     render :partial => 'show'
@@ -185,7 +185,7 @@ class CodeReviewController < ApplicationController
     @review.save!
     lang = current_language
     ReviewMailer.deliver_review_status_changed(@project, closed_message)
-    set_language lang
+    set_language lang if respond_to? 'set_language'
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
@@ -210,7 +210,7 @@ class CodeReviewController < ApplicationController
     @review.save
     lang = current_language
     ReviewMailer.deliver_review_status_changed(@project, reopen_message)
-    set_language lang
+    set_language lang if respond_to? 'set_language'
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
