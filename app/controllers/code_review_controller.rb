@@ -130,8 +130,10 @@ class CodeReviewController < ApplicationController
     @parent.children << @reply
     if (!@parent.save)
       @review = CodeReview.find(@review.id)
-    end
+    end    
     ReviewMailer.deliver_review_reply(@project, @reply)
+    @reply = nil
+    @notice = l(:notice_review_updated)
     render :partial => 'show'
   end
 
@@ -142,6 +144,7 @@ class CodeReviewController < ApplicationController
       @review.lock_version = params[:review][:lock_version].to_i
       @review.updated_by_id = @user.id
       @review.save
+      @notice = l(:notice_review_updated)
       render :partial => 'show'
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception
