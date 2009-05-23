@@ -90,6 +90,14 @@ class CodeReview < ActiveRecord::Base
     list.pop
   end
 
+  def users
+    return @users if @users
+    @users = [user]
+    children.each{|child|
+      @users << child.user
+    }
+    @users
+  end
 
   def path
     begin

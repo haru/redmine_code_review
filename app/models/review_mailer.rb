@@ -32,6 +32,23 @@ class ReviewMailer < Mailer
          :review_url => url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
   end
   
-  
+  def review_reply(project, review)
+    redmine_headers 'Project' => review.project.identifier,
+      'Review-Id' => review.id,
+      'Review-Author' => review.user.login
+
+    mail_addresses = []
+    review.root.users.each{|u|
+      mail_addresses << u.mail
+    }
+    mail_addresses << review.change.changeset.user.mail if review.change.changeset.user
+
+    recipients mail_addresses.compact.uniq
+
+    subject "[#{review.project.name} - Updated - #{l(:label_review)}##{review.root.id}] "
+    body :review => review,
+      :review_url => url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
+
+  end
   
 end

@@ -16,20 +16,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-Review #<%= @review.id%>  has been reported by Redmine Admin.
+Review #<%= @review.root.id%> has been updated by <%=h @review.user %>.
+
+<div class="wiki">
+<%= textilizable @review, :comment %>
+</div>
+<hr/>
 
 <h1>
 <a href="<%= @review_url %>">
-  <%=h l(:label_review) %>#<%= @review.id %>
+  <%=h l(:label_review) %>#<%= @review.root.id %>
 </a>
 </h1>
 
 <ul>
-<li><%=l(:label_code_reviewer)%>: <%= @review.user %></li>
-<li>Path: <%= @review.path %></li>
-<li><%=l(:label_revision)%>: <%= @review.revision %></li>
-<li><%=l(:label_code_author)%>: <%= @review.committer %></li>
+  <li><%=l(:label_code_reviewer)%>: <%= @review.root.user %></li>
+<li>Path: <%= @review.root.path %></li>
+<li><%=l(:label_revision)%>: <%= @review.root.revision %></li>
+<li><%=l(:label_code_author)%>: <%= @review.root.committer %></li>
 </ul>
+
 <div class="wiki">
-<%= textilizable @review, :comment %>
+<%= textilizable @review.root, :comment %>
 </div>

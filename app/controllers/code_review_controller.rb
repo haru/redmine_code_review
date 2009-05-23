@@ -131,6 +131,7 @@ class CodeReviewController < ApplicationController
     if (!@parent.save)
       @review = CodeReview.find(@review.id)
     end
+    ReviewMailer.deliver_review_reply(@project, @reply)
     render :partial => 'show'
   end
 
