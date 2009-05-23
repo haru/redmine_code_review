@@ -59,7 +59,9 @@ class CodeReviewController < ApplicationController
         render :partial => 'new_form', :status => 250
         return
       end
+      lang = current_language
       ReviewMailer.deliver_review_add(@project, @review)
+      set_language lang
       render :partial => 'add_success', :status => 220
       return
     else
@@ -131,8 +133,10 @@ class CodeReviewController < ApplicationController
     @parent.children << @reply
     if (!@parent.save)
       @review = CodeReview.find(@review.id)
-    end    
+    end
+    lang = current_language
     ReviewMailer.deliver_review_reply(@project, @reply)
+    set_language lang
     @reply = nil
     @notice = l(:notice_review_updated)
     render :partial => 'show'
@@ -179,7 +183,9 @@ class CodeReviewController < ApplicationController
     @review.close
     @review.updated_by_id = @user.id
     @review.save!
+    lang = current_language
     ReviewMailer.deliver_review_status_changed(@project, closed_message)
+    set_language lang
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
@@ -202,7 +208,9 @@ class CodeReviewController < ApplicationController
     @review.reopen
     @review.updated_by_id = @user.id
     @review.save
+    lang = current_language
     ReviewMailer.deliver_review_status_changed(@project, reopen_message)
+    set_language lang
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
