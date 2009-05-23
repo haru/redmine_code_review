@@ -119,8 +119,6 @@ class CodeReview < ActiveRecord::Base
     end
   end
 
-  private
-
   def change
     @change ||= Change.find(change_id)
   end

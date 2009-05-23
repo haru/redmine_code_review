@@ -58,6 +58,7 @@ class CodeReviewController < ApplicationController
         render :partial => 'new_form', :status => 250
         return
       end
+      ReviewMailer.deliver_review_add(@project, @review)
       render :partial => 'add_success', :status => 220
       return
     else

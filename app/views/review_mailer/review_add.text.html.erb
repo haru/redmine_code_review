@@ -1,0 +1,18 @@
+
+Review #<%= @review.id%>  has been reported by Redmine Admin.
+
+<h1>
+<a href="<%= @review_url %>">
+  <%=h l(:label_review) %>#<%= @review.id %>
+</a>
+</h1>
+
+<ul>
+<li><%=l(:label_code_reviewer)%>: <%= @review.user %></li>
+<li>Path: <%= @review.path %></li>
+<li><%=l(:label_revision)%>: <%= @review.revision %></li>
+<li><%=l(:label_code_author)%>: <%= @review.committer %></li>
+</ul>
+<div class="wiki">
+<%= textilizable @review, :comment %>
+</div>
