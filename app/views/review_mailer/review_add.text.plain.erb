@@ -1,0 +1,9 @@
+Review #<%= @review.id%>  has been reported by Redmine Admin.
+<%= @review_url %>
+
+<%=l(:label_code_reviewer)%>: <%= @review.user %>
+Path: <%= @review.path %>
+<%=l(:label_revision)%>: <%= @review.revision %>
+<%=l(:label_code_author)%>: <%= @review.committer %>
+
+<%=h @review.comment %>
