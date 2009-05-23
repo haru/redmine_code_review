@@ -99,3 +99,8 @@ table.filecontent th.line-num img{
     background-image: url(../images/review.png);
     background-repeat: no-repeat;
 }
+
+.icon-settings {
+    background-image: url(../../../images/changeset.png);
+    background-repeat: no-repeat;
+}
