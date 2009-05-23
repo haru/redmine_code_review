@@ -25,8 +25,13 @@ Review #<%= @review.root.id%> has been updated by <%=h @review.user %>.
       status_from = l(:label_review_open) if @review.status_changed_from == CodeReview::STATUS_OPEN
       status_to = l(:label_review_closed) if @review.status_changed_to == CodeReview::STATUS_CLOSED
       status_to = l(:label_review_open) if @review.status_changed_to == CodeReview::STATUS_OPEN
+      if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+        status_changed_message = l(:text_journal_changed, status_from, status_to)
+      else
+        status_changed_message = l(:text_journal_changed, :old => status_from, :new => status_to)
+      end
     %>
-    <%=h l(:text_journal_changed, status_from, status_to) %>
+    <%=h status_changed_message %>
   </li>
 </ul>
 

@@ -30,6 +30,19 @@ class ReviewMailer < Mailer
     subject "[#{review.project.name} - #{l(:label_review_new)} - #{l(:label_review)}##{review.id}] "
     body :review => review,
          :review_url => url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
+
+    return if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+    # 何故かrails 2.2 以後は以下の処理が必要
+    
+    content_type "multipart/alternative"
+
+    part "text/plain" do |p|
+      p.body = render_message("review_add.text.plain.erb", :body => body, :review=>review, :review_url => review_url)
+    end
+
+    part "text/html" do |p|
+      p.body = render_message("review_add.text.html.erb", :body => body, :review=>review, :review_url => review_url)
+    end
   end
   
   def review_reply(project, review)
@@ -46,8 +59,21 @@ class ReviewMailer < Mailer
     recipients mail_addresses.compact.uniq
 
     subject "[#{review.project.name} - Updated - #{l(:label_review)}##{review.root.id}] "
-    body :review => review,
-      :review_url => url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
+    review_url = url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
+    body :review => review, :review_url => review_url
+
+    return if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+    # 何故かrails 2.2 以後は以下の処理が必要
+    
+    content_type "multipart/alternative"
+
+    part "text/plain" do |p|
+      p.body = render_message("review_reply.text.plain.erb", :body => body, :review=>review, :review_url => review_url)
+    end
+
+    part "text/html" do |p|
+      p.body = render_message("review_reply.text.html.erb", :body => body, :review=>review, :review_url => review_url)
+    end
 
   end
 
@@ -71,7 +97,18 @@ class ReviewMailer < Mailer
     body :review => review,
       :review_url => url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
 
+    return if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+    # 何故かrails 2.2 以後は以下の処理が必要
+    
+    content_type "multipart/alternative"
 
+    part "text/plain" do |p|
+      p.body = render_message("review_status_changed.text.plain.erb", :body => body, :review=>review)
+    end
+
+    part "text/html" do |p|
+      p.body = render_message("review_status_changed.text.html.erb", :body => body, :review=>review)
+    end
   end
   
 end
