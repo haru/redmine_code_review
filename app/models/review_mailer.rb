@@ -21,11 +21,8 @@ class ReviewMailer < Mailer
     redmine_headers 'Project' => review.project.identifier,
                     'Review-Id' => review.id,
                     'Review-Author' => review.user.login
-    
-    mail_addresses = [ review.user.mail ]
-    mail_addresses << review.change.changeset.user.mail if review.change.changeset.user
-    
-    recipients mail_addresses.compact.uniq
+        
+    recipients get_mail_addresses(review)
 
     subject "[#{review.project.name} - #{l(:label_review_new)} - #{l(:label_review)}##{review.id}] "
     body :review => review,
@@ -50,13 +47,7 @@ class ReviewMailer < Mailer
       'Review-Id' => review.id,
       'Review-Author' => review.user.login
 
-    mail_addresses = []
-    review.root.users.each{|u|
-      mail_addresses << u.mail
-    }
-    mail_addresses << review.change.changeset.user.mail if review.change.changeset.user
-
-    recipients mail_addresses.compact.uniq
+    recipients recipients get_mail_addresses(review)
 
     subject "[#{review.project.name} - Updated - #{l(:label_review)}##{review.root.id}] "
     review_url = url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
@@ -82,13 +73,7 @@ class ReviewMailer < Mailer
       'Review-Id' => review.id,
       'Review-Author' => review.user.login
 
-    mail_addresses = []
-    review.root.users.each{|u|
-      mail_addresses << u.mail
-    }
-    mail_addresses << review.change.changeset.user.mail if review.change.changeset.user
-
-    recipients mail_addresses.compact.uniq
+    recipients recipients get_mail_addresses(review)
 
     new_status = l(:label_review_open) if review.status_changed_to == CodeReview::STATUS_OPEN
     new_status = l(:label_review_closed) if review.status_changed_to == CodeReview::STATUS_CLOSED
@@ -109,6 +94,27 @@ class ReviewMailer < Mailer
     part "text/html" do |p|
       p.body = render_message("review_status_changed.text.html.erb", :body => body, :review=>review)
     end
+  end
+
+  def get_mail_addresses(review)
+    mail_addresses = []
+    review.root.users_for_notification.each{|u|
+      mail_addresses << u.mail
+    }
+    committer = review.change.changeset.user
+    if committer
+      setting = CodeReviewUserSetting.find_by_user_id(committer.id)
+      mail_addresses << committer.mail if setting and !setting.mail_notification_none?
+    end
+
+    review.project.members.each{|member|
+      user = member.user
+      setting = CodeReviewUserSetting.find_by_user_id(user.id)
+      next unless setting
+      mail_addresses << committer.mail if setting.mail_notification_all?
+    }
+    mail_addresses.compact.uniq
+
   end
   
 end

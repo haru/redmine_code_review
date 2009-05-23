@@ -99,6 +99,18 @@ class CodeReview < ActiveRecord::Base
     @users
   end
 
+  def users_for_notification
+    return @users_for_notification if @users_for_notification
+    @users_for_notification = []
+    users.each {|user|
+      setting = CodeReviewUserSetting.find_by_user_id(user.id)
+      next unless setting
+      next if setting.mail_notification == CodeReviewUserSetting::NOTIFCIATION_NONE
+      @users_for_notification << user
+    }
+    @users_for_notification
+  end
+
   def path
     begin
       return @path if @path
