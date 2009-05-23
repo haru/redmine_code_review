@@ -22,3 +22,5 @@ en:
   label_show_closed_reviews: Show closed reviews.
   label_review: review
   label_review_new: New Review
+  review_notify_only_involved_in: "Only for things I'm involved in"
+  review_notify_all: "For any review on all my projects"

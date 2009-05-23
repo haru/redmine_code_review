@@ -43,6 +43,7 @@ class CodeReviewController < ApplicationController
       :limit  =>  limit,
       :joins => 'left join changes on change_id = changes.id  left join changesets on changes.changeset_id = changesets.id',
       :offset =>  @review_pages.current.offset
+    @i_am_member = am_i_member?
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?
   end
 
@@ -218,5 +219,11 @@ class CodeReviewController < ApplicationController
     @user = User.current
   end
 
- 
+
+  def am_i_member?
+    @project.members.each{|m|
+      return true if @user == m.user
+    }
+    return false
+  end
 end

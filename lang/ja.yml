@@ -21,3 +21,5 @@ notice_review_updated: レビューが更新されました。
 label_show_closed_reviews: 完了したレビューも表示する。
 label_review: レビュー
 label_review_new: レビューが追加されました。
+review_notify_only_involved_in: 自分が関係しているレビューだけ
+review_notify_all: 自分のプロジェクトのレビューはすべて
