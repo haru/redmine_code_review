@@ -178,6 +178,7 @@ class CodeReviewController < ApplicationController
     @review.close
     @review.updated_by_id = @user.id
     @review.save!
+    ReviewMailer.deliver_review_status_changed(@project, closed_message)
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
@@ -200,6 +201,7 @@ class CodeReviewController < ApplicationController
     @review.reopen
     @review.updated_by_id = @user.id
     @review.save
+    ReviewMailer.deliver_review_status_changed(@project, reopen_message)
     @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
