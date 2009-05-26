@@ -19,8 +19,11 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
   def view_layouts_base_html_head(context = {})
     project = context[:project]
+    return '' unless project
     controller = context[:controller]
+    return '' unless controller
     action_name = controller.action_name
+    return '' unless action_name
     baseurl = url_for(:controller => 'code_review', :action => 'index', :id => project) + '/../../..'
 
     if (controller.class.name == 'ProjectsController' and action_name == 'activity')
@@ -29,7 +32,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       return o
     end
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
-      return
+      return ''
     end
     
     return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
@@ -47,11 +50,14 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
   
   def view_layouts_base_body_bottom(context = { })
     project = context[:project]
+    return '' unless project
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
-      return
+      return ''
     end
     controller = context[:controller]
+    return '' unless controller
     action_name = controller.action_name
+    return '' unless action_name
     return '' unless (controller.class.name == 'RepositoriesController' and action_name == 'diff')
     request = context[:request]
     parameters = request.parameters
