@@ -1,0 +1,25 @@
+label_add_review: Adicionar revisão
+label_show_review: Visualizar revisão
+code_reviews: Revisões de código
+code_review: Revisão de código
+project_module_code_review: Revisões de código
+label_code_path: Caminho
+label_code_reviewer: Revisor
+label_code_author: Committer
+label_code_line: Linha
+
+label_review_open: Aberto
+label_review_closed: Fechado
+
+label_reopen_review: Reabrir essa revisão
+label_close_review: Fechar essa revisão
+
+label_code_review_plural: Revisões de código
+
+label_line_number: 'Linha: %d'
+notice_review_updated: Revisão atualizada com sucesso.
+label_show_closed_reviews: Exibir revisões fechadas.
+label_review: revisão
+label_review_new: Nova revisão
+review_notify_only_involved_in: "Somentes as revisões em que eu estou envolvido"
+review_notify_all: "Para qualquer revisão em todos os meus projetos"
