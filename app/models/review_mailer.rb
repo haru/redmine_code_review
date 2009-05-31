@@ -113,7 +113,7 @@ class ReviewMailer < Mailer
       user = member.user
       setting = CodeReviewUserSetting.find_by_user_id(user.id)
       next unless setting
-      mail_addresses << committer.mail if setting.mail_notification_all?
+      mail_addresses << user.mail if setting.mail_notification_all?
     }
     mail_addresses.compact.uniq
 
