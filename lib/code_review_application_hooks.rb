@@ -65,6 +65,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     review_id = parameters['review_id']
     rev = parameters['rev']
     patharray = parameters['path']
+    return if patharray.blank? or patharray.empty?
     path = ''
     patharray.each{|el| path << '/' + el}
     path = url_encode(path)
