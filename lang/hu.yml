@@ -1,0 +1,25 @@
+label_add_review: Új észrevétel
+label_show_review: Részletek
+code_reviews: Kódszemlék
+code_review: Felülvizsgálat
+project_module_code_review: Code reviews
+label_code_path: Elérési út
+label_code_reviewer: Felülvizsgáló
+label_code_author: Szerző
+label_code_line: Sorszám
+
+label_review_open: Nyitott
+label_review_closed: Zárt
+
+label_reopen_review: Vizsgálat újra megnyitása
+label_close_review: Vizsgálat lezárása
+
+label_code_review_plural: Kódszemlék
+
+label_line_number: 'Sor: %d'
+notice_review_updated: A vizsgálat adatai sikeresen frissültek.
+label_show_closed_reviews: Lezárt vizsgálatok megjelenítése
+label_review: vizsgálat
+label_review_new: Új felülvizsgálat
+review_notify_only_involved_in: "Csak amiben részt veszek"
+review_notify_all: "Bármelyik projektemben lévőnél"
