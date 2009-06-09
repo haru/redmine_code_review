@@ -87,14 +87,22 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly){
 
 var showReviewUrl = null;
 var showReviewImageTag = null;
+var showClosedReviewImageTag = null;
 
-function setShowReviewButton(line, review_id) {
+function setShowReviewButton(line, review_id, is_closed) {
   var span = $('review_span_' + line);
   var innerSpan = new Element('span');
   //alert('review_id = ' + review_id);
   innerSpan.id = 'review_' + review_id;
   span.insert(innerSpan);
-  innerSpan.innerHTML = showReviewImageTag;
+  if (is_closed) {
+      innerSpan.innerHTML = showClosedReviewImageTag;
+
+  }
+  else {
+      innerSpan.innerHTML = showReviewImageTag;
+  }
+  
   var div = new Element('div', {style:'position:absolute; display:none;', 'class':'draggable'});
   div.id = 'show_review_' + review_id;
   $('code_review').insert(div);
@@ -235,4 +243,20 @@ function deleteReview(review_id) {
     $('show_review_' + review_id).remove();
     $('review_' + review_id).remove();
     setDraggables();
+}
+
+function changeImage(review_id, is_closed) {
+    var span = $('review_' + review_id);
+    var new_image = null;
+    var dummy = new Element('span');
+    if (is_closed) {       
+        dummy.insert(showClosedReviewImageTag);
+    }
+    else {
+        dummy.insert(showReviewImageTag);        
+    }
+    new_image = dummy.down().getAttribute('src');
+    //alert(new_image);
+    span.down('img').setAttribute('src', new_image);
+
 }

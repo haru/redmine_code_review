@@ -20,7 +20,14 @@
 <div class="code-review-form-title drag-handle" >
   <table border="0" width="100%" class="header_table">
     <tr>
-      <td><span class="icon icon-review"><%=h l(:code_review) %> #<%=@review.id %></span></td>
+      <%
+         if (@review.is_closed?)
+           image_class = 'icon-closed-review'
+         else
+           image_class = 'icon-review'
+         end
+      -%>
+      <td><span class="icon <%= image_class%>"><%=h l(:code_review) %> #<%=@review.id %></span></td>
       <td align="right">
         <%= link_to_function image_tag('close.png'), "$('show_review_#{@review.id}').hide();" %>
       </td>
@@ -73,7 +80,7 @@
         <td>
         <%= link_to_remote l(:label_reopen_review), :update => "show_review_#{@review.id}",
           :url => {:controller => 'code_review', :action => 'reopen', :id => @project, :review_id => @review},
-          :success => "setDraggables()"  if authorize_for('code_review', 'reopen')%>
+          :success => "setDraggables();changeImage(#{@review.id}, false);"  if authorize_for('code_review', 'reopen')%>
         </td>
       <% else -%>
         <td style="width:20%" class="status">
@@ -81,7 +88,9 @@
         </td>
         <td>
         <%= link_to_remote l(:label_close_review), :update => "show_review_#{@review.id}",
-          :url => {:controller => 'code_review', :action => 'close', :id => @project, :review_id => @review}if authorize_for('code_review', 'close') %>
+          :url => {:controller => 'code_review', :action => 'close', :id => @project, :review_id => @review},
+          :success => "changeImage(#{@review.id}, true)" if authorize_for('code_review', 'close') %>
+          
         </td>
       <% end -%>
 

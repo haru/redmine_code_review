@@ -35,8 +35,10 @@
 
   showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
   showReviewImageTag = '<%= image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
+  showClosedReviewImageTag = '<%= image_tag('closed_review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
+
   <% for review in @reviews do %>
-    setShowReviewButton(<%= review.line %>, <%= review.id %>);
+    setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed?%> );
   <% end %>
   setDraggables();
   <% if @show_review_id -%>
