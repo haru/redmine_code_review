@@ -16,21 +16,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-<% if reply.status_changed_from == nil %>
 <p class="author">
 
         <%= authoring reply.created_at, reply.user %>.
-        <%= l(:label_updated_time, distance_of_time_in_words(Time.now, reply.updated_at)) + '.' if reply.created_at != reply.updated_at %>
-</p>
+       </p>
+<% if reply.status_changed_from != nil and  reply.status_changed_from != reply.status_changed_to%>
 
-<div class="wiki">
-          <%= avatar(reply.user, :size => "32") %><%= textilizable reply, :comment %>
-  </div>
-
-<%= render :partial => 'reply', :collection => reply.children.sort{|a, b| a.id <=> b.id} %>
-<% else %>
 <p class="author">
-  <%= authoring reply.created_at, reply.user %>.
+ 
 </p>
 <%
   if (reply.status_changed_from == CodeReview::STATUS_CLOSED)
@@ -58,4 +51,14 @@
   </li>
 </ul>
 <% end %>
+
+ <%= l(:label_updated_time, distance_of_time_in_words(Time.now, reply.updated_at)) + '.' if reply.created_at != reply.updated_at %>
+
+<div class="wiki">
+          <%= avatar(reply.user, :size => "32") %><%= textilizable reply, :comment %>
+  </div>
+
+<%= render :partial => 'reply', :collection => reply.children.sort{|a, b| a.id <=> b.id} %>
+
+
 <hr/>

@@ -124,6 +124,15 @@ class CodeReviewController < ApplicationController
     @review = @parent.root
     comment = params[:reply][:comment]
     @reply = CodeReview.new
+    newstatus = params[:review][:status].to_i if params[:review] and params[:review][:status]
+
+    status_changed = nil
+    if (@review.status != newstatus)
+      @reply.status_changed_from = @review.status
+      @reply.status_changed_to = newstatus
+      @review.status = newstatus
+      status_changed = true
+    end    
     @reply.user_id = @user.id
     @reply.updated_by_id = @user.id
     @reply.project_id = @project.id
@@ -131,14 +140,20 @@ class CodeReviewController < ApplicationController
     @reply.comment = comment
     @reply.line = @review.line
     @parent.children << @reply
-    if (!@parent.save)
+    if (@parent.save)
+      @notice = l(:notice_review_updated)
+      lang = current_language
+      if status_changed
+        ReviewMailer.deliver_review_status_changed(@project, @reply)
+      else
+        ReviewMailer.deliver_review_reply(@project, @reply)
+      end
+      
+      set_language lang if respond_to? 'set_language'
+      @reply = nil
+    else
       @review = CodeReview.find(@review.id)
     end
-    lang = current_language
-    ReviewMailer.deliver_review_reply(@project, @reply)
-    set_language lang if respond_to? 'set_language'
-    @reply = nil
-    @notice = l(:notice_review_updated)
     render :partial => 'show'
   end
 
@@ -148,8 +163,9 @@ class CodeReviewController < ApplicationController
       @review.comment = params[:review][:comment]
       @review.lock_version = params[:review][:lock_version].to_i
       @review.updated_by_id = @user.id
-      @review.save
-      @notice = l(:notice_review_updated)
+      if @review.save
+        @notice = l(:notice_review_updated)
+      end
       render :partial => 'show'
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception

@@ -30,6 +30,8 @@ Review #<%= @review.root.id%> has been updated by <%=h @review.user %>.
       end
     -%>
 <%= status_changed_message %>
+
+<%= @review.comment %>
 --
 <%= @review_url %>
 

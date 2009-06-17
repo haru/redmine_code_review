@@ -16,14 +16,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require 'redmine'
 require 'code_review_application_hooks'
-
+require 'code_review_change_patch'
+require 'code_review_changeset_patch'
 
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.1.6.0'
+  version '0.1.7'
   requires_redmine :version_or_higher => '0.8.0'
 
   project_module :code_review do

@@ -107,6 +107,7 @@
   :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
   :update => "show_review_#{@review.id}" do |f|  %>
 <%= f.hidden_field :lock_version %>
+    
 <p>
   <%= f.text_area :comment,
                    :cols => 30,
@@ -140,6 +141,14 @@
 <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
 <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :parent_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
   <%= hidden_field_tag :parent_id, @review.id %>
+  <%  if authorize_for('code_review', 'reopen')%>
+  <p>
+      <label>
+        <%=h l(:field_status) %>:
+      </label>
+      <%= select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
+    </p>
+    <% end %>
 <p>
   <%= f.text_area :comment,
                    :cols => 30,

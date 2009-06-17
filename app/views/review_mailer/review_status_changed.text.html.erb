@@ -35,6 +35,10 @@ Review #<%= @review.root.id%> has been updated by <%=h @review.user %>.
   </li>
 </ul>
 
+<div class="wiki">
+<%= textilizable @review, :comment %>
+</div>
+
 <hr/>
 
 <h1>
