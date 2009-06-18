@@ -105,13 +105,13 @@ class ReviewMailer < Mailer
     }
     committer = review.change.changeset.user
     if committer
-      setting = CodeReviewUserSetting.find_by_user_id(committer.id)
+      setting = CodeReviewUserSetting.find_or_create(committer.id)
       mail_addresses << committer.mail if setting and !setting.mail_notification_none?
     end
 
     review.project.members.each{|member|
       user = member.user
-      setting = CodeReviewUserSetting.find_by_user_id(user.id)
+      setting = CodeReviewUserSetting.find_or_create(user.id)
       next unless setting
       mail_addresses << user.mail if setting.mail_notification_all?
     }

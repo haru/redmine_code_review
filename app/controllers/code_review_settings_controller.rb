@@ -11,12 +11,8 @@ class CodeReviewSettingsController < ApplicationController
       return
     end
 
-    @setting = CodeReviewUserSetting.find_by_user_id(@user.id)
-    unless @setting
-      @setting = CodeReviewUserSetting.new
-      @setting.user_id = @user.id
-      @setting.mail_notification = CodeReviewUserSetting::NOTIFCIATION_NONE
-    end
+    @setting = CodeReviewUserSetting.find_or_create(@user.id)
+    
   end
 
 
