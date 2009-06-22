@@ -1,0 +1,26 @@
+label_add_review: 添加评审
+label_show_review: 查看评审
+code_reviews: 代码评审
+code_review: 代码评审
+project_module_code_review: 代码评审
+label_code_path: 路径
+  
+label_code_reviewer: 评审者
+label_code_author: 提交者
+label_code_line: 代码行
+
+label_review_open: 打开
+label_review_closed: 关闭
+
+label_reopen_review: 重新打开评审
+label_close_review: 关闭评审
+
+label_code_review_plural: 代码评审
+
+label_line_number: '行号: %d'
+notice_review_updated: 评审更新成功
+label_show_closed_reviews: 显示已关闭评审
+label_review: 评审
+label_review_new: 添加评审
+review_notify_only_involved_in: "仅包含我参加的工作"
+review_notify_all: "所有我参加项目的评论"
