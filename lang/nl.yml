@@ -1,0 +1,26 @@
+
+label_add_review: Review toevoegen
+label_show_review: Bekijk review
+code_reviews: Code reviews
+code_review: Code review
+project_module_code_review: Code reviews
+label_code_path: Path
+label_code_reviewer: Reviewer
+label_code_author: Committer
+label_code_line: Regel
+
+label_review_open: Open
+label_review_closed: Gesloten
+
+label_reopen_review: Heropen dit review
+label_close_review: Sluit dit review
+
+label_code_review_plural: Code reviews
+
+label_line_number: 'Regel: %d'
+notice_review_updated: Review was succesvol geupdate.
+label_show_closed_reviews: Toon gesloten reviews.
+label_review: review
+label_review_new: Nieuw review
+review_notify_only_involved_in: "Alleen reviews waarbij ik betrokken ben"
+review_notify_all: "Voor ieder review voor al mijn projecten"
