@@ -10,7 +10,7 @@ class CodeReviewUserSetting < ActiveRecord::Base
   NOTIFICATION_ALL = 2
 
   def CodeReviewUserSetting.find_or_create(uid)
-    setting = CodeReviewUserSetting.find_by_user_id(:first)
+    setting = CodeReviewUserSetting.find(:first, :conditions => ['user_id = ?', uid])
     return setting if setting
     setting = CodeReviewUserSetting.new
     setting.user_id = uid
