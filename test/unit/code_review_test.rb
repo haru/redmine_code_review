@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewTest < Test::Unit::TestCase
-  fixtures :code_reviews
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes
 
   # Create new object.
   def test_create
@@ -13,6 +13,7 @@ class CodeReviewTest < Test::Unit::TestCase
     code_review.change_id = 1;
     code_review.updated_by_id = 1;
 
+
     assert code_review.save
     code_review.destroy
   end
@@ -22,6 +23,19 @@ class CodeReviewTest < Test::Unit::TestCase
     assert !code_review.is_closed?
     code_review.close
     assert code_review.is_closed?
+  end
+
+  def test_reopen
+    code_review = newreview
+    code_review.close
+    assert code_review.is_closed?
+    code_review.reopen
+    assert !code_review.is_closed?
+  end
+
+  def test_committer
+    code_review = CodeReview.find(1)
+    assert_equal(3, code_review.committer.id)
   end
 
   private
