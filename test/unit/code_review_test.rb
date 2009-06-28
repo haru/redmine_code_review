@@ -38,6 +38,11 @@ class CodeReviewTest < Test::Unit::TestCase
     assert_equal(3, code_review.committer.id)
   end
 
+  def test_lastchild
+    code_review = CodeReview.find(1)
+    assert_equal(3, code_review.lastchild.id)
+  end
+
   private
   def newreview
     code_review = CodeReview.new
