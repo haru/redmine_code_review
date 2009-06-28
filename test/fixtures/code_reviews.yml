@@ -6,8 +6,6 @@ one:
 
   parent_id: 1
 
-  file_name: MyString
-
   created_at: 2009-04-11 22:09:57
 
   updated_at: 2009-04-11 22:09:57
@@ -22,8 +20,6 @@ two:
   project_id: 1
 
   parent_id: 1
-
-  file_name: MyString
 
   created_at: 2009-04-11 22:09:57
 
