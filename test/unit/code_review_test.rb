@@ -40,7 +40,13 @@ class CodeReviewTest < Test::Unit::TestCase
 
   def test_lastchild
     code_review = CodeReview.find(1)
-    assert_equal(3, code_review.lastchild.id)
+    assert_equal(4, code_review.lastchild.id)
+  end
+
+  def test_users
+    code_review = CodeReview.find(1)
+    users = code_review.users
+    assert_equal(3, users.length)
   end
 
   private

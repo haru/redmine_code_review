@@ -93,10 +93,10 @@ class CodeReview < ActiveRecord::Base
   def users
     return @users if @users
     @users = [user]
-    children.each{|child|
-      @users << child.user
-    }
-    @users
+    @users = @users + children.collect{|child|
+      child.user
+    }.uniq
+    
   end
 
   def users_for_notification
