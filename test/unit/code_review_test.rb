@@ -49,6 +49,16 @@ class CodeReviewTest < Test::Unit::TestCase
     assert_equal(3, users.length)
   end
 
+  def test_path
+    code_review = CodeReview.find(1)
+    assert_equal("/test/some/path/in/the/repo", code_review.path)
+  end
+
+  def test_revision
+    code_review = CodeReview.find(1)
+    assert_equal("1", code_review.revision)
+  end
+
   private
   def newreview
     code_review = CodeReview.new
