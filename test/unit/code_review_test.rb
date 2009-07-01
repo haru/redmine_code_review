@@ -59,6 +59,11 @@ class CodeReviewTest < Test::Unit::TestCase
     assert_equal("1", code_review.revision)
   end
 
+  def test_repository
+    code_review = CodeReview.find(1)
+    assert_equal(10, code_review.repository.id)
+  end
+
   private
   def newreview
     code_review = CodeReview.new
