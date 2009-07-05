@@ -26,11 +26,26 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  def test_index_show_closed
+    @request.session[:user_id] = 1
+    get :index, :id => 1, :show_closed => true
+    assert_response :success
+  end
+
   def test_new
     @request.session[:user_id] = 1
     get :new, :id => 1
     assert_response :success
     assert_template '_new_form'
 
+    post :new, :id => 1
+    assert_response :success
+    assert_template '_new_form'
+
+    count = CodeReview.find(:all).length
+    post :new, :id => 1, :review => {:line => 1, :change_id => 1, :comment => 'aaa'}
+    assert_response :success
+    assert_template '_add_success'
+    assert_equal(count + 1, CodeReview.find(:all).length)
   end
 end
