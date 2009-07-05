@@ -26,8 +26,8 @@ class CodeReviewController < ApplicationController
   include SortHelper
 
   def index
-    sort_init 'id', 'desc'
-    sort_update %w(id status path updated_at user_id changesets.committer changesets.revision)
+    sort_init 'code_reviews.id', 'desc'
+    sort_update %w(code_reviews.id status path updated_at user_id changesets.committer changesets.revision)
 
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
