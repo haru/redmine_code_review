@@ -98,4 +98,15 @@ class CodeReviewControllerTest < ActionController::TestCase
     review = CodeReview.find(1)
     assert !review.is_closed?
   end
+
+  def test_update
+    @request.session[:user_id] = 1
+    review = CodeReview.find(1)
+    assert_equal('Review 1', review.comment)
+    post :update, :id => 1, :review_id => 1,
+      :review => {:comment => 'bbb', :lock_version => review.lock_version}
+    assert_response :success
+    review = CodeReview.find(1)
+    assert_equal('bbb', review.comment)
+  end
 end
