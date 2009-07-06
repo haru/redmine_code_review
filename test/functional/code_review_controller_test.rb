@@ -75,8 +75,27 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_close
     @request.session[:user_id] = 1
+    review = CodeReview.find(1)
+    review.reopen
+    review.save
+    assert !review.is_closed?
     get :close, :id => 1, :review_id => 1
     assert_response :success
     assert_template '_show'
+    review = CodeReview.find(1)
+    assert review.is_closed?
+  end
+
+  def test_reopen
+    @request.session[:user_id] = 1
+    review = CodeReview.find(1)
+    review.close
+    review.save
+    assert review.is_closed?
+    get :reopen, :id => 1, :review_id => 1
+    assert_response :success
+    assert_template '_show'
+    review = CodeReview.find(1)
+    assert !review.is_closed?
   end
 end
