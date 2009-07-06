@@ -21,7 +21,7 @@ class CodeReview < ActiveRecord::Base
   unloadable
   belongs_to :project
   belongs_to :user
-  #belongs_to :change
+  belongs_to :change
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   acts_as_tree
 
@@ -137,10 +137,6 @@ class CodeReview < ActiveRecord::Base
       changeset.revision
     rescue
     end
-  end
-
-  def change
-    @change ||= Change.find(change_id)
   end
 
   def changeset

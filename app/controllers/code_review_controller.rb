@@ -41,7 +41,8 @@ class CodeReviewController < ApplicationController
     @reviews = CodeReview.find :all, :order => sort_clause,
       :conditions => ['project_id = ? and parent_id is NULL' + show_closed_option, @project.id],
       :limit  =>  limit,
-      :joins => 'left join changes on change_id = changes.id  left join changesets on changes.changeset_id = changesets.id',
+      :include => [:change => :changeset],
+      #:joins => 'left join changes on change_id = changes.id  left join changesets on changes.changeset_id = changesets.id',
       :offset =>  @review_pages.current.offset
     @i_am_member = am_i_member?
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?
