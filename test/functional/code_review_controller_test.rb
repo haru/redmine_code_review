@@ -64,4 +64,19 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_equal(count - 1, CodeReview.find(:all).length)
     
   end
+
+  def test_reply
+    @request.session[:user_id] = 1
+    get :reply, :id => 1, :parent_id => 1,
+      :reply => {:comment => 'aaa'}
+    assert_response :success
+    assert_template '_show'
+  end
+
+  def test_close
+    @request.session[:user_id] = 1
+    get :close, :id => 1, :review_id => 1
+    assert_response :success
+    assert_template '_show'
+  end
 end
