@@ -1,0 +1,26 @@
+ko:
+  label_add_review: 리뷰 작성
+  label_show_review: 리뷰 보기
+  code_reviews: 코드 리뷰
+  code_review: 코드 리뷰
+  project_module_code_review: 코드 리뷰
+  label_code_path: 경로
+  label_code_reviewer: 리뷰어
+  label_code_author: 커미터
+  label_code_line: 라인
+
+  label_review_open: 열림
+  label_review_closed: 닫힘
+
+  label_reopen_review: 리뷰 다시 열기
+  label_close_review: 리뷰 닫기
+
+  label_code_review_plural: 코드 리뷰
+
+  label_line_number: '라인: %d'
+  notice_review_updated: 리뷰가 성공적으로 업데이트 되었습니다.
+  label_show_closed_reviews: 닫힌 리뷰 보기
+  label_review: 리뷰
+  label_review_new: 새 리뷰
+  review_notify_only_involved_in: "내가 참여하는 프로젝트의 리뷰만"
+  review_notify_all: "모든 프로젝트의 리뷰"
