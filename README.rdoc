@@ -1,3 +1,28 @@
-= code_review
+= Redmine Code Review Plugin
 
-Description goes here
+This is a plugin for Redmine which lets you annotate source code within the repository browser.
+
+http://www.r-labs.org/wiki/r-labs/Code_Review
+
+=== Plugin installation
+
+1. Copy the plugin directory into the vendor/plugins directory
+
+2. Migrate plugin:
+   rake db:migrate_plugins RAILS_ENV=production
+
+3. Start Redmine
+
+4. Add code review module into your project.
+
+=== Language contributors
+
+de.yml - Michael Diederich
+fr.yml - Thomas M
+hu.yml - Péter Major
+ko.yml - Ki-yong Kim
+nl.yml - Stefan Verstege
+pt-br.yml - Alessandro Hecht
+zh.yml - Marshall Wu
+
+
