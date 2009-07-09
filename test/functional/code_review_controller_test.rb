@@ -109,4 +109,13 @@ class CodeReviewControllerTest < ActionController::TestCase
     review = CodeReview.find(1)
     assert_equal('bbb', review.comment)
   end
+
+  def test_update_diff_view
+    @request.session[:user_id] = 1
+    review = CodeReview.find(1)
+    assert_equal('Review 1', review.comment)
+    post :update_diff_view, :id => 1, :review_id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'
+    assert_response :success
+    review = CodeReview.find(1)
+  end
 end
