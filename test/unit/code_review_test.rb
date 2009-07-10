@@ -74,4 +74,11 @@ class CodeReviewTest < Test::Unit::TestCase
     code_review.updated_by_id = 1;
     return code_review
   end
+
+  def test_is_closed?
+    review = CodeReview.find(1)
+    assert !review.is_closed?
+    review = CodeReview.find(4)
+    assert review.is_closed?
+  end
 end
