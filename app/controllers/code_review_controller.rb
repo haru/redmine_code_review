@@ -26,8 +26,8 @@ class CodeReviewController < ApplicationController
   include SortHelper
 
   def index
-    sort_init 'code_reviews.id', 'desc'
-    sort_update %w(code_reviews.id status path updated_at user_id changesets.committer changesets.revision)
+    sort_init "#{CodeReview.table_name}.id", 'desc'
+    sort_update ["#{CodeReview.table_name}.id", "status", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
@@ -41,7 +41,7 @@ class CodeReviewController < ApplicationController
     @reviews = CodeReview.find :all, :order => sort_clause,
       :conditions => ['project_id = ? and parent_id is NULL' + show_closed_option, @project.id],
       :limit  =>  limit,
-      :joins => 'left join changes on change_id = changes.id  left join changesets on changes.changeset_id = changesets.id',
+      :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id",
       :offset =>  @review_pages.current.offset
     @i_am_member = am_i_member?
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?

@@ -42,7 +42,7 @@
   <thead>
     <tr>
       <th>
-        <%= sort_header_tag('code_reviews.id', :caption => '#') %>
+        <%= sort_header_tag("#{CodeReview.table_name}.id", :caption => '#') %>
       </th>
       <th>
         <%= sort_header_tag 'status', :caption => l(:field_status)%>
@@ -54,10 +54,10 @@
         <%=h l(:label_code_line)%>
       </th>
       <th>
-        <%= sort_header_tag 'changesets.revision', :caption => l(:label_revision)%>
+        <%= sort_header_tag "#{Changeset.table_name}.revision", :caption => l(:label_revision)%>
       </th>
       <th>
-        <%= sort_header_tag 'changesets.committer', :caption => l(:label_code_author)%>
+        <%= sort_header_tag "#{Changeset.table_name}.committer", :caption => l(:label_code_author)%>
       </th>
       <th>
         <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
