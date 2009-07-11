@@ -9,10 +9,6 @@ class CodeReviewChangePatchTest < Test::Unit::TestCase
   end
 
   def test_open_review_count
-   
-    review = CodeReview.find(4)
-    review.close
-    review.save
     change = Change.find(1)
     assert_equal(1, change.open_review_count)
   end
