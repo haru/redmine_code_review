@@ -128,40 +128,13 @@ class CodeReviewController < ApplicationController
   end
 
   def reply
-    @parent = CodeReview.find(params[:parent_id].to_i)
-    @review = @parent.root
+    @review = CodeReview.find(params[:review_id].to_i)
+    issue = @review.issue
+    
     comment = params[:reply][:comment]
-    @reply = CodeReview.new
-    newstatus = params[:review][:status].to_i if params[:review] and params[:review][:status]
-
-    status_changed = nil
-    if (@review.status != newstatus)
-      @reply.status_changed_from = @review.status
-      @reply.status_changed_to = newstatus
-      @review.status = newstatus
-      status_changed = true
-    end    
-    @reply.user_id = @user.id
-    @reply.updated_by_id = @user.id
-    @reply.project_id = @project.id
-    @reply.change_id = @review.change_id
-    @reply.comment = comment
-    @reply.line = @review.line
-    @parent.children << @reply
-    if (@parent.save)
-      @notice = l(:notice_review_updated)
-      lang = current_language
-      if status_changed
-        ReviewMailer.deliver_review_status_changed(@project, @reply)
-      else
-        ReviewMailer.deliver_review_reply(@project, @reply)
-      end
-      
-      set_language lang if respond_to? 'set_language'
-      @reply = nil
-    else
-      @review = CodeReview.find(@review.id)
-    end
+    journal = issue.init_journal(User.current, comment)
+    issue.save!
+    
     render :partial => 'show'
   end
 

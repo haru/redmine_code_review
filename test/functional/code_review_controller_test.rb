@@ -69,7 +69,7 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_reply
     @request.session[:user_id] = 1
-    get :reply, :id => 1, :parent_id => 1,
+    get :reply, :id => 1, :review_id => 9,
       :reply => {:comment => 'aaa'}
     assert_response :success
     assert_template '_show'
