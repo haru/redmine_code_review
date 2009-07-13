@@ -75,7 +75,7 @@
     
       <% if @review.is_closed? -%>
         <td style="width:20%" class="status">
-        <%=h l(:label_review_closed) -%>
+        <%=h @review.issue.status -%>
         </td>
         <td>
         <%= link_to_remote l(:label_reopen_review), :update => "show_review_#{@review.id}",
@@ -84,7 +84,7 @@
         </td>
       <% else -%>
         <td style="width:20%" class="status">
-        <%=h l(:label_review_open) -%>
+        <%=h @review.issue.status -%>
         </td>
         <td>
         <%= link_to_remote l(:label_close_review), :update => "show_review_#{@review.id}",

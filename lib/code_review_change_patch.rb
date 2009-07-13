@@ -33,19 +33,19 @@ end
 module ChangeInstanceMethodsCodeReview
   def review_count
     code_reviews.select{|o|
-      o.parent_id == nil
+      o.issue_id != nil
     }.length
   end
 
   def open_review_count
     open_reviews = code_reviews.select { |o| 
-      o.parent_id == nil and !o.is_closed?
+      o.issue_id != nil and !o.is_closed?
     }
     open_reviews.length
   end
 
   def closed_review_count
-    code_reviews.select { |o| o.parent_id == nil and o.is_closed? }.length
+    code_reviews.select { |o| o.issue_id != nil and o.is_closed? }.length
   end
 end
 
