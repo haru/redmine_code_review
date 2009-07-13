@@ -14,57 +14,36 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require 'user'
-require 'changeset'
-require 'change'
 class CodeReview < ActiveRecord::Base
   unloadable
   belongs_to :project
-  belongs_to :user
   belongs_to :change
+  belongs_to :issue
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
-  acts_as_tree
 
   validates_presence_of :comment
   validates_presence_of :project_id
   validates_presence_of :user_id
   validates_presence_of :change_id
   validates_presence_of :updated_by_id
-
-  acts_as_event :title => Proc.new {|o|
-                       title = "#{l(:code_review)}: #{'#' + o.root.id.to_s}"
-                       title += ": #{l(:label_reply_plural)}" if o.parent and o.status_changed_from == nil
-                       title += "(#{l(:label_review_closed)})" if o.status_changed_to == STATUS_CLOSED
-                       title += "(#{l(:label_review_open)})" if o.status_changed_to == STATUS_OPEN
-                       title
-                  },
-                  :description => Proc.new {|o| "#{o.comment}"},
-                  :datetime => :created_at,
-                  :author => :user,
-                  :type => 'code_review',
-                  :url => Proc.new {|o| {:controller => 'code_review', :action => 'show', :id => o.project, :review_id => o.id} }
-
-  acts_as_activity_provider :type => 'code_review',
-                              :timestamp => "#{CodeReview.table_name}.created_at",
-                              :author_key => "#{CodeReview.table_name}.user_id",
-                              :permission => :view_code_review,
-                              :find_options => {:joins => "LEFT JOIN #{Project.table_name} ON #{Project.table_name}.id = #{CodeReview.table_name}.project_id"}
-
-
+  validates_presence_of :issue
 
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
 
   def is_closed?
-    self.root.status == STATUS_CLOSED
+    issue.closed?
+    #self.root.status == STATUS_CLOSED
   end
 
   def close
-    self.root.status = STATUS_CLOSED
+    issue.status = IssueStatus.find(5)
+    #self.root.status = STATUS_CLOSED
   end
 
   def reopen
-    self.root.status = STATUS_OPEN
+    issue.status = IssueStatus.find(1)
+    #self.root.status = STATUS_OPEN
   end
   
   def committer
@@ -79,36 +58,6 @@ class CodeReview < ActiveRecord::Base
       changeset.committer.to_s.split('<').first
     rescue
     end
-  end
-
-
-  def lastchild
-    return self if children.length == 0
-    list = self.descendants.sort{|a, b|
-      a.created_at <=> b.created_at
-    }
-    list.pop
-  end
-
-  def users
-    return @users if @users
-    @users = [user]
-    @users = @users + children.collect{|child|
-      child.user
-    }.uniq
-    
-  end
-
-  def users_for_notification
-    return @users_for_notification if @users_for_notification
-    @users_for_notification = []
-    users.each {|user|
-      setting = CodeReviewUserSetting.find_by_user_id(user.id)
-      next unless setting
-      next if setting.mail_notification == CodeReviewUserSetting::NOTIFCIATION_NONE
-      @users_for_notification << user
-    }
-    @users_for_notification
   end
 
   def path
@@ -147,4 +96,40 @@ class CodeReview < ActiveRecord::Base
     @repository ||= changeset.repository
   end
 
+  def comment=(str)  
+    issue.description = str
+  end
+
+  def comment
+    issue.description
+  end
+
+  def before_save
+    issue.project_id = project_id unless issue.project_id
+  end
+
+  def validate
+    unless issue.validate
+      return false
+      
+    end
+  end
+
+  def user=(u)
+    issue.author = u
+  end
+
+  def user_id=(id)
+    issue.author_id = id
+  end
+
+  def user_id
+    issue.author_id
+  end
+
+  def user
+    issue.author if issue
+  end
+
+  
 end

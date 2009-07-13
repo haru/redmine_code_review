@@ -127,13 +127,13 @@
 </div>
 
 </div>
-<% if @review.children.length > 0 %>
+<% if @review.issue.journals.length > 0 %>
  <h3>
     <%=  l(:label_comment) %>
   </h3>
 <% end %>
 
-<%= render :partial => 'reply', :collection => @review.children.sort{|a, b| a.id <=> b.id} %>
+<%= render :partial => 'reply', :collection => @review.issue.journals.sort{|a, b| a.id <=> b.id} %>
 
 
 <% if authorize_for('code_review', 'reply') -%>
@@ -146,7 +146,7 @@
       <label>
         <%=h l(:field_status) %>:
       </label>
-      <%= select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
+      <%  # select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
     </p>
     <% end %>
 <p>

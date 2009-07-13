@@ -18,47 +18,15 @@
 -%>
 <p class="author">
 
-        <%= authoring reply.created_at, reply.user %>.
+        <%= authoring reply.created_on, reply.user %>.
        </p>
-<% if reply.status_changed_from != nil and  reply.status_changed_from != reply.status_changed_to%>
-
-<p class="author">
  
-</p>
-<%
-  if (reply.status_changed_from == CodeReview::STATUS_CLOSED)
-    status_from = l(:label_review_closed)
-  else
-    status_from = l(:label_review_open)
-  end
 
-  if (reply.status_changed_to == CodeReview::STATUS_CLOSED)
-    status_to = l(:label_review_closed)
-  else
-    status_to = l(:label_review_open)
-  end
-  begin
-    message = l(:text_journal_changed, :old => status_from, :new => status_to)
-  rescue
-    # for rails 2.1.2
-    message = l(:text_journal_changed, status_from, status_to)
-  end
-%>
-<ul>
-  <li>
-    <strong><%=h l(:field_status) %></strong>
-<%=h message %>
-  </li>
-</ul>
-<% end %>
-
- <%= l(:label_updated_time, distance_of_time_in_words(Time.now, reply.updated_at)) + '.' if reply.created_at != reply.updated_at %>
+ <%= l(:label_updated_time, distance_of_time_in_words(Time.now, reply.created_on)) + '.' %>
 
 <div class="wiki">
-          <%= avatar(reply.user, :size => "32") %><%= textilizable reply, :comment %>
+          <%= avatar(reply.user, :size => "32") %><%= textilizable reply, :notes %>
   </div>
-
-<%= render :partial => 'reply', :collection => reply.children.sort{|a, b| a.id <=> b.id} %>
 
 
 <hr/>

@@ -42,10 +42,10 @@
   <thead>
     <tr>
       <th>
-        <%= sort_header_tag("#{CodeReview.table_name}.id", :caption => '#') %>
+        <%= sort_header_tag("#{Issue.table_name}.id", :caption => '#') %>
       </th>
       <th>
-        <%= sort_header_tag 'status', :caption => l(:field_status)%>
+        <%= sort_header_tag "#{Issue.table_name}.status_id", :caption => l(:field_status)%>
       </th>
       <th>
         <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
@@ -70,11 +70,10 @@
   <tbody>
     <% for review in @reviews %>
       <tr class="<%= cycle 'odd', 'even' %>">
-        <td colspan="2"><%=  review.id %></td>
+        <td colspan="2"><%=  review.issue.id %></td>
                 
         <td colspan="2" class="status">
-          <%=h l(:label_review_closed) if review.is_closed? -%>
-          <%=h l(:label_review_open) unless review.is_closed? -%>
+          <%=h  review.issue.status %>
         </td>
         <td colspan="2" class="path">
           <%

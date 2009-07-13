@@ -26,42 +26,49 @@ class CodeReviewController < ApplicationController
   include SortHelper
 
   def index
-    sort_init "#{CodeReview.table_name}.id", 'desc'
-    sort_update ["#{CodeReview.table_name}.id", "status", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
+    sort_init "#{Issue.table_name}.id", 'desc'
+    sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
     limit = per_page_option
-    @review_count = CodeReview.count(:conditions => ['project_id = ? and parent_id is NULL', @project.id])
+    @review_count = CodeReview.count(:conditions => ['project_id = ? and issue_id is NOT NULL', @project.id])
     @all_review_count = CodeReview.count(:conditions => ['project_id = ?', @project.id])
     @review_pages = Paginator.new self, @review_count, limit, params['page']
     @show_closed = (params['show_closed'] == 'true')
-    show_closed_option = " and status not in (1)"
+    show_closed_option = " and #{Issue.table_name}.status_id not in (5)"
     if (@show_closed)
       show_closed_option = ''
     end
     @reviews = CodeReview.find :all, :order => sort_clause,
-      :conditions => ['project_id = ? and parent_id is NULL' + show_closed_option, @project.id],
+      :conditions => ["#{CodeReview.table_name}.project_id = ? and issue_id is NOT NULL" + show_closed_option, @project.id],
       :limit  =>  limit,
-      :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id",
+      :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " + 
+      "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
+      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
       :offset =>  @review_pages.current.offset
     @i_am_member = am_i_member?
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?
   end
 
   def new
-    @review = CodeReview.new(params[:review])
+    @review = CodeReview.new
+    @review.issue = Issue.new
+    @review.issue.tracker_id = 1
+    @review.issue.subject = "review"
+    @review.attributes = params[:review]
     @review.project_id = @project.id
+    @review.issue.project_id = @project.id
     @review.user_id = @user.id
     @review.updated_by_id = @user.id
-    @review.status = CodeReview::STATUS_OPEN
+    #@review.status = CodeReview::STATUS_OPEN
      
     if request.post?
-      if (!@review.save)
+      if (!@review.save or !@review.issue.save)
         render :partial => 'new_form', :status => 250
         return
       end
-      lang = current_language
-      ReviewMailer.deliver_review_add(@project, @review)
-      set_language lang if respond_to? 'set_language'
+      #lang = current_language
+      #ReviewMailer.deliver_review_add(@project, @review)
+      #set_language lang if respond_to? 'set_language'
       render :partial => 'add_success', :status => 220
       return
     else
@@ -75,6 +82,7 @@ class CodeReviewController < ApplicationController
 
   def update_diff_view
     @show_review_id = params[:review_id].to_i unless params[:review_id].blank?
+    @show_review = CodeReview.find(@show_review_id) if @show_review_id
     @review = CodeReview.new
     @rev = params[:rev] unless params[:rev].blank?
     @path = params[:path]
@@ -101,7 +109,7 @@ class CodeReviewController < ApplicationController
       render :partial => 'show_error'
       return
     end
-    @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and parent_id is NULL', @change.id])
+    @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and issue_id is NOT NULL', @change.id])
     @review.change_id = @change.id
     render :partial => 'update_diff_view'
   end
@@ -111,7 +119,7 @@ class CodeReviewController < ApplicationController
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
     else
-      @review = @review.root
+      #@review = @review.root
       path = @review.path
       path = '/' + path unless path.match(/^\//)
       redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s
@@ -163,7 +171,7 @@ class CodeReviewController < ApplicationController
       @review.comment = params[:review][:comment]
       @review.lock_version = params[:review][:lock_version].to_i
       @review.updated_by_id = @user.id
-      if @review.save
+      if @review.save and @review.issue.save
         @notice = l(:notice_review_updated)
       end
       render :partial => 'show'
@@ -183,26 +191,10 @@ class CodeReviewController < ApplicationController
 
   def close
     @review = CodeReview.find(params[:review_id].to_i)
-    
-    closed_message = CodeReview.new
-    closed_message.user_id = @user.id
-    closed_message.updated_by_id = @user.id
-    closed_message.project_id = @project.id
-    closed_message.line = @review.line
-    closed_message.change_id = @review.change_id
-    closed_message.comment = 'closed.'
-    closed_message.status_changed_from = @review.status
-    closed_message.status_changed_to = CodeReview::STATUS_CLOSED
-    
-    @review.children << closed_message
   
     @review.close
     @review.updated_by_id = @user.id
     @review.save!
-    lang = current_language
-    ReviewMailer.deliver_review_status_changed(@project, closed_message)
-    set_language lang if respond_to? 'set_language'
-    @notice = l(:notice_review_updated)
     render :partial => 'show'
     #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
   end

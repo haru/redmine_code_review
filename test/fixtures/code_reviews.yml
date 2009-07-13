@@ -8,159 +8,185 @@ one:
 
   updated_at: 2009-04-11 22:09:57
 
-  user_id: 1
+  old_user_id: 1
 
-  comment: Review 1
+  old_comment: Review 1
 
   updated_by_id: 1
 
   change_id: 1
   
-  status: 0
+  old_status: 0
 
+  
 two:
   id: 2
 
   project_id: 1
 
-  parent_id: 1
+  old_parent_id: 1
 
   created_at: 2009-04-12 22:09:57
 
   updated_at: 2009-04-12 22:09:57
 
-  user_id: 2
+  old_user_id: 2
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 1
 
   change_id: 1
 
-  status: 0
+  old_status: 0
 
 three:
   id: 3
 
   project_id: 1
 
-  parent_id: 1
+  old_parent_id: 1
 
   created_at: 2009-04-13 22:09:57
 
   updated_at: 2009-04-13 22:09:57
 
-  user_id: 2
+  old_user_id: 2
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 1
 
   change_id: 1
 
-  status: 0
+  old_status: 0
 
 four:
   id: 4
 
   project_id: 1
 
-  parent_id: 1
+  old_parent_id: 1
 
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  user_id: 3
+  old_user_id: 3
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 1
 
-  status: 1
+  old_status: 1
   
 five:
   id: 5
 
   project_id: 1
 
-  parent_id: 
+  old_parent_id:
 
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  user_id: 3
+  old_user_id: 3
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 1
 
-  status: 1
+  old_status: 1
 
 six:
   id: 6
 
   project_id: 1
 
-  parent_id:
+  old_parent_id:
 
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  user_id: 3
+  old_user_id: 3
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 2
 
-  status: 1
+  old_status: 1
 
 seven:
   id: 7
 
   project_id: 1
 
-  parent_id:
+  old_parent_id:
 
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  user_id: 3
+  old_user_id: 3
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 2
 
-  status: 0
+  old_status: 0
 
 eight:
   id: 8
 
   project_id: 1
 
-  parent_id:
+  old_parent_id:
 
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  user_id: 3
+  old_user_id: 3
 
-  comment: Review 2
+  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 2
 
-  status: 0
+  old_status: 0
+
+nine:
+  id: 9
+
+  project_id: 1
+
+  old_parent_id:
+
+  created_at: 2009-04-14 22:09:57
+
+  updated_at: 2009-04-15 22:09:57
+
+  old_user_id: 3
+
+  old_comment: Review 2
+
+  updated_by_id: 3
+
+  change_id: 2
+
+  old_status: 0
+
+  issue_id: 1
+  
+
