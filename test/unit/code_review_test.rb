@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewTest < Test::Unit::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses , :enumerations, :issue_categories, :trackers
 
   # Create new object.
   def test_create
