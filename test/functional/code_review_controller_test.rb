@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewControllerTest < ActionController::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :members, :roles
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :members, :roles, :issues, :issue_statuses
   def setup
     @controller = CodeReviewController.new
     @request    = ActionController::TestRequest.new

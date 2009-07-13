@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewChangesetPatchTest < Test::Unit::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses
 
   def test_review_count
     changeset = Changeset.find(100)
