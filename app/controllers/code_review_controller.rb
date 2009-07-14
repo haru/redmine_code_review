@@ -26,7 +26,9 @@ class CodeReviewController < ApplicationController
   include SortHelper
 
   def index
-    redirect_to :controller => 'code_review_settings', :action => "show" unless @setting
+    unless @setting
+      redirect_to :controller => 'code_review_settings', :action => "show" , :id => @project
+    end
     sort_init "#{Issue.table_name}.id", 'desc'
     sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
@@ -51,7 +53,9 @@ class CodeReviewController < ApplicationController
   end
 
   def new
-    redirect_to :controller => 'code_review_settings', :action => "show" unless @setting
+    unless @setting
+      redirect_to :controller => 'code_review_settings', :action => "show" , :id => @project
+    end
     @review = CodeReview.new
     @review.issue = Issue.new
     @review.issue.tracker_id = 1

@@ -29,6 +29,10 @@ class CodeReviewControllerTest < ActionController::TestCase
     enabled_module.project_id = 1
     enabled_module.name = 'code_review'
     enabled_module.save
+    enabled_module = EnabledModule.new
+    enabled_module.project_id = 2
+    enabled_module.name = 'code_review'
+    enabled_module.save
 
     User.current = nil
     roles = Role.find(:all)
@@ -41,6 +45,9 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_index
     @request.session[:user_id] = 1
     get :index, :id => 1
+    assert_response :success
+
+    get :index, :id => 2
     assert_response :success
   end
 
