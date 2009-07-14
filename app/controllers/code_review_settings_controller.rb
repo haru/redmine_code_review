@@ -6,31 +6,22 @@ class CodeReviewSettingsController < ApplicationController
   before_filter :find_project, :authorize, :find_user
 
   def show
-    if @user == User.anonymous
-      render_403
-      return
-    end
-
-    @setting = CodeReviewUserSetting.find_or_create(@user.id)
-    
+    @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
+    @setting = CodeReviewProjectSetting.new unless @setting
   end
 
 
-  def update
-    if @user == User.anonymous
-      render_403
-      return
-    end
-
-    @setting = CodeReviewUserSetting.find_by_user_id(@user.id)
+  def update   
+    @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
     unless @setting
-      @setting = CodeReviewUserSetting.new
-      @setting.user_id = @user.id
+      @setting = CodeReviewProjectSetting.new
+      @setting.project_id = @project.id
     end
 
     @setting.attributes = params[:setting]
+    @setting.updated_by = @user_id
 
-    @setting.save
+    @setting.save!
     flash[:notice] = l(:notice_successful_update)
     redirect_to :action => "show", :id => @project
   end
@@ -43,12 +34,5 @@ class CodeReviewSettingsController < ApplicationController
 
   def find_user
     @user = User.current
-  end
-
-  def am_i_member?
-    @project.members.each{|m|
-      return true if @user == m.user
-    }
-    return false
   end
 end

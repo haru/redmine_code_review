@@ -17,6 +17,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewSettingsControllerTest < ActionController::TestCase
+  fixtures :code_reviews, :projects, :users, :trackers, :projects, :projects_trackers,
+    :code_review_project_settings
+
   def setup
     @controller = CodeReviewSettingsController.new
     @request    = ActionController::TestRequest.new
@@ -42,17 +45,17 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
 
     @request.session[:user_id] = User.anonymous.id
     get :show, :id => 1
-    assert_response 403
+    assert_response 302
   end
 
   def test_update
     @request.session[:user_id] = User.anonymous.id
     get :update, :id => 1
-    assert_response 403
+    assert_response 302
 
     @request.session[:user_id] = 1
-    setting = CodeReviewUserSetting.find_or_create(1)
-    get :update, :id => 1, :setting => {:mail_notification => setting.mail_notification, :user_id => setting.user_id, :id => setting.id}
+    setting = CodeReviewProjectSetting.find(1)
+    get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}
     assert_response :redirect
     project = Project.find(1)
     assert_redirected_to :action => 'show', :id => project

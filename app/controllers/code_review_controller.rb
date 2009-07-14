@@ -20,12 +20,13 @@ require 'change'
 
 class CodeReviewController < ApplicationController
   unloadable
-  before_filter :find_project, :authorize, :find_user
+  before_filter :find_project, :authorize, :find_user, :find_setting
 
   helper :sort
   include SortHelper
 
   def index
+    redirect_to :controller => 'code_review_settings', :action => "show" unless @setting
     sort_init "#{Issue.table_name}.id", 'desc'
     sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
@@ -50,6 +51,7 @@ class CodeReviewController < ApplicationController
   end
 
   def new
+    redirect_to :controller => 'code_review_settings', :action => "show" unless @setting
     @review = CodeReview.new
     @review.issue = Issue.new
     @review.issue.tracker_id = 1
@@ -216,6 +218,10 @@ class CodeReviewController < ApplicationController
   end
 
 
+  def find_setting
+    @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
+  end
+  
   def am_i_member?
     @project.members.each{|m|
       return true if @user == m.user

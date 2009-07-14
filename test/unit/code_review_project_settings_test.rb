@@ -21,7 +21,7 @@ class CodeReviewProjectSettingsTest < Test::Unit::TestCase
 
   # Replace this with your real tests.
   def test_truth
-    setting = CodeReviewProjectSettings.new
+    setting = CodeReviewProjectSetting.new
     assert !setting.save
     setting.project_id = 1
     setting.tracker_id = 1

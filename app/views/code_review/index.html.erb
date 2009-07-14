@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <div class="contextual">
-<%= link_to l(:label_settings), {:controller => 'code_review_settings', :action => 'show', :id => @project}, :class => 'icon icon-settings' if @i_am_member %>
+<%= link_to_if_authorized l(:label_settings), {:controller => 'code_review_settings', :action => 'show', :id => @project}, :class => 'icon icon-settings' %>
 </div>
 <div id="code_review_list">
 <h2>

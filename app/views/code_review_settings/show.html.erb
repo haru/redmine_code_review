@@ -6,10 +6,7 @@
                              :url => {:action => 'update', :id => @project, :setting_id => @setting.id} do |f| %>
     <%= error_messages_for 'setting' %>
     <div class="box">
-    <p><%= f.select :mail_notification,
-        {l(:label_none) => CodeReviewUserSetting::NOTIFCIATION_NONE,
-        l(:review_notify_only_involved_in) => CodeReviewUserSetting::NOTIFICATION_INVOLVED_IN,
-        l(:review_notify_all) => CodeReviewUserSetting::NOTIFICATION_ALL}, :include_blank => false %></p>
+    <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
 
     </div>
     <%= submit_tag l(:button_update) %>
