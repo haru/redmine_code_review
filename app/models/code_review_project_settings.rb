@@ -14,23 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.dirname(__FILE__) + '/../test_helper'
+class CodeReviewProjectSettings < ActiveRecord::Base
+  belongs_to :project
+  belongs_to :tracker
 
-class CodeReviewChangesetPatchTest < Test::Unit::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers
-
-  def test_review_count
-    changeset = Changeset.find(100)
-    assert_equal(2, changeset.review_count)
-  end
-
-  def test_open_review_count
-    changeset = Changeset.find(100)
-    assert_equal(2, changeset.open_review_count)
-  end
-
-  def test_closed_review_count
-    changeset = Changeset.find(100)
-    assert_equal(0, changeset.closed_review_count)
-  end
+  validates_presence_of :project_id
+  validates_presence_of :tracker_id
 end
