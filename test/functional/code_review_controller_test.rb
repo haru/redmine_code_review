@@ -48,7 +48,7 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_response :success
 
     get :index, :id => 2
-    assert_response :success
+    assert_response 302
   end
 
   def test_index_show_closed
