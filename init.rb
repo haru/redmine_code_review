@@ -40,8 +40,7 @@ Redmine::Plugin.register :redmine_code_review do
   menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
     :if => Proc.new{|project| project.repository != nil}, :after => :repository
 
-  activity_provider :code_review, :class_name => 'CodeReview', :default => false
-
+  
   Redmine::WikiFormatting::Macros.register do
     desc "This is my macro link to code review"
     macro :review do |obj, args|
