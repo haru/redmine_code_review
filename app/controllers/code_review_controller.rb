@@ -69,6 +69,8 @@ class CodeReviewController < ApplicationController
       #lang = current_language
       #ReviewMailer.deliver_review_add(@project, @review)
       #set_language lang if respond_to? 'set_language'
+      Mailer.deliver_issue_add(@review.issue) if Setting.notified_events.include?('issue_added')
+
       render :partial => 'add_success', :status => 220
       return
     else
@@ -134,6 +136,11 @@ class CodeReviewController < ApplicationController
     comment = params[:reply][:comment]
     journal = issue.init_journal(User.current, comment)
     issue.save!
+    if !journal.new_record?
+      # Only send notification if something was actually changed
+      flash[:notice] = l(:notice_successful_update)
+      Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
+    end
     
     render :partial => 'show'
   end
