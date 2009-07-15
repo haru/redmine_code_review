@@ -109,7 +109,12 @@
   :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
   :update => "show_review_#{@review.id}" do |f|  %>
 <%= f.hidden_field :lock_version %>
-    
+    <p>
+      <label><b>
+        <%=h l(:field_subject)%>:
+        </b></label>
+      <%= f.text_field :subject, :size => 70, :value => @review.subject%>
+    </p>
 <p>
   <%= f.text_area :comment,
                    :cols => 30,
