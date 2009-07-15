@@ -116,7 +116,7 @@
       <%= f.text_field :subject, :size => 70, :value => @review.subject%>
     </p>
 
-      <% if @allowed_statuses.any? %>
+      <% if @allowed_statuses and @allowed_statuses.any? %>
     <p>
       <label>
         <b><%=h l(:field_status)%>:</b>

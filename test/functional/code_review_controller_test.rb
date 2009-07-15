@@ -79,8 +79,8 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_show
     @request.session[:user_id] = 1
-    get :show, :id => 1, :review_id => 1
-    #assert_response :success
+    get :show, :id => 1, :review_id => 9
+    assert_response 302
     #assert_template '_show'
   end
 
