@@ -125,6 +125,7 @@ class CodeReviewController < ApplicationController
 
   def show
     @review = CodeReview.find(params[:review_id].to_i)
+    @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
     else
@@ -155,8 +156,8 @@ class CodeReviewController < ApplicationController
   def update
     begin
       @review = CodeReview.find(params[:review_id].to_i)
-      @review.comment = params[:review][:comment]
-      @review.lock_version = params[:review][:lock_version].to_i
+      @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
+      @review.attributes = params[:review]
       @review.updated_by_id = @user.id
       if @review.save and @review.issue.save
         @notice = l(:notice_review_updated)
@@ -175,42 +176,6 @@ class CodeReviewController < ApplicationController
     @review.destroy if @review
     render :text => 'delete success.'
   end
-
-  def close
-    @review = CodeReview.find(params[:review_id].to_i)
-  
-    @review.close
-    @review.updated_by_id = @user.id
-    @review.save!
-    render :partial => 'show'
-    #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
-  end
-
-  def reopen
-    @review = CodeReview.find(params[:review_id].to_i)
-
-    reopen_message = CodeReview.new
-    reopen_message.user_id = @user.id
-    reopen_message.updated_by_id = @user.id
-    reopen_message.project_id = @project.id
-    reopen_message.line = @review.line
-    reopen_message.change_id = @review.change_id
-    reopen_message.comment = 'reopen.'
-    reopen_message.status_changed_from = @review.status
-    reopen_message.status_changed_to = CodeReview::STATUS_OPEN
-
-    @review.children << reopen_message
-    @review.reopen
-    @review.updated_by_id = @user.id
-    @review.save
-    lang = current_language
-    ReviewMailer.deliver_review_status_changed(@project, reopen_message)
-    set_language lang if respond_to? 'set_language'
-    @notice = l(:notice_review_updated)
-    render :partial => 'show'
-    #redirect_to :action => "show", :id => @project, :review_id => @review.id, :update => true
-  end
-
 
   private
   def find_project

@@ -115,6 +115,15 @@
         </b></label>
       <%= f.text_field :subject, :size => 70, :value => @review.subject%>
     </p>
+
+      <% if @allowed_statuses.any? %>
+    <p>
+      <label>
+        <b><%=h l(:field_status)%>:</b>
+      </label>
+<%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %></p>
+<% end %>
+    
 <p>
   <%= f.text_area :comment,
                    :cols => 30,

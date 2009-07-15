@@ -139,4 +139,12 @@ class CodeReview < ActiveRecord::Base
   def subject
     issue.subject
   end
+
+  def status_id=(s)
+    issue.status_id = s
+  end
+
+  def status_id
+    issue.status_id
+  end
 end

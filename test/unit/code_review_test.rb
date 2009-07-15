@@ -97,4 +97,12 @@ class CodeReviewTest < Test::Unit::TestCase
     review.subject = "aaaa"
     assert_equal("aaaa", review.issue.subject)
   end
+
+  def test_status_id
+    review = CodeReview.find(1)
+    assert_equal(review.status, review.issue.status_id)
+    review.status_id = 5
+    assert_equal(5, review.issue.status_id)
+
+  end
 end
