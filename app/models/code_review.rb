@@ -27,6 +27,7 @@ class CodeReview < ActiveRecord::Base
   validates_presence_of :change_id
   validates_presence_of :updated_by_id
   validates_presence_of :issue
+  validates_presence_of :subject
 
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
@@ -131,5 +132,11 @@ class CodeReview < ActiveRecord::Base
     issue.author if issue
   end
 
-  
+  def subject=(s)
+    issue.subject = s
+  end
+
+  def subject
+    issue.subject
+  end
 end

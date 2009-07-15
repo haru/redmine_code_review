@@ -59,8 +59,10 @@
 <% end -%>
 </div>
   <h2>
-    <%= l(:label_line_number, @review.line) %>
+    <%= l(:label_line_number, @review.line) %>:
+    <%=h @review.subject%>
   </h2>
+ 
 <p class="author">
   <%= avatar(@review.user, :size => "64") %>
         <%= authoring @review.created_at, @review.user %>.

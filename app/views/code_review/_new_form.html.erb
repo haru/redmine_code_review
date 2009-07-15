@@ -37,6 +37,10 @@
 <%= error_messages_for 'review' %>
 <%= f.hidden_field(:change_id) %>
 <%= f.hidden_field(:line) %>
+  <p>
+    <label><b><%=h l(:field_subject)%>:</b></label>
+    <%= f.text_field :subject, :size => 70, :required => true %>
+  </p>
 <p>
   <%= f.text_area :comment,
                    :cols => 30,

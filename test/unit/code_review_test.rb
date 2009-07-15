@@ -30,6 +30,7 @@ class CodeReviewTest < Test::Unit::TestCase
     code_review.user_id = 1;
     code_review.change_id = 1;
     code_review.updated_by_id = 1;
+    code_review.subject = "aaa"
 
     assert code_review.save
     
@@ -88,5 +89,12 @@ class CodeReviewTest < Test::Unit::TestCase
     assert !review.is_closed?
     review = CodeReview.find(4)
     assert review.is_closed?
+  end
+
+  def test_subject
+    review = CodeReview.find(1)
+    assert_equal(review.subject, review.issue.subject)
+    review.subject = "aaaa"
+    assert_equal("aaaa", review.issue.subject)
   end
 end

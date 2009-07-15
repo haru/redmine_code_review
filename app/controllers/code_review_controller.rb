@@ -61,7 +61,6 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.new
     @review.issue = Issue.new
     @review.issue.tracker_id = 1
-    @review.issue.subject = "review"
     @review.attributes = params[:review]
     @review.project_id = @project.id
     @review.issue.project_id = @project.id
