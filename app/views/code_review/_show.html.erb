@@ -27,7 +27,10 @@
            image_class = 'icon-review'
          end
       -%>
-      <td><span class="icon <%= image_class%>"><%=h l(:code_review) %> #<%=@review.id %></span></td>
+      <td><span class="icon <%= image_class%>"><%=h l(:code_review) %> 
+          <%= link_to '#' + @review.issue.id.to_s, :controller => 'issues', :action => 'show',
+               :id => @review.issue.id %>
+        </span></td>
       <td align="right">
         <%= link_to_function image_tag('close.png'), "$('show_review_#{@review.id}').hide();" %>
       </td>

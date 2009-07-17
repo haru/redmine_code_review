@@ -109,3 +109,8 @@ table.filecontent th.line-num img{
     background-image: url(../../../images/changeset.png);
     background-repeat: no-repeat;
 }
+
+.header_table a{
+    color: #ffffff;
+    text-decoration: underline;
+}

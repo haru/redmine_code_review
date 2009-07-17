@@ -18,6 +18,8 @@ require 'redmine'
 require 'code_review_application_hooks'
 require 'code_review_change_patch'
 require 'code_review_changeset_patch'
+require 'code_review_issue_patch'
+require 'code_review_issue_hooks'
 
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
