@@ -24,5 +24,6 @@ ko.yml - Ki-yong Kim
 nl.yml - Stefan Verstege
 pt-br.yml - Alessandro Hecht
 zh.yml - Marshall Wu
+zh-tw.yml - Andrew Liu
 
 

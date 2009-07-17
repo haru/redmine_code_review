@@ -1,0 +1,27 @@
+"zh-TW":
+  label_add_review: 新增評語
+  label_show_review: 檢視評語
+  code_reviews: 程式碼評語
+  code_review: 程式碼評語
+  project_module_code_review: 程式碼評語
+  label_code_path: 路徑
+  
+  label_code_reviewer: 評語者
+  label_code_author: 提交者
+  label_code_line: 行號
+
+  label_review_open: 開啟
+  label_review_closed: 關閉
+
+  label_reopen_review: 重新開啟評語
+  label_close_review: 關閉評語
+
+  label_code_review_plural: 程式碼評語
+
+  label_line_number: '行號: %d'
+  notice_review_updated: 評語更新成功
+  label_show_closed_reviews: 顯示已關閉評語
+  label_review: 評語
+  label_review_new: 新增評語
+  review_notify_only_involved_in: "僅包含我參加的工作"
+  review_notify_all: "所以我參加項目的評語"
