@@ -24,6 +24,11 @@ class CodeReviewController < ApplicationController
 
   helper :sort
   include SortHelper
+  helper :journals
+  helper :projects
+  include ProjectsHelper
+  helper :issues
+  include IssuesHelper
 
   def index
     unless @setting
@@ -147,7 +152,9 @@ class CodeReviewController < ApplicationController
     if !journal.new_record?
       # Only send notification if something was actually changed
       flash[:notice] = l(:notice_successful_update)
+      lang = current_language
       Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
+      set_language lang if respond_to? 'set_language'
     end
     
     render :partial => 'show'
@@ -156,11 +163,16 @@ class CodeReviewController < ApplicationController
   def update
     begin
       @review = CodeReview.find(params[:review_id].to_i)
+      journal = @review.issue.init_journal(User.current, nil)
       @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
       @review.attributes = params[:review]
       @review.updated_by_id = @user.id
       if @review.save and @review.issue.save
         @notice = l(:notice_review_updated)
+        lang = current_language
+        Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
+        set_language lang if respond_to? 'set_language'
+
       end
       render :partial => 'show'
     rescue ActiveRecord::StaleObjectError

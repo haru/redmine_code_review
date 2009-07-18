@@ -20,10 +20,14 @@
 
         <%= authoring reply.created_on, reply.user %>.
        </p>
+  <%= avatar(reply.user, :size => "32") %>
+    <ul>
+    <% for detail in reply.details %>
+       <li><%= show_detail(detail) %></li>
+    <% end %>
+    </ul>
+
  
-
- <%= l(:label_updated_time, distance_of_time_in_words(Time.now, reply.created_on)) + '.' %>
-
 <div class="wiki">
           <%= avatar(reply.user, :size => "32") %><%= textilizable reply, :notes %>
   </div>

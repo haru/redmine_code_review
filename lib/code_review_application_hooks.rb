@@ -26,11 +26,6 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless action_name
     baseurl = url_for(:controller => 'code_review', :action => 'index', :id => project) + '/../../..'
 
-    if (controller.class.name == 'ProjectsController' and action_name == 'activity')
-      o = ""
-      o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/activity.css")
-      return o
-    end
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
       return ''
     end
