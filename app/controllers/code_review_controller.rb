@@ -156,7 +156,7 @@ class CodeReviewController < ApplicationController
       Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
       set_language lang if respond_to? 'set_language'
     end
-    
+    @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
     render :partial => 'show'
   end
 
