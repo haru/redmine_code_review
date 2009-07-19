@@ -130,7 +130,7 @@ class CodeReviewController < ApplicationController
 
   def show
     @review = CodeReview.find(params[:review_id].to_i)
-    @issue = issue
+    @issue = @review.issue
     @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
