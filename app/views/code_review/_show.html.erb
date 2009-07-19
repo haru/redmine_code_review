@@ -140,13 +140,13 @@
 <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
 <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
   <%= hidden_field_tag :review_id, @review.id %>
-  <%  if authorize_for('code_review', 'reopen')%>
+  <% if @allowed_statuses and @allowed_statuses.any? %>
   <p>
       <label>
         <%=h l(:field_status) %>:
       </label>
       <%  # select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
-<%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
+<%= select :review, :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
 
   </p>
     <% end %>

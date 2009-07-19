@@ -145,9 +145,10 @@ class CodeReviewController < ApplicationController
   def reply
     @review = CodeReview.find(params[:review_id].to_i)
     issue = @review.issue
-    
     comment = params[:reply][:comment]
     journal = issue.init_journal(User.current, comment)
+    @review.attributes = params[:review]    
+    
     issue.save!
     if !journal.new_record?
       # Only send notification if something was actually changed
