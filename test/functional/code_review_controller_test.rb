@@ -95,10 +95,22 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_reply
     @request.session[:user_id] = 1
+    
+    review = CodeReview.find(9)
     get :reply, :id => 1, :review_id => 9,
-      :reply => {:comment => 'aaa'}
+      :reply => {:comment => 'aaa'}, :issue=> {:lock_version => review.issue.lock_version}
     assert_response :success
     assert_template '_show'
+    assert_equal(nil, assigns(:error))
+  end
+
+  def test_reply_lock_error
+    @request.session[:user_id] = 1
+    get :reply, :id => 1, :review_id => 9,
+      :reply => {:comment => 'aaa'}, :issue=> {:lock_version => 1}
+    assert_response :success
+    assert_template '_show'
+    assert assigns(:error)
   end
 
 #  def test_close
@@ -134,10 +146,25 @@ class CodeReviewControllerTest < ActionController::TestCase
     review = CodeReview.find(review_id)
     assert_equal('Unable to print recipes', review.comment)
     post :update, :id => 1, :review_id => review_id,
-      :review => {:comment => 'bbb', :lock_version => review.lock_version}
+      :review => {:comment => 'bbb', :lock_version => review.lock_version},
+      :issue => {:lock_version => review.issue.lock_version}
     assert_response :success
     review = CodeReview.find(review_id)
     assert_equal('bbb', review.comment)
+  end
+
+  def test_update_lock_error
+    @request.session[:user_id] = 1
+    review_id = 9
+    review = CodeReview.find(review_id)
+    assert_equal('Unable to print recipes', review.comment)
+    post :update, :id => 1, :review_id => review_id,
+      :review => {:comment => 'bbb', :lock_version => review.lock_version},
+      :issue => {:lock_version => 1}
+    assert_response :success
+    review = CodeReview.find(review_id)
+    assert_equal('Unable to print recipes', review.comment)
+    assert assigns(:error)
   end
 
   def test_update_diff_view

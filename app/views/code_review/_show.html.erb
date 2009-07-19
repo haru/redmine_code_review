@@ -92,6 +92,7 @@
   :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
   :update => "show_review_#{@review.id}" do |f|  %>
 <%= f.hidden_field :lock_version %>
+<%= hidden_field :issue,  :lock_version%>
     <p>
       <label><b>
         <%=h l(:field_subject)%>:
@@ -140,6 +141,8 @@
 <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
 <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
   <%= hidden_field_tag :review_id, @review.id %>
+  <%= hidden_field :review,  :lock_version%>
+  <%= hidden_field :issue,  :lock_version%>
   <% if @allowed_statuses and @allowed_statuses.any? %>
   <p>
       <label>

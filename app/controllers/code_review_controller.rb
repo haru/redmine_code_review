@@ -130,6 +130,7 @@ class CodeReviewController < ApplicationController
 
   def show
     @review = CodeReview.find(params[:review_id].to_i)
+    @issue = issue
     @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
@@ -143,22 +144,30 @@ class CodeReviewController < ApplicationController
   end
 
   def reply
-    @review = CodeReview.find(params[:review_id].to_i)
-    issue = @review.issue
-    comment = params[:reply][:comment]
-    journal = issue.init_journal(User.current, comment)
-    @review.attributes = params[:review]    
-    
-    issue.save!
-    if !journal.new_record?
-      # Only send notification if something was actually changed
-      flash[:notice] = l(:notice_successful_update)
-      lang = current_language
-      Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
-      set_language lang if respond_to? 'set_language'
+    begin
+      @review = CodeReview.find(params[:review_id].to_i)
+      @issue = @review.issue
+      @issue.lock_version = params[:issue][:lock_version]
+      comment = params[:reply][:comment]
+      journal = @issue.init_journal(User.current, comment)
+      @review.attributes = params[:review]
+      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+
+      @issue.save!
+      if !journal.new_record?
+        # Only send notification if something was actually changed
+        flash[:notice] = l(:notice_successful_update)
+        lang = current_language
+        Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
+        set_language lang if respond_to? 'set_language'
+      end
+      
+      render :partial => 'show'
+    rescue ActiveRecord::StaleObjectError
+      # Optimistic locking exception
+      @error = l(:notice_locking_conflict)
+      render :partial => 'show'
     end
-    @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
-    render :partial => 'show'
   end
 
   def update
@@ -166,6 +175,8 @@ class CodeReviewController < ApplicationController
       @review = CodeReview.find(params[:review_id].to_i)
       journal = @review.issue.init_journal(User.current, nil)
       @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
+      @issue = @review.issue
+      @issue.lock_version = params[:issue][:lock_version]
       @review.attributes = params[:review]
       @review.updated_by_id = @user.id
       if @review.save and @review.issue.save
