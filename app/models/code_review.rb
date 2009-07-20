@@ -21,6 +21,9 @@ class CodeReview < ActiveRecord::Base
   belongs_to :issue
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
 
+  #deprecated
+  has_many :children, :class_name => 'CodeReview', :foreign_key=> :old_parent_id, :dependent => :destroy
+
   validates_presence_of :comment
   validates_presence_of :project_id
   validates_presence_of :user_id
@@ -146,5 +149,15 @@ class CodeReview < ActiveRecord::Base
 
   def status_id
     issue.status_id
+  end
+
+  private
+  def all_children
+    return @all_children if @all_children
+    @all_children = children
+    children.each {|child|
+      @all_children.concat(child.children)
+    }
+    @all_children = @all_children.sort{|a, b| a.id <=> b.id}
   end
 end

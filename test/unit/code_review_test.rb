@@ -72,6 +72,43 @@ class CodeReviewTest < Test::Unit::TestCase
     assert_equal(10, code_review.repository.id)
   end
 
+  
+
+  def test_is_closed?
+    review = CodeReview.find(9)
+    assert !review.is_closed?
+    review.status_id = 5
+    review.save!
+    review.issue.save!
+    review = CodeReview.find(9)
+    assert review.is_closed?
+  end
+
+  def test_subject
+    review = CodeReview.find(9)
+    assert_equal(review.subject, review.issue.subject)
+    review.subject = "aaaa"
+    assert_equal("aaaa", review.issue.subject)
+  end
+
+  def test_status_id
+    review = CodeReview.find(9)
+    assert_equal(review.status_id, review.issue.status_id)
+    review.status_id = 5
+    assert_equal(5, review.issue.status_id)
+
+  end
+
+  def test_children
+    review = CodeReview.find(1)
+    assert_equal(3, review.children.length)
+    reviews = CodeReview.find(:all, :conditions => 'old_parent_id is not null')
+    assert_equal(4, reviews.length)
+    review.destroy
+    reviews = CodeReview.find(:all, :conditions => 'old_parent_id is not null')
+    assert_equal(0, reviews.length)
+  end
+
   private
   def newreview
     code_review = CodeReview.new
@@ -82,27 +119,5 @@ class CodeReviewTest < Test::Unit::TestCase
     code_review.change_id = 1;
     code_review.updated_by_id = 1;
     return code_review
-  end
-
-  def test_is_closed?
-    review = CodeReview.find(1)
-    assert !review.is_closed?
-    review = CodeReview.find(4)
-    assert review.is_closed?
-  end
-
-  def test_subject
-    review = CodeReview.find(1)
-    assert_equal(review.subject, review.issue.subject)
-    review.subject = "aaaa"
-    assert_equal("aaaa", review.issue.subject)
-  end
-
-  def test_status_id
-    review = CodeReview.find(1)
-    assert_equal(review.status, review.issue.status_id)
-    review.status_id = 5
-    assert_equal(5, review.issue.status_id)
-
   end
 end
