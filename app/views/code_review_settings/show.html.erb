@@ -8,6 +8,13 @@
     <div class="box">
     <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
 
+    <% if @old_reviews and @old_reviews.any? %>
+    <p>
+      <%=h l(:old_review_data_found) %>
+      <%=  radio_button_tag 'convert', true, :checked => false %><%=h l(:general_text_Yes) %>
+      <%=  radio_button_tag 'convert', false, :checked => true %><%=h l(:general_text_No) %>
+    </p>
+    <% end %>
     </div>
     <%= submit_tag l(:button_update) %>
 <% end %>

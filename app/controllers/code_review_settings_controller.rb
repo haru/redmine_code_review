@@ -8,6 +8,8 @@ class CodeReviewSettingsController < ApplicationController
   def show
     @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
     @setting = CodeReviewProjectSetting.new unless @setting
+
+    @old_reviews = find_old_reviews
   end
 
 
@@ -22,6 +24,13 @@ class CodeReviewSettingsController < ApplicationController
     @setting.updated_by = @user_id
 
     @setting.save!
+    convert = params[:convert] unless params[:convert].blank?
+    if (convert and convert == 'true')
+      old_reviews = find_old_reviews
+      old_reviews.each {|review|
+        review.convert_to_new_data
+      }
+    end
     flash[:notice] = l(:notice_successful_update)
     redirect_to :action => "show", :id => @project
   end
@@ -34,5 +43,10 @@ class CodeReviewSettingsController < ApplicationController
 
   def find_user
     @user = User.current
+  end
+
+  def find_old_reviews
+    CodeReview.find(:all,
+      :conditions => ['issue_id is ? and old_parent_id is ? and project_id = ?', nil, nil, @project.id])
   end
 end

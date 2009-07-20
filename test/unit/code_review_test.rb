@@ -17,7 +17,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewTest < Test::Unit::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses , :enumerations, :issue_categories, :trackers
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets,
+    :changes, :issues, :issue_statuses , :enumerations, :issue_categories,
+    :trackers, :projects_trackers
 
   # Create new object.
   def test_create
@@ -109,6 +111,17 @@ class CodeReviewTest < Test::Unit::TestCase
     assert_equal(0, reviews.length)
   end
 
+  def test_all_children
+    review = CodeReview.find(1)
+    assert_equal(4, review.all_children.length)
+    review = CodeReview.find(2)
+    assert_equal(1, review.all_children.length)
+  end
+
+  def test_convert_to_new_data
+    review = CodeReview.find(1)
+    assert review.convert_to_new_data
+  end
   private
   def newreview
     code_review = CodeReview.new

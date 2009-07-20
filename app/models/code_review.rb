@@ -151,12 +151,30 @@ class CodeReview < ActiveRecord::Base
     issue.status_id
   end
 
-  private
+  def convert_to_new_data
+    setting = CodeReviewProjectSetting.find_by_project_id(self.project_id)
+    review = CodeReview.new
+    review.project_id = self.project_id
+    review.issue = Issue.new
+    review.issue.project_id = self.project_id
+    review.issue.tracker_id = setting.tracker_id
+    review.comment = self.old_comment
+    review.user_id = self.old_user_id
+    review.change_id = self.change_id
+    review.updated_by = self.updated_by
+    review.subject = "code review"
+    review.save!
+    review.issue.save!
+
+    return review
+  end
+
+  #deprecated
   def all_children
     return @all_children if @all_children
     @all_children = children
     children.each {|child|
-      @all_children.concat(child.children)
+      @all_children = @all_children + child.children
     }
     @all_children = @all_children.sort{|a, b| a.id <=> b.id}
   end

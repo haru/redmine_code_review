@@ -23,3 +23,5 @@ label_review: review
 label_review_new: New Review
 review_notify_only_involved_in: "Only for things I'm involved in"
 review_notify_all: "For any review on all my projects"
+
+old_review_data_found: 'Some old review records were found. Do you want to convert them to new record ?'

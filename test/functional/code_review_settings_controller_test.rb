@@ -18,7 +18,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewSettingsControllerTest < ActionController::TestCase
   fixtures :code_reviews, :projects, :users, :trackers, :projects, :projects_trackers,
-    :code_review_project_settings
+    :code_review_project_settings, :issues
 
   def setup
     @controller = CodeReviewSettingsController.new
@@ -46,6 +46,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     @request.session[:user_id] = User.anonymous.id
     get :show, :id => 1
     assert_response 302
+    assert_equal(5, assigns(:old_reviews).length)
   end
 
   def test_update
