@@ -166,6 +166,12 @@ class CodeReview < ActiveRecord::Base
     review.save!
     review.issue.save!
 
+    self.all_children.each{|child|
+      user = User.find(child.old_user_id)
+      journal = review.issue.init_journal(user, child.old_comment)
+      review.issue.save!
+    }
+
     return review
   end
 
