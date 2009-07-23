@@ -43,12 +43,17 @@ class CodeReviewController < ApplicationController
     @all_review_count = CodeReview.count(:conditions => ['project_id = ?', @project.id])
     @review_pages = Paginator.new self, @review_count, limit, params['page']
     @show_closed = (params['show_closed'] == 'true')
-    show_closed_option = " and #{Issue.table_name}.status_id not in (5)"
+    show_closed_option = " and #{IssueStatus.table_name}.is_closed = ? "
     if (@show_closed)
       show_closed_option = ''
     end
+    conditions = ["#{CodeReview.table_name}.project_id = ? and issue_id is NOT NULL" + show_closed_option, @project.id]
+    unless (@show_closed)
+      conditions << false
+    end
+
     @reviews = CodeReview.find :all, :order => sort_clause,
-      :conditions => ["#{CodeReview.table_name}.project_id = ? and issue_id is NOT NULL" + show_closed_option, @project.id],
+      :conditions => conditions,
       :limit  =>  limit,
       :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " + 
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
