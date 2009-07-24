@@ -181,11 +181,12 @@ class CodeReview < ActiveRecord::Base
       user = User.find(child.old_user_id)
       journal = issue.init_journal(user, child.old_comment)
       journal.created_on = child.created_at
-      if (self.status_changed_to == 1)
+      if (child.status_changed_to == 1)
         issue.status_id = closed_status.id if closed_status
-      elsif (self.status_changed_to == 0)
+      elsif (child.status_changed_to == 0)
         issue.status_id = 1
       end
+      
       issue.save!
     }
 
