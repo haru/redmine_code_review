@@ -77,6 +77,7 @@ class CodeReviewController < ApplicationController
     
     @review.user_id = @user.id
     @review.updated_by_id = @user.id
+    @review.issue.start_date = Date.today
     #@review.status = CodeReview::STATUS_OPEN
      
     if request.post?
