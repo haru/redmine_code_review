@@ -168,7 +168,7 @@ class CodeReview < ActiveRecord::Base
     review.change_id = self.change_id
     review.issue.assigned_to_id = self.changeset.user_id if self.changeset
     review.updated_by = self.updated_by
-    review.subject = "code review"
+    review.subject = 'Old code review #' + self.id.to_s
     review.line = self.line
     if closed_status and self.old_status != 0
       review.issue.status_id = closed_status.id
@@ -177,10 +177,16 @@ class CodeReview < ActiveRecord::Base
     review.issue.save!
 
     self.all_children.each{|child|
+      issue = Issue.find(review.issue.id)
       user = User.find(child.old_user_id)
-      journal = review.issue.init_journal(user, child.old_comment)
+      journal = issue.init_journal(user, child.old_comment)
       journal.created_on = child.created_at
-      review.issue.save!
+      if (self.status_changed_to == 1)
+        issue.status_id = closed_status.id if closed_status
+      elsif (self.status_changed_to == 0)
+        issue.status_id = 1
+      end
+      issue.save!
     }
 
     return review
@@ -191,7 +197,7 @@ class CodeReview < ActiveRecord::Base
     return @all_children if @all_children
     @all_children = children
     children.each {|child|
-      @all_children = @all_children + child.children
+      @all_children = @all_children + child.all_children
     }
     @all_children = @all_children.sort{|a, b| a.id <=> b.id}
   end
