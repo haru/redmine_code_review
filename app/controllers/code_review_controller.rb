@@ -74,11 +74,16 @@ class CodeReviewController < ApplicationController
     @review.attributes = params[:review]
     @review.project_id = @project.id
     @review.issue.project_id = @project.id
+    
     @review.user_id = @user.id
     @review.updated_by_id = @user.id
     #@review.status = CodeReview::STATUS_OPEN
      
     if request.post?
+      if (@review.changeset and @review.changeset.user_id)
+        @review.issue.assigned_to_id = @review.changeset.user_id
+      end
+    
       if (!@review.save or !@review.issue.save)
         render :partial => 'new_form', :status => 250
         return
@@ -220,7 +225,8 @@ class CodeReviewController < ApplicationController
   def find_setting
     @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
   end
-  
+
+
   def am_i_member?
     @project.members.each{|m|
       return true if @user == m.user

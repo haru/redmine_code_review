@@ -61,4 +61,12 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     project = Project.find(1)
     assert_redirected_to :action => 'show', :id => project
   end
+
+  def test_convert
+    setting = CodeReviewProjectSetting.find(1)
+    @request.session[:user_id] = User.anonymous.id
+    get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id},
+      :convert => true
+    assert_response :redirect
+  end
 end

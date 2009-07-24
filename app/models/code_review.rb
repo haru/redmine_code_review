@@ -159,10 +159,12 @@ class CodeReview < ActiveRecord::Base
     review.issue.project_id = self.project_id
     review.issue.tracker_id = setting.tracker_id
     review.comment = self.old_comment
+    review.comment = 'No comment.' unless review.comment
     review.user_id = self.old_user_id
     review.change_id = self.change_id
     review.updated_by = self.updated_by
     review.subject = "code review"
+    review.line = self.line
     review.save!
     review.issue.save!
 
