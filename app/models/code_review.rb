@@ -93,11 +93,11 @@ class CodeReview < ActiveRecord::Base
   end
 
   def changeset
-    @changeset ||= Changeset.find(change.changeset_id)
+    @changeset ||= Changeset.find(change.changeset_id) if change
   end
 
   def repository
-    @repository ||= changeset.repository
+    @repository ||= changeset.repository if changeset
   end
 
   def comment=(str)  
@@ -152,25 +152,34 @@ class CodeReview < ActiveRecord::Base
   end
 
   def convert_to_new_data
+    closed_status = IssueStatus.find(:first, :conditions => 'id = 5')
+    closed_status = IssueStatus.find(:first, :conditions => ['is_closed = ?', true]) unless closed_status
     setting = CodeReviewProjectSetting.find_by_project_id(self.project_id)
     review = CodeReview.new
     review.project_id = self.project_id
     review.issue = Issue.new
     review.issue.project_id = self.project_id
     review.issue.tracker_id = setting.tracker_id
+    review.issue.start_date = self.created_at
+    review.issue.created_on = self.created_at
     review.comment = self.old_comment
     review.comment = 'No comment.' unless review.comment
     review.user_id = self.old_user_id
     review.change_id = self.change_id
+    review.issue.assigned_to_id = self.changeset.user_id if self.changeset
     review.updated_by = self.updated_by
     review.subject = "code review"
     review.line = self.line
+    if closed_status and self.old_status != 0
+      review.issue.status_id = closed_status.id
+    end
     review.save!
     review.issue.save!
 
     self.all_children.each{|child|
       user = User.find(child.old_user_id)
       journal = review.issue.init_journal(user, child.old_comment)
+      journal.created_on = child.created_at
       review.issue.save!
     }
 
