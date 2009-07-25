@@ -88,7 +88,7 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_destroy
     count = CodeReview.find(:all).length
     @request.session[:user_id] = 1
-    get :destroy, :id => 1, :review_id => 4
+    get :destroy, :id => 1, :review_id => 9
     assert_response :success
     assert_equal(count - 1, CodeReview.find(:all).length)
     
