@@ -49,6 +49,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
       return ''
     end
+    return unless code_review_setting_exists?(project)
     controller = context[:controller]
     return '' unless controller
     action_name = controller.action_name
@@ -97,5 +98,12 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     #o <<  wikitoolbar_for('review_comment')
 
     return o
+  end
+
+  def code_review_setting_exists?(project)
+    setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', project.id])
+    return false unless setting
+    return false unless setting.tracker_id
+    return true
   end
 end
