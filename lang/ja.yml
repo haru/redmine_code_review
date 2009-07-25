@@ -25,3 +25,4 @@ review_notify_only_involved_in: 自分が関係しているレビューだけ
 review_notify_all: 自分のプロジェクトのレビューはすべて
 
 old_review_data_found: '古い形式のレビューデータが見つかりました。新しい形式に変換しますか？'
+select_tracker_for_code_reviews: 'コードレビューに割り当てるトラッカーを選択してください。'

@@ -2,6 +2,8 @@
   <%=h l(:label_settings)%>
 </h2>
 
+<h3><%=h l(:select_tracker_for_code_reviews)%></h3>
+
 <% labelled_tabular_form_for :setting, @setting,
                              :url => {:action => 'update', :id => @project, :setting_id => @setting.id} do |f| %>
     <%= error_messages_for 'setting' %>
