@@ -34,7 +34,6 @@ Redmine::Plugin.register :redmine_code_review do
     permission :add_code_review, {:code_review => [:new, :reply]}, :require => :member
     permission :edit_code_review, {:code_review => [:update]}, :require => :member
     permission :delete_code_review, {:code_review => [:destroy]}, :require => :member
-    permission :close_code_review, {:code_review => [:close, :reopen]}, :require => :member
     permission :code_review_setting, {:code_review_settings => [:show, :update]}, :require => :member
 
   end

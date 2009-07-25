@@ -29,6 +29,7 @@ class CodeReviewSettingsController < ApplicationController
       old_reviews = find_old_reviews
       old_reviews.each {|review|
         review.convert_to_new_data
+        review.destroy
       }
     end
     flash[:notice] = l(:notice_successful_update)

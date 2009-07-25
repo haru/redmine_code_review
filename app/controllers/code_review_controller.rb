@@ -212,7 +212,7 @@ class CodeReviewController < ApplicationController
 
   def destroy
     @review = CodeReview.find(params[:review_id].to_i)
-    @review.destroy if @review
+    @review.issue.destroy if @review
     render :text => 'delete success.'
   end
 
