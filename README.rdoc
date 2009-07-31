@@ -15,6 +15,10 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 
 4. Add code review module into your project.
 
+=== Note
+
+This plugin works only on production mode.
+
 === Language contributors
 
 de.yml - Michael Diederich
@@ -25,5 +29,6 @@ nl.yml - Stefan Verstege
 pt-br.yml - Alessandro Hecht
 zh.yml - Marshall Wu
 zh-tw.yml - Andrew Liu
+ru.yml - Mykhaylo Sorochan
 
 
