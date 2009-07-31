@@ -16,9 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-<div class="contextual">
-<%= link_to_if_authorized l(:label_settings), {:controller => 'code_review_settings', :action => 'show', :id => @project}, :class => 'icon icon-settings' %>
-</div>
+
 <div id="code_review_list">
 <h2>
   <%=h l(:code_reviews) %>

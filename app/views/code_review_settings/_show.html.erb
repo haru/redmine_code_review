@@ -1,0 +1,30 @@
+<div id="code_review_settings">
+<%
+    @code_review_setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
+    @code_review_setting = CodeReviewProjectSetting.new unless @code_review_setting
+    @old_reviews = CodeReview.find(:all,
+      :conditions => ['issue_id is ? and old_parent_id is ? and project_id = ?', nil, nil, @project.id])
+
+%>
+
+<% labelled_tabular_form_for :setting, @code_review_setting,
+                             :url => {:controller => 'code_review_settings',
+                             :action => 'update', :id => @project, :tab => 'code_review',
+                             :partial => 'code_review_settings/update',
+                             :setting_id => @code_review_setting.id} do |f| %>
+    <%= error_messages_for 'code_review_setting' %>
+    <div class="box">
+      <b><%=h l(:select_tracker_for_code_reviews)%>:</b>
+    <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
+
+    <% if @old_reviews and @old_reviews.any? %>
+    <p>
+      <%=h l(:old_review_data_found) %>
+      <%=  radio_button_tag 'convert', true, :checked => false %><%=h l(:general_text_Yes) %>
+      <%=  radio_button_tag 'convert', false, :checked => true %><%=h l(:general_text_No) %>
+    </p>
+    <% end %>
+    </div>
+    <%= submit_tag l(:button_update) %>
+<% end %>
+</div>

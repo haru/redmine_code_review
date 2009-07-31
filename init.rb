@@ -20,13 +20,14 @@ require 'code_review_change_patch'
 require 'code_review_changeset_patch'
 require 'code_review_issue_patch'
 require 'code_review_issue_hooks'
+require 'code_review_projects_helper_patch'
 
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.2.0'
+  version '0.2.1'
   requires_redmine :version_or_higher => '0.8.3'
 
   project_module :code_review do
@@ -39,7 +40,7 @@ Redmine::Plugin.register :redmine_code_review do
   end
 
   menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
-    :if => Proc.new{|project| project.repository != nil}, :after => :repository
+    :if => Proc.new{|project|  project.repository != nil  }, :after => :repository
 
   
   Redmine::WikiFormatting::Macros.register do

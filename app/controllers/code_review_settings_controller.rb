@@ -33,7 +33,7 @@ class CodeReviewSettingsController < ApplicationController
       }
     end
     flash[:notice] = l(:notice_successful_update)
-    redirect_to :action => "show", :id => @project
+    redirect_to :controller => 'projects', :action => "settings", :id => @project, :tab => 'code_review'
   end
 
   private
