@@ -16,7 +16,9 @@
     <div class="box">
       <b><%=h l(:select_tracker_for_code_reviews)%>:</b>
     <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
-
+    <p>
+      <%= f.check_box :hide_code_review_tab %>
+    </p>
     <% if @old_reviews and @old_reviews.any? %>
     <p>
       <%=h l(:old_review_data_found) %>
