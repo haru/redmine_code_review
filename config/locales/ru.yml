@@ -1,0 +1,26 @@
+ru:
+  label_add_review: Добавить обзор
+  label_show_review: Просмотреть обзор
+  code_reviews: Обзоры кода
+  code_review: Обзор кода
+  project_module_code_review: Обзор кода
+  label_code_path: Путь
+  label_code_reviewer: Рецензент
+  label_code_author: Автор
+  label_code_line: Строка
+
+  label_review_open: Открыт
+  label_review_closed: Закрыт
+
+  label_reopen_review: Открыть заново этот обзор
+  label_close_review: Закрыть этот обзор
+
+  label_code_review_plural: Обзоры кода
+
+  label_line_number: 'Строка: %d'
+  notice_review_updated: Обзор был успешно обновлен.
+  label_show_closed_reviews: Показать закрытые обзоры.
+  label_review: обзор
+  label_review_new: Новый обзор
+  review_notify_only_involved_in: "Только для вещей, в которые я вовлечен"
+  review_notify_all: "Для любого обзора во всех моих проектах"
