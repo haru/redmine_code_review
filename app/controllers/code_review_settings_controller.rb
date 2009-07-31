@@ -5,14 +5,6 @@ class CodeReviewSettingsController < ApplicationController
 
   before_filter :find_project, :authorize, :find_user
 
-  def show
-    @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
-    @setting = CodeReviewProjectSetting.new unless @setting
-
-    @old_reviews = find_old_reviews
-  end
-
-
   def update   
     @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
     unless @setting
