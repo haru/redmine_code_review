@@ -38,16 +38,6 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     }
   end
 
-  def test_show
-    @request.session[:user_id] = 1
-    get :show, :id => 1
-    assert_response :success
-
-    @request.session[:user_id] = User.anonymous.id
-    get :show, :id => 1
-    assert_response 302
-    assert_equal(5, assigns(:old_reviews).length)
-  end
 
   def test_update
     @request.session[:user_id] = User.anonymous.id
@@ -59,7 +49,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}
     assert_response :redirect
     project = Project.find(1)
-    assert_redirected_to :action => 'show', :id => project
+    assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
   end
 
   def test_convert
