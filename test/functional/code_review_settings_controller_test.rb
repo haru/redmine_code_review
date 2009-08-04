@@ -30,6 +30,11 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     enabled_module.name = 'code_review'
     enabled_module.save
 
+    enabled_module = EnabledModule.new
+    enabled_module.project_id = 2
+    enabled_module.name = 'code_review'
+    enabled_module.save
+
     User.current = nil
     roles = Role.find(:all)
     roles.each {|role|
@@ -49,6 +54,16 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}
     assert_response :redirect
     project = Project.find(1)
+    assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
+
+    get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true'
+    assert_response :redirect
+    project = Project.find(1)
+    assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
+
+    get :update, :id => 2, :setting => {:tracker_id => 1, :id => setting.id}
+    assert_response :redirect
+    project = Project.find(2)
     assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
   end
 
