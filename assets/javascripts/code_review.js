@@ -18,6 +18,9 @@
  */
 var draggables = [];
 var topZindex = 1000;
+var action_type = '';
+var rev = '';
+var path = '';
 
 function getIEversion() {
     if (!Prototype.Browser.IE) {
@@ -65,7 +68,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff){
       if (line == null) {
           return;
       }
-      var newurl = url + '?change_id=' + change_id;
+      var newurl = url + '?change_id=' + change_id + '&action_type=' + action_type + '&rev=' + rev + '&path=' + path;
       var span = new Element('span', {'white-space': 'nowrap'});
       span.id = 'review_span_' + line;
       th.insert(span);
@@ -96,7 +99,7 @@ var showClosedReviewImageTag = null;
 function setShowReviewButton(line, review_id, is_closed) {
   var span = $('review_span_' + line);
   var innerSpan = new Element('span');
-  //alert('review_id = ' + review_id);
+  //alert('line = ' + line + ', review_id = ' + review_id);
   innerSpan.id = 'review_' + review_id;
   span.insert(innerSpan);
   if (is_closed) {

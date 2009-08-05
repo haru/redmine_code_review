@@ -78,6 +78,9 @@ class CodeReviewController < ApplicationController
     @review.user_id = @user.id
     @review.updated_by_id = @user.id
     @review.issue.start_date = Date.today
+    @review.action_type = params[:action_type]
+    @review.rev = params[:rev]
+    @review.file_path = params[:path] unless params[:path].blank?
     #@review.status = CodeReview::STATUS_OPEN
      
     if request.post?
@@ -137,7 +140,11 @@ class CodeReviewController < ApplicationController
       render :partial => 'show_error'
       return
     end
-    @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and issue_id is NOT NULL', @change.id])
+    if (@action_type == 'diff')
+      @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and action_type = ? and issue_id is NOT NULL', @change.id, @action_type])
+    else
+      @reviews = CodeReview.find(:all, :conditions => ['file_path = ? and action_type = ? and rev = ? and issue_id is NOT NULL', @path, @action_type, @rev])
+    end
     @review.change_id = @change.id
     render :partial => 'update_diff_view'
   end
@@ -152,7 +159,8 @@ class CodeReviewController < ApplicationController
       #@review = @review.root
       path = @review.path
       path = '/' + path unless path.match(/^\//)
-      redirect_to url_for(:controller => 'repositories', :action => 'diff', :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s
+      action_name = @review.action_type
+      redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s
 
     end
   end

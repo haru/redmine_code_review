@@ -66,6 +66,7 @@ class CodeReview < ActiveRecord::Base
 
   def path
     begin
+      return file_path if file_path
       return @path if @path
       repository = changeset.repository
       url = repository.url
@@ -86,10 +87,8 @@ class CodeReview < ActiveRecord::Base
   end
 
   def revision
-    begin
-      changeset.revision
-    rescue
-    end
+    return rev if rev
+    changeset.revision
   end
 
   def changeset

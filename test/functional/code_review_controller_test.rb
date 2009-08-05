@@ -60,7 +60,7 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_new
     @request.session[:user_id] = 1
-    get :new, :id => 1
+    get :new, :id => 1, :action_type => 'diff', :rev => 5
     assert_response :success
     assert_template '_new_form'
 
@@ -71,7 +71,7 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_template '_add_success'
     assert_equal(count + 1, CodeReview.find(:all).length)
 
-    get :new, :id => 1
+    get :new, :id => 1, :action_type => 'diff', :rev => 5
     assert_response :success
     assert_template '_new_form'
 
