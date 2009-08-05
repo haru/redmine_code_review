@@ -48,10 +48,14 @@ function isIE8() {
     return false;
 }
 
-function setAddReviewButton(url, change_id, image_tag, is_readonly){
+function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff){
   var trs = $$('table.filecontent tr');
+  var num = 0;
+  if (is_diff) {
+      num = 1;
+  }
   trs.each(function(tr){
-      th = tr.down('th', 1);
+      th = tr.down('th', num);
       if (th == null) {
           return;
       }

@@ -31,7 +31,11 @@
   <% if authorize_for('code_review', 'new') -%>
     is_readonly = false;
   <% end %>
-  setAddReviewButton(addReviewUrl, <%= @change.id %>, '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly);
+  var is_diff = false;
+  <% if @action_type == 'diff' -%>
+     is_diff = true;
+  <% end %>
+  setAddReviewButton(addReviewUrl, <%= @change.id %>, '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff);
 
   showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
   showReviewImageTag = '<%= image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';

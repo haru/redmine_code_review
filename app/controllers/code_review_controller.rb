@@ -113,6 +113,7 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.new
     @rev = params[:rev] unless params[:rev].blank?
     @path = params[:path]
+    @action_type = params[:action_type]
     changeset = Changeset.find_by_revision(@rev, :conditions => ['repository_id = (?)',@project.repository.id])
     repository = @project.repository
     url = repository.url

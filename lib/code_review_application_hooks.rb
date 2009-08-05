@@ -30,7 +30,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       return ''
     end
     
-    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show'))
+    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate'))
 
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
@@ -56,7 +56,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless action_name
     return '' unless (controller.class.name == 'RepositoriesController')
     #return change_repository_view context if action_name == 'show'
-    return '' unless (action_name == 'diff')
+    return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
     request = context[:request]
     parameters = request.parameters
     return unless parameters['rev_to'].blank?
@@ -74,7 +74,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project
     o << '<script type="text/javascript">' + "\n"
     o << "document.observe('dom:loaded', function() {" + "\n"
-    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}'});\n"
+    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}&action_type=#{action_name}'});\n"
     o << "});\n"
     o << '</script>'
     #o <<  wikitoolbar_for('review_comment')
