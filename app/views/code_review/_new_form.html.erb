@@ -39,6 +39,7 @@
 <%= f.hidden_field(:line) %>
 <%= hidden_field_tag(:action_type, @review.action_type) %>
 <%= hidden_field_tag(:rev, @review.revision) %>
+<%= hidden_field_tag(:rev_to, @review.rev_to) %>
 <%= hidden_field_tag(:path, @review.path) %>
   <p>
     <label><b><%=h l(:field_subject)%>:</b></label>

@@ -31,6 +31,7 @@ class CodeReview < ActiveRecord::Base
   validates_presence_of :updated_by_id
   validates_presence_of :issue
   validates_presence_of :subject
+  validates_presence_of :action_type
 
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
@@ -51,17 +52,15 @@ class CodeReview < ActiveRecord::Base
   end
   
   def committer
-    begin
-      return changeset.author if changeset.respond_to?('author')
+    return changeset.author if changeset.respond_to?('author')
 
-      # For development mode. I don't know why "changeset.respond_to?('author')"
-      # is false in development mode.
-      if changeset.user_id
-        return User.find(changeset.user_id)
-      end
-      changeset.committer.to_s.split('<').first
-    rescue
+    # For development mode. I don't know why "changeset.respond_to?('author')"
+    # is false in development mode.
+    if changeset.user_id
+      return User.find(changeset.user_id)
     end
+    changeset.committer.to_s.split('<').first
+    
   end
 
   def path
@@ -92,7 +91,14 @@ class CodeReview < ActiveRecord::Base
   end
 
   def changeset
-    @changeset ||= Changeset.find(change.changeset_id) if change
+    return @changeset if @changeset
+    if change
+      @changeset = Changeset.find(change.changeset_id)
+    else
+      repository_id = project.repository.id if project.repository
+      @changeset = Changeset.find(:first, :condition => ['id = ? and revision = ?', repository_id, rev])
+    end
+    
   end
 
   def repository
@@ -169,6 +175,7 @@ class CodeReview < ActiveRecord::Base
     review.updated_by = self.updated_by
     review.subject = 'Old code review #' + self.id.to_s
     review.line = self.line
+    review.action_type = 'diff' unless review.action_type
     if closed_status and self.old_status != 0
       review.issue.status_id = closed_status.id
     end

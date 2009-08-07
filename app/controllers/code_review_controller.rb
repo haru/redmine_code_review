@@ -79,7 +79,8 @@ class CodeReviewController < ApplicationController
     @review.updated_by_id = @user.id
     @review.issue.start_date = Date.today
     @review.action_type = params[:action_type]
-    @review.rev = params[:rev]
+    @review.rev = params[:rev] unless params[:rev].blank?
+    @review.rev_to = params[:rev_to] unless params[:rev_to].blank?
     @review.file_path = params[:path] unless params[:path].blank?
     #@review.status = CodeReview::STATUS_OPEN
      
@@ -115,6 +116,7 @@ class CodeReviewController < ApplicationController
     @show_review = CodeReview.find(@show_review_id) if @show_review_id
     @review = CodeReview.new
     @rev = params[:rev] unless params[:rev].blank?
+    @rev_to = params[:rev_to] unless params[:rev_to].blank?
     @path = params[:path]
     @action_type = params[:action_type]
     changeset = Changeset.find_by_revision(@rev, :conditions => ['repository_id = (?)',@project.repository.id])
@@ -160,7 +162,9 @@ class CodeReviewController < ApplicationController
       path = @review.path
       path = '/' + path unless path.match(/^\//)
       action_name = @review.action_type
-      redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s
+      rev_to = ''
+      rev_to = '&rev_to=' + @review.rev_to if @review.rev_to
+      redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s + rev_to
 
     end
   end

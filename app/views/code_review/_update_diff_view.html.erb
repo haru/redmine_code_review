@@ -37,6 +37,7 @@
   <% end %>
   action_type = '<%= @action_type %>';
   rev = '<%= @rev %>';
+  rev_to = '<%= @rev_to %>';
   path = '<%= @path %>';
   setAddReviewButton(addReviewUrl, <%= @change.id %>, '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff);
 

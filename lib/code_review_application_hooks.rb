@@ -1,6 +1,6 @@
 # Code Review plugin for Redmine
 # Copyright (C) 2009  Haruyuki Iida
-#
+#rev
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -59,7 +59,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
     request = context[:request]
     parameters = request.parameters
-    return unless parameters['rev_to'].blank?
+    rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
     review_id = parameters['review_id']
     rev = parameters['rev']
     patharray = parameters['path']
@@ -74,7 +74,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project
     o << '<script type="text/javascript">' + "\n"
     o << "document.observe('dom:loaded', function() {" + "\n"
-    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}&action_type=#{action_name}'});\n"
+    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}&action_type=#{action_name}&rev_to=#{rev_to}'});\n"
     o << "});\n"
     o << '</script>'
     #o <<  wikitoolbar_for('review_comment')

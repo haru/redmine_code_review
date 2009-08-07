@@ -33,6 +33,7 @@ class CodeReviewTest < Test::Unit::TestCase
     code_review.change_id = 1;
     code_review.updated_by_id = 1;
     code_review.subject = "aaa"
+    code_review.action_type = 'diff'
 
     assert code_review.save
     

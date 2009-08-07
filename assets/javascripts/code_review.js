@@ -20,6 +20,7 @@ var draggables = [];
 var topZindex = 1000;
 var action_type = '';
 var rev = '';
+var rev_to = '';
 var path = '';
 
 function getIEversion() {
@@ -68,7 +69,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff){
       if (line == null) {
           return;
       }
-      var newurl = url + '?change_id=' + change_id + '&action_type=' + action_type + '&rev=' + rev + '&path=' + path;
+      var newurl = url + '?change_id=' + change_id + '&action_type=' + action_type + '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to;
       var span = new Element('span', {'white-space': 'nowrap'});
       span.id = 'review_span_' + line;
       th.insert(span);
