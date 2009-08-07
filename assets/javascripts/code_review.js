@@ -99,6 +99,9 @@ var showClosedReviewImageTag = null;
 
 function setShowReviewButton(line, review_id, is_closed) {
   var span = $('review_span_' + line);
+  if (span == null) {
+      return;
+  }
   var innerSpan = new Element('span');
   //alert('line = ' + line + ', review_id = ' + review_id);
   innerSpan.id = 'review_' + review_id;
