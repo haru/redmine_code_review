@@ -52,15 +52,7 @@ class CodeReview < ActiveRecord::Base
   end
   
   def committer
-    return changeset.author if changeset.respond_to?('author')
-
-    # For development mode. I don't know why "changeset.respond_to?('author')"
-    # is false in development mode.
-    if changeset.user_id
-      return User.find(changeset.user_id)
-    end
-    changeset.committer.to_s.split('<').first
-    
+    return changeset.author if changeset
   end
 
   def path
@@ -87,7 +79,7 @@ class CodeReview < ActiveRecord::Base
 
   def revision
     return rev if rev
-    changeset.revision
+    changeset.revision if changeset
   end
 
   def changeset
@@ -96,7 +88,7 @@ class CodeReview < ActiveRecord::Base
       @changeset = Changeset.find(change.changeset_id)
     else
       repository_id = project.repository.id if project.repository
-      @changeset = Changeset.find(:first, :condition => ['id = ? and revision = ?', repository_id, rev])
+      @changeset = Changeset.find(:first, :conditions => ['id = ? and revision = ?', repository_id, rev])
     end
     
   end
