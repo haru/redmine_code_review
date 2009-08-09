@@ -72,7 +72,7 @@ module ChangesetInstanceMethodsCodeReview
   end
 
   def completed_review_pourcent
-    if closed_review_count == 0
+    if review_count == 0
       0
     elsif open_review_count == 0
       100
