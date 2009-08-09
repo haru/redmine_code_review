@@ -91,9 +91,9 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     o << "\n"
     changesets.each{|changeset|
       if changeset.review_count > 0
-        progress = progress_bar([changeset.closed_review_pourcent, changeset.completed_review_pourcent],
+        progress = '<span style="white-space: nowrap">' + progress_bar([changeset.closed_review_pourcent, changeset.completed_review_pourcent],
           :width => '60px',
-          :legend => "#{sprintf("%0.1f", changeset.completed_review_pourcent)}%") +
+          :legend => "#{sprintf("%0.1f", changeset.completed_review_pourcent)}%") + '</span>' +
           '<p class="progress-info">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
           "   #{changeset.open_review_count} #{l(:label_open_issues)}" + '</p>'
       else
