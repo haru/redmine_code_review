@@ -138,7 +138,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
         cnt += 1
         
       }
-      o << "code_reviews_map['#{change.path}'] = reviewlist;\n"
+      o << "code_reviews_map['#{change.relative_path}'] = reviewlist;\n"
      
     }
     
