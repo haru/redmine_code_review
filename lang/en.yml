@@ -27,3 +27,4 @@ review_notify_all: "For any review on all my projects"
 old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
 select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
 field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
+lable_no_code_reviews: 'No reviews'

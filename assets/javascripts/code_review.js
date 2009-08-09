@@ -23,6 +23,31 @@ var rev = '';
 var rev_to = '';
 var path = '';
 
+var ReviewCount = function(total, open, progress){
+    this.total = total;
+    this.open = open;
+    this.closed = total - open;
+    this.progress = progress
+};
+
+var review_counts = new Array();
+
+function UpdateRepositoryView(title) {
+    var header = $$('table.changesets thead tr')[0];
+    var th = new Element('th');
+    th.innerHTML = title;
+    header.insert(th);
+    var trs = $$('tr.changeset');
+    for (var i = 0; i < trs.length; i++) {
+        var tr = trs[i];
+        var revision = tr.down('a').innerHTML.match(/[0-9]+/);
+        var review = review_counts['revision_' + revision]
+        var td = new Element('td',{'class':'progress'});
+        td.innerHTML = review.progress
+        tr.insert(td);
+    }
+}
+
 function getIEversion() {
     if (!Prototype.Browser.IE) {
         return -1;

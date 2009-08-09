@@ -27,3 +27,4 @@ review_notify_all: 自分のプロジェクトのレビューはすべて
 old_review_data_found: '古い形式のレビューデータが見つかりました。新しい形式に変換しますか？'
 select_tracker_for_code_reviews: 'コードレビューに割り当てるトラッカーを選択してください。'
 field_hide_code_review_tab: コードレビュータブを隠す
+lable_no_code_reviews: レビューはありません

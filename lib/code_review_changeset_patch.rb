@@ -47,8 +47,43 @@ module ChangesetInstanceMethodsCodeReview
     return @open_review_count
   end
 
+  def review_issues
+    return @review_issues if @review_issues
+    changes.each{|change|
+      unless @review_issues
+        @review_issues = change.code_reviews.collect{|issue| issue}
+      else
+        @review_issues =  @review_issues + change.code_reviews.collect{|issue| issue}
+      end
+      @review_issues
+    }
+  end
+
   def closed_review_count
     review_count - open_review_count
+  end
+
+  def closed_review_pourcent
+    if review_count == 0
+      0
+    else
+      closed_review_count * 100.0 / review_count
+    end
+  end
+
+  def completed_review_pourcent
+    if closed_review_count == 0
+      0
+    elsif open_review_count == 0
+      100
+    else
+      @completed_review_pourcent ||= (closed_review_count * 100 +
+          CodeReview.sum("#{Issue.table_name}.done_ratio", 
+          :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
+      "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
+      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
+          :conditions => ["#{Changeset.table_name}.id = ? AND #{IssueStatus.table_name}.is_closed = ?", id, false]).to_f) / review_count
+    end
   end
 end
 

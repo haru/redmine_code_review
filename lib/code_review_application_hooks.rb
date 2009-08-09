@@ -30,7 +30,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       return ''
     end
     
-    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate'))
+    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate' or action_name == 'revisions'))
 
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
@@ -55,7 +55,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     action_name = controller.action_name
     return '' unless action_name
     return '' unless (controller.class.name == 'RepositoriesController')
-    #return change_repository_view context if action_name == 'show'
+    return change_repository_view context if (action_name == 'show' or action_name == 'revisions')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
     request = context[:request]
     parameters = request.parameters
@@ -84,18 +84,31 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
   def change_repository_view(context)
     project = context[:project]
-    url = url_for :controller => 'code_review', :action => 'update_repository_view', :id => project
+    controller = context[:controller]
+    changesets = controller.get_selected_changesets
     o = ''
-    o << '<div id="code_review_script">' + "\n"
+    o << '<script type="text/javascript">'
+    o << "\n"
+    changesets.each{|changeset|
+      if changeset.review_count > 0
+        progress = progress_bar([changeset.closed_review_pourcent, changeset.completed_review_pourcent],
+          :width => '60px',
+          :legend => "#{sprintf("%0.1f", changeset.completed_review_pourcent)}%") +
+          '<p class="progress-info">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
+          "   #{changeset.open_review_count} #{l(:label_open_issues)}" + '</p>'
+      else
+        progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '</p>'
+      end
 
-    o << '</div>' + "\n"
-    url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project
-    o << '<script type="text/javascript">' + "\n"
-    o << "document.observe('dom:loaded', function() {" + "\n"
-    o << "new Ajax.Updater('code_review_script', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}'});\n"
-    o << "});\n"
+      o << "var count = new ReviewCount(#{changeset.review_count}, #{changeset.open_review_count}, '#{progress}');"
+      o << "\n"
+      o << "review_counts['revision_#{changeset.revision}'] = count;"
+      o << "\n"
+    }
+    o << "UpdateRepositoryView('#{l(:code_reviews)}');"
+    o << "\n"
     o << '</script>'
-    #o <<  wikitoolbar_for('review_comment')
+    o << "\n"
 
     return o
   end
