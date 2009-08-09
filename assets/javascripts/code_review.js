@@ -22,6 +22,7 @@ var action_type = '';
 var rev = '';
 var rev_to = '';
 var path = '';
+var urlprefix = '';
 
 var ReviewCount = function(total, open, progress){
     this.total = total;
@@ -30,7 +31,16 @@ var ReviewCount = function(total, open, progress){
     this.progress = progress
 };
 
+var CodeReview = function(id) {
+    this.id = id;
+    this.path = '';
+    this.line = 0;
+    this.url = '';
+    this.is_closed = false;
+};
+
 var review_counts = new Array();
+var code_reviews_map = new Array();
 
 function UpdateRepositoryView(title) {
     var header = $$('table.changesets thead tr')[0];
@@ -45,6 +55,42 @@ function UpdateRepositoryView(title) {
         var td = new Element('td',{'class':'progress'});
         td.innerHTML = review.progress
         tr.insert(td);
+    }
+}
+
+function UpdateRevisionView() {
+    var lis = $$('li.change');
+
+    for (var i = 0; i < lis.length; i++) {
+        var li = lis[i];
+        
+        if (li.hasClassName('folder')) {
+            continue;
+        }
+        var ul = new Element('ul');
+        
+        var a = li.down('a');
+        if (a == null)
+            continue;
+        var href = a.getAttribute('href')
+        href = href.replace(urlprefix, '');
+        var path = href.replace(/\?.*$/, '');
+        var reviewlist = code_reviews_map[path];
+        if (reviewlist == null){
+            continue;
+        }
+        for (var j = 0; j < reviewlist.length; j++) {
+            var review = reviewlist[j];
+            var icon = 'icon-review';
+            if (review.is_closed) {
+                icon = 'icon-closed-review';
+            }
+            var item = new Element('li', {'class': 'icon ' + icon + ' code_review_summary'});
+            item.innerHTML = review.url;
+            ul.insert(item);
+        }
+        li.insert(ul);
+
     }
 }
 

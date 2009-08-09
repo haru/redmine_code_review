@@ -30,7 +30,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       return ''
     end
     
-    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate' or action_name == 'revisions'))
+    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate' or action_name == 'revisions' or action_name == 'revision'))
 
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
@@ -56,6 +56,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless action_name
     return '' unless (controller.class.name == 'RepositoriesController')
     return change_repository_view context if (action_name == 'show' or action_name == 'revisions')
+    return change_revision_view context if (action_name == 'revision')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
     request = context[:request]
     parameters = request.parameters
@@ -110,6 +111,39 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     o << '</script>'
     o << "\n"
 
+    return o
+  end
+
+  def change_revision_view(context)
+    project = context[:project]
+    controller = context[:controller]
+    changesets = controller.get_selected_changesets
+    changeset = changesets[0]
+    o = ''
+    o << '<script type="text/javascript">' + "\n"
+    urlprefix = url_for(:controller => 'repositories', :action => 'entry', :id => project)
+    o << "urlprefix = '#{urlprefix}';\n"
+    
+    changeset.changes.each{|change|
+      o << "var reviewlist = [];\n"
+      cnt = 0
+      change.code_reviews.each {|review|
+        issue = review.issue
+        o << "var review = new CodeReview(#{review.id});\n"
+        url = link_to('#' + "#{issue.id} #{review.subject}(#{issue.status})",
+        :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
+        o << "review.url = '#{url}';\n"
+        o << "review.is_closed = true;\n" if review.is_closed?
+        o << "reviewlist[#{cnt}] = review;\n"
+        cnt += 1
+        
+      }
+      o << "code_reviews_map['#{change.path}'] = reviewlist;\n"
+     
+    }
+    
+    o << "UpdateRevisionView();"
+    o << '</script>'
     return o
   end
 

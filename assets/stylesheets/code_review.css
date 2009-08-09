@@ -114,3 +114,7 @@ table.filecontent th.line-num img{
     color: #ffffff;
     text-decoration: underline;
 }
+
+li.code_review_summary {
+    list-style-type: none;
+}

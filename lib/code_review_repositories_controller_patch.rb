@@ -31,7 +31,10 @@ end
 
 module RepositoriesControllerInstanceMethodsCodeReview
   def get_selected_changesets
-    @changesets
+    return @changesets if @changesets
+    if @changeset
+      [@changeset]
+    end
   end
 end
 
