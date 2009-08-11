@@ -64,50 +64,52 @@ class CodeReviewController < ApplicationController
   end
 
   def new
-    unless @setting
-      redirect_to :controller => 'code_review_settings', :action => "show" , :id => @project
-      return
-    end
-    @review = CodeReview.new
-    @review.issue = Issue.new
-    @review.issue.tracker_id = @setting.tracker_id
-    @review.attributes = params[:review]
-    @review.project_id = @project.id
-    @review.issue.project_id = @project.id
-    
-    @review.user_id = @user.id
-    @review.updated_by_id = @user.id
-    @review.issue.start_date = Date.today
-    @review.action_type = params[:action_type]
-    @review.rev = params[:rev] unless params[:rev].blank?
-    @review.rev_to = params[:rev_to] unless params[:rev_to].blank?
-    @review.file_path = params[:path] unless params[:path].blank?
-    #@review.status = CodeReview::STATUS_OPEN
-     
-    if request.post?
-      if (@review.changeset and @review.changeset.user_id)
-        @review.issue.assigned_to_id = @review.changeset.user_id
-      end
-    
-      if (!@review.save or !@review.issue.save)
-        render :partial => 'new_form', :status => 250
-        return
-      end
-      #lang = current_language
-      #ReviewMailer.deliver_review_add(@project, @review)
-      #set_language lang if respond_to? 'set_language'
-      if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')
-        Mailer.deliver_issue_add(@review.issue) if Setting.notified_events.include?('issue_added')
-      end
+    begin
+      CodeReview.transaction {
+        unless @setting
+          redirect_to :controller => 'code_review_settings', :action => "show" , :id => @project
+          return
+        end
+        @review = CodeReview.new
+        @review.issue = Issue.new
+        @review.issue.tracker_id = @setting.tracker_id
+        @review.attributes = params[:review]
+        @review.project_id = @project.id
+        @review.issue.project_id = @project.id
 
-      render :partial => 'add_success', :status => 220
-      return
-    else
-      @review.change_id = params[:change_id].to_i unless params[:change_id].blank?
-      @review.line = params[:line].to_i
+        @review.user_id = @user.id
+        @review.updated_by_id = @user.id
+        @review.issue.start_date = Date.today
+        @review.action_type = params[:action_type]
+        @review.rev = params[:rev] unless params[:rev].blank?
+        @review.rev_to = params[:rev_to] unless params[:rev_to].blank?
+        @review.file_path = params[:path] unless params[:path].blank?
+        @issue = @review.issue
 
+        if request.post?
+          if (@review.changeset and @review.changeset.user_id)
+            @review.issue.assigned_to_id = @review.changeset.user_id
+          end
+
+          @review.save!
+          @review.issue.save!
+           
+          if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')
+            Mailer.deliver_issue_add(@review.issue) if Setting.notified_events.include?('issue_added')
+          end
+
+          render :partial => 'add_success', :status => 220
+          return
+        else
+          @review.change_id = params[:change_id].to_i unless params[:change_id].blank?
+          @review.line = params[:line].to_i
+
+        end
+        render :partial => 'new_form', :status => 200
+      }
+    rescue
+      render :partial => 'new_form', :status => 250
     end
-    render :partial => 'new_form', :status => 200
   end
 
 
@@ -198,24 +200,27 @@ class CodeReviewController < ApplicationController
 
   def update
     begin
-      @review = CodeReview.find(params[:review_id].to_i)
-      journal = @review.issue.init_journal(User.current, nil)
-      @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
-      @issue = @review.issue
-      @issue.lock_version = params[:issue][:lock_version]
-      @review.attributes = params[:review]
-      @review.updated_by_id = @user.id
-      if @review.save and @review.issue.save
+      CodeReview.transaction {
+        @review = CodeReview.find(params[:review_id].to_i)
+        journal = @review.issue.init_journal(User.current, nil)
+        @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
+        @issue = @review.issue
+        @issue.lock_version = params[:issue][:lock_version]
+        @review.attributes = params[:review]
+        @review.updated_by_id = @user.id
+        @review.save!
+        @review.issue.save!
         @notice = l(:notice_review_updated)
         lang = current_language
         Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
         set_language lang if respond_to? 'set_language'
-
-      end
-      render :partial => 'show'
+        render :partial => 'show'
+      }
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception
       @error = l(:notice_locking_conflict)
+      render :partial => 'show'
+    rescue
       render :partial => 'show'
     end
   end
