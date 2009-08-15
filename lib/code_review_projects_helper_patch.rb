@@ -24,8 +24,7 @@ module CodeReviewProjectsHelperPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
 
-      alias_method :default_project_settings_tabs_for_code_review, :project_settings_tabs
-      alias_method :project_settings_tabs, :project_settings_tabs_with_code_review
+      alias_method_chain :project_settings_tabs, :code_review
     end
 
   end
@@ -33,7 +32,7 @@ end
 
 module ProjectsHelperMethodsCodeReview
   def project_settings_tabs_with_code_review
-    tabs = default_project_settings_tabs_for_code_review
+    tabs = project_settings_tabs_without_code_review
     action = {:name => 'code_review', :controller => 'code_review_settings', :action => :show, :partial => 'code_review_settings/show', :label => :code_review}
 
     tabs << action if User.current.allowed_to?(action, @project)
