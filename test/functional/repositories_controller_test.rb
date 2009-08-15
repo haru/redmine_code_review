@@ -35,29 +35,44 @@ class RepositoriesControllerTest < Test::Unit::TestCase
     enabled_module.project_id = 2
     enabled_module.name = 'code_review'
     enabled_module.save
+    enabled_module = EnabledModule.new
+    enabled_module.project_id = 1
+    enabled_module.name = 'repository'
+    enabled_module.save
+    project = Project.find(1)
+    repo = Repository.find(10)
+    project.repository = repo
+    project.save
 
     User.current = nil
     roles = Role.find(:all)
     roles.each {|role|
       role.permissions << :view_code_review
+      role.permissions << :add_code_review
+      role.permissions << :browse_repository
       role.save
     }
   end
 
   def test_revision
-    #get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    @request.session[:user_id] = 1
+    get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
     #assert_response :success
     
   end
 
   def test_revisions
-    get :revisions, :id => 1, :rev => 1
-    #assert_response :success
+    @request.session[:user_id] = 1
+    get :revisions, :id => 1
+    assert_response :success
 
   end
   
   def test_diff
     @request.session[:user_id] = 1
-    get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    #get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    get :diff, :id => 1, :path => ['/']
+    #assert_response :success
+
   end
 end
