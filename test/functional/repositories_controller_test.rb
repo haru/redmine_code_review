@@ -27,10 +27,37 @@ class RepositoriesControllerTest < Test::Unit::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     User.current = nil
+    enabled_module = EnabledModule.new
+    enabled_module.project_id = 1
+    enabled_module.name = 'code_review'
+    enabled_module.save
+    enabled_module = EnabledModule.new
+    enabled_module.project_id = 2
+    enabled_module.name = 'code_review'
+    enabled_module.save
+
+    User.current = nil
+    roles = Role.find(:all)
+    roles.each {|role|
+      role.permissions << :view_code_review
+      role.save
+    }
+  end
+
+  def test_revision
+    #get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    #assert_response :success
+    
+  end
+
+  def test_revisions
+    get :revisions, :id => 1, :rev => 1
+    assert_response :success
+
   end
   
   def test_diff
     @request.session[:user_id] = 1
-    get :diff, :id => 1
+    get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/')
   end
 end
