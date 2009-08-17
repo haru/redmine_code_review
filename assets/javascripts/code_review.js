@@ -63,12 +63,12 @@ function UpdateRevisionView() {
 
     for (var i = 0; i < lis.length; i++) {
         var li = lis[i];
-        
+
         if (li.hasClassName('folder')) {
             continue;
         }
         var ul = new Element('ul');
-        
+
         var a = li.down('a');
         if (a == null)
             continue;
@@ -124,46 +124,67 @@ function isIE8() {
 }
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff){
-  var trs = $$('table.filecontent tr');
+  var tables = document.getElementsByTagName('table');
+  var table = null;
+  for (var i = 0; i < tables.length; i++) {
+      if (Element.hasClassName(tables[i], 'filecontent')) {
+          table = tables[i];
+          break;
+      }
+  }
+  var tbody = table.getElementsByTagName('tbody')[0];
+  var trs = tbody.getElementsByTagName('tr');
+
   var num = 0;
   if (is_diff) {
       num = 1;
   }
-  trs.each(function(tr){
-      th = tr.down('th', num);
+
+  for (var j = 0; j < trs.length; j++) {
+      var tr = trs[j];
+      var ths = tr.getElementsByTagName('th');
+
+      var th = ths[num];
       if (th == null) {
-          return;
+          continue;
       }
-      th.setStyle({'text-align':'left'});
+
+      Element.setStyle(th, {'text-align':'left'})
 
       var line = th.innerHTML.match(/[0-9]+/);
       if (line == null) {
-          return;
+          continue;
       }
-      var newurl = url + '?change_id=' + change_id + '&action_type=' + action_type + '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to;
+
+      addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type + '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to;
       var span = new Element('span', {'white-space': 'nowrap'});
       span.id = 'review_span_' + line;
       th.insert(span);
 
       if (is_readonly) {
-          return;
+          continue;
       }
-      span.insert(image_tag);      
-      var img = span.down('img');
+      span.insert(image_tag);
+
+      var img = span.getElementsByTagName('img')[0];
       img.id = 'add_revew_img_' + line;
       //img.oncontextmenu = 'return false;';
-      img.observe('click', function(e) {
-          var line = e.element().id.match(/[0-9]+/);
-          addReview(newurl + '&line=' + line);
-          formPopup(e, $('review-form-frame'));
-          e.preventDefault();
-      });
-      
-  });
+      //img.onclick = clickPencil;
+      Element.observe(img, 'click', clickPencil);
 
-  
+  }
+
+
 }
 
+function clickPencil(e)
+{
+    var line = e.element().id.match(/[0-9]+/);
+    addReview(addReviewUrl + '&line=' + line);
+    formPopup(e, $('review-form-frame'));
+    e.preventDefault();
+}
+var addReviewUrl = null;
 var showReviewUrl = null;
 var showReviewImageTag = null;
 var showClosedReviewImageTag = null;
@@ -184,7 +205,7 @@ function setShowReviewButton(line, review_id, is_closed) {
   else {
       innerSpan.innerHTML = showReviewImageTag;
   }
-  
+
   var div = new Element('div', {style:'position:absolute; display:none;', 'class':'draggable'});
   div.id = 'show_review_' + review_id;
   $('code_review').insert(div);
@@ -192,7 +213,7 @@ function setShowReviewButton(line, review_id, is_closed) {
       var review_id = e.element().up().id.match(/[0-9]+/);
       var target = $('show_review_' + review_id);
       showReview(showReviewUrl, review_id, target);
-      
+
       target.style.top = e.pointerY() + 'px';
       target.style.left = (e.pointerX() + 5) + 'px';
 //      var targetBody = target.down('.code_review_body');
@@ -200,7 +221,7 @@ function setShowReviewButton(line, review_id, is_closed) {
 //      if (targetBody.getHeight() > maxHeight) {
 //          targetBody.setStyle({height: '' + maxHeight + 'px'});
 //      }
-      
+
       setDraggables();
       var code_review_body = target.down('.code_review_body');
       var header_table = target.down('.header_table');
@@ -227,7 +248,7 @@ function popupReview(line, review_id) {
   showReview(showReviewUrl, review_id, target);
   var code_review_body = target.down('.code_review_body');
   var header_table = target.down('.header_table');
-  if (isIE6()) { 
+  if (isIE6()) {
       code_review_body.setStyle('width: 50%;');
       header_table.setStyle('width: 50%;');
   }
@@ -246,7 +267,7 @@ function showReview(url, review_id, element) {
         evalScripts:true,
         parameters: 'review_id=' + review_id,
         method:'get'});
-    
+
     element.observe('click', function(e){
         //alert(e.element().inspect());
         if (isIE8()) {
@@ -274,7 +295,7 @@ function formPopup(evt, popup){
     Effect.Grow(popup.id, {direction: 'top-left'});
     setDraggables();
     toTopLayer(popup);
-    
+
     return false;
 }
 
@@ -308,7 +329,7 @@ function setDraggables() {
         list = $$('.draggable');
     }
     for(var i = 0; i < list.length; i++) {
-        var draggable = list[i];       
+        var draggable = list[i];
         var draghandle = draggable.down('.drag-handle');
         if (draghandle == null) {
             continue;
@@ -317,7 +338,7 @@ function setDraggables() {
             handle:'drag-handle',
             zindex: 2000
         });
-        
+
     }
 }
 
@@ -331,11 +352,11 @@ function changeImage(review_id, is_closed) {
     var span = $('review_' + review_id);
     var new_image = null;
     var dummy = new Element('span');
-    if (is_closed) {       
+    if (is_closed) {
         dummy.insert(showClosedReviewImageTag);
     }
     else {
-        dummy.insert(showReviewImageTag);        
+        dummy.insert(showReviewImageTag);
     }
     new_image = dummy.down().getAttribute('src');
     //alert(new_image);
