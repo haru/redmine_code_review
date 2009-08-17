@@ -71,7 +71,7 @@ class RepositoriesControllerTest < Test::Unit::TestCase
   def test_diff
     @request.session[:user_id] = 1
     #get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/')
-    get :diff, :id => 1, :path => ['/']
+    get :diff, :id => 1, :path => ['/'], :rev => 1
     #assert_response :success
 
   end
