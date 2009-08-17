@@ -31,6 +31,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     end
     
     return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate' or action_name == 'revisions' or action_name == 'revision'))
+    return '' if controller.params[:rev].blank?
 
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
@@ -58,6 +59,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return change_repository_view context if (action_name == 'show' or action_name == 'revisions')
     return change_revision_view context if (action_name == 'revision')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
+    return '' if controller.params[:rev].blank?
     request = context[:request]
     parameters = request.parameters
     rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
