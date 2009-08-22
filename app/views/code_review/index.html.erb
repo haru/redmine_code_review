@@ -68,7 +68,10 @@
   <tbody>
     <% for review in @reviews %>
       <tr class="<%= cycle 'odd', 'even' %>">
-        <td colspan="2"><%=  review.issue.id %></td>
+        <td colspan="2">
+          <%= link_to review.issue.id.to_s, {:controller => 'issues', :action => 'show',
+               :id => review.issue.id}, :title => review.issue.subject %>
+        </td>
                 
         <td colspan="2" class="status">
           <%=h  review.issue.status %>
