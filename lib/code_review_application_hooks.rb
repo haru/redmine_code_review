@@ -88,6 +88,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     project = context[:project]
     controller = context[:controller]
     changesets = controller.get_selected_changesets
+    return unless changesets
     o = ''
     o << '<script type="text/javascript">'
     o << "\n"
