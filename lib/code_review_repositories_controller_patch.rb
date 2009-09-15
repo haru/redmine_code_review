@@ -15,7 +15,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+begin
 require_dependency 'application'
+rescue LoadError
+end
 require_dependency 'repositories_controller'
 
 module CodeReviewRepositoriesControllerPatch
