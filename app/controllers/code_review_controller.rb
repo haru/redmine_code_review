@@ -91,8 +91,8 @@ class CodeReviewController < ApplicationController
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
 
-          @review.save!
           @review.issue.save!
+          @review.save!          
            
           if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')
             Mailer.deliver_issue_add(@review.issue) if Setting.notified_events.include?('issue_added')
@@ -107,8 +107,7 @@ class CodeReviewController < ApplicationController
         end
         render :partial => 'new_form', :status => 200
       }
-    rescue
-      render :partial => 'new_form', :status => 250
+    
     end
   end
 
