@@ -87,10 +87,7 @@ class CodeReviewController < ApplicationController
         @issue = @review.issue
 
         if request.post?
-          if (@review.changeset and @review.changeset.user_id)
-            @review.issue.assigned_to_id = @review.changeset.user_id
-          end
-
+          @review.issue.attributes = params[:issue]
           @review.issue.save!
           @review.save!          
            
@@ -103,7 +100,9 @@ class CodeReviewController < ApplicationController
         else
           @review.change_id = params[:change_id].to_i unless params[:change_id].blank?
           @review.line = params[:line].to_i
-
+          if (@review.changeset and @review.changeset.user_id)
+            @review.issue.assigned_to_id = @review.changeset.user_id
+          end
         end
         render :partial => 'new_form', :status => 200
       }

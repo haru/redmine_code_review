@@ -55,6 +55,10 @@
  
 </p>
 <p>
+  <label><b><%=h l(:field_assigned_to) %>:</b></label>
+  <%= select :issue, :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %>
+</p>
+<p>
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();" %>
 
