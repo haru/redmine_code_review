@@ -364,3 +364,13 @@ function changeImage(review_id, is_closed) {
     span.down('img').setAttribute('src', new_image);
 
 }
+
+function make_addreview_link(project, link) {
+    var alist = $$('#content p a');
+    if (alist == null) {
+        return;
+    }
+    var a = alist[0];
+    var p = a.up();
+    p.innerHTML = p.innerHTML + " | " + link;
+}

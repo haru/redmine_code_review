@@ -34,7 +34,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     o = '<tr>'
     o << "<td><b>#{l(:code_review)}:</b></td>"
     o << '<td colspan="3">'
-    o << link_to("#{review.path}:r#{review.revision}:line #{review.line}",
+    o << link_to("#{review.path}@#{review.revision}:line #{review.line}",
       :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
     o << '</td>'
     o << '</tr>'

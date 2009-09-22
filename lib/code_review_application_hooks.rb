@@ -58,7 +58,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return change_repository_view context if (action_name == 'show' or action_name == 'revisions')
     return change_revision_view context if (action_name == 'revision')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
-    return '' if controller.params[:rev].blank?
+    return change_entry_norevision_view context if controller.params[:rev].blank?
     request = context[:request]
     parameters = request.parameters
     rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
@@ -158,5 +158,25 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return false unless setting
     return false unless setting.tracker_id
     return true
+  end
+
+  def change_entry_norevision_view(context)
+    project = context[:project]
+    controller = context[:controller]
+    request = context[:request]
+    parameters = request.parameters
+    patharray = parameters['path']
+    return if patharray.blank? or patharray.empty?
+    path = ''
+    patharray.each{|el| path << '/' + el}
+    #path = url_encode(path)
+    link = link_to(l(:label_add_review), :controller => 'code_review', :action => 'forward_to_revision', :id => project, :path => path)
+    o = ''
+    o << '<script type="text/javascript">'
+    o << "\n"
+    o << "make_addreview_link('#{project.name}', '#{link}');"
+    o << "\n"
+    o << "</script>\n"
+    return o
   end
 end

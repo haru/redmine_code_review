@@ -230,6 +230,15 @@ class CodeReviewController < ApplicationController
     render :text => 'delete success.'
   end
 
+  def forward_to_revision
+    path = params[:path]
+    entry = @project.repository.entry(path)
+    lastrev = entry.lastrev
+    identifier = lastrev.identifier
+    redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project) + path + '?rev=' + identifier.to_s
+
+  end
+  
   private
   def find_project
     # @project variable must be set before calling the authorize filter
