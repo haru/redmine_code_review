@@ -89,7 +89,7 @@ class CodeReviewController < ApplicationController
         if request.post?
           @review.issue.attributes = params[:issue]
           @review.issue.save!
-          @review.save!          
+          @review.save!
            
           if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')
             Mailer.deliver_issue_add(@review.issue) if Setting.notified_events.include?('issue_added')
@@ -103,10 +103,12 @@ class CodeReviewController < ApplicationController
           if (@review.changeset and @review.changeset.user_id)
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
+
         end
         render :partial => 'new_form', :status => 200
       }
-    
+    rescue ActiveRecord::RecordInvalid
+      render :partial => 'new_form', :status => 200
     end
   end
 

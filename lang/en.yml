@@ -28,3 +28,4 @@ old_review_data_found: 'Some old review records were found. Do you want to conve
 select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
 field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
 lable_no_code_reviews: 'No reviews'
+field_comment: Comment
