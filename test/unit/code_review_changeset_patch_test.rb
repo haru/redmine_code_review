@@ -33,4 +33,10 @@ class CodeReviewChangesetPatchTest < Test::Unit::TestCase
     changeset = Changeset.find(100)
     assert_equal(0, changeset.closed_review_count)
   end
+
+  def test_review_issues
+    changeset = Changeset.find(100)
+    reviews = changeset.review_issues
+    assert_equal(2, reviews.length)
+  end
 end

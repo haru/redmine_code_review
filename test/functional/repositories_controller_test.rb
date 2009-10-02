@@ -65,7 +65,6 @@ class RepositoriesControllerTest < Test::Unit::TestCase
     @request.session[:user_id] = 1
     get :revisions, :id => 1
     assert_response :success
-
   end
   
   def test_diff
@@ -74,5 +73,11 @@ class RepositoriesControllerTest < Test::Unit::TestCase
     get :diff, :id => 1, :path => ['/'], :rev => 1
     #assert_response :success
 
+  end
+
+  def test_entry
+    @request.session[:user_id] = 1
+    get :entry, :id => 1, :path => ['/']
+    assert_response :success
   end
 end
