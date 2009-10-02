@@ -89,6 +89,13 @@ class CodeReviewController < ApplicationController
         if request.post?
           @review.issue.attributes = params[:issue]
           @review.issue.save!
+          @review.changeset.issues.each {|issue|
+            @relation = IssueRelation.new
+            @relation.relation_type = IssueRelation::TYPE_RELATES
+            @relation.issue_from_id = issue.id
+            @relation.issue_to_id = @review.issue.id
+            @relation.save!
+          }          
           @review.save!
            
           if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')

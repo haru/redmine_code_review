@@ -36,6 +36,7 @@
   :url => {:controller => 'code_review', :action => 'new', :id=>@project} do |f|  %>
 <%= error_messages_for 'review' %>
 <%= error_messages_for 'issue' %>
+<%= error_messages_for 'relation' %>
 <%= f.hidden_field(:change_id) %>
 <%= f.hidden_field(:line) %>
 <%= hidden_field_tag(:action_type, @review.action_type) %>
