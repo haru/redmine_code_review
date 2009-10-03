@@ -91,11 +91,12 @@ class CodeReviewController < ApplicationController
           @review.issue.save!
           @review.changeset.issues.each {|issue|
             @relation = IssueRelation.new
-            @relation.relation_type = IssueRelation::TYPE_RELATES
-            @relation.issue_from_id = issue.id
-            @relation.issue_to_id = @review.issue.id
+            @relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+            @relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+            @relation.issue_from_id = @review.issue.id
+            @relation.issue_to_id = issue.id
             @relation.save!
-          }          
+          } unless @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
           @review.save!
            
           if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')

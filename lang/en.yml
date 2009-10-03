@@ -29,3 +29,8 @@ select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.
 field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
 lable_no_code_reviews: 'No reviews'
 field_comment: Comment
+
+label_if_revision_has_issues: 'If revision has one more issues'
+label_review_issue_relates: 'Review issue relates to them'
+label_review_issue_blocks: 'Review issue blocks them'
+label_review_issue_do_nothing: 'Do nothing'

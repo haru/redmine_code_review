@@ -30,3 +30,8 @@ ja:
   field_hide_code_review_tab: コードレビュータブを隠す
   lable_no_code_reviews: 'レビューはありません'
   field_comment: コメント
+
+  label_if_revision_has_issues: 'リビジョンにチケットが関連付けられていた場合'
+  label_review_issue_relates: 'レビューチケットと関連付ける'
+  label_review_issue_blocks: 'レビューチケットがブロックする'
+  label_review_issue_do_nothing: '何もしない'

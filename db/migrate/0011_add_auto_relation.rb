@@ -14,14 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-class CodeReviewProjectSetting < ActiveRecord::Base
-  belongs_to :project
-  belongs_to :tracker
 
-  validates_presence_of :project_id
-  validates_presence_of :tracker_id
+class AddAutoRelation < ActiveRecord::Migration
+ 
+  def self.up
+    add_column(:code_review_project_settings, "auto_relation", :integer, :default => 1)
+  end
 
-  AUTORELATION_TYPE_NONE = 0
-  AUTORELATION_TYPE_RELATES = 1
-  AUTORELATION_TYPE_BLOCKS = 2
+  def self.down
+    remove_column(:code_review_project_settings, "auto_relation")    
+  end
 end

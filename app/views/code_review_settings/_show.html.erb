@@ -19,6 +19,19 @@
     <p>
       <%= f.check_box :hide_code_review_tab %>
     </p>
+    
+    <p>
+      <label><%=h l(:label_if_revision_has_issues)%>:</label>
+      <%= f.radio_button(:auto_relation, CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES) %> 
+      <%=h l(:label_review_issue_relates) %>
+
+      <%= f.radio_button(:auto_relation, CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS) %>
+      <%=h l(:label_review_issue_blocks) %>
+      
+      <%= f.radio_button(:auto_relation, CodeReviewProjectSetting::AUTORELATION_TYPE_NONE) %>
+      <%=h l(:label_review_issue_do_nothing) %>
+
+    </p>
     <% if @old_reviews and @old_reviews.any? %>
     <p>
       <%=h l(:old_review_data_found) %>
