@@ -183,4 +183,9 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_response :success
     review = CodeReview.find(review_id)
   end
+
+  def test_forward_to_revision
+    @request.session[:user_id] = 1
+    post :forward_to_revision, :id => 1, :path => '/test/some/path/in/the/repo'
+  end
 end
