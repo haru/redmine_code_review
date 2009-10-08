@@ -171,6 +171,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     patharray.each{|el| path << '/' + el}
     entry = project.repository.entry(path)
     lastrev = entry.lastrev
+    return unless lastrev
     return unless lastrev.identifier
     changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
     change = nil
