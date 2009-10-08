@@ -169,6 +169,18 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return if patharray.blank? or patharray.empty?
     path = ''
     patharray.each{|el| path << '/' + el}
+    entry = project.repository.entry(path)
+    lastrev = entry.lastrev
+    return unless lastrev.identifier
+    changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
+    change = nil
+    changeset.changes.each {|c|
+      relative_path = c.relative_path
+      change = c if relative_path == path
+      change = c if '/' + relative_path == path
+    }
+    #change = Change.find(:first, :conditions => ['changeset_id = (?) and path = ?', changeset.id, path])
+    return unless change
     #path = url_encode(path)
     link = link_to(l(:label_add_review), :controller => 'code_review', :action => 'forward_to_revision', :id => project, :path => path)
     o = ''
