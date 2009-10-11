@@ -20,6 +20,7 @@ class CodeReview < ActiveRecord::Base
   belongs_to :change
   belongs_to :issue
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
+  belongs_to :attachment
 
   #deprecated
   has_many :children, :class_name => 'CodeReview', :foreign_key=> :old_parent_id, :dependent => :destroy
@@ -27,7 +28,7 @@ class CodeReview < ActiveRecord::Base
   validates_presence_of :comment
   validates_presence_of :project_id
   validates_presence_of :user_id
-  validates_presence_of :change_id
+  #validates_presence_of :change_id
   validates_presence_of :updated_by_id
   validates_presence_of :issue
   validates_presence_of :subject
@@ -59,6 +60,10 @@ class CodeReview < ActiveRecord::Base
     begin
       return file_path if file_path
       return @path if @path
+      if attachment_id
+        @path = attachment.filename
+        return @path
+      end
       repository = changeset.repository
       url = repository.url
       root_url = repository.root_url

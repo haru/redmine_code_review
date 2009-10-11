@@ -17,6 +17,7 @@
 
 class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
+  # htmlヘッダ生成時に呼ばれる
   def view_layouts_base_html_head(context = {})
     project = context[:project]
     return '' unless project
@@ -30,8 +31,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       return ''
     end
     
-    return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate' or action_name == 'revisions' or action_name == 'revision'))
-
+    #return '' unless (controller.class.name == 'RepositoriesController' and (action_name == 'diff' or action_name == 'show' or action_name == 'entry' or action_name == 'annotate' or action_name == 'revisions' or action_name == 'revision'))
+    return '' unless (controller.class.name == 'RepositoriesController' or controller.class.name == 'AttachmentsController')
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
     o << javascript_include_tag(baseurl + '/javascripts/jstoolbar/jstoolbar.js')
@@ -42,7 +43,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
     return o
   end
-  
+
+  #htmlボディの最後に呼ばれる
   def view_layouts_base_body_bottom(context = { })
     project = context[:project]
     return '' unless project
@@ -54,7 +56,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless controller
     action_name = controller.action_name
     return '' unless action_name
-    return '' unless (controller.class.name == 'RepositoriesController')
+    return '' unless (controller.class.name == 'RepositoriesController' or controller.class.name == 'AttachmentsController')
+    return change_attachement_view context if (controller.class.name == 'AttachmentsController')
     return change_repository_view context if (action_name == 'show' or action_name == 'revisions')
     return change_revision_view context if (action_name == 'revision')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
@@ -190,6 +193,28 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     o << "make_addreview_link('#{project.name}', '#{link}');"
     o << "\n"
     o << "</script>\n"
+    return o
+  end
+
+  def change_attachement_view(context)
+    project = context[:project]
+    controller = context[:controller]
+    request = context[:request]
+    parameters = request.parameters
+    id = parameters[:id]
+
+    o = ''
+    o << '<div id="code_review">' + "\n"
+    #o << '<div id="review_comment"/>' + "\n"
+    o << '</div>' + "\n"
+    url = url_for :controller => 'code_review', :action => 'update_attachment_view', :id => project
+    o << '<script type="text/javascript">' + "\n"
+    o << "document.observe('dom:loaded', function() {" + "\n"
+    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'attachment_id=#{id}'});\n"
+    o << "});\n"
+    o << '</script>'
+    #o <<  wikitoolbar_for('review_comment')
+
     return o
   end
 end

@@ -32,14 +32,14 @@
     is_readonly = false;
   <% end %>
   var is_diff = false;
-  <% if @action_type == 'diff' -%>
+  <% if @action_type == 'diff' or @action_type == 'attachment' -%>
      is_diff = true;
   <% end %>
   action_type = '<%= @action_type %>';
   rev = '<%= @rev %>';
   rev_to = '<%= @rev_to %>';
   path = '<%= @path %>';
-  setAddReviewButton(addReviewUrl, <%= @change.id %>, '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff);
+  setAddReviewButton(addReviewUrl, '<%= @change.id if @change %>', '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= @attachment_id%>' );
 
   showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
   showReviewImageTag = '<%= image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';

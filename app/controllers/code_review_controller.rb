@@ -84,19 +84,32 @@ class CodeReviewController < ApplicationController
         @review.rev = params[:rev] unless params[:rev].blank?
         @review.rev_to = params[:rev_to] unless params[:rev_to].blank?
         @review.file_path = params[:path] unless params[:path].blank?
+        @review.attachment_id = params[:attachment_id].to_i unless params[:attachment_id].blank?
         @issue = @review.issue
 
         if request.post?
           @review.issue.attributes = params[:issue]
           @review.issue.save!
-          @review.changeset.issues.each {|issue|
-            @relation = IssueRelation.new
-            @relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
-            @relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
-            @relation.issue_from_id = @review.issue.id
-            @relation.issue_to_id = issue.id
-            @relation.save!
-          } unless @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
+          if @review.changeset
+            @review.changeset.issues.each {|issue|
+              @relation = IssueRelation.new
+              @relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+              @relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+              @relation.issue_from_id = @review.issue.id
+              @relation.issue_to_id = issue.id
+              @relation.save!
+            } unless @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
+          elsif @review.attachment and @review.attachment.container_type == 'Issue'
+            issue = Issue.find_by_id(@review.attachment.container_id)
+            unless (@setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE)
+              @relation = IssueRelation.new
+              @relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+              @relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+              @relation.issue_from_id = @review.issue.id
+              @relation.issue_to_id = issue.id
+              @relation.save!
+            end
+          end
           @review.save!
            
           if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')
@@ -159,6 +172,18 @@ class CodeReviewController < ApplicationController
     render :partial => 'update_diff_view'
   end
 
+  def update_attachment_view
+    @show_review_id = params[:review_id].to_i unless params[:review_id].blank?
+    @attachment_id = params[:attachment_id].to_i
+    @show_review = CodeReview.find(@show_review_id) if @show_review_id
+    @review = CodeReview.new
+    @action_type = 'attachment'
+    
+    @reviews = CodeReview.find(:all, :conditions => ['attachment_id = (?) and issue_id is NOT NULL', @attachment_id])
+
+    render :partial => 'update_diff_view'
+  end
+
   def show
     @review = CodeReview.find(params[:review_id].to_i)
     @issue = @review.issue
@@ -172,8 +197,12 @@ class CodeReviewController < ApplicationController
       action_name = @review.action_type
       rev_to = ''
       rev_to = '&rev_to=' + @review.rev_to if @review.rev_to
-      redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s + rev_to
-
+      if action_name == 'attachment'
+        attachment = @review.attachment
+        redirect_to(url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + attachment.filename)
+      else
+        redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s + rev_to
+      end
     end
   end
 

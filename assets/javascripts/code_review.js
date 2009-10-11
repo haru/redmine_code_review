@@ -124,7 +124,7 @@ function isIE8() {
     return false;
 }
 
-function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff){
+function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id){
   var tables = document.getElementsByTagName('table');
   var table = null;
   for (var i = 0; i < tables.length; i++) {
@@ -156,8 +156,10 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff){
       if (line == null) {
           continue;
       }
+      
 
-      addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type + '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to;
+      addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type + 
+          '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to + '&attachment_id=' + attachment_id;
       var span = new Element('span', {'white-space': 'nowrap'});
       span.id = 'review_span_' + line;
       th.insert(span);

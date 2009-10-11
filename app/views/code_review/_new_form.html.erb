@@ -43,6 +43,7 @@
 <%= hidden_field_tag(:rev, @review.revision) %>
 <%= hidden_field_tag(:rev_to, @review.rev_to) %>
 <%= hidden_field_tag(:path, @review.path) %>
+  <%= hidden_field_tag(:attachment_id, @review.attachment_id) %>
   <p>
     <label><b><%=h l(:field_subject)%>:</b></label>
     <%= f.text_field :subject, :size => 70, :required => true %>
