@@ -202,6 +202,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     request = context[:request]
     parameters = request.parameters
     id = parameters[:id]
+    review_id = parameters[:review_id] unless parameters[:review_id].blank?
 
     o = ''
     o << '<div id="code_review">' + "\n"
@@ -210,7 +211,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     url = url_for :controller => 'code_review', :action => 'update_attachment_view', :id => project
     o << '<script type="text/javascript">' + "\n"
     o << "document.observe('dom:loaded', function() {" + "\n"
-    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'attachment_id=#{id}'});\n"
+    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'attachment_id=#{id}&review_id=#{review_id}'});\n"
     o << "});\n"
     o << '</script>'
     #o <<  wikitoolbar_for('review_comment')

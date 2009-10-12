@@ -84,6 +84,7 @@ class CodeReviewController < ApplicationController
         @review.rev = params[:rev] unless params[:rev].blank?
         @review.rev_to = params[:rev_to] unless params[:rev_to].blank?
         @review.file_path = params[:path] unless params[:path].blank?
+        @review.file_count = params[:file_count].to_i unless params[:file_count].blank?
         @review.attachment_id = params[:attachment_id].to_i unless params[:attachment_id].blank?
         @issue = @review.issue
 
@@ -199,7 +200,7 @@ class CodeReviewController < ApplicationController
       rev_to = '&rev_to=' + @review.rev_to if @review.rev_to
       if action_name == 'attachment'
         attachment = @review.attachment
-        redirect_to(url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + attachment.filename)
+        redirect_to(url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + attachment.filename + '?review_id=' + @review.id.to_s)
       else
         redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s + rev_to
       end

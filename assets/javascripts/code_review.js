@@ -125,65 +125,78 @@ function isIE8() {
 }
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id){
-  var tables = document.getElementsByTagName('table');
-  var table = null;
-  for (var i = 0; i < tables.length; i++) {
-      if (Element.hasClassName(tables[i], 'filecontent')) {
-          table = tables[i];
-          break;
-      }
-  }
-  var tbody = table.getElementsByTagName('tbody')[0];
-  var trs = tbody.getElementsByTagName('tr');
+    var tables = document.getElementsByTagName('table');
+    var filetables = [];
+    var j = 0;
+    var i = 0;
+    for (i = 0; i < tables.length; i++) {
+        if (Element.hasClassName(tables[i], 'filecontent')) {
+            filetables[j] = tables[i];
+            j++;
+        }
+    }
 
-  var num = 0;
-  if (is_diff) {
-      num = 1;
-  }
+    for (i = 0; i < filetables.length; i++) {
+        var table = filetables[i];
+        var tbody = table.getElementsByTagName('tbody')[0];
+        var trs = tbody.getElementsByTagName('tr');
 
-  for (var j = 0; j < trs.length; j++) {
-      var tr = trs[j];
-      var ths = tr.getElementsByTagName('th');
+        var num = 0;
+        if (is_diff) {
+            num = 1;
+        }
 
-      var th = ths[num];
-      if (th == null) {
-          continue;
-      }
+        for (j = 0; j < trs.length; j++) {
+            var tr = trs[j];
+            var ths = tr.getElementsByTagName('th');
 
-      Element.setStyle(th, {'text-align':'left'})
+            var th = ths[num];
+            if (th == null) {
+                continue;
+            }
 
-      var line = th.innerHTML.match(/[0-9]+/);
-      if (line == null) {
-          continue;
-      }
+            Element.setStyle(th, {
+                'text-align':'left'
+            })
+
+            var line = th.innerHTML.match(/[0-9]+/);
+            if (line == null) {
+                continue;
+            }
       
 
-      addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type + 
-          '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to + '&attachment_id=' + attachment_id;
-      var span = new Element('span', {'white-space': 'nowrap'});
-      span.id = 'review_span_' + line;
-      th.insert(span);
+            addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
+            '&rev=' + rev + '&path=' + path + '&rev_to=' + rev_to + 
+            '&attachment_id=' + attachment_id;
+            var span = new Element('span', {
+                'white-space': 'nowrap'
+            });
+            span.id = 'review_span_' + line + '_' + i;
+            th.insert(span);
 
-      if (is_readonly) {
-          continue;
-      }
-      span.insert(image_tag);
+            if (is_readonly) {
+                continue;
+            }
+            span.insert(image_tag);
 
-      var img = span.getElementsByTagName('img')[0];
-      img.id = 'add_revew_img_' + line;
-      //img.oncontextmenu = 'return false;';
-      //img.onclick = clickPencil;
-      Element.observe(img, 'click', clickPencil);
-
-  }
+            var img = span.getElementsByTagName('img')[0];
+            img.id = 'add_revew_img_' + line + '_' + i;
+            //img.oncontextmenu = 'return false;';
+            //img.onclick = clickPencil;
+            Element.observe(img, 'click', clickPencil);
+        }
+    }
 
 
 }
 
 function clickPencil(e)
 {
-    var line = e.element().id.match(/[0-9]+/);
-    addReview(addReviewUrl + '&line=' + line);
+    //alert('e.element().id = ' + e.element().id);
+    var result = e.element().id.match(/([0-9]+)_([0-9]+)/);
+    var line = result[1];
+    var file_count = result[2];
+    addReview(addReviewUrl + '&line=' + line + '&file_count=' + file_count);
     formPopup(e, $('review-form-frame'));
     e.preventDefault();
 }
@@ -192,8 +205,9 @@ var showReviewUrl = null;
 var showReviewImageTag = null;
 var showClosedReviewImageTag = null;
 
-function setShowReviewButton(line, review_id, is_closed) {
-  var span = $('review_span_' + line);
+function setShowReviewButton(line, review_id, is_closed, file_count) {
+    //alert('file_count = ' + file_count);
+  var span = $('review_span_' + line + '_' + file_count);
   if (span == null) {
       return;
   }
@@ -303,7 +317,7 @@ function formPopup(evt, popup){
 }
 
 function hideFrom() {
-    alert('aaa');
+    //alert('aaa');
     $('review-form-frame').style.visibility = false;
 }
 function addReview(url) {

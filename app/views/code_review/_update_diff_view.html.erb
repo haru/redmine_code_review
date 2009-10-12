@@ -46,7 +46,7 @@
   showClosedReviewImageTag = '<%= image_tag('closed_review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
 
   <% for review in @reviews do %>
-    setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed?%> );
+    setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed?%>, <%= review.file_count %> );
   <% end %>
   setDraggables();
   <% if @show_review_id -%>
