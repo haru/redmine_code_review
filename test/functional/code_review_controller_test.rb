@@ -75,6 +75,11 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_response :success
     assert_template '_new_form'
 
+    change = Change.find(3)
+    changeset = change.changeset
+    issue = Issue.find(1)
+    changeset.issues << issue
+    changeset.save
     count = CodeReview.find(:all).length
     post :new, :id => 1, :review => {:line => 1, :change_id => 3,
       :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'

@@ -19,7 +19,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class CodeReviewTest < Test::Unit::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets,
     :changes, :issues, :issue_statuses , :enumerations, :issue_categories,
-    :trackers, :projects_trackers
+    :trackers, :projects_trackers, :attachments
 
   # Create new object.
   def test_create
@@ -63,6 +63,11 @@ class CodeReviewTest < Test::Unit::TestCase
   def test_path
     code_review = CodeReview.find(1)
     assert_equal("/test/some/path/in/the/repo", code_review.path)
+
+    code_review = CodeReview.new
+    attachment = Attachment.find(1)
+    code_review.attachment = attachment
+    assert_equal("error281.txt", code_review.path)
   end
 
   def test_revision
@@ -122,6 +127,14 @@ class CodeReviewTest < Test::Unit::TestCase
   def test_convert_to_new_data
     review = CodeReview.find(1)
     assert review.convert_to_new_data
+  end
+
+  def test_user
+    review = CodeReview.find(10)
+    user = User.find(2)
+    review.user = user
+    issue = review.issue
+    assert_equal(issue.author_id, 2)
   end
   private
   def newreview
