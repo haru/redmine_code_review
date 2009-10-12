@@ -32,7 +32,7 @@
     is_readonly = false;
   <% end %>
   var is_diff = false;
-  <% if @action_type == 'diff' or @action_type == 'attachment' -%>
+  <% if @action_type == 'diff' or (@attachment and @attachment.is_diff?) -%>
      is_diff = true;
   <% end %>
   action_type = '<%= @action_type %>';

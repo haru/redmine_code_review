@@ -179,6 +179,7 @@ class CodeReviewController < ApplicationController
     @show_review = CodeReview.find(@show_review_id) if @show_review_id
     @review = CodeReview.new
     @action_type = 'attachment'
+    @attachment = Attachment.find(@attachment_id)
     
     @reviews = CodeReview.find(:all, :conditions => ['attachment_id = (?) and issue_id is NOT NULL', @attachment_id])
 

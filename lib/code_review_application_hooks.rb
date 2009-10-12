@@ -201,7 +201,9 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     controller = context[:controller]
     request = context[:request]
     parameters = request.parameters
-    id = parameters[:id]
+    id = parameters[:id].to_i
+    attachment = Attachment.find(id)
+    return '' unless attachment.is_text? or attachment.is_diff?
     review_id = parameters[:review_id] unless parameters[:review_id].blank?
 
     o = ''
