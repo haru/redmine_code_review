@@ -5,6 +5,8 @@ begin
   require 'jeweler'
   description = 'TODO'
   author = 'TODO'
+  url = 'TODO'
+
   redmine_init_content = File.read('init.rb')
   if redmine_init_content.match(/description (.*$)/)
     description = $1.gsub("'",'').gsub('"','')
@@ -14,11 +16,18 @@ begin
     author = $1.gsub("'",'').gsub('"','')
   end
 
+  if redmine_init_content.match(/[^ \t]*url ['"](.*)['"]/)
+    url = $1
+  end
+
+  if redmine_init_content.match(/[^ \t]*url ['"](.*)['"]/)
+    url = $1
+  end
+
   Jeweler::Tasks.new do |s|
     s.name = "#{@plugin_name}"
     s.summary = "#{description}"
-    s.email = "iida@mxv.nes.nec.co.jp"
-    s.homepage = "http://agile-community.siz.nes.nec.co.jp/agile/"
+    s.homepage = "#{url}"
     s.description = "#{description}"
     s.authors = ["#{author}"]
     s.rubyforge_project = "#{@plugin_name}" # TODO
