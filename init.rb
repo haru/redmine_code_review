@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require 'redmine'
+require 'gravatar'
 require 'code_review_application_hooks'
 require 'code_review_change_patch'
 require 'code_review_changeset_patch'
