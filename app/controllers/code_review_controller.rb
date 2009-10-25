@@ -163,13 +163,16 @@ class CodeReviewController < ApplicationController
     }
     unless @change
       @changeset = changeset
-      render :partial => 'show_error'
-      return
+      @reviews = CodeReview.find(:all, :conditions => ['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev])
+
+      #render :partial => 'show_error'
+      #return
+    else
+      @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and issue_id is NOT NULL', @change.id])
+      @review.change_id = @change.id
     end
 
-    @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and issue_id is NOT NULL', @change.id])
-   
-    @review.change_id = @change.id
+    
     render :partial => 'update_diff_view'
   end
 
