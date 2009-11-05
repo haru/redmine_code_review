@@ -90,7 +90,7 @@
 
 <% remote_form_for :review, @review,
   :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
-  :update => "show_review_#{@review.id}" do |f|  %>
+  :update => "show_review_#{@review.id}" , :html => {:id => 'review_form'} do |f|  %>
 <%= f.hidden_field :lock_version %>
 <%= hidden_field :issue,  :lock_version%>
     <p>
@@ -120,7 +120,15 @@
 <p>
       <%= submit_tag l(:button_apply) %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick='$("update-form-<%= @review.id %>").hide();'/>
+<%= link_to_remote l(:label_preview),
+                       { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+                         :method => 'post',
+                         :update => 'preview',
+                         :with => "Form.serialize('review_form')",
+                         :complete => "Element.scrollTo('preview')"
+                       }, :accesskey => accesskey(:preview) %>
 </p>
+<div id="preview" class="wiki"></div>
  <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
 <% end %>
 
@@ -165,7 +173,15 @@
 <p>
   <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
         :url => {:controller => 'code_review', :action => 'reply', :id=>@project}, :method => :post %>
+<%= link_to_remote l(:label_preview),
+                       { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+                         :method => 'post',
+                         :update => 'reply-preview',
+                         :with => "Form.serialize('message-form')",
+                         :complete => "Element.scrollTo('reply-preview')"
+                       }, :accesskey => accesskey(:preview) %>
 </p>
+<div id="reply-preview" class="wiki"></div>
 <%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>
 <% end %>
 </div>

@@ -33,7 +33,7 @@
   <%= l(:label_line_number, @review.line) %>
 </h2>
 <% form_for :review, @review,
-  :url => {:controller => 'code_review', :action => 'new', :id=>@project} do |f|  %>
+  :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
 <%= error_messages_for 'review' %>
 <%= error_messages_for 'issue' %>
 <%= error_messages_for 'relation' %>
@@ -66,7 +66,15 @@
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();" %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="$('review-form-frame').hide();"/>
+      <%= link_to_remote l(:label_preview),
+                       { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+                         :method => 'post',
+                         :update => 'preview',
+                         :with => "Form.serialize('review_form')",
+                         :complete => "Element.scrollTo('preview')"
+                       }, :accesskey => accesskey(:preview) %>
 </p>
+<div id="preview" class="wiki"></div>
  <%= wikitoolbar_for 'review_comment' %>
 <% end %>
 

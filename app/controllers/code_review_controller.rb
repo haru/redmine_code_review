@@ -282,6 +282,12 @@ class CodeReviewController < ApplicationController
     redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project) + path + '?rev=' + identifier.to_s
 
   end
+
+  def preview
+    @text = params[:review][:comment]
+    @text = params[:reply][:comment] unless @text
+    render :partial => 'common/preview'
+  end
   
   private
   def find_project
