@@ -67,3 +67,10 @@ end
 task "build-gem" => ["create-version", "create_init_rb_for_gem", "gemspec:generate", "gemspec:validate", "build"] do
 
 end
+
+task "rcov" do
+  here = File.dirname(__FILE__)
+  railshome = File.join(here, '../../..')
+  system("rcov", "-I", File.join(railshome, 'lib'), 'test/*/*.rb', '-x', 'redmine')
+  $?
+end

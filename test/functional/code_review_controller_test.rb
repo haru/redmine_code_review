@@ -87,6 +87,13 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_template '_add_success'
     assert_equal(count + 1, CodeReview.find(:all).length)
 
+    settings = CodeReviewProjectSetting.find(:all)
+    settings.each{|setting|
+      setting.destroy
+    }
+    post :new, :id => 1, :review => {:line => 1, :change_id => 1,
+      :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
+    assert_response :redirect
   end
 
   def test_show
@@ -192,5 +199,23 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_forward_to_revision
     @request.session[:user_id] = 1
     post :forward_to_revision, :id => 1, :path => '/test/some/path/in/the/repo'
+  end
+
+  def test_update_attachment_view
+    @request.session[:user_id] = 1
+    review_id = 9
+    review = CodeReview.find(review_id)
+    assert_equal('Unable to print recipes', review.comment)
+    post :update_attachment_view, :id => 1, :attachment_id => review_id
+    assert_response :success
+    review = CodeReview.find(review_id)
+  end
+
+  def test_preview
+    @request.session[:user_id] = 1
+    review = {}
+    review[:comment] = 'aaa'
+    post :preview, :id => 1, :review => review
+    assert_response :success
   end
 end
