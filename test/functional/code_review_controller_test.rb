@@ -20,7 +20,7 @@ class CodeReviewControllerTest < ActionController::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
     :changesets, :changes, :members, :roles, :issues, :issue_statuses,
     :enumerations, :issue_categories, :trackers, :trackers, :projects, :projects_trackers,
-    :code_review_project_settings
+    :code_review_project_settings, :attachments
   def setup
     @controller = CodeReviewController.new
     @request    = ActionController::TestRequest.new
@@ -206,7 +206,7 @@ class CodeReviewControllerTest < ActionController::TestCase
     review_id = 9
     review = CodeReview.find(review_id)
     assert_equal('Unable to print recipes', review.comment)
-    post :update_attachment_view, :id => 1, :attachment_id => review_id
+    post :update_attachment_view, :id => 1, :attachment_id => 1
     assert_response :success
     review = CodeReview.find(review_id)
   end
