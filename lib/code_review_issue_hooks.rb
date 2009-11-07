@@ -25,6 +25,12 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     end
     controller = context[:controller]
     return '' unless controller
+    if RAILS_ENV == 'development'
+      load 'code_review_issue_patch.rb' unless Issue.respond_to?('code_review')
+      load 'code_review_projects_helper_patch.rb' unless respond_to?('project_settings_tabs_with_code_review')
+      load 'code_review_change_patch.rb' unless Change.respond_to?('code_review')
+      load 'code_review_changeset_patch.rb' unless Change.respond_to?('review_count')
+    end
     
     request = context[:request]
     issue = context[:issue]

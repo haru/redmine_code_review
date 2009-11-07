@@ -22,7 +22,7 @@ module CodeReviewProjectsHelperPatch
     base.send(:include, ProjectsHelperMethodsCodeReview)
 
     base.class_eval do
-      unloadable # Send unloadable so it will not be unloaded in development
+      #unloadable
 
       alias_method_chain :project_settings_tabs, :code_review
     end

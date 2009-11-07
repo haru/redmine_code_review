@@ -22,6 +22,22 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     project = context[:project]
     return '' unless project
     controller = context[:controller]
+    if RAILS_ENV == 'development'
+      load 'code_review_issue_patch.rb' unless Issue.respond_to?('code_review')
+
+      load 'code_review_change_patch.rb' unless Change.respond_to?('code_review')
+      load 'code_review_changeset_patch.rb' unless Change.respond_to?('review_count')
+      if controller.class.name == 'RepositoriesController'
+        load 'code_review_repositories_controller_patch.rb' unless RepositoriesController.respond_to?('get_selected_changesets')
+      elsif controller.class.name == 'ProjectsController'
+        #load 'projects_helper.rb'
+        #load 'action_view.rb'
+        load 'code_review_projects_helper_patch.rb'
+
+        #load 'projects_controller.rb'
+      end
+    end
+
     return '' unless controller
     action_name = controller.action_name
     return '' unless action_name
@@ -53,6 +69,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     end
     return unless code_review_setting_exists?(project)
     controller = context[:controller]
+    load 'code_review_projects_helper_patch.rb'
     return '' unless controller
     action_name = controller.action_name
     return '' unless action_name
