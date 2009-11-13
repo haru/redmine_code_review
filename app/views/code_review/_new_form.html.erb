@@ -17,16 +17,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 
-  <div class="code-review-form-title drag-handle" id="add-review-title">
-  <table border="0" width="100%">
-    <tr>
-      <td><span class="icon icon-review"><%= l(:label_add_review) %></span></td>
-      <td align="right">
-        <%= link_to_function image_tag('close.png'), "$('review-form-frame').hide();" %>
-      </td>
-    </tr>
-  </table>
-  </div>
 
 <div class="box">
   <h2>
@@ -52,7 +42,7 @@
 <p>
   <%= f.text_area :comment,
                    :cols => 30,
-                   :rows => 10,
+                   :rows => 15,
                    :accesskey => accesskey(:edit),
                    :class => 'wiki-edit' %>
  
@@ -65,7 +55,7 @@
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();" %>
 
-      <input type="button" value="<%=h l(:button_cancel) %> " onclick="$('review-form-frame').hide();"/>
+      <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= link_to_remote l(:label_preview),
                        { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
                          :method => 'post',
@@ -80,4 +70,9 @@
 
 </div>
 
+<% javascript_tag do %>
+//var win = new Window({className: "dialog", width:600, height:410, zIndex: 100, resizable: true, title: "<%= l(:label_add_review) %>", showEffect:Effect.BlindDown, hideEffect: Effect.SwitchOff, draggable:true, wiredDrag: true});
+//win.setContent("review-form-frame");win.showCenter();
+
+<% end %>
 

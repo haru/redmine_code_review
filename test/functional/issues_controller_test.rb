@@ -21,7 +21,7 @@ require 'issues_controller'
 # Re-raise errors caught by the controller.
 class IssuesController; def rescue_action(e) raise e end; end
 
-class IssuesControllerTest < Test::Unit::TestCase
+class IssuesControllerTest < ActionController::TestCase
   fixtures :projects,
            :users,
            :roles,

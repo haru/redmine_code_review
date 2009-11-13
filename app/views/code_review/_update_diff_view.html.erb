@@ -19,13 +19,14 @@
 <div class="code_review">
   
 </div>
-<div id="review-form-frame" style="position:absolute;display:none;top:0px" class="draggable">
+<div id="review-form-frame">
   <div id="review-form">
   
   </div>
 </div>
 
 <% javascript_tag do %>
+  add_form_title = "<%= l(:label_add_review) %>";
   var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id=>@project %>';
   var is_readonly = true;
   <% if authorize_for('code_review', 'new') -%>

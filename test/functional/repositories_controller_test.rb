@@ -19,7 +19,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 require 'repositories_controller'
 
 
-class RepositoriesControllerTest < Test::Unit::TestCase
+class RepositoriesControllerTest < ActionController::TestCase
   fixtures :projects, :users, :roles, :members, :repositories, :issues, :issue_statuses, :changesets, :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers
   
   def setup
@@ -56,7 +56,8 @@ class RepositoriesControllerTest < Test::Unit::TestCase
 
   def test_revision
     @request.session[:user_id] = 1
-    get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    #get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    get :revision, :id => 1, :rev => 1, :path => '/'.split('/')
     #assert_response :success
     
   end

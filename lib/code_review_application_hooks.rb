@@ -51,11 +51,20 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return '' unless (controller.class.name == 'RepositoriesController' or controller.class.name == 'AttachmentsController')
     o = ""
     o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js")
+    o << "\n"
+    o << javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/window_js/window.js")
+    o << "\n"
     o << javascript_include_tag(baseurl + '/javascripts/jstoolbar/jstoolbar.js')
+    o << "\n"
     o << javascript_include_tag(baseurl + '/javascripts/jstoolbar/textile.js')
-    o << javascript_include_tag(baseurl + "/javascripts/jstoolbar/lang/jstoolbar-#{project.current_language}.js") 
+    o << "\n"
+    o << javascript_include_tag(baseurl + "/javascripts/jstoolbar/lang/jstoolbar-#{project.current_language}.js")
+    o << "\n"
+    o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/code_review.css")
+    o << "\n"
+    o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/window_js/default.css")
+    o << "\n"
 
-    o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/code_review.css") 
 
     return o
   end

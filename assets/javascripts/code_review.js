@@ -23,6 +23,8 @@ var rev = '';
 var rev_to = '';
 var path = '';
 var urlprefix = '';
+var review_form_dialog = null;
+var add_form_title = null;
 
 var ReviewCount = function(total, open, progress){
     this.total = total;
@@ -307,18 +309,36 @@ function toTopLayer(element) {
 }
 
 function formPopup(evt, popup){
-    popup.style.top = evt.pointerY() + 'px';
-    popup.style.left = (evt.pointerX() + 5) + 'px';
-    Effect.Grow(popup.id, {direction: 'top-left'});
-    setDraggables();
-    toTopLayer(popup);
+    //popup.style.top = evt.pointerY() + 'px';
+    //popup.style.left = (evt.pointerX() + 5) + 'px';
+    //Effect.Grow(popup.id, {direction: 'top-left'});
+    //setDraggables();
+    //toTopLayer(popup);
+    var frame_height = $('review-form-frame').style.height;
+    var win = new Window({className: "dialog", width:640, height:frame_height, zIndex: 100,
+        resizable: true, title: add_form_title,
+        showEffect:Effect.Grow, 
+        showEffectOptions:{direction: 'top-left'},
+        hideEffect: Effect.SwitchOff,
+        destroyOnClose: true,
+        draggable:true, wiredDrag: true});
+    win.setContent("review-form-frame");
+    win.setLocation(evt.pointerY(), evt.pointerX() + 5);
+    win.getContent().style.background = "#ffffff";
+    win.show();
+    review_form_dialog = win;
 
     return false;
 }
 
-function hideFrom() {
+function hideForm() {
     //alert('aaa');
-    $('review-form-frame').style.visibility = false;
+    //$('review-form-frame').style.visibility = false;
+    if (review_form_dialog == null) {
+        return;
+    }
+    review_form_dialog.destroy();
+    review_form_dialog = null;
 }
 function addReview(url) {
     //alert('aaa');

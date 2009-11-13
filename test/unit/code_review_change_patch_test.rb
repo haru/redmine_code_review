@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CodeReviewChangePatchTest < Test::Unit::TestCase
+class CodeReviewChangePatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers
 
   def test_review_count
