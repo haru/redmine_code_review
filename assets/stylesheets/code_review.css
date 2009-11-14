@@ -43,12 +43,7 @@ table.filecontent th.line-num img{
     cursor: default;
 }
 
-.code-review-form-title table, tr, td {
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-bottom: 0;
-    padding-top: 0;
-}
+
 .code_review_viewer {
 
     min-width: 300px;
@@ -66,25 +61,7 @@ table.filecontent th.line-num img{
     background-color: white;
     
     padding:2px;
-    border-bottom-style: solid;
-    border-left-style: solid;
-    border-right-style: solid;
-    border-width: 1px;
-    border-color: gray;
-    /* max-height: 400px; */
     
-    
-}
-
-.code_review_body-scrollarea {
-
-    overflow-y: auto;
-    max-height: 400px;
-    /*
-    max-width: 60%;
-    padding: 5px;
-    */
-
 }
 
 #code_review_list table.list td {
@@ -110,10 +87,6 @@ table.filecontent th.line-num img{
     background-repeat: no-repeat;
 }
 
-.header_table a{
-    color: #ffffff;
-    text-decoration: underline;
-}
 
 li.code_review_summary {
     list-style-type: none;

@@ -27,6 +27,7 @@
 
 <% javascript_tag do %>
   add_form_title = "<%= l(:label_add_review) %>";
+  review_dialog_title = "<%= l(:code_review) %>";
   var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id=>@project %>';
   var is_readonly = true;
   <% if authorize_for('code_review', 'new') -%>

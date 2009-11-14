@@ -25,6 +25,7 @@ var path = '';
 var urlprefix = '';
 var review_form_dialog = null;
 var add_form_title = null;
+var review_dialog_title = null;
 
 var ReviewCount = function(total, open, progress){
     this.total = total;
@@ -237,7 +238,7 @@ function showReview(url, review_id, element) {
         method:'get'});
     var frame_height = $("code-review-dialog-" + review_id).style.height;
     var win = new Window({className: "mac_os_x", width:640, height:frame_height, zIndex: topZindex,
-        resizable: true, title: "#" + review_id,
+        resizable: true, title: review_dialog_title,
         showEffect:Effect.Grow,
         showEffectOptions:{direction: 'top-left'},
         hideEffect: Effect.SwitchOff,
