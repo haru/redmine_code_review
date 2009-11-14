@@ -231,17 +231,17 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
   innerSpan.down('img').observe('click', function(e) {
       var review_id = e.element().up().id.match(/[0-9]+/);
       var target = $('show_review_' + review_id);
-      showReview(showReviewUrl, review_id, target);
+      var win = showReview(showReviewUrl, review_id, target);
 
-      target.style.top = e.pointerY() + 'px';
-      target.style.left = (e.pointerX() + 5) + 'px';
+      //target.style.top = e.pointerY() + 'px';
+      //target.style.left = (e.pointerX() + 5) + 'px';
 //      var targetBody = target.down('.code_review_body');
 //      var maxHeight = (document.viewport.getHeight() * 7) / 10;
 //      if (targetBody.getHeight() > maxHeight) {
 //          targetBody.setStyle({height: '' + maxHeight + 'px'});
 //      }
 
-      setDraggables();
+      //setDraggables();
       var code_review_body = target.down('.code_review_body');
       var header_table = target.down('.header_table');
       if (isIE6()) {
@@ -252,9 +252,8 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
           code_review_body.setStyle('width: 500px;');
           header_table.setStyle('width: 500px;');
       }
-      Effect.Grow(target.id, {direction: 'top-left'});
-          //formPopup(e, $('review-form-frame'));
-          //e.preventDefault();
+      win.setLocation(e.pointerY(), e.pointerX() + 5);
+      win.show();
       });
 }
 
@@ -262,9 +261,9 @@ function popupReview(line, review_id) {
   var target = $('show_review_' + review_id);
   var span = $('review_' + review_id);
 
-  target.style.top = span.positionedOffset().top + 'px';
-  target.style.left = (span.positionedOffset().left + 10) + 'px';
-  showReview(showReviewUrl, review_id, target);
+  //target.style.top = span.positionedOffset().top + 'px';
+  //target.style.left = (span.positionedOffset().left + 10) + 'px';
+  var win = showReview(showReviewUrl, review_id, target);
   var code_review_body = target.down('.code_review_body');
   var header_table = target.down('.header_table');
   if (isIE6()) {
@@ -275,9 +274,13 @@ function popupReview(line, review_id) {
       code_review_body.setStyle('width: 500px;');
       header_table.setStyle('width: 500px;');
   }
-  Effect.Grow(target.id, {direction: 'top-left'});
+  //Effect.Grow(target.id, {direction: 'top-left'});
+  win.setLocation(span.positionedOffset().top, span.positionedOffset().left + 10 + 5);
+  win.show();
   span.scrollTo();
-  setDraggables();
+  //setDraggables();
+  
+    
 }
 
 function showReview(url, review_id, element) {
@@ -286,7 +289,20 @@ function showReview(url, review_id, element) {
         evalScripts:true,
         parameters: 'review_id=' + review_id,
         method:'get'});
+    var frame_height = $("code-review-dialog-" + review_id).style.height;
+    var win = new Window({className: "dialog", width:640, height:frame_height, zIndex: 100,
+        resizable: true, title: "#" + review_id,
+        showEffect:Effect.Grow,
+        showEffectOptions:{direction: 'top-left'},
+        hideEffect: Effect.SwitchOff,
+        destroyOnClose: true,
+        draggable:true, wiredDrag: true});
+    win.setContent("code-review-dialog-" + review_id);
+    win.getContent().style.color = "#484848";
+    win.getContent().style.background = "#ffffff";
 
+    return win
+/*
     element.observe('click', function(e){
         //alert(e.element().inspect());
         if (isIE8()) {
@@ -297,6 +313,7 @@ function showReview(url, review_id, element) {
         }
 
     });
+    */
 }
 
 function toTopLayer(element) {

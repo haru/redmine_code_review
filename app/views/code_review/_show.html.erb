@@ -16,30 +16,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-<div class="code-review-dialog">
-<div class="code-review-form-title drag-handle" >
-  <table border="0" width="100%" class="header_table">
-    <tr>
-      <%
-         if (@review.is_closed?)
-           image_class = 'icon-closed-review'
-         else
-           image_class = 'icon-review'
-         end
-      -%>
-      <td><span class="icon <%= image_class%>"><%=h l(:code_review) %> 
-          <%= link_to '#' + @review.issue.id.to_s, :controller => 'issues', :action => 'show',
-               :id => @review.issue.id %>
-        </span></td>
-      <td align="right">
-        <%= link_to_function image_tag('close.png'), "$('show_review_#{@review.id}').hide();" %>
-      </td>
-    </tr>
-  </table>
-</div>
+<div class="code-review-dialog" id="code-review-dialog-<%= @review.id%>">
+
 
 <div class="code_review_body">
-  <div class="code_review_body-scrollarea">
     <%= error_messages_for 'review' -%>
     <%= error_messages_for 'reply' -%>
     <% if @notice -%>
@@ -62,6 +42,8 @@
 <% end -%>
 </div>
   <h2>
+    <%= link_to '#' + @review.issue.id.to_s, :controller => 'issues', :action => 'show',
+               :id => @review.issue.id %>:
     <%= l(:label_line_number, @review.line) %>:
     <%=h @review.subject%>
   </h2>
@@ -188,7 +170,6 @@
 
 <% end %>
 </div>
-</div>
+
 </div>
 
-<%= javascript_tag("setDraggables();") %>
