@@ -43,6 +43,7 @@ var CodeReview = function(id) {
 
 var review_counts = new Array();
 var code_reviews_map = new Array();
+var code_reviews_dialog_map = new Array();
 
 function UpdateRepositoryView(title) {
     var header = $$('table.changesets thead tr')[0];
@@ -95,35 +96,6 @@ function UpdateRevisionView() {
         li.insert(ul);
 
     }
-}
-
-function getIEversion() {
-    if (!Prototype.Browser.IE) {
-        return -1;
-    }
-    var ienum = navigator.userAgent.match(new RegExp("MSIE [0-9]{1,2}\.[0-9]{1,3}"));
-    return parseInt(String(ienum).replace("MSIE ",""));
-}
-
-function isIE6() {
-    if (getIEversion() == 6) {
-        return true;
-    }
-    return false;
-}
-
-function isIE7() {
-    if (getIEversion() == 7) {
-        return true;
-    }
-    return false;
-}
-
-function isIE8() {
-    if (getIEversion() == 8) {
-        return true;
-    }
-    return false;
 }
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id){
@@ -252,6 +224,12 @@ function popupReview(line, review_id) {
 }
 
 function showReview(url, review_id, element) {
+    if (code_reviews_dialog_map[review_id] != null) {
+        var cur_win = code_reviews_dialog_map[review_id];
+        cur_win.setZIndex(topZindex);
+        topZindex += 10;
+        return cur_win;
+    }
     new Ajax.Updater(element, url, {
         asynchronous:false,
         evalScripts:true,
@@ -263,41 +241,47 @@ function showReview(url, review_id, element) {
         showEffect:Effect.Grow,
         showEffectOptions:{direction: 'top-left'},
         hideEffect: Effect.SwitchOff,
-        destroyOnClose: true,
+        //destroyOnClose: true,
         draggable:true, wiredDrag: true});
     win.setContent("code-review-dialog-" + review_id);
     win.getContent().style.color = "#484848";
     win.getContent().style.background = "#ffffff";
     topZindex++;
-
+    code_reviews_dialog_map[review_id] = win;
     return win
 
 }
 
-function toTopLayer(element) {
-    //alert(element);
-    if (element == null) {
-        return;
-    }
-    element.setStyle('z-index:' + topZindex + ';');
-    topZindex += 10;
-}
-
 function formPopup(evt, popup){
     var frame_height = $('review-form-frame').style.height;
-    var win = new Window({className: "dialog", width:640, height:frame_height, zIndex: topZindex,
-        resizable: true, title: add_form_title,
-        showEffect:Effect.Grow, 
-        showEffectOptions:{direction: 'top-left'},
-        hideEffect: Effect.SwitchOff,
-        destroyOnClose: true,
-        draggable:true, wiredDrag: true});
+    var win = null;
+    if (review_form_dialog != null) {
+        win = review_form_dialog;
+    }
+    else {
+        win = new Window({
+            className: "dialog",
+            width:640,
+            height:frame_height,
+            zIndex: topZindex,
+            resizable: true,
+            title: add_form_title,
+            showEffect:Effect.Grow,
+            showEffectOptions:{
+                direction: 'top-left'
+            },
+            hideEffect: Effect.SwitchOff,
+            //destroyOnClose: true,
+            draggable:true,
+            wiredDrag: true});
+    }
+    win.setZIndex(topZindex);
     win.setContent("review-form-frame");
     win.setLocation(evt.pointerY(), evt.pointerX() + 5);
     win.getContent().style.background = "#ffffff";
     win.show();
     review_form_dialog = win;
-    topZindex++;
+    topZindex += 10;
 
     return false;
 }
