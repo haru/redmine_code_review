@@ -49,7 +49,7 @@
   <% for review in @reviews do %>
     setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed?%>, <%= review.file_count %> );
   <% end %>
-  setDraggables();
+
   <% if @show_review_id -%>
   popupReview(<%= @show_review.line %>, <%= @show_review_id %>);
   <% end -%>
