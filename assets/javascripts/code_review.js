@@ -236,7 +236,7 @@ function showReview(url, review_id, element) {
         parameters: 'review_id=' + review_id,
         method:'get'});
     var frame_height = $("code-review-dialog-" + review_id).style.height;
-    var win = new Window({className: "dialog", width:640, height:frame_height, zIndex: topZindex,
+    var win = new Window({className: "mac_os_x", width:640, height:frame_height, zIndex: topZindex,
         resizable: true, title: "#" + review_id,
         showEffect:Effect.Grow,
         showEffectOptions:{direction: 'top-left'},
@@ -260,7 +260,7 @@ function formPopup(evt, popup){
     }
     else {
         win = new Window({
-            className: "dialog",
+            className: "mac_os_x",
             width:640,
             height:frame_height,
             zIndex: topZindex,

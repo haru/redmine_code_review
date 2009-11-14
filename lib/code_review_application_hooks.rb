@@ -64,6 +64,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     o << "\n"
     o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/window_js/default.css")
     o << "\n"
+    o << stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/window_js/mac_os_x.css")
+    o << "\n"
 
 
     return o
