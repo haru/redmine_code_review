@@ -57,7 +57,7 @@ class RepositoriesControllerTest < ActionController::TestCase
   def test_revision
     @request.session[:user_id] = 1
     #get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
-    get :revision, :id => 1, :rev => 1, :path => '/'.split('/')
+    get :revision, :id => 3, :rev => 1, :path => '/'.split('/')
     #assert_response :success
     
   end
