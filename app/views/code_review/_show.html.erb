@@ -154,7 +154,8 @@
 </p>
 <p>
   <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
-        :url => {:controller => 'code_review', :action => 'reply', :id=>@project}, :method => :post %>
+        :url => {:controller => 'code_review', :action => 'reply', :id=>@project},
+        :method => :post, :complete => "alert('aaa')" %>
 <%= link_to_remote l(:label_preview),
                        { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
                          :method => 'post',

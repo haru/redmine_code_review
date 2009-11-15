@@ -198,7 +198,7 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
       innerSpan.innerHTML = showReviewImageTag;
   }
 
-  var div = new Element('div', {style:'position:absolute; display:none;', 'class':'draggable'});
+  var div = new Element('div', {'class':'draggable'});
   div.id = 'show_review_' + review_id;
   $('code_review').insert(div);
   innerSpan.down('img').observe('click', function(e) {
@@ -227,16 +227,18 @@ function popupReview(line, review_id) {
 function showReview(url, review_id, element) {
     if (code_reviews_dialog_map[review_id] != null) {
         var cur_win = code_reviews_dialog_map[review_id];
-        cur_win.setZIndex(topZindex);
-        topZindex += 10;
-        return cur_win;
+//        cur_win.setZIndex(topZindex);
+//        topZindex += 10;
+//        return cur_win;
+        cur_win.destroy();
+        code_reviews_dialog_map[review_id] = null;
     }
     new Ajax.Updater(element, url, {
         asynchronous:false,
         evalScripts:true,
         parameters: 'review_id=' + review_id,
         method:'get'});
-    var frame_height = $("code-review-dialog-" + review_id).style.height;
+    var frame_height = $("show_review_" + review_id).style.height;
     var win = new Window({className: "mac_os_x", width:640, height:frame_height, zIndex: topZindex,
         resizable: true, title: review_dialog_title,
         showEffect:Effect.Grow,
@@ -244,7 +246,7 @@ function showReview(url, review_id, element) {
         hideEffect: Effect.SwitchOff,
         //destroyOnClose: true,
         draggable:true, wiredDrag: true});
-    win.setContent("code-review-dialog-" + review_id);
+    win.setContent("show_review_" + review_id);
     win.getContent().style.color = "#484848";
     win.getContent().style.background = "#ffffff";
     topZindex++;
