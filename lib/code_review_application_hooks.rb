@@ -80,7 +80,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     end
     return unless code_review_setting_exists?(project)
     controller = context[:controller]
-    load 'code_review_projects_helper_patch.rb'
+
     return '' unless controller
     action_name = controller.action_name
     return '' unless action_name
