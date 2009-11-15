@@ -214,7 +214,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     #change = Change.find(:first, :conditions => ['changeset_id = (?) and path = ?', changeset.id, path])
     return unless change
     #path = url_encode(path)
-    link = link_to(l(:label_add_review), :controller => 'code_review', :action => 'forward_to_revision', :id => project, :path => path)
+    link = link_to(l(:label_add_review), {:controller => 'code_review',
+      :action => 'forward_to_revision', :id => project, :path => path}, :class => 'icon icon-edit')
     o = ''
     o << '<script type="text/javascript">'
     o << "\n"
