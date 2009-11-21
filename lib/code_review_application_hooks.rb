@@ -107,7 +107,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project
     o << '<script type="text/javascript">' + "\n"
     o << "document.observe('dom:loaded', function() {" + "\n"
-    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}&action_type=#{action_name}&rev_to=#{rev_to}'});\n"
+    o << "new Ajax.Updater('code_review', '#{url}', {evalScripts:true, method:'get', parameters: 'rev=#{rev}&path=#{path}&review_id=#{review_id}&action_type=#{action_name}&rev_to=#{rev_to}'});\n"
     o << "});\n"
     o << '</script>'
     #o <<  wikitoolbar_for('review_comment')

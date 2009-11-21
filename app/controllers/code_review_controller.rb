@@ -21,7 +21,6 @@ require 'change'
 class CodeReviewController < ApplicationController
   unloadable
   before_filter :find_project, :authorize, :find_user, :find_setting
-  skip_before_filter :verify_authenticity_token
 
   helper :sort
   include SortHelper
