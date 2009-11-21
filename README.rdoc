@@ -23,14 +23,15 @@ This plugin works only on production mode.
 
 === Language contributors
 
-de.yml - Michael Diederich
-fr.yml - Thomas M
-hu.yml - Péter Major
-ko.yml - Ki-yong Kim
-nl.yml - Stefan Verstege
-pt-br.yml - Alessandro Hecht
-zh.yml - Marshall Wu
-zh-tw.yml - Andrew Liu
-ru.yml - Mykhaylo Sorochan
+* de.yml - Michael Diederich
+* fr.yml - Thomas M
+* hu.yml - Péter Major
+* ko.yml - Ki-yong Kim
+* nl.yml - Stefan Verstege
+* pt-br.yml - Alessandro Hecht
+* zh.yml - Marshall Wu
+* zh-tw.yml - Andrew Liu
+* ru.yml - Mykhaylo Sorochan
+* sk.yml - Milan Freml
 
 
