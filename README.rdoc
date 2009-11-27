@@ -33,6 +33,6 @@ This plugin works only on production mode.
 * zh-tw.yml - Andrew Liu
 * ru.yml - Mykhaylo Sorochan
 * sk.yml - Milan Freml
-* es.yml - nachokb
+* es.yml - Ignacio Carrera
 
 
