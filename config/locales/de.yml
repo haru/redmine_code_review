@@ -21,3 +21,17 @@ de:
   notice_review_updated: Review erfolgreich aktualisiert.
   label_show_closed_reviews: Zeige geschlossene Reviews.
   label_review: Review
+  label_review_new: Neuer Review
+  review_notify_only_involved_in: "Nur, wenn ich daran irgendwie beteiligt bin."
+  review_notify_all: "Jeder Review in meinen Projekten"
+
+  old_review_data_found: 'Es sind alte Review Informationen vorhanden. Möchten Sie, das diese in neue Datensätze konvertiert werden?'
+  select_tracker_for_code_reviews: 'Tracker für Code reviews.'
+  field_hide_code_review_tab: '"Code Reviews" Tab verstecken.'
+  lable_no_code_reviews: 'Keine Code reviews'
+  field_comment: Kommentar
+
+  label_if_revision_has_issues: 'Wenn eine Revision Tickets hat'
+  label_review_issue_relates: 'Dazugehörige Tickets anzeigen'
+  label_review_issue_blocks: 'Blockierende Tickets anzeigen'
+  label_review_issue_do_nothing: 'Nichts ausführen'
