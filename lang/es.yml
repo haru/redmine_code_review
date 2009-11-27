@@ -1,0 +1,30 @@
+label_add_review: Agregar revisión
+label_show_review: Ver revisión
+code_reviews: Revisiones de Código
+code_review: Revisión de Código
+project_module_code_review: Revisiones de Código
+label_code_path: Ruta
+label_code_reviewer: Revisor
+label_code_author: Autor
+label_code_line: Línea
+
+label_review_open: Abierta
+label_review_closed: Cerrada
+
+label_reopen_review: Reabrir revisión
+label_close_review: Cerrar revisión
+
+label_code_review_plural: Revisiones de Código
+
+label_line_number: 'Línea: %d'
+notice_review_updated: Revisión actualizada exitosamente.
+label_show_closed_reviews: Mostrar revisiones cerradas.
+label_review: revisión
+label_review_new: Nueva Revisión
+review_notify_only_involved_in: "Solamente en aquellas cosas en las que estoy involucrado"
+review_notify_all: "Para cualquier revisión de cualquiera de mis proyectos"
+
+old_review_data_found: 'Se han encontrado revisiones antiguas. ¿Desea convertirlas?'
+select_tracker_for_code_reviews: 'Elija tipo de ticket para las revisiones.'
+field_hide_code_review_tab: 'Esconder pestaña "Revisiones de Código".'
+lable_no_code_reviews: 'Sin revisiones'
