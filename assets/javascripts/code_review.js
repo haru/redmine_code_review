@@ -297,6 +297,7 @@ function hideForm() {
     }
     review_form_dialog.destroy();
     review_form_dialog = null;
+    $('review-form').innerHTML = '';
 }
 function addReview(url) {
     //alert('aaa');
