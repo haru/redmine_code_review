@@ -23,7 +23,7 @@ This plugin works only on production mode.
 
 === Language contributors
 
-* de.yml - Michael Diederich, sk@computer-leipzig.com
+* de.yml - Michael Diederich, Sebastian Bernhard
 * fr.yml - Thomas M
 * hu.yml - Péter Major
 * ko.yml - Ki-yong Kim
