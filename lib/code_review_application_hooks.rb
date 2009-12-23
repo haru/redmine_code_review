@@ -89,7 +89,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return change_repository_view context if (action_name == 'show' or action_name == 'revisions')
     return change_revision_view context if (action_name == 'revision')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
-    return change_entry_norevision_view context if controller.params[:rev].blank?
+    return change_entry_norevision_view context if (controller.params[:rev].blank? or controller.params[:rev] == 'master')
     request = context[:request]
     parameters = request.parameters
     rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
