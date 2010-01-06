@@ -202,6 +202,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     path = ''
     patharray.each{|el| path << '/' + el}
     entry = project.repository.entry(path)
+    return '' unless entry
     lastrev = entry.lastrev
     return unless lastrev
     return unless lastrev.identifier
