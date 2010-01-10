@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CodeReviewUserSettingTest < Test::Unit::TestCase
+class CodeReviewUserSettingTest < ActiveSupport::TestCase
   fixtures :code_review_user_settings, :projects, :users
 
   # Replace this with your real tests.
