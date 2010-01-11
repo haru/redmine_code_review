@@ -19,7 +19,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
   # htmlヘッダ生成時に呼ばれる
   def view_layouts_base_html_head(context = {})
-    project = context[:projeproject]
+    project = context[:project]
     return '' unless project
     controller = context[:controller]
     if RAILS_ENV == 'development'
