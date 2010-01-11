@@ -19,7 +19,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
   # htmlヘッダ生成時に呼ばれる
   def view_layouts_base_html_head(context = {})
-    project = context[:project]
+    project = context[:projeproject]
     return '' unless project
     controller = context[:controller]
     if RAILS_ENV == 'development'
@@ -90,6 +90,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return change_revision_view context if (action_name == 'revision')
     return '' unless (action_name == 'diff' or action_name == 'entry' or action_name == 'annotate')
     return change_entry_norevision_view context if (controller.params[:rev].blank? or controller.params[:rev] == 'master')
+    changeset = Changeset.find_by_revision(controller.params[:rev], :conditions => ['repository_id = (?)', project.repository.id])
+    return change_entry_norevision_view context unless changeset
     request = context[:request]
     parameters = request.parameters
     rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
