@@ -35,3 +35,9 @@ de:
   label_review_issue_relates: 'Dazugehörige Tickets anzeigen'
   label_review_issue_blocks: 'Blockierende Tickets anzeigen'
   label_review_issue_do_nothing: 'Nichts ausführen'
+
+  permission_view_code_review: View code reviews
+  permission_add_code_review: Add code reviews
+  permission_edit_code_review: Edit code reviews
+  permission_delete_code_review: Delete code reiews
+  permission_code_review_setting: Manage code reviews

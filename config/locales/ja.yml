@@ -35,3 +35,9 @@ ja:
   label_review_issue_relates: 'レビューチケットと関連付ける'
   label_review_issue_blocks: 'レビューチケットがブロックする'
   label_review_issue_do_nothing: '何もしない'
+
+  permission_view_code_review: コードレビューの閲覧
+  permission_add_code_review: コードレビューの追加
+  permission_edit_code_review: コードレビューの編集
+  permission_delete_code_review: コードレビューの削除
+  permission_code_review_setting: コードレビューの管理

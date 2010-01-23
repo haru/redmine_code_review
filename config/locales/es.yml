@@ -29,3 +29,15 @@ es:
   select_tracker_for_code_reviews: 'Elija tipo de ticket para las revisiones.'
   field_hide_code_review_tab: 'Esconder pestaña "Revisiones de Código".'
   lable_no_code_reviews: 'Sin revisiones'
+  field_comment: Comment
+
+  label_if_revision_has_issues: 'If revision has one more issues'
+  label_review_issue_relates: 'Review issue relates to them'
+  label_review_issue_blocks: 'Review issue blocks them'
+  label_review_issue_do_nothing: 'Do nothing'
+
+  permission_view_code_review: View code reviews
+  permission_add_code_review: Add code reviews
+  permission_edit_code_review: Edit code reviews
+  permission_delete_code_review: Delete code reiews
+  permission_code_review_setting: Manage code reviews

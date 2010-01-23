@@ -24,3 +24,20 @@ pt-BR:
   label_review_new: Nova revisão
   review_notify_only_involved_in: "Somentes as revisões em que eu estou envolvido"
   review_notify_all: "Para qualquer revisão em todos os meus projetos"
+
+  old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
+  select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
+  field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
+  lable_no_code_reviews: 'No reviews'
+  field_comment: Comment
+
+  label_if_revision_has_issues: 'If revision has one more issues'
+  label_review_issue_relates: 'Review issue relates to them'
+  label_review_issue_blocks: 'Review issue blocks them'
+  label_review_issue_do_nothing: 'Do nothing'
+
+  permission_view_code_review: View code reviews
+  permission_add_code_review: Add code reviews
+  permission_edit_code_review: Edit code reviews
+  permission_delete_code_review: Delete code reiews
+  permission_code_review_setting: Manage code reviews
