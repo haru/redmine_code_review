@@ -218,4 +218,10 @@ class CodeReviewControllerTest < ActionController::TestCase
     post :preview, :id => 1, :review => review
     assert_response :success
   end
+
+  def test_assign
+    @request.session[:user_id] = 1
+    post :assign, :id => 1
+    assert_response :redirect
+  end
 end

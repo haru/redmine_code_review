@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -68,5 +68,17 @@ class IssuesControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
     get :show, :id => 1
 
+  end
+
+  def test_new
+    @request.session[:user_id] = 1
+    get :new, :project_id => 1
+    assert_response :success
+    get :new, :project_id => 1, :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
+    assert_response :success
+    post :new, :project_id => 1,
+      :issue => {:tracker_id => 1, :status_id => 1, :subject => 'hoge'},
+      :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
+    assert_response :redirect
   end
 end
