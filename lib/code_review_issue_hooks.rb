@@ -47,4 +47,43 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     return o
   end
 
+  def view_issues_form_details_bottom(context = { })
+    project = context[:project]
+    request = context[:request]
+    parameters = request.parameters
+    code = parameters[:code]
+    return unless code
+    issue = context[:issue]
+    o = ''
+    o << hidden_field_tag("code[rev]", code[:rev]) unless code[:rev].blank?
+    o << "\n"
+    o << hidden_field_tag("code[rev_to]", code[:rev_to]) unless code[:rev_to].blank?
+    o << "\n"
+    o << hidden_field_tag("code[path]", code[:path]) unless code[:path].blank?
+    o << "\n"
+    o << hidden_field_tag("code[action_type]", code[:action_type]) unless code[:action_type].blank?
+    o << "\n"
+    o << hidden_field_tag("code[change_id]", code[:change_id].to_i) unless code[:change_id].blank?
+
+    return o
+  end
+  
+  def controller_issues_new_after_save(context = { })
+    project = context[:project]
+    request = context[:request]
+    parameters = request.parameters
+    code = parameters[:code]
+    return unless code
+    issue = context[:issue]
+    issue_id = issue.id
+
+    assignment = CodeReviewAssignment.new
+    assignment.issue_id = issue_id
+    assignment.change_id = code[:change_id].to_i unless code[:change_id].blank?
+    assignment.file_path = code[:path] unless code[:path].blank?
+    assignment.rev = code[:rev] unless code[:rev].blank?
+    assignment.rev = code[:rev_to] unless code[:rev_to].blank?
+    assignment.action_type = code[:action_type] unless code[:action_type].blank?
+    assignment.save!
+  end
 end

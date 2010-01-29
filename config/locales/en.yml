@@ -26,7 +26,7 @@ en:
   review_notify_all: "For any review on all my projects"
 
   old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
-  select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
+  select_tracker_for_code_reviews: 'Select the tracker for code reviews.'
   field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
   lable_no_code_reviews: 'No reviews'
   field_comment: Comment
@@ -41,3 +41,7 @@ en:
   permission_edit_code_review: Edit code reviews
   permission_delete_code_review: Delete code reiews
   permission_code_review_setting: Manage code reviews
+
+  select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
+  field_assignment_tracker: 'Tracker'
+  assign_review: Assign review

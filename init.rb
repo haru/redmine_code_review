@@ -26,7 +26,7 @@ require 'code_review_changeset_patch'
 require 'code_review_issue_patch'
 require 'code_review_issue_hooks'
 require 'code_review_projects_helper_patch'
-require 'code_review_repositories_controller_patch'
+#require 'code_review_repositories_controller_patch'
 
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
@@ -41,6 +41,7 @@ Redmine::Plugin.register :redmine_code_review do
     permission :add_code_review, {:code_review => [:new, :reply, :forward_to_revision, :preview]}, :require => :member
     permission :edit_code_review, {:code_review => [:update]}, :require => :member
     permission :delete_code_review, {:code_review => [:destroy]}, :require => :member
+    permission :assign_code_review, {:code_review => [:assign]}, :require => :member
     permission :code_review_setting, {:code_review_settings => [:show, :update]}, :require => :member
 
   end

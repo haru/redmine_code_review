@@ -39,4 +39,43 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     reviews = changeset.review_issues
     assert_equal(2, reviews.length)
   end
+
+  def test_assignment_count
+    changeset = Changeset.find(100)
+    assert_equal(0, changeset.assignment_count)
+    change = changeset.changes[0]
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
+    change = changeset.changes[1]
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 3)
+
+    assert_equal(3, changeset.assignment_count)
+  end
+
+  def test_completed_assignment_pourcent
+    changeset = Changeset.find(100)
+    change = changeset.changes[0]
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
+    change = changeset.changes[1]
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 3)
+    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 4)
+    issues = []
+    1.upto(4) {|i|
+      issues[i - 1] = Issue.find(i)
+      issues[i - 1].status_id = 1
+      issues[i - 1].due_date = nil
+      issues[i - 1].save!
+    }
+    changeset.save!
+    assert_equal(0, changeset.completed_assignment_pourcent)
+    issues[0].status_id = 5
+    issues[0].save!
+    changeset = Changeset.find(100)
+    assert_equal(25, changeset.completed_assignment_pourcent)
+    issues[1].done_ratio = 50
+    issues[1].save!
+    changeset = Changeset.find(100)
+    assert_equal(37.5, changeset.completed_assignment_pourcent)
+  end
 end

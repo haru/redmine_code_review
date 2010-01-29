@@ -24,6 +24,7 @@ module CodeReviewChangePatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_reviews, :dependent => :destroy
+      has_many :code_review_assignments, :dependent => :destroy
       
     end
 
@@ -31,6 +32,9 @@ module CodeReviewChangePatch
 end
 
 module ChangeInstanceMethodsCodeReview
+  #
+  # for review_issues
+  #
   def review_count
     code_reviews.select{|o|
       o.issue_id != nil
@@ -46,6 +50,23 @@ module ChangeInstanceMethodsCodeReview
 
   def closed_review_count
     code_reviews.select { |o| o.issue_id != nil and o.is_closed? }.length
+  end
+
+  #
+  # for assignment_issues
+  #
+  def assignment_count
+    code_review_assignments.length
+  end
+
+  def open_assignment_count
+    code_review_assignments.select { |o|
+      !o.is_closed?
+    }.length
+  end
+
+  def closed_assignment_count
+    code_review_assignments.select { |o| o.is_closed? }.length
   end
 end
 

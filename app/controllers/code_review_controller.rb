@@ -134,6 +134,18 @@ class CodeReviewController < ApplicationController
     end
   end
 
+  def assign
+    code = {}
+    code[:action_type] = params[:action_type] unless params[:action_type].blank?
+    code[:rev] = params[:rev] unless params[:rev].blank?
+    code[:rev_to] = params[:rev_to] unless params[:rev_to].blank?
+    code[:path] = params[:path] unless params[:path].blank?
+    code[:change_id] = params[:change_id].to_i unless params[:change_id].blank?
+
+    redirect_to :controller => 'issues', :action => "new" , :project_id => @project,
+      :issue => {:subject => 'Code review assigned.'},
+      :code => code
+  end
 
   def update_diff_view
     @show_review_id = params[:review_id].to_i unless params[:review_id].blank?

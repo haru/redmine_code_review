@@ -41,3 +41,8 @@ ja:
   permission_edit_code_review: コードレビューの編集
   permission_delete_code_review: コードレビューの削除
   permission_code_review_setting: コードレビューの管理
+
+  select_tracker_for_code_review_assignment: 'コードレビューのアサインに使用するトラッカーを選択してください。'
+  field_assignment_tracker: 'トラッカー'
+  assign_review: レビューをアサインする
+

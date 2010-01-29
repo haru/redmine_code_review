@@ -18,7 +18,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewSettingsControllerTest < ActionController::TestCase
   fixtures :code_reviews, :projects, :users, :trackers, :projects, :projects_trackers,
-    :code_review_project_settings, :issues
+    :code_review_project_settings, :issues, :issue_statuses, :enumerations
 
   def setup
     @controller = CodeReviewSettingsController.new
@@ -51,7 +51,8 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
 
     @request.session[:user_id] = 1
     setting = CodeReviewProjectSetting.find(1)
-    get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}
+
+    post :update, :id => 1, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}
     assert_response :redirect
     project = Project.find(1)
     assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
@@ -61,7 +62,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     project = Project.find(1)
     assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
 
-    get :update, :id => 2, :setting => {:tracker_id => 1, :id => setting.id}
+    post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}
     assert_response :redirect
     project = Project.find(2)
     assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'

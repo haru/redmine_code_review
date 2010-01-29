@@ -29,6 +29,9 @@ module CodeReviewChangesetPatch
 end
 
 module ChangesetInstanceMethodsCodeReview
+  #
+  # for review issues
+  #
   def review_count
     return @review_count if @review_count
     @review_count = 0
@@ -83,6 +86,67 @@ module ChangesetInstanceMethodsCodeReview
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
       "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
           :conditions => ["#{Changeset.table_name}.id = ? AND #{IssueStatus.table_name}.is_closed = ?", id, false]).to_f) / review_count
+    end
+  end
+
+  #
+  # for assignment issues
+  #
+  
+  def assignment_count
+    #return @assignment_count if @assignment_count
+    @assignment_count = 0
+    changes.each{|change|
+      @assignment_count += change.assignment_count
+    }
+    return @assignment_count
+  end
+
+  def open_assignment_count
+    return @open_assignment_count if @open_assignment_count
+    @open_assignment_count = 0
+    changes.each{|change|
+      @open_assignment_count += change.open_assignment_count
+    }
+    return @open_assignment_count
+  end
+
+  def assignment_issues
+    return @assignment_issues if @assignment_issues
+    changes.each{|change|
+      unless @assignment_issues
+        @assignment_issues = change.code_reviews.collect{|issue| issue}
+      else
+        @assignment_issues =  @assignment_issues + change.code_review_assignments.collect{|issue| issue}
+      end
+      @assignment_issues
+    }
+  end
+
+  def closed_assignment_count
+    assignment_count - open_assignment_count
+  end
+
+  def closed_assignment_pourcent
+    if assignment_count == 0
+      0
+    else
+      closed_assignment_count * 100.0 / assignment_count
+    end
+  end
+
+  def completed_assignment_pourcent
+    if assignment_count == 0
+      0
+    elsif open_assignment_count == 0
+      100
+    else
+      @completed_assignment_pourcent ||= (closed_assignment_count * 100 +
+          CodeReviewAssignment.sum("#{Issue.table_name}.done_ratio",
+          :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
+      "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
+      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
+          :conditions => ["#{Changeset.table_name}.id = ? AND #{IssueStatus.table_name}.is_closed = ?", id, false]).to_f) / assignment_count
     end
   end
 end

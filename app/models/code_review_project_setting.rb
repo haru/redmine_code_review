@@ -17,9 +17,11 @@
 class CodeReviewProjectSetting < ActiveRecord::Base
   belongs_to :project
   belongs_to :tracker
+  belongs_to :assignment_tracker, :class_name => 'Tracker'
 
   validates_presence_of :project_id
   validates_presence_of :tracker_id
+  validates_presence_of :assignment_tracker_id
 
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1

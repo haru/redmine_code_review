@@ -41,3 +41,7 @@ ru:
   permission_edit_code_review: Edit code reviews
   permission_delete_code_review: Delete code reiews
   permission_code_review_setting: Manage code reviews
+
+  select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
+  field_assignment_tracker: 'Tracker'
+  assign_review: Assign review
