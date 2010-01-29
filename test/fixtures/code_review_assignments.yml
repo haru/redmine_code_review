@@ -1,0 +1,35 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  id: 1
+
+  issue_id: 
+
+  change_id: 
+
+  attachment_id: 
+
+  file_path: MyString
+
+  rev: MyString
+
+  rev_to: MyString
+
+  action_type: MyString
+
+two:
+  id: 2
+
+  issue_id: 
+
+  change_id: 
+
+  attachment_id: 
+
+  file_path: MyString
+
+  rev: MyString
+
+  rev_to: MyString
+
+  action_type: MyString
+
