@@ -55,9 +55,16 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   def test_revision
-    @request.session[:user_id] = 1
+     @request.session[:user_id] = 1
     #get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
-    get :revision, :id => 3, :rev => 1, :path => '/'.split('/')
+    change = Change.generate!
+    changeset = change.changeset
+    project = Project.find(1)
+    project.repository.destroy
+    project.repository = changeset.repository
+    issue = Issue.generate_for_project!(project, {:description => 'test'})
+    review = CodeReview.generate!(:change => change, :project => project, :issue => issue)
+    get :revision, :id => project.id, :rev => changeset.revision, :path => change.path.split('/')
     #assert_response :success
     
   end
@@ -65,6 +72,12 @@ class RepositoriesControllerTest < ActionController::TestCase
   def test_revisions
     @request.session[:user_id] = 1
     get :revisions, :id => 1
+    assert_response :success
+  end
+
+  def test_show
+    @request.session[:user_id] = 1
+    get :show, :id => 1
     assert_response :success
   end
   
