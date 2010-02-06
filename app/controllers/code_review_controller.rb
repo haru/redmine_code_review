@@ -142,9 +142,12 @@ class CodeReviewController < ApplicationController
     code[:path] = params[:path] unless params[:path].blank?
     code[:change_id] = params[:change_id].to_i unless params[:change_id].blank?
 
+    issue = {}
+    issue[:subject] = 'Code review assigned.'
+    issue[:tracker_id] = @setting.assignment_tracker_id if @setting.assignment_tracker_id
+
     redirect_to :controller => 'issues', :action => "new" , :project_id => @project,
-      :issue => {:subject => 'Code review assigned.'},
-      :code => code
+      :issue => issue, :code => code
   end
 
   def update_diff_view

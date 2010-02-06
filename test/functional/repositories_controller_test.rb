@@ -55,8 +55,7 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   def test_revision
-     @request.session[:user_id] = 1
-    #get :revision, :id => 1, :rev => 1, :path => '/test/some/path/in/the/repo'.split('/')
+    @request.session[:user_id] = 1
     change = Change.generate!
     changeset = change.changeset
     project = Project.find(1)
