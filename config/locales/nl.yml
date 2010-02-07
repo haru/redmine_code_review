@@ -17,7 +17,7 @@ nl:
 
   label_code_review_plural: Code reviews
 
-  label_line_number: 'Regel: %d'
+  label_line_number: 'Regel: {{line}}'
   notice_review_updated: Review was succesvol geupdate.
   label_show_closed_reviews: Toon gesloten reviews.
   label_review: review

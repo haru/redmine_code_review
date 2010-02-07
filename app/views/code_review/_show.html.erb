@@ -44,7 +44,7 @@
   <h2>
     <%= link_to '#' + @review.issue.id.to_s, :controller => 'issues', :action => 'show',
                :id => @review.issue.id %>:
-    <%= l(:label_line_number, @review.line) %>:
+    <%= l(:label_line_number, :line => @review.line) %>:
     <%=h @review.subject%>
   </h2>
  

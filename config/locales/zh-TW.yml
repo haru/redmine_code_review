@@ -17,7 +17,7 @@
 
   label_code_review_plural: 程式碼評語
 
-  label_line_number: '行號: %d'
+  label_line_number: '行號: {{line}}'
   notice_review_updated: 評語更新成功
   label_show_closed_reviews: 顯示已關閉評語
   label_review: 評語

@@ -17,7 +17,7 @@ es:
 
   label_code_review_plural: Revisiones de Código
 
-  label_line_number: 'Línea: %d'
+  label_line_number: 'Línea: {{line}}'
   notice_review_updated: Revisión actualizada exitosamente.
   label_show_closed_reviews: Mostrar revisiones cerradas.
   label_review: revisión

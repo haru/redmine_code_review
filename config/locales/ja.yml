@@ -17,7 +17,7 @@ ja:
 
   label_code_review_plural: コードレビュー
 
-  label_line_number: %d行目
+  label_line_number: "{{line}}行目"
   notice_review_updated: レビューが更新されました。
   label_show_closed_reviews: 完了したレビューも表示する。
   label_review: レビュー

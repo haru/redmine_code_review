@@ -17,7 +17,7 @@ sk:
 
   label_code_review_plural: Revízie kódu
 
-  label_line_number: 'Riadok: %d'
+  label_line_number: 'Riadok: {{line}}'
   notice_review_updated: Revízia bola úspešne upravená.
   label_show_closed_reviews: Zobraz uzavrené revízie.
   label_review: revízia

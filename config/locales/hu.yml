@@ -17,7 +17,7 @@ hu:
 
   label_code_review_plural: Kódszemlék
 
-  label_line_number: 'Sor: %d'
+  label_line_number: 'Sor: {{line}}'
   notice_review_updated: A vizsgálat adatai sikeresen frissültek.
   label_show_closed_reviews: Lezárt vizsgálatok megjelenítése
   label_review: vizsgálat

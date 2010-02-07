@@ -17,7 +17,7 @@ en:
 
   label_code_review_plural: Code reviews
 
-  label_line_number: 'Line: %d'
+  label_line_number: 'Line: {{line}}'
   notice_review_updated: Review was successfully updated.
   label_show_closed_reviews: Show closed reviews.
   label_review: review
