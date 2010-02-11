@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -58,42 +58,67 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  def test_new
-    @request.session[:user_id] = 1
-    get :new, :id => 1, :action_type => 'diff', :rev => 5
-    assert_response :success
-    assert_template '_new_form'
+  context "new" do
+    def setup
+      
+    end
 
-    count = CodeReview.find(:all).length
-    post :new, :id => 1, :review => {:line => 1, :change_id => 1,
-      :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
-    assert_response :success
-    assert_template '_add_success'
-    assert_equal(count + 1, CodeReview.find(:all).length)
+    should "create form when get mthod" do
+      @request.session[:user_id] = 1
+      get :new, :id => 1, :action_type => 'diff', :rev => 5
+      assert_response :success
+      assert_template '_new_form'
+    end
 
-    get :new, :id => 1, :action_type => 'diff', :rev => 5
-    assert_response :success
-    assert_template '_new_form'
+    should "create new review" do
+      @request.session[:user_id] = 1
+      count = CodeReview.find(:all).length
+      post :new, :id => 1, :review => {:line => 1, :change_id => 1,
+        :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
+      assert_response :success
+      assert_template '_add_success'
+      assert_equal(count + 1, CodeReview.find(:all).length)
 
-    change = Change.find(3)
-    changeset = change.changeset
-    issue = Issue.find(1)
-    changeset.issues << issue
-    changeset.save
-    count = CodeReview.find(:all).length
-    post :new, :id => 1, :review => {:line => 1, :change_id => 3,
-      :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
-    assert_response :success
-    assert_template '_add_success'
-    assert_equal(count + 1, CodeReview.find(:all).length)
+      get :new, :id => 1, :action_type => 'diff', :rev => 5
+      assert_response :success
+      assert_template '_new_form'
+    end
 
-    settings = CodeReviewProjectSetting.find(:all)
-    settings.each{|setting|
-      setting.destroy
-    }
-    post :new, :id => 1, :review => {:line => 1, :change_id => 1,
-      :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
-    assert_response :redirect
+    should "create new review when changeset has related issue" do
+      @request.session[:user_id] = 1
+      change = Change.find(3)
+      changeset = change.changeset
+      issue = Issue.find(1)
+      changeset.issues << issue
+      changeset.save
+      count = CodeReview.find(:all).length
+      post :new, :id => 1, :review => {:line => 1, :change_id => 3,
+        :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
+      assert_response :success
+      assert_template '_add_success'
+      assert_equal(count + 1, CodeReview.find(:all).length)
+
+      settings = CodeReviewProjectSetting.find(:all)
+      settings.each{|setting|
+        setting.destroy
+      }
+      post :new, :id => 1, :review => {:line => 1, :change_id => 1,
+        :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
+      assert_response :redirect
+    end
+
+    should "create review for attachment" do
+      @request.session[:user_id] = 1
+      project = Project.find(1)
+      issue = Issue.generate_for_project!(project)
+      attachment = Attachment.generate!(:container => issue)
+      count = CodeReview.find(:all).length
+      post :new, :id => 1, :review => {:line => 1, :comment => 'aaa',
+        :subject => 'bbb', :attachment_id => attachment.id}, :action_type => 'diff'
+      assert_response :success
+      assert_template '_add_success'
+      assert_equal(count + 1, CodeReview.find(:all).length)
+    end
   end
 
   def test_show
