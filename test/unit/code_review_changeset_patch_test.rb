@@ -90,7 +90,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     should "returns 0 if changeset has no closed assignments." do
       change = Change.generate!
       changeset = change.changeset
-      @project = Project.find(1)
+      @project = Project.generate!
       issue1 = Issue.generate_for_project!(@project, :status_id => 1)
       issue2 = Issue.generate_for_project!(@project, :status_id => 1)
       change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
@@ -115,7 +115,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     should "returns 50 if half of assignments were closed." do
       change = Change.generate!
       changeset = change.changeset
-      @project = Project.find(1)
+      @project = Project.generate!
       issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
       issue3 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
