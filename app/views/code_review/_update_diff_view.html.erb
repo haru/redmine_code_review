@@ -32,7 +32,9 @@
   change_id = ''
   change_id = @change.id if @change
   -%>
+  <% if @change -%>
   <%= render :partial => 'assignments', :locals => {:assignments => @change.code_review_assignments} -%>
+  <% end %>
   <%= link_to_if_authorized(l(:button_add), {:controller => 'code_review', :action => 'assign', :id=>@project,
   :action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id},
   :class => 'icon icon-add') %>
