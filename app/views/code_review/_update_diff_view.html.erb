@@ -32,7 +32,7 @@
   change_id = ''
   change_id = @change.id if @change
   -%>
-  <%= link_to(l(:assign_review), {:controller => 'code_review', :action => 'assign', :id=>@project,
+  <%= link_to_if_authorized(l(:assign_review), {:controller => 'code_review', :action => 'assign', :id=>@project,
   :action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id},
   :class => 'icon icon-add') %>
 </div>

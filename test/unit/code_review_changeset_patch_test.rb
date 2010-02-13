@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -102,12 +102,13 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     should "returns 100 if changeset has no closed assignments." do
       change = Change.generate!
       changeset = change.changeset
-      @project = Project.find(1)
-      issue1 = Issue.generate_for_project!(@project, :status_id => 5)
-      issue2 = Issue.generate_for_project!(@project, :status_id => 5)
+      @project = Project.generate!
+      issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
+      issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
       change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
       change.save!
+      changeset =Changeset.find(changeset.id)
       assert_equal(100, changeset.closed_assignment_pourcent)
     end
 
@@ -115,10 +116,10 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change = Change.generate!
       changeset = change.changeset
       @project = Project.find(1)
-      issue1 = Issue.generate_for_project!(@project, :status_id => 5)
-      issue2 = Issue.generate_for_project!(@project, :status_id => 1)
-      issue3 = Issue.generate_for_project!(@project, :status_id => 5)
-      issue4 = Issue.generate_for_project!(@project, :status_id => 1)
+      issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
+      issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
+      issue3 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
+      issue4 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
       change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
       change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
       change.save!
