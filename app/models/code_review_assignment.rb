@@ -24,4 +24,13 @@ class CodeReviewAssignment < ActiveRecord::Base
   def is_closed?
     issue.closed?
   end
+
+  def path
+    file_path
+  end
+
+  def revision
+    return rev if rev
+    changeset.revision if changeset
+  end
 end

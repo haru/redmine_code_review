@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -32,7 +32,8 @@
   change_id = ''
   change_id = @change.id if @change
   -%>
-  <%= link_to_if_authorized(l(:assign_review), {:controller => 'code_review', :action => 'assign', :id=>@project,
+  <%= render :partial => 'assignments', :locals => {:assignments => @change.code_review_assignments} -%>
+  <%= link_to_if_authorized(l(:button_add), {:controller => 'code_review', :action => 'assign', :id=>@project,
   :action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id},
   :class => 'icon icon-add') %>
 </div>

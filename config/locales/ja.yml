@@ -45,5 +45,6 @@ ja:
 
   select_tracker_for_code_review_assignment: 'コードレビューのアサインに使用するトラッカーを選択してください。'
   field_assignment_tracker: 'トラッカー'
-  assign_review: レビューをアサインする
+  review_assignments: レビューアサイン
+  review_assigned_for: レビュー対象
 

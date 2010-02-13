@@ -45,4 +45,5 @@ de:
 
   select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
   field_assignment_tracker: 'Tracker'
-  assign_review: Assign review
+  review_assignments: Review assignments
+  review_assigned_for: Review assigned for

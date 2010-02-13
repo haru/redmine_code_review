@@ -201,23 +201,30 @@ class CodeReviewController < ApplicationController
   end
 
   def show
-    @review = CodeReview.find(params[:review_id].to_i)
-    @issue = @review.issue
-    @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
+    @review = CodeReview.find(params[:review_id].to_i) unless params[:review_id].blank?
+    @assignment = CodeReviewAssignment.find(params[:assignment_id].to_i) unless params[:assignment_id].blank?
+    @issue = @review.issue if @review
+    @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current) if @review
+    target = @review if @review
+    target = @assignment if @assignment
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
     else
       #@review = @review.root
-      path = @review.path
+      path = target.path
       path = '/' + path unless path.match(/^\//)
-      action_name = @review.action_type
+      action_name = target.action_type
       rev_to = ''
-      rev_to = '&rev_to=' + @review.rev_to if @review.rev_to
+      rev_to = '&rev_to=' + target.rev_to if target.rev_to
       if action_name == 'attachment'
-        attachment = @review.attachment
-        redirect_to(url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + attachment.filename + '?review_id=' + @review.id.to_s)
+        attachment = target.attachment
+        url = url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + attachment.filename
+        url << '?review_id=' + @review.id.to_s if @review
+        redirect_to(url)
       else
-        redirect_to url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + @review.revision + '&review_id=' + @review.id.to_s + rev_to
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + target.revision
+        url << '&review_id=' + @review.id.to_s + rev_to if @review
+        redirect_to url
       end
     end
   end

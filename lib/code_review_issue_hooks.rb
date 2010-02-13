@@ -34,16 +34,11 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     
     request = context[:request]
     issue = context[:issue]
-    return '' unless issue.code_review
-    review = issue.code_review
 
-    o = '<tr>'
-    o << "<td><b>#{l(:code_review)}:</b></td>"
-    o << '<td colspan="3">'
-    o << link_to("#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}",
-      :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
-    o << '</td>'
-    o << '</tr>'
+    o = ''
+    o << create_review_info(project, issue.code_review) if issue.code_review
+    o << create_assignment_info(project, issue.code_review_assignment) if issue.code_review_assignment
+
     return o
   end
 
@@ -85,5 +80,28 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     assignment.rev = code[:rev_to] unless code[:rev_to].blank?
     assignment.action_type = code[:action_type] unless code[:action_type].blank?
     assignment.save!
+  end
+
+  private
+  def create_review_info(project, review)
+    o = '<tr>'
+    o << "<td><b>#{l(:code_review)}:</b></td>"
+    o << '<td colspan="3">'
+    o << link_to("#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}",
+      :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
+    o << '</td>'
+    o << '</tr>'
+    return o
+  end
+
+  def create_assignment_info(project, assignment)
+    o = '<tr>'
+    o << "<td><b>#{l(:review_assigned_for)}:</b></td>"
+    o << '<td colspan="3">'
+    o << link_to("#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
+      :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
+    o << '</td>'
+    o << '</tr>'
+    return o
   end
 end
