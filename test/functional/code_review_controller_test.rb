@@ -43,19 +43,25 @@ class CodeReviewControllerTest < ActionController::TestCase
     }
   end
 
-  def test_index
-    @request.session[:user_id] = 1
-    get :index, :id => 1
-    assert_response :success
+  context "index" do
+    should "show review list" do
+      @request.session[:user_id] = 1
+      get :index, :id => 1
+      assert_response :success
+    end
 
-    get :index, :id => 2
-    assert_response 302
-  end
+    should "not show review list if module was not enabled." do
+      @request.session[:user_id] = 1
+      get :index, :id => 2
+      assert_response :redirect
+    end
 
-  def test_index_show_closed
-    @request.session[:user_id] = 1
-    get :index, :id => 1, :show_closed => true
-    assert_response :success
+    should "show all review list if show_closed is true" do
+      @request.session[:user_id] = 1
+      get :index, :id => 1, :show_closed => true
+      assert_response :success
+    end
+
   end
 
   context "new" do
@@ -137,15 +143,28 @@ class CodeReviewControllerTest < ActionController::TestCase
     
   end
 
-  def test_reply
-    @request.session[:user_id] = 1
-    
-    review = CodeReview.find(9)
-    get :reply, :id => 1, :review_id => 9,
-      :reply => {:comment => 'aaa'}, :issue=> {:lock_version => review.issue.lock_version}
-    assert_response :success
-    assert_template '_show'
-    assert_equal(nil, assigns(:error))
+  context "reply" do
+    should "create reply for review" do
+      @request.session[:user_id] = 1
+
+      review = CodeReview.find(9)
+      get :reply, :id => 1, :review_id => 9,
+        :reply => {:comment => 'aaa'}, :issue=> {:lock_version => review.issue.lock_version}
+      assert_response :success
+      assert_template '_show'
+      assert_equal(nil, assigns(:error))
+    end
+
+    should "not create reply if anyone replied sametime" do
+      @request.session[:user_id] = 1
+
+      review = CodeReview.find(9)
+      get :reply, :id => 1, :review_id => 9,
+        :reply => {:comment => 'aaa'}, :issue=> {:lock_version => review.issue.lock_version + 1}
+      assert_response :success
+      assert_template '_show'
+      assert_not_nil assigns(:error)
+    end
   end
 
   def test_reply_lock_error

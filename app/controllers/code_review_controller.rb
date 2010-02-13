@@ -236,11 +236,6 @@ class CodeReviewController < ApplicationController
       if !journal.new_record?
         # Only send notification if something was actually changed
         flash[:notice] = l(:notice_successful_update)
-        if (l(:THIS_IS_REDMINE_O_8_STABELE) == 'THIS_IS_REDMINE_O_8_STABELE')
-          lang = current_language
-          Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
-          set_language lang if respond_to? 'set_language'
-        end
       end
       
       render :partial => 'show'

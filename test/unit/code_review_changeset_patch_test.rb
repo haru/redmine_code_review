@@ -78,4 +78,85 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     changeset = Changeset.find(100)
     assert_equal(37.5, changeset.completed_assignment_pourcent)
   end
+
+  context "closed_assignment_pourcent" do
+   
+    should "returns 0 if changeset has no assignments." do
+      change = Change.generate!
+      changeset = change.changeset
+      assert_equal(0, changeset.closed_assignment_pourcent)
+    end
+
+    should "returns 0 if changeset has no closed assignments." do
+      change = Change.generate!
+      changeset = change.changeset
+      @project = Project.find(1)
+      issue1 = Issue.generate_for_project!(@project, :status_id => 1)
+      issue2 = Issue.generate_for_project!(@project, :status_id => 1)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
+      change.save!
+      assert_equal(0, changeset.closed_assignment_pourcent)
+    end
+
+    should "returns 100 if changeset has no closed assignments." do
+      change = Change.generate!
+      changeset = change.changeset
+      @project = Project.find(1)
+      issue1 = Issue.generate_for_project!(@project, :status_id => 5)
+      issue2 = Issue.generate_for_project!(@project, :status_id => 5)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
+      change.save!
+      assert_equal(100, changeset.closed_assignment_pourcent)
+    end
+
+    should "returns 50 if half of assignments were closed." do
+      change = Change.generate!
+      changeset = change.changeset
+      @project = Project.find(1)
+      issue1 = Issue.generate_for_project!(@project, :status_id => 5)
+      issue2 = Issue.generate_for_project!(@project, :status_id => 1)
+      issue3 = Issue.generate_for_project!(@project, :status_id => 5)
+      issue4 = Issue.generate_for_project!(@project, :status_id => 1)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
+      change.save!
+      change = Change.generate!(:changeset => changeset)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue3)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue4)
+      change.save!
+      assert_equal(50, changeset.closed_assignment_pourcent)
+    end
+  end
+
+  context "assignment_issues" do
+    should "returns empty array if changeset has no assignments." do
+      change = Change.generate!
+      changeset = change.changeset
+      assert_not_nil(changeset.assignment_issues)
+    end
+
+    should "returns assignments if changeset has assignments." do
+      change = Change.generate!
+      changeset = change.changeset
+
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
+      change.save!
+ 
+      assert_not_nil(changeset.assignment_issues)
+      assert_equal(2, changeset.assignment_issues.length)
+
+      change = Change.generate!(:changeset => changeset)
+
+      change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 3)
+      change.save!
+      changeset = Changeset.find(changeset.id)
+
+      assert_not_nil(changeset.assignment_issues)
+      assert_equal(3, changeset.assignment_issues.length)
+    end
+    
+  end
 end

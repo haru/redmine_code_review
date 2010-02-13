@@ -115,7 +115,7 @@ module ChangesetInstanceMethodsCodeReview
     return @assignment_issues if @assignment_issues
     changes.each{|change|
       unless @assignment_issues
-        @assignment_issues = change.code_reviews.collect{|issue| issue}
+        @assignment_issues = change.code_review_assignments.collect{|issue| issue}
       else
         @assignment_issues =  @assignment_issues + change.code_review_assignments.collect{|issue| issue}
       end
