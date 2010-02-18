@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -14,5 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-module CodeReveiewHelper
+module CodeReviewHelper
+  def show_assignments assignments
+    html = "#{l(:review_assignments)}:"
+    assignments.each do |assignment|
+      issue = assignment.issue
+      html << link_to("##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
+        :class => issue.css_classes, :title => "#{issue}(#{issue.status})")
+    end
+    html
+  end
 end

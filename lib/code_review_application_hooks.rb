@@ -17,6 +17,8 @@
 
 class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
 
+  include CodeReviewHelper
+  
   # htmlヘッダ生成時に呼ばれる
   def view_layouts_base_html_head(context = {})
     project = context[:project]
@@ -123,6 +125,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
           :legend => "#{sprintf("%0.1f", changeset.completed_review_pourcent)}%") + '</span>' +
           '<p class="progress-info">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
           "   #{changeset.open_review_count} #{l(:label_open_issues)}" + '</p>'
+      elsif changeset.assignment_count > 0
+        progress = '<p class="progress-info">' + l(:code_review_assigned) + '</p>'
       else
         progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '</p>'
       end
@@ -147,6 +151,10 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return unless changesets
     changeset = changesets[0]
     o = ''
+    o << "<div>\n"
+    o << show_assignments(changeset.code_review_assignments)
+    o << "</div>\n"
+    
     o << '<script type="text/javascript">' + "\n"
     urlprefix = url_for(:controller => 'repositories', :action => 'entry', :id => project)
     o << "urlprefix = '#{urlprefix}';\n"
@@ -172,6 +180,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       o << "code_reviews_map['#{relative_path}'] = reviewlist;\n"
      
     }
+
+    
     
     o << "UpdateRevisionView();"
     o << '</script>'

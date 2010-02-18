@@ -22,7 +22,8 @@ module CodeReviewChangesetPatch
     base.send(:include, ChangesetInstanceMethodsCodeReview)
 
     base.class_eval do
-      unloadable # Send unloadable so it will not be unloaded in development      
+      unloadable # Send unloadable so it will not be unloaded in development
+      has_many :code_review_assignments, :dependent => :destroy
     end
 
   end
@@ -95,7 +96,7 @@ module ChangesetInstanceMethodsCodeReview
   
   def assignment_count
     #return @assignment_count if @assignment_count
-    @assignment_count = 0
+    @assignment_count = code_review_assignments.length
     changes.each{|change|
       @assignment_count += change.assignment_count
     }
@@ -113,14 +114,12 @@ module ChangesetInstanceMethodsCodeReview
 
   def assignment_issues
     return @assignment_issues if @assignment_issues
-    changes.each{|change|
-      unless @assignment_issues
-        @assignment_issues = change.code_review_assignments.collect{|issue| issue}
-      else
+    @assignment_issues = code_review_assignments
+    changes.each{|change|     
         @assignment_issues =  @assignment_issues + change.code_review_assignments.collect{|issue| issue}
-      end
-      @assignment_issues
     }
+    @assignment_issues
+    
   end
 
   def closed_assignment_count

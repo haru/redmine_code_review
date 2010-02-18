@@ -31,12 +31,14 @@
   <%
   change_id = ''
   change_id = @change.id if @change
+  assignments = @change.code_review_assignments if @change
+  attachment_id = @attachment.id if @attachment
+  assignments = @attachment.code_review_assignments if @attachment
   -%>
-  <% if @change -%>
-  <%= render :partial => 'assignments', :locals => {:assignments => @change.code_review_assignments} -%>
-  <% end %>
+
+  <%= show_assignments assignments -%>
   <%= link_to_if_authorized(l(:button_add), {:controller => 'code_review', :action => 'assign', :id=>@project,
-  :action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id},
+  :action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id},
   :class => 'icon icon-add') %>
 </div>
 

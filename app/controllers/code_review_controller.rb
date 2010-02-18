@@ -29,6 +29,8 @@ class CodeReviewController < ApplicationController
   include ProjectsHelper
   helper :issues
   include IssuesHelper
+  helper :code_review
+  include CodeReviewHelper
 
   def index
     unless @setting

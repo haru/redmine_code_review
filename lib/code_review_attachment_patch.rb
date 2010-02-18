@@ -1,4 +1,3 @@
-<%
 # Code Review plugin for Redmine
 # Copyright (C) 2009-2010  Haruyuki Iida
 #
@@ -15,12 +14,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-%>
-<%= l(:review_assignments) %>:
-<% assignments.each do |assignment|  -%>
-  <%
-    issue = assignment.issue
-  -%>
-  <%= link_to "##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
-      :class => issue.css_classes, :title => "#{issue}(#{issue.status})" -%>
-<% end -%>
+
+require_dependency 'attachment'
+
+module CodeReviewAttachmentPatch
+  def self.included(base) # :nodoc:
+    base.send(:include, AttachmentInstanceMethodsCodeReview)
+
+    base.class_eval do
+      unloadable # Send unloadable so it will not be unloaded in development
+      has_many :code_reviews
+      has_many :code_review_assignments
+      
+    end
+
+  end
+end
+
+module AttachmentInstanceMethodsCodeReview
+  
+end
+
+Attachment.send(:include, CodeReviewAttachmentPatch)
