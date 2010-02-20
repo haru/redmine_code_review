@@ -36,10 +36,8 @@
   assignments = @attachment.code_review_assignments if @attachment
   -%>
 
-  <%= show_assignments assignments -%>
-  <%= link_to_if_authorized(l(:button_add), {:controller => 'code_review', :action => 'assign', :id=>@project,
-  :action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id},
-  :class => 'icon icon-add') %>
+  <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
+  
 </div>
 
 <script type="text/javascript">

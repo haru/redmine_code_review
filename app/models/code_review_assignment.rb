@@ -18,6 +18,7 @@
 class CodeReviewAssignment < ActiveRecord::Base
   belongs_to :issue
   belongs_to :change
+  belongs_to :changeset
   belongs_to :attachment
   validates_presence_of :issue_id
 

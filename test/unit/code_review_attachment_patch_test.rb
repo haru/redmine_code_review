@@ -17,7 +17,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes,
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :attachments,
     :issues, :issue_statuses, :enumerations, :issue_categories, :trackers, :code_review_assignments
 
   context "code_review_assginments" do

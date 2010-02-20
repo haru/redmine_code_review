@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewIssueHooks < Redmine::Hook::ViewListener
-  
+  include RepositoriesHelper
   def view_issues_show_details_bottom(context = { })
     project = context[:project]
     return '' unless project
@@ -59,6 +59,8 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     o << hidden_field_tag("code[action_type]", code[:action_type]) unless code[:action_type].blank?
     o << "\n"
     o << hidden_field_tag("code[change_id]", code[:change_id].to_i) unless code[:change_id].blank?
+    o << "\n"
+    o << hidden_field_tag("code[changeset_id]", code[:changeset_id].to_i) unless code[:changeset_id].blank?
 
     return o
   end
@@ -75,6 +77,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     assignment = CodeReviewAssignment.new
     assignment.issue_id = issue_id
     assignment.change_id = code[:change_id].to_i unless code[:change_id].blank?
+    assignment.changeset_id = code[:changeset_id].to_i unless code[:changeset_id].blank?
     assignment.file_path = code[:path] unless code[:path].blank?
     assignment.rev = code[:rev] unless code[:rev].blank?
     assignment.rev = code[:rev_to] unless code[:rev_to].blank?
@@ -98,8 +101,14 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     o = '<tr>'
     o << "<td><b>#{l(:review_assigned_for)}:</b></td>"
     o << '<td colspan="3">'
-    o << link_to("#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
-      :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
+    if assignment.path
+      o << link_to("#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
+        :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
+    else
+      o << link_to_revision(assignment.revision, project)
+      #o << link_to("changeset:#{'@' + assignment.revision if assignment.revision}",
+        #:controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
+    end
     o << '</td>'
     o << '</tr>'
     return o

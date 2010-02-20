@@ -151,11 +151,13 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return unless changesets
     changeset = changesets[0]
     o = ''
-    o << "<div>\n"
-    o << show_assignments(changeset.code_review_assignments)
+    o << '<div id="code_review_assignments">'
+    o << show_assignments(changeset.code_review_assignments, project, 
+      {:changeset_id => changeset.id, :rev => changeset.revision})
     o << "</div>\n"
     
     o << '<script type="text/javascript">' + "\n"
+    o << "new Insertion.After('changes-legend', $('code_review_assignments'));\n"
     urlprefix = url_for(:controller => 'repositories', :action => 'entry', :id => project)
     o << "urlprefix = '#{urlprefix}';\n"
     
@@ -179,9 +181,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
       end
       o << "code_reviews_map['#{relative_path}'] = reviewlist;\n"
      
-    }
-
-    
+    }   
     
     o << "UpdateRevisionView();"
     o << '</script>'

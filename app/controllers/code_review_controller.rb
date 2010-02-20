@@ -139,6 +139,7 @@ class CodeReviewController < ApplicationController
     code[:rev_to] = params[:rev_to] unless params[:rev_to].blank?
     code[:path] = params[:path] unless params[:path].blank?
     code[:change_id] = params[:change_id].to_i unless params[:change_id].blank?
+    code[:changeset_id] = params[:changeset_id].to_i unless params[:changeset_id].blank?
 
     issue = {}
     issue[:subject] = 'Code review assigned.'
@@ -211,7 +212,7 @@ class CodeReviewController < ApplicationController
     target = @assignment if @assignment
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
-    else
+    elsif target.path
       #@review = @review.root
       path = target.path
       path = '/' + path unless path.match(/^\//)
