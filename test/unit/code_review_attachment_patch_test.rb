@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require File.dirname(__FILE__) + '/../test_helper'
+require 'code_review_attachment_patch'
 
 class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :attachments,
