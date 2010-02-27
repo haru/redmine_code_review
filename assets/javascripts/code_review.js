@@ -1,6 +1,6 @@
 /*
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -68,18 +68,19 @@ function UpdateRevisionView() {
 
     for (var i = 0; i < lis.length; i++) {
         var li = lis[i];
-
         if (li.hasClassName('folder')) {
             continue;
         }
         var ul = new Element('ul');
 
         var a = li.down('a');
-        if (a == null)
+        if (a == null) {
             continue;
+        }
         var href = a.getAttribute('href')
         href = href.replace(urlprefix, '');
         var path = href.replace(/\?.*$/, '');
+
         var reviewlist = code_reviews_map[path];
         if (reviewlist == null){
             continue;

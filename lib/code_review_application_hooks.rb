@@ -158,7 +158,8 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     
     o << '<script type="text/javascript">' + "\n"
     o << "new Insertion.After('changes-legend', $('code_review_assignments'));\n"
-    urlprefix = url_for(:controller => 'repositories', :action => 'entry', :id => project)
+    urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project) +
+      '/' + changeset.revision + '/entry'
     o << "urlprefix = '#{urlprefix}';\n"
     
     changeset.changes.each{|change|
