@@ -31,6 +31,8 @@ class CodeReviewController < ApplicationController
   include IssuesHelper
   helper :code_review
   include CodeReviewHelper
+  helper :custom_fields
+  include CustomFieldsHelper
 
   def index
     unless @setting
