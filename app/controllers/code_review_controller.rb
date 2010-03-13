@@ -221,11 +221,11 @@ class CodeReviewController < ApplicationController
       rev_to = '&rev_to=' + target.rev_to if target.rev_to
       if action_name == 'attachment'
         attachment = target.attachment
-        url = url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + attachment.filename
+        url = url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + URI.escape(attachment.filename)
         url << '?review_id=' + @review.id.to_s if @review
         redirect_to(url)
       else
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project) + path + '?rev=' + target.revision
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project) + URI.escape(path) + '?rev=' + target.revision
         url << '&review_id=' + @review.id.to_s + rev_to if @review
         redirect_to url
       end
