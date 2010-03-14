@@ -306,6 +306,16 @@ class CodeReviewController < ApplicationController
     @text = params[:reply][:comment] unless @text
     render :partial => 'common/preview'
   end
+
+  def update_revisions_view
+    changeset_ids = []
+    changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
+    @changesets = []
+    changeset_ids.each {|id|
+      @changesets << @project.repository.find_changeset_by_name(id) unless id.blank?
+    }
+    render :partial => 'update_revisions'
+  end
   
   private
   def find_project

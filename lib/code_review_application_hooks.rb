@@ -114,30 +114,22 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     project = context[:project]
     controller = context[:controller]
     changesets = controller.get_selected_changesets
-    return unless changesets
-    o = ''
-    o << '<script type="text/javascript">'
-    o << "\n"
-    changesets.each{|changeset|
-      if changeset.review_count > 0
-        progress = '<span style="white-space: nowrap">' + progress_bar([changeset.closed_review_pourcent, changeset.completed_review_pourcent],
-          :width => '60px',
-          :legend => "#{sprintf("%0.1f", changeset.completed_review_pourcent)}%") + '</span>' +
-          '<p class="progress-info">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
-          "   #{changeset.open_review_count} #{l(:label_open_issues)}" + '</p>'
-      elsif changeset.assignment_count > 0
-        progress = '<p class="progress-info">' + l(:code_review_assigned) + '</p>'
-      else
-        progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '</p>'
-      end
-
-      o << "var count = new ReviewCount(#{changeset.review_count}, #{changeset.open_review_count}, '#{progress}');"
-      o << "\n"
-      o << "review_counts['revision_#{changeset.revision}'] = count;"
-      o << "\n"
+    changeset_ids = ''
+    changesets.each { |changeset|
+      changeset_ids << changeset.revision
+      changeset_ids << ','
     }
-    o << "UpdateRepositoryView('#{l(:code_reviews)}');"
+    return unless changesets
+    url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project
+
+    o = ''
+    o << '<div id="code_review_revisions"></div>'
     o << "\n"
+    o << '<script type="text/javascript">'
+    o << "document.observe('dom:loaded', function() {" + "\n"
+    o << "new Ajax.Updater('code_review_revisions', '#{url}', {evalScripts:true, method:'get', parameters: 'changeset_ids=#{url_encode(changeset_ids)}'});\n"
+    o << "});\n"
+
     o << '</script>'
     o << "\n"
 

@@ -38,7 +38,7 @@ Redmine::Plugin.register :redmine_code_review do
   requires_redmine :version_or_higher => '0.9.0'
 
   project_module :code_review do
-    permission :view_code_review, {:code_review => [:update_diff_view, :update_attachment_view, :index, :show]}
+    permission :view_code_review, {:code_review => [:update_diff_view, :update_attachment_view, :update_revisions_view, :index, :show]}
     permission :add_code_review, {:code_review => [:new, :reply, :forward_to_revision, :preview]}, :require => :member
     permission :edit_code_review, {:code_review => [:update]}, :require => :member
     permission :delete_code_review, {:code_review => [:destroy]}, :require => :member
