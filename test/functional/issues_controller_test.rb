@@ -68,6 +68,14 @@ class IssuesControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
     get :show, :id => 1
 
+    issue = Issue.generate_for_project!(Project.find(1))
+    assignment = CodeReviewAssignment.generate!(:issue => issue, :rev => 'aaa', :file_path => nil)
+    get :show, :id => assignment.issue.id
+
+    issue = Issue.generate_for_project!(Project.find(1))
+    assignment = CodeReviewAssignment.generate!(:issue => issue, :rev => 'aaa', :file_path => '/aaa/bbb')
+    get :show, :id => assignment.issue.id
+
   end
 
   def test_new
