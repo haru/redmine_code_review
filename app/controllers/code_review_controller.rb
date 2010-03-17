@@ -91,6 +91,7 @@ class CodeReviewController < ApplicationController
         @review.file_count = params[:file_count].to_i unless params[:file_count].blank?
         @review.attachment_id = params[:attachment_id].to_i unless params[:attachment_id].blank?
         @issue = @review.issue
+        
 
         if request.post?
           @review.issue.attributes = params[:issue]
@@ -120,11 +121,20 @@ class CodeReviewController < ApplicationController
           render :partial => 'add_success', :status => 220
           return
         else
-          @review.change_id = params[:change_id].to_i unless params[:change_id].blank?
+          change_id = params[:change_id].to_i unless params[:change_id].blank?
+          @review.change = Change.find(change_id) if change_id
           @review.line = params[:line].to_i
           if (@review.changeset and @review.changeset.user_id)
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
+          if @review.changeset
+          @review.changeset.issues.each {|issue|
+            if issue.fixed_version
+              @default_version_id = issue.fixed_version.id
+              break;
+            end
+          }
+        end
 
         end
         render :partial => 'new_form', :status => 200

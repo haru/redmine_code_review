@@ -52,6 +52,11 @@
   <%= select :issue, :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %>
 </p>
 <p>
+
+</p>
+  <label><b><%=h l(:field_fixed_version) %>:</b></label>
+  <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
+<p>
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();" %>
 
