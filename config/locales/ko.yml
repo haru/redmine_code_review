@@ -17,7 +17,7 @@ ko:
 
   label_code_review_plural: 코드 리뷰
 
-  label_line_number: '라인: {{line}}'
+  label_line_number: '라인: %d'
   notice_review_updated: 리뷰가 성공적으로 업데이트 되었습니다.
   label_show_closed_reviews: 닫힌 리뷰 보기
   label_review: 리뷰
@@ -25,16 +25,16 @@ ko:
   review_notify_only_involved_in: "내가 참여하는 프로젝트의 리뷰만"
   review_notify_all: "모든 프로젝트의 리뷰"
 
-  old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
-  select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
-  field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
-  lable_no_code_reviews: 'No reviews'
-  field_comment: Comment
+  old_review_data_found: '오래된 리뷰 레코드가 발견되었습니다. 새로운 레코드로 변환 하시겠습니까?'
+  select_tracker_for_code_reviews: '코드 리뷰를 할당할 일감 유형를 선택하십시오 '
+  field_hide_code_review_tab: '"코드 리뷰" 탭 숨기기'
+  lable_no_code_reviews: '리뷰 없음'
+  field_comment: 주석
 
-  label_if_revision_has_issues: 'If revision has one more issues'
-  label_review_issue_relates: 'Review issue relates to them'
-  label_review_issue_blocks: 'Review issue blocks them'
-  label_review_issue_do_nothing: 'Do nothing'
+  label_if_revision_has_issues: '개정판에 한개 이상의 일감이 있으면'
+  label_review_issue_relates: '리뷰중인 일감과 관련이 있음'
+  label_review_issue_blocks: '리뷰중인 일감을 block 시킴'
+  label_review_issue_do_nothing: '아무것도 하지않음'
 
   permission_view_code_review: View code reviews
   permission_add_code_review: Add code reviews
