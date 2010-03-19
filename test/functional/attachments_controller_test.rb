@@ -45,7 +45,8 @@ class AttachmentsControllerTest < ActionController::TestCase
    
   def test_show_diff
     @request.session[:user_id] = 1
-    get :show, :id => 5
+    attachment = Attachment.generate!(:filename => "test.diff")
+    get :show, :id => attachment.id
     assert_response :success
     assert_template 'diff'
     assert_equal 'text/html', @response.content_type
@@ -53,7 +54,8 @@ class AttachmentsControllerTest < ActionController::TestCase
   
   def test_show_text_file
     @request.session[:user_id] = 1
-    get :show, :id => 4
+    attachment = Attachment.generate!(:filename => "test.rb")
+    get :show, :id => attachment.id
     assert_response :success
     assert_template 'file'
     assert_equal 'text/html', @response.content_type
