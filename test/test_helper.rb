@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require File.expand_path(File.dirname(__FILE__) + '/../../../../test/test_helper')
+require File.expand_path(File.dirname(__FILE__) + '/code_review_object_daddy_helpers')
+include CodeReviewObjectDaddyHelpers
 
 my_exemplars_path = File.expand_path(File.join(File.dirname(__FILE__), 'exemplars'))
 test_exemplars_path = File.expand_path(File.join(RAILS_ROOT, 'test', 'exemplars'))

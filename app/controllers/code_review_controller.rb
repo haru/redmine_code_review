@@ -105,6 +105,7 @@ class CodeReviewController < ApplicationController
               @relation.issue_to_id = issue.id
               @relation.save!
             } unless @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
+            
           elsif @review.attachment and @review.attachment.container_type == 'Issue'
             issue = Issue.find_by_id(@review.attachment.container_id)
             unless (@setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE)
@@ -116,6 +117,13 @@ class CodeReviewController < ApplicationController
               @relation.save!
             end
           end
+          @review.open_assignment_issues(@user.id).each {|issue|
+            @relation = IssueRelation.new
+            @relation.relation_type = IssueRelation::TYPE_RELATES
+            @relation.issue_from_id = @review.issue.id
+            @relation.issue_to_id = issue.id
+            @relation.save!
+          }
           @review.save!
 
           render :partial => 'add_success', :status => 220
@@ -152,6 +160,8 @@ class CodeReviewController < ApplicationController
     code[:path] = params[:path] unless params[:path].blank?
     code[:change_id] = params[:change_id].to_i unless params[:change_id].blank?
     code[:changeset_id] = params[:changeset_id].to_i unless params[:changeset_id].blank?
+    code[:attachment_id] = params[:attachment_id].to_i unless params[:attachment_id].blank?
+
 
     issue = {}
     issue[:subject] = 'Code review assigned.'
@@ -349,4 +359,5 @@ class CodeReviewController < ApplicationController
     }
     return false
   end
+
 end

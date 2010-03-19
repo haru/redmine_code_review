@@ -61,6 +61,9 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     o << hidden_field_tag("code[change_id]", code[:change_id].to_i) unless code[:change_id].blank?
     o << "\n"
     o << hidden_field_tag("code[changeset_id]", code[:changeset_id].to_i) unless code[:changeset_id].blank?
+    o << "\n"
+    o << hidden_field_tag("code[attachment_id]", code[:attachment_id].to_i) unless code[:attachment_id].blank?
+
 
     return o
   end
@@ -78,6 +81,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     assignment.issue_id = issue_id
     assignment.change_id = code[:change_id].to_i unless code[:change_id].blank?
     assignment.changeset_id = code[:changeset_id].to_i unless code[:changeset_id].blank?
+    assignment.attachment_id = code[:attachment_id].to_i unless code[:attachment_id].blank?
     assignment.file_path = code[:path] unless code[:path].blank?
     assignment.rev = code[:rev] unless code[:rev].blank?
     assignment.rev = code[:rev_to] unless code[:rev_to].blank?
@@ -104,10 +108,11 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     if assignment.path
       o << link_to("#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
         :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
-    else
+    elsif assignment.revision
       o << link_to_revision(assignment.revision, project)
-      #o << link_to("changeset:#{'@' + assignment.revision if assignment.revision}",
-        #:controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
+    elsif assignment.attachment
+      attachment = assignment.attachment
+      o << link_to(attachment.filename, :controller => 'attachments', :action => 'show', :id => attachment.id)
     end
     o << '</td>'
     o << '</tr>'

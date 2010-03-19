@@ -60,9 +60,13 @@ module ChangeInstanceMethodsCodeReview
   end
 
   def open_assignment_count
+    open_assignments.length
+  end
+
+  def open_assignments(user_id = nil)
     code_review_assignments.select { |o|
-      !o.is_closed?
-    }.length
+      (!o.is_closed? and (user_id == nil or user_id == o.issue.assigned_to_id))
+    }
   end
 
   def closed_assignment_count

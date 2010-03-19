@@ -82,4 +82,48 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     change.code_review_assignments[2].issue.status = close_status
     assert_equal(2, change.closed_assignment_count)
   end
+
+  context "open_assignments" do
+    should "return empty array if change has no assignments." do
+      change = Change.generate
+      assert_equal(0, change.open_assignments.length)
+    end
+
+    should "return empty array if change has no open assignments" do
+      change = Change.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      close_status = IssueStatus.find(5)
+      change.code_review_assignments.each{|assignments|
+        assignments.issue.status = close_status
+      }
+      assert_equal(0, change.open_assignments.length)
+    end
+
+    should "return 2 assignments if change has 2 open assignments" do
+      change = Change.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      close_status = IssueStatus.find(5)
+      change.code_review_assignments[0].issue.status = close_status
+
+      assert_equal(2, change.open_assignments.length)
+    end
+
+    should "return 2 assignments if change has 2 open assignments which are assigned to user_id 1" do
+      change = Change.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      change.code_review_assignments << CodeReviewAssignment.generate
+      close_status = IssueStatus.find(5)
+      change.code_review_assignments[0].issue.status = close_status
+      change.code_review_assignments[0].issue.assigned_to_id = 1
+      change.code_review_assignments[1].issue.assigned_to_id = 1
+      change.code_review_assignments[2].issue.assigned_to_id = 1
+      change.code_review_assignments[3].issue.assigned_to_id = 2
+      assert_equal(2, change.open_assignments(1).length)
+    end
+  end
 end

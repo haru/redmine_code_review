@@ -92,9 +92,10 @@ class CodeReviewControllerTest < ActionController::TestCase
 
     should "create new review when changeset has related issue" do
       @request.session[:user_id] = 1
+      project = Project.find(1)
       change = Change.find(3)
       changeset = change.changeset
-      issue = Issue.find(1)
+      issue = Issue.generate_for_project!(project)
       changeset.issues << issue
       changeset.save
       count = CodeReview.find(:all).length
@@ -135,9 +136,12 @@ class CodeReviewControllerTest < ActionController::TestCase
   end
 
   def test_destroy
+    project = Project.find(1)
+    issue = Issue.generate_for_project!(project)
+    review = CodeReview.generate_for_project!(project)
     count = CodeReview.find(:all).length
     @request.session[:user_id] = 1
-    get :destroy, :id => 1, :review_id => 9
+    get :destroy, :id => 1, :review_id => review.id
     assert_response :success
     assert_equal(count - 1, CodeReview.find(:all).length)
     
