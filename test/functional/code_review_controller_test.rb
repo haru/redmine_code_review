@@ -52,8 +52,8 @@ class CodeReviewControllerTest < ActionController::TestCase
 
     should "not show review list if module was not enabled." do
       @request.session[:user_id] = 1
-      get :index, :id => 2
-      assert_response :redirect
+      get :index, :id => 3
+      assert_response 403
     end
 
     should "show all review list if show_closed is true" do
@@ -111,7 +111,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       }
       post :new, :id => 1, :review => {:line => 1, :change_id => 1,
         :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
-      assert_response :redirect
+      assert_response 220
     end
 
     should "create review for attachment" do

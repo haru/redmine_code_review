@@ -105,7 +105,9 @@ module ChangesetInstanceMethodsCodeReview
 
   def open_assignment_count
     return @open_assignment_count if @open_assignment_count
-    @open_assignment_count = 0
+    @open_assignment_count = code_review_assignments.select {|assignment|
+      !assignment.is_closed?
+    }.length
     changes.each{|change|
       @open_assignment_count += change.open_assignment_count
     }

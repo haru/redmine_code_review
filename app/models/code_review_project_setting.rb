@@ -26,4 +26,16 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1
   AUTORELATION_TYPE_BLOCKS = 2
+
+  def self.find_or_create(project)
+    setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', project.id])
+    unless setting
+      setting = CodeReviewProjectSetting.new
+      setting.project_id = project.id
+      setting.tracker = project.trackers[0]
+      setting.assignment_tracker = project.trackers[0]
+      setting.save!
+    end
+    setting
+  end
 end

@@ -13,7 +13,12 @@
       '<p class="progress-info">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
       "   #{changeset.open_review_count} #{l(:label_open_issues)}" + '</p>'
   elsif changeset.assignment_count > 0
-    progress = '<p class="progress-info">' + l(:code_review_assigned) + '</p>'
+    if (changeset.open_assignment_count > 0)
+      progress = '<p class="progress-info">' + l(:code_review_assigned) + '</p>'
+    else
+      progress = '<p class="progress-info">' + l(:code_review_reviewed) + '</p>'
+    end
+    
   else
     progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '</p>'
   end

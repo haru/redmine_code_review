@@ -49,7 +49,7 @@ Redmine::Plugin.register :redmine_code_review do
 
   menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
     :if => Proc.new{|project|
-                  setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', project.id])
+                  setting = CodeReviewProjectSetting.find_or_create(project)
                   project.repository != nil  and setting and !setting.hide_code_review_tab
              }, :after => :repository
 

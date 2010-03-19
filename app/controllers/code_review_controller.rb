@@ -136,13 +136,20 @@ class CodeReviewController < ApplicationController
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
           if @review.changeset
-          @review.changeset.issues.each {|issue|
+            @review.changeset.issues.each {|issue|
+              if issue.fixed_version
+                @default_version_id = issue.fixed_version.id
+                break;
+              end
+            }
+          end
+          @review.open_assignment_issues(@user.id).each {|issue|
             if issue.fixed_version
               @default_version_id = issue.fixed_version.id
               break;
             end
-          }
-        end
+          } unless @default_version_id
+
 
         end
         render :partial => 'new_form', :status => 200
@@ -164,7 +171,7 @@ class CodeReviewController < ApplicationController
 
 
     issue = {}
-    issue[:subject] = 'Code review assigned.'
+    issue[:subject] = l(:code_review_requrest)
     issue[:tracker_id] = @setting.assignment_tracker_id if @setting.assignment_tracker_id
 
     redirect_to :controller => 'issues', :action => "new" , :project_id => @project,
@@ -184,14 +191,14 @@ class CodeReviewController < ApplicationController
     url = repository.url
     root_url = repository.root_url
     if (url == nil || root_url == nil)
-        fullpath = @path
+      fullpath = @path
     else
-        rootpath = url[root_url.length, url.length - root_url.length]
-        if rootpath.blank?
-            fullpath = @path
-        else
-            fullpath = (rootpath + '/' + @path).gsub(/[\/]+/, '/')
-        end
+      rootpath = url[root_url.length, url.length - root_url.length]
+      if rootpath.blank?
+        fullpath = @path
+      else
+        fullpath = (rootpath + '/' + @path).gsub(/[\/]+/, '/')
+      end
     end
     @change = nil
     changeset.changes.each{|chg|
@@ -349,7 +356,7 @@ class CodeReviewController < ApplicationController
 
 
   def find_setting
-    @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
+    @setting = CodeReviewProjectSetting.find_or_create(@project)
   end
 
 

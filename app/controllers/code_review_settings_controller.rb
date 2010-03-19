@@ -23,11 +23,7 @@ class CodeReviewSettingsController < ApplicationController
   before_filter :find_project, :authorize, :find_user
 
   def update   
-    @setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
-    unless @setting
-      @setting = CodeReviewProjectSetting.new
-      @setting.project_id = @project.id
-    end
+    @setting = CodeReviewProjectSetting.find_or_create(@project)
 
     @setting.attributes = params[:setting]
     @setting.updated_by = @user_id

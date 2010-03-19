@@ -48,4 +48,6 @@ ja:
   review_assignments: レビューアサイン
   review_assigned_for: レビュー対象
   code_review_assigned: アサイン済
+  code_review_reviewed: レビュー済み
+  code_review_requrest: レビュー依頼
 

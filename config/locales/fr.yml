@@ -48,3 +48,5 @@ fr:
   review_assignments: Review assignments
   review_assigned_for: Review assigned for
   code_review_assigned: Assigned
+  code_review_reviewed: Reviewed
+  code_review_requrest: Review request

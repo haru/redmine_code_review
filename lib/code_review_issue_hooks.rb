@@ -109,7 +109,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
       o << link_to("#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
         :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id)
     elsif assignment.revision
-      o << link_to_revision(assignment.revision, project)
+      o << l(:label_revision) + " " + link_to_revision(assignment.revision, project)
     elsif assignment.attachment
       attachment = assignment.attachment
       o << link_to(attachment.filename, :controller => 'attachments', :action => 'show', :id => attachment.id)

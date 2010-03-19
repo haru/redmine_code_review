@@ -18,8 +18,8 @@
 -%>
 <div id="code_review_settings">
   <%
-  @code_review_setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', @project.id])
-  @code_review_setting = CodeReviewProjectSetting.new unless @code_review_setting
+  @code_review_setting = CodeReviewProjectSetting.find_or_create(@project)
+
   @old_reviews = CodeReview.find(:all,
     :conditions => ['issue_id is ? and old_parent_id is ? and project_id = ?', nil, nil, @project.id])
 
