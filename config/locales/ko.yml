@@ -6,7 +6,7 @@ ko:
   project_module_code_review: 코드 리뷰
   label_code_path: 경로
   label_code_reviewer: 리뷰어
-  label_code_author: 커미터
+  label_code_author: 커밋 사용자
   label_code_line: 라인
 
   label_review_open: 열림
@@ -17,7 +17,7 @@ ko:
 
   label_code_review_plural: 코드 리뷰
 
-  label_line_number: '라인: %d'
+  label_line_number: '라인: {{line}}'
   notice_review_updated: 리뷰가 성공적으로 업데이트 되었습니다.
   label_show_closed_reviews: 닫힌 리뷰 보기
   label_review: 리뷰
@@ -26,7 +26,7 @@ ko:
   review_notify_all: "모든 프로젝트의 리뷰"
 
   old_review_data_found: '오래된 리뷰 레코드가 발견되었습니다. 새로운 레코드로 변환 하시겠습니까?'
-  select_tracker_for_code_reviews: '코드 리뷰를 할당할 일감 유형를 선택하십시오 '
+  select_tracker_for_code_reviews: '코드 리뷰 할 일감 유형를 선택하십시오 '
   field_hide_code_review_tab: '"코드 리뷰" 탭 숨기기'
   lable_no_code_reviews: '리뷰 없음'
   field_comment: 주석
@@ -36,17 +36,17 @@ ko:
   label_review_issue_blocks: '리뷰중인 일감을 block 시킴'
   label_review_issue_do_nothing: '아무것도 하지않음'
 
-  permission_view_code_review: View code reviews
-  permission_add_code_review: Add code reviews
-  permission_edit_code_review: Edit code reviews
-  permission_delete_code_review: Delete code reiews
-  permission_code_review_setting: Manage code reviews
-  permission_assign_code_review: Assign code reviews
+  permission_view_code_review: 코드 리뷰 보기
+  permission_add_code_review: 코드 리뷰 추가
+  permission_edit_code_review: 코드 리뷰 수정
+  permission_delete_code_review: 코드 리뷰 삭제
+  permission_code_review_setting: 코드 리뷰 관리
+  permission_assign_code_review: 코드 리뷰 할당
 
-  select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
-  field_assignment_tracker: 'Tracker'
-  review_assignments: Review assignments
-  review_assigned_for: Review assigned for
-  code_review_assigned: Assigned
-  code_review_reviewed: Reviewed
-  code_review_requrest: Review request
+  select_tracker_for_code_review_assignment: '코드 리뷰를 할당할 일감 유형를 선택하십시오 '
+  field_assignment_tracker: '일감 유형'
+  review_assignments: '코드 리뷰 일감 할당'
+  review_assigned_for: '코드 리뷰 할당됨'
+  code_review_assigned: '코드 리뷰 할당됨'
+  code_review_reviewed: '코드 리뷰 됨'
+  code_review_requrest: '코드 리뷰 요청'

@@ -26,7 +26,7 @@ This plugin works only on production mode.
 * de.yml - Michael Diederich, Sebastian Bernhard
 * fr.yml - Thomas M
 * hu.yml - Péter Major
-* ko.yml - Ki-yong Kim
+* ko.yml - Ki-yong Kim, Ki Won Kim
 * nl.yml - Stefan Verstege
 * pt-br.yml - Alessandro Hecht
 * zh.yml - Marshall Wu
