@@ -21,7 +21,7 @@ module CodeReviewHelper
       issue = assignment.issue
       html << link_to("##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
         :class => issue.css_classes, :title => "#{issue}(#{issue.status})")
-    end
+    end if assignments
 
     link = link_to(l(:button_add), {:controller => 'code_review',
         :action => 'assign', :id=>project, :action_type => options[:action_type],
