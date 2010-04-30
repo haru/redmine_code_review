@@ -154,12 +154,14 @@ module ChangesetInstanceMethodsCodeReview
 
   def after_create_with_code_review
     ret = after_create_without_code_review
-    project = repository.project
+    project = repository.project if repository
+    return ret unless project
     return ret unless project.module_enabled?('code_review')
     setting = CodeReviewProjectSetting.find_or_create(project)
     auto_assign = setting.auto_assign_settings
     return ret unless auto_assign.enabled?
     CodeReviewAssignment.create_with_changeset(self)
+    ret
   end
 end
 
