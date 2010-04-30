@@ -26,7 +26,7 @@ class CodeReviewSettingsController < ApplicationController
     @setting = CodeReviewProjectSetting.find_or_create(@project)
 
     @setting.attributes = params[:setting]
-    @setting.updated_by = @user_id
+    @setting.updated_by = @user.id
 
     @setting.save!
     convert = params[:convert] unless params[:convert].blank?
