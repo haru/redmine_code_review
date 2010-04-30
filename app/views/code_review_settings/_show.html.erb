@@ -54,6 +54,14 @@
         <%=h l(:label_review_issue_do_nothing) %>
 
       </p>
+      <hr/>
+      <p>
+        <%
+        auto_assign = @code_review_setting.auto_assign_settings
+        %>
+        <label><%=h l(:label_auto_assign_settings)%></label>
+        <%= check_box_tag "auto_assign[enabled]", true, auto_assign.enabled? %>enabled
+      </p>
       <% if @old_reviews and @old_reviews.any? %>
         <p>
           <%=h l(:old_review_data_found) %>

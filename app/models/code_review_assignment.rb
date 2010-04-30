@@ -34,4 +34,24 @@ class CodeReviewAssignment < ActiveRecord::Base
     return rev if rev
     changeset.revision if changeset
   end
+
+  def self.create_with_changeset(changeset)
+    project = changeset.project
+    setting = CodeReviewProjectSetting.find_or_create(project)
+    auto_assign = setting.auto_assign_settings
+    assignment = CodeReviewAssignment.new
+    issue = Issue.new
+    issue.subject = l(:code_review_requrest)
+    issue.tracker_id = setting.assignment_tracker_id
+    issue.project = project
+    issue.author = project.members[0].user
+
+    unless issue.save
+      return
+    end
+    assignment.issue_id = issue.id
+    assignment.changeset_id = changeset.id
+    assignment.save!
+
+  end
 end

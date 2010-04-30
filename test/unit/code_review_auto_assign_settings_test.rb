@@ -14,42 +14,43 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
+class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   fixtures :code_review_project_settings, :projects, :users, :trackers
 
-  # Replace this with your real tests.
-  context "save" do
-    setup do
-      @setting = CodeReviewProjectSetting.new
-    end
+  include CodeReviewAutoAssignSettings
 
-    should "return false if project_id is nil." do      
-      assert !@setting.save
-    end
-
-    should "return true if project_id is setted." do
-      @setting.project_id = 1
-      @setting.tracker_id = 1
-      @setting.assignment_tracker_id = 1
-      assert @setting.save
+  context "to_s" do
+    should "return string if @yml is not nil." do
+      
+      str =<<EOF
+--- 
+aaa: bbb
+ccc: ccc
+EOF
+      settings = AutoAssignSettings.load(str)
+      assert_equal(str, settings.to_s)
     end
   end
 
-  context "auto_assign" do
-    setup do
-      CodeReviewProjectSetting.destroy_all
+  context "enabled?" do
+    should "return false if enabled is not setted." do
+      settings = AutoAssignSettings.new
+      assert !settings.enabled?
     end
 
-    should "be saved if auto_assign is setted." do
-      setting = CodeReviewProjectSetting.generate!(:project_id => 1, :tracker_id => 1)
-      id = setting.id
-      assert !setting.auto_assign_settings.enabled?
-      setting.auto_assign_settings.enabled = true
-      assert setting.save
-      setting = CodeReviewProjectSetting.find(id)
-      assert setting.auto_assign_settings.enabled?
+    should "return true if enabled is setted to true." do
+      settings = AutoAssignSettings.new
+      settings.enabled = true
+      assert settings.enabled?
+    end
+
+    should "return false if enabled is setted to false" do
+      settings = AutoAssignSettings.new
+      settings.enabled = false
+      assert !settings.enabled?
     end
   end
 end

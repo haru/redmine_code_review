@@ -24,6 +24,7 @@ module CodeReviewChangesetPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_review_assignments, :dependent => :destroy
+      alias_method_chain :after_create, :code_review
     end
 
   end
@@ -149,6 +150,16 @@ module ChangesetInstanceMethodsCodeReview
       "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
           :conditions => ["#{Changeset.table_name}.id = ? AND #{IssueStatus.table_name}.is_closed = ?", id, false]).to_f) / assignment_count
     end
+  end
+
+  def after_create_with_code_review
+    ret = after_create_without_code_review
+    project = repository.project
+    return ret unless project.module_enabled?('code_review')
+    setting = CodeReviewProjectSetting.find_or_create(project)
+    auto_assign = setting.auto_assign_settings
+    return ret unless auto_assign.enabled?
+    CodeReviewAssignment.create_with_changeset(self)
   end
 end
 

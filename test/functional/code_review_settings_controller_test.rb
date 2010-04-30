@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -44,43 +44,28 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
   end
 
 
-  context "update" do
-    setup do
-      @request.session[:user_id] = 1
-    end
+  def test_update
+    @request.session[:user_id] = User.anonymous.id
+    get :update, :id => 1
+    assert_response 302
 
-    should "return 302 if user is anonymous" do
-      @request.session[:user_id] = User.anonymous.id
-      get :update, :id => 1
-      assert_response 302
-    end
+    @request.session[:user_id] = 1
+    setting = CodeReviewProjectSetting.find(1)
 
-    should "save settings" do
+    post :update, :id => 1, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}
+    assert_response :redirect
+    project = Project.find(1)
+    assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
 
-      @request.session[:user_id] = 1
-      setting = CodeReviewProjectSetting.find(1)
+    get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true'
+    assert_response :redirect
+    project = Project.find(1)
+    assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
 
-      post :update, :id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3}
-      assert_response :redirect
-      project = Project.find(1)
-      assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
-
-      setting = assigns(:setting)
-      assert_equal(1, setting.updated_by)
-      assert_equal(project.id, setting.project_id)
-      assert_equal(2, setting.tracker_id)
-      assert_equal(3, setting.assignment_tracker_id)
-
-      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true'
-      assert_response :redirect
-      project = Project.find(1)
-      assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
-
-      post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}
-      assert_response :redirect
-      project = Project.find(2)
-      assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
-    end
+    post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}
+    assert_response :redirect
+    project = Project.find(2)
+    assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
   end
 
   def test_convert
