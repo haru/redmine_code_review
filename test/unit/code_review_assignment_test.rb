@@ -18,7 +18,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewAssignmentTest < ActiveSupport::TestCase
-  fixtures :code_review_assignments, :issues, :issue_statuses
+  fixtures :code_review_assignments, :issues, :issue_statuses,
+    :projects, :trackers, :projects_trackers, :users, :members
 
   context "is_closed?" do
     should "return false if assignment issue is not closed." do
