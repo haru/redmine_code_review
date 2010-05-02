@@ -35,10 +35,6 @@ class CodeReviewController < ApplicationController
   include CustomFieldsHelper
 
   def index
-    unless @setting
-      redirect_to :controller => 'code_review_settings', :action => "show" , :id => @project
-      return
-    end
     sort_init "#{Issue.table_name}.id", 'desc'
     sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
@@ -70,10 +66,6 @@ class CodeReviewController < ApplicationController
   def new
     begin
       CodeReview.transaction {
-        unless @setting
-          redirect_to :controller => 'code_review_settings', :action => "show" , :id => @project
-          return
-        end
         @review = CodeReview.new
         @review.issue = Issue.new
         @review.issue.tracker_id = @setting.tracker_id

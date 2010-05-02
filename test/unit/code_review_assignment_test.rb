@@ -63,4 +63,20 @@ class CodeReviewAssignmentTest < ActiveSupport::TestCase
     end
   end
 
+  context "create_with_changeset" do
+    setup do
+      @project = Project.find(1)
+      setting = CodeReviewProjectSetting.find_or_create(@project)
+      setting.auto_assign_settings.author_id = 1
+      setting.assignment_tracker_id = @project.trackers[0].id
+      setting.save!
+    end
+    should "create new assignment" do
+      count = CodeReviewAssignment.find(:all).length
+      changeset = Changeset.generate!(:repository => @project.repository, :revision => '5000')
+      CodeReviewAssignment.create_with_changeset(changeset)
+      assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
+    end
+  end
+
 end

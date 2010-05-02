@@ -65,10 +65,6 @@ class CodeReviewControllerTest < ActionController::TestCase
   end
 
   context "new" do
-    def setup
-      
-    end
-
     should "create form when get mthod" do
       @request.session[:user_id] = 1
       get :new, :id => 1, :action_type => 'diff', :rev => 5
@@ -271,5 +267,23 @@ class CodeReviewControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
     post :assign, :id => 1
     assert_response :redirect
+  end
+
+  context "update_revisions_view" do
+    setup do
+      @request.session[:user_id] = 1
+    end
+
+    should "succeed if changeset_ids is nil" do
+      get :update_revisions_view, :id => 1
+      assert_response :success
+      assert_equal(0, assigns(:changesets).length)
+    end
+
+    should "succeed if changeset_ids is not nil" do
+      get :update_revisions_view, :id => 1, :changeset_ids => '1,2,3'
+      assert_response :success
+      assert_equal(3, assigns(:changesets).length)
+    end
   end
 end
