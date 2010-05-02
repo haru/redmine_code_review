@@ -69,6 +69,12 @@
           <%= select :auto_assign, :author_id,
             (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => auto_assign.author_id, :required => true %>
         </p>
+        <p>
+          <label><%=h l(:label_candidates_of_reviewer)%></label>
+          <% @project.users.each do |user| %>
+            <label class="floating"><%= check_box_tag 'auto_assign[assignable_list][]', user.id, auto_assign.assignable?(user) %> <%=h user %></label>
+          <% end %>
+        </p>
       </div>
       <% if @old_reviews and @old_reviews.any? %>
         <hr/>

@@ -43,6 +43,24 @@ module CodeReviewAutoAssignSettings
       @yml[:author_id].to_i unless @yml[:author_id].blank?
     end
 
+    def assignable_list=(list)
+      @yml[:assignable_list] = list
+    end
+
+    def assignable_list
+      return nil unless @yml[:assignable_list]
+      @yml[:assignable_list].collect { |id| id.to_i  }
+    end
+
+    def assignable?(user)
+      return false unless assignable_list
+      assignable_list.index(user.id) != nil
+    end
+
+    def select_assign_to(project)
+      select_assign_to_with_list(project, assignable_list)
+    end
+
     def to_s
       return YAML.dump(@yml) if @yml
       nil
@@ -51,6 +69,16 @@ module CodeReviewAutoAssignSettings
     def load_yml(yml_string)
       @yml = YAML.load(yml_string)
     end
-      
+
+    def select_assign_to_with_list(project, list)
+      return nil unless list
+      return nil if list.empty?
+      assign_to = list.choice
+      project.users.each do |user|
+        return assign_to if assign_to.to_i == user.id
+      end
+      list.delete(assign_to)
+      select_assign_to_with_list(project, list)
+    end
   end
 end

@@ -50,3 +50,6 @@ ko:
   code_review_assigned: '코드 리뷰 할당됨'
   code_review_reviewed: '코드 리뷰 됨'
   code_review_requrest: '코드 리뷰 요청'
+
+  label_auto_assign_settings: Auto assignment
+  label_candidates_of_reviewer: Candidates of reviewer

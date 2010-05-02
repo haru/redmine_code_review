@@ -82,4 +82,62 @@ EOF
       assert_equal(nil, @settings.author_id)
     end
   end
+
+  context "assignable?" do
+    setup do
+      @settings = AutoAssignSettings.new
+    end
+    
+    should "return false if assignable_list is nil" do
+      @settings.assignable_list = nil
+      assert !@settings.assignable?(1)
+    end
+
+    should "return false if assignable_list is empty" do
+      @settings.assignable_list = []
+      assert !@settings.assignable?(1)
+    end
+
+    should "return false if assignable_list hasn't specified user_id" do
+      @settings.assignable_list = [1,3,4,5]
+      assert !@settings.assignable?(User.find(2))
+    end
+
+    should "return true if assignable_list has specified user_id" do
+      @settings.assignable_list = [1,2,3,4]
+      assert @settings.assignable?(User.find(3))
+    end
+
+    should "return true if assignable_list has specified user_id's string" do
+      @settings.assignable_list = ["1","2","3","4"]
+      assert @settings.assignable?(User.find(3))
+    end
+  end
+
+  context "select_assign_to" do
+    setup do
+      @settings = AutoAssignSettings.new
+      @project = Project.find(1)
+    end
+    
+    should "return nil if assignable_list is nil" do
+      @settings.assignable_list = nil
+      assert_nil @settings.select_assign_to @project
+    end
+
+    should "return nil if assignable_list is empty" do
+      @settings.assignable_list = []
+      assert_nil @settings.select_assign_to(@project)
+    end
+
+    should "return user_id" do
+      @settings.assignable_list = [1,2,3,4,5]
+      assert_not_nil @settings.select_assign_to(@project)
+    end
+
+    should "return nil if assignable_list has no project member" do
+      @settings.assignable_list = [51, 52, 53]
+      assert_nil @settings.select_assign_to(@project)
+    end
+  end
 end
