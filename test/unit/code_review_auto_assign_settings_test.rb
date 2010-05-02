@@ -22,6 +22,8 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
 
   include CodeReviewAutoAssignSettings
 
+
+
   context "to_s" do
     should "return string if @yml is not nil." do
       
@@ -36,21 +38,48 @@ EOF
   end
 
   context "enabled?" do
+    setup do
+      @settings = AutoAssignSettings.new
+    end
+
     should "return false if enabled is not setted." do
-      settings = AutoAssignSettings.new
-      assert !settings.enabled?
+      assert !@settings.enabled?
     end
 
     should "return true if enabled is setted to true." do
-      settings = AutoAssignSettings.new
-      settings.enabled = true
-      assert settings.enabled?
+      @settings.enabled = true
+      assert @settings.enabled?
     end
 
     should "return false if enabled is setted to false" do
-      settings = AutoAssignSettings.new
-      settings.enabled = false
-      assert !settings.enabled?
+      @settings.enabled = false
+      assert !@settings.enabled?
+    end
+  end
+
+  context "author_id" do
+    setup do
+      @settings = AutoAssignSettings.new
+    end
+    
+    should "return 3 if author_id is 3" do
+      @settings.author_id = 3
+      assert_equal(3, @settings.author_id)
+    end
+
+    should "return 4 if author_id is '4'" do
+      @settings.author_id = '4'
+      assert_equal(4, @settings.author_id)
+    end
+
+    should "return nil if author_id is nil" do
+      @settings.author_id = nil
+      assert_equal(nil, @settings.author_id)
+    end
+
+    should "return nil if author_id is empty string" do
+      @settings.author_id = ''
+      assert_equal(nil, @settings.author_id)
     end
   end
 end

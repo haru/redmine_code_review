@@ -35,6 +35,14 @@ module CodeReviewAutoAssignSettings
       @yml[:enabled] == true or @yml[:enabled] == 'true'
     end
 
+    def author_id=(id)
+      @yml[:author_id] = id
+    end
+
+    def author_id
+      @yml[:author_id].to_i unless @yml[:author_id].blank?
+    end
+
     def to_s
       return YAML.dump(@yml) if @yml
       nil

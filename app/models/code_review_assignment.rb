@@ -44,7 +44,7 @@ class CodeReviewAssignment < ActiveRecord::Base
     issue.subject = l(:code_review_requrest)
     issue.tracker_id = setting.assignment_tracker_id
     issue.project = project
-    issue.author = project.members[0].user
+    issue.author = User.find(auto_assign.author_id)
 
     unless issue.save
       return

@@ -55,6 +55,7 @@
 
       </p>
       <hr/>
+      <b><%=h l(:label_auto_assign_settings)%></b>
       <p>
         <%
         auto_assign = @code_review_setting.auto_assign_settings
@@ -62,7 +63,13 @@
         <label><%=h l(:label_auto_assign_settings)%></label>
         <%= check_box_tag "auto_assign[enabled]", true, auto_assign.enabled? %>enabled
       </p>
+      <p>
+        <label><%=h l(:field_author)%></label>
+        <%= select :auto_assign, :author_id, 
+          (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => auto_assign.author_id %>
+      </p>
       <% if @old_reviews and @old_reviews.any? %>
+      <hr/>
         <p>
           <%=h l(:old_review_data_found) %>
           <%=  radio_button_tag 'convert', true, :checked => false %><%=h l(:general_text_Yes) %>
