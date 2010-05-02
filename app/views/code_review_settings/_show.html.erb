@@ -55,21 +55,23 @@
 
       </p>
       <hr/>
-      <b><%=h l(:label_auto_assign_settings)%></b>
+
       <p>
         <%
         auto_assign = @code_review_setting.auto_assign_settings
-        %>
+      %>
         <label><%=h l(:label_auto_assign_settings)%></label>
-        <%= check_box_tag "auto_assign[enabled]", true, auto_assign.enabled? %>enabled
+        <%= check_box_tag "auto_assign[enabled]", true, auto_assign.enabled? %><%=h l(:button_activate)%>
       </p>
-      <p>
-        <label><%=h l(:field_author)%></label>
-        <%= select :auto_assign, :author_id, 
-          (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => auto_assign.author_id %>
-      </p>
+      <div id="cr_auto_assign_settings" style="display: <%=  auto_assign.enabled? ? 'true' : 'none'%>;">
+        <p>
+          <label><%=h l(:field_author)%></label>
+          <%= select :auto_assign, :author_id,
+            (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => auto_assign.author_id, :required => true %>
+        </p>
+      </div>
       <% if @old_reviews and @old_reviews.any? %>
-      <hr/>
+        <hr/>
         <p>
           <%=h l(:old_review_data_found) %>
           <%=  radio_button_tag 'convert', true, :checked => false %><%=h l(:general_text_Yes) %>
@@ -80,3 +82,15 @@
     <%= submit_tag l(:button_update) %>
   <% end %>
 </div>
+<script type="text/javascript">
+  function setAutoAssignSettingFormEnable(flag) {
+    var form = $('cr_auto_assign_settings');
+    if (flag) {
+      new Effect.BlindDown(form);
+    }
+    else {
+      new Effect.BlindUp(form);
+    }
+  }
+</script>
+<%= observe_field 'auto_assign_enabled', {:function => "setAutoAssignSettingFormEnable(value);"} %>
