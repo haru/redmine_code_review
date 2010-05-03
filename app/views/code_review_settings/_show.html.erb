@@ -58,22 +58,30 @@
 
       <p>
         <%
-        auto_assign = @code_review_setting.auto_assign_settings
+        @auto_assign = @code_review_setting.auto_assign_settings
       %>
         <label><%=h l(:label_auto_assign_settings)%></label>
-        <%= check_box_tag "auto_assign[enabled]", true, auto_assign.enabled? %><%=h l(:button_activate)%>
+        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled? %><%=h l(:button_activate)%>
       </p>
-      <div id="cr_auto_assign_settings" style="display: <%=  auto_assign.enabled? ? 'true' : 'none'%>;">
+      <div id="cr_auto_assign_settings" style="display: <%=  @auto_assign.enabled? ? 'true' : 'none'%>;">
         <p>
           <label><%=h l(:field_author)%></label>
           <%= select :auto_assign, :author_id,
-            (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => auto_assign.author_id, :required => true %>
+            (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => @auto_assign.author_id, :required => true %>
         </p>
         <p>
           <label><%=h l(:label_candidates_of_reviewer)%></label>
           <% @project.users.each do |user| %>
-            <label class="floating"><%= check_box_tag 'auto_assign[assignable_list][]', user.id, auto_assign.assignable?(user) %> <%=h user %></label>
+            <label class="floating"><%= check_box_tag 'auto_assign[assignable_list][]', user.id, @auto_assign.assignable?(user) %> <%=h user %></label>
           <% end %>
+        </p>
+        <p>
+          <label><%=h l(:field_description) %></label>
+          <%= text_area :auto_assign, :description,
+                   :cols => 30,
+                   :rows => 12,
+                   :accesskey => accesskey(:edit),
+                   :class => 'wiki-edit' %>
         </p>
       </div>
       <% if @old_reviews and @old_reviews.any? %>
@@ -88,6 +96,7 @@
     <%= submit_tag l(:button_update) %>
   <% end %>
 </div>
+<%= wikitoolbar_for 'auto_assign_description' %>
 <script type="text/javascript">
   function setAutoAssignSettingFormEnable(flag) {
     var form = $('cr_auto_assign_settings');

@@ -61,6 +61,14 @@ module CodeReviewAutoAssignSettings
       select_assign_to_with_list(project, assignable_list)
     end
 
+    def description=(desc)
+      @yml[:description] = desc
+    end
+
+    def description
+      @yml[:description]
+    end
+
     def to_s
       return YAML.dump(@yml) if @yml
       nil

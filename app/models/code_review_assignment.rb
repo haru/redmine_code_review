@@ -46,6 +46,7 @@ class CodeReviewAssignment < ActiveRecord::Base
     issue.project = project
     issue.author = User.find(auto_assign.author_id)
     issue.assigned_to_id = auto_assign.select_assign_to(project)
+    issue.description = auto_assign.description
 
     issue.save!
       

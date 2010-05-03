@@ -140,4 +140,20 @@ EOF
       assert_nil @settings.select_assign_to(@project)
     end
   end
+
+  context "description" do
+    setup do
+      @settings = AutoAssignSettings.new
+    end
+
+    should "return nil if :description is nil." do
+      @settings.description = nil
+      assert_nil @settings.description
+    end
+
+    should "return 'abc' if :description is 'abc'." do
+      @settings.description = 'abc'
+      assert_equal 'abc', @settings.description
+    end
+  end
 end
