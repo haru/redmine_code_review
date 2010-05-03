@@ -32,6 +32,7 @@
     :setting_id => @code_review_setting.id} do |f| %>
     <%= error_messages_for 'code_review_setting' %>
     <div class="box">
+      <%= f.hidden_field :lock_version %>
       <b><%=h l(:select_tracker_for_code_reviews)%>:</b>
       <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
 

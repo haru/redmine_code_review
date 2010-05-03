@@ -22,24 +22,30 @@ class CodeReviewSettingsController < ApplicationController
 
   before_filter :find_project, :authorize, :find_user
 
-  def update   
-    @setting = CodeReviewProjectSetting.find_or_create(@project)
+  def update
+    begin
+      @setting = CodeReviewProjectSetting.find_or_create(@project)
 
-    @setting.attributes = params[:setting]
-    @setting.updated_by = @user_id
-    @setting.auto_assign_settings = params[:auto_assign].to_yaml
+      @setting.attributes = params[:setting]
+      @setting.updated_by = @user_id
+      @setting.auto_assign_settings = params[:auto_assign].to_yaml
 
-    @setting.save!
-    convert = params[:convert] unless params[:convert].blank?
-    if (convert and convert == 'true')
-      old_reviews = find_old_reviews
-      old_reviews.each {|review|
-        review.convert_to_new_data
-        review.destroy
-      }
+      @setting.save!
+      convert = params[:convert] unless params[:convert].blank?
+      if (convert and convert == 'true')
+        old_reviews = find_old_reviews
+        old_reviews.each {|review|
+          review.convert_to_new_data
+          review.destroy
+        }
+      end
+      flash[:notice] = l(:notice_successful_update)
+    rescue ActiveRecord::StaleObjectError
+      # Optimistic locking exception
+      flash[:error] = l(:notice_locking_conflict)
     end
-    flash[:notice] = l(:notice_successful_update)
     redirect_to :controller => 'projects', :action => "settings", :id => @project, :tab => 'code_review'
+
   end
 
   private
