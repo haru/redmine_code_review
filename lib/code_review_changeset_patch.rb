@@ -24,7 +24,7 @@ module CodeReviewChangesetPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_review_assignments, :dependent => :destroy
-      alias_method_chain :after_create, :code_review
+      alias_method_chain :scan_comment_for_issue_ids, :code_review
     end
 
   end
@@ -152,8 +152,11 @@ module ChangesetInstanceMethodsCodeReview
     end
   end
 
-  def after_create_with_code_review
-    ret = after_create_without_code_review
+  #
+  # changeset作成時にレビューの自動アサインを行う
+  #
+  def scan_comment_for_issue_ids_with_code_review
+    ret = scan_comment_for_issue_ids_without_code_review
     project = repository.project if repository
     return ret unless project
     return ret unless project.module_enabled?('code_review')
