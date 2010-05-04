@@ -156,4 +156,20 @@ EOF
       assert_equal 'abc', @settings.description
     end
   end
+
+  context "subject" do
+    setup do
+      @settings = AutoAssignSettings.new
+    end
+
+    should "return 'efg' if :subject is 'efg'" do
+      @settings.subject = 'efg'
+      assert_equal('efg', @settings.subject)
+    end
+
+    should "return nil if :subject is nil" do
+      @settings.subject = nil
+      assert_nil(@settings.subject)
+    end
+  end
 end

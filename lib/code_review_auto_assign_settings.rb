@@ -69,6 +69,14 @@ module CodeReviewAutoAssignSettings
       @yml[:description]
     end
 
+    def subject=(sbj)
+      @yml[:subject] = sbj
+    end
+
+    def subject
+      @yml[:subject]
+    end
+
     def to_s
       return YAML.dump(@yml) if @yml
       nil

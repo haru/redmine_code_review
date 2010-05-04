@@ -41,7 +41,8 @@ class CodeReviewAssignment < ActiveRecord::Base
     auto_assign = setting.auto_assign_settings
     assignment = CodeReviewAssignment.new
     issue = Issue.new
-    issue.subject = l(:code_review_requrest)
+    issue.subject = auto_assign.subject
+    issue.subject = l(:code_review_requrest) if issue.subject.blank?
     issue.tracker_id = setting.assignment_tracker_id
     issue.project = project
     issue.author = User.find(auto_assign.author_id)

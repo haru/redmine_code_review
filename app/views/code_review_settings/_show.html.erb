@@ -60,7 +60,8 @@
       <p>
         <%
         @auto_assign = @code_review_setting.auto_assign_settings
-      %>
+        @auto_assign.subject = l(:code_review_requrest) if @auto_assign.subject.blank?
+      -%>
         <label><%=h l(:label_auto_assign_settings)%></label>
         <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled? %><%=h l(:button_activate)%>
       </p>
@@ -75,6 +76,10 @@
           <% @project.users.each do |user| %>
             <label class="floating"><%= check_box_tag 'auto_assign[assignable_list][]', user.id, @auto_assign.assignable?(user) %> <%=h user %></label>
           <% end %>
+        </p>
+        <p>
+          <label><%=h l(:field_subject)%></label>
+          <%= text_field(:auto_assign, :subject, :size => 70) %>
         </p>
         <p>
           <label><%=h l(:field_description) %></label>
