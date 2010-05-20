@@ -65,6 +65,10 @@ class CodeReviewSettingsController < ApplicationController
     render :partial => "code_review_settings/filters"
   end
 
+  def edit_filter
+    
+  end
+
   def sort
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
