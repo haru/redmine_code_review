@@ -70,12 +70,26 @@ class CodeReviewSettingsController < ApplicationController
     @auto_assign = setting.auto_assign_settings
     filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
     filters = [] unless filters
+    num = params[:auto_assign_filter][:num].to_i
+    move_to = params[:auto_assign_filter][:move_to]
+
+    if move_to == 'highest'
+      filters[num][:order] = 0
+    elsif move_to == 'higher'
+      filters[num][:order] = filters[num][:order].to_i - 15
+    elsif move_to == 'lower'
+      filters[num][:order] = filters[num][:order].to_i + 15
+    elsif move_to == 'lowest'
+      filters[num][:order] = 999999999
+    end
 
     @auto_assign.filters = filters.collect{|f|
       filter = AssignmentFilter.new
       filter.attributes = f
       filter
     }
+    
+
     render :partial => "code_review_settings/filters"
   end
   private

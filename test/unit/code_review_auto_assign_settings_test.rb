@@ -236,4 +236,30 @@ EOF
     end
   end
 
+  context "filter_enabled?" do
+    setup do
+      @settings = AutoAssignSettings.new
+    end
+
+    should "return false if filter_enabled is nil" do
+      @settings.filter_enabled = nil
+      assert !@settings.filter_enabled?
+    end
+
+    should "return false if filter_enabled is false" do
+      @settings.filter_enabled = false
+      assert !@settings.filter_enabled?
+    end
+
+    should "return true if filter_enabled is true" do
+      @settings.filter_enabled = true
+      assert @settings.filter_enabled?
+    end
+
+    should "return true if filter_enabled is 'true'" do
+      @settings.filter_enabled = 'true'
+      assert @settings.filter_enabled?
+    end
+  end
+
 end

@@ -77,6 +77,14 @@ module CodeReviewAutoAssignSettings
       yml[:subject]
     end
 
+    def filter_enabled=(flag)
+      yml[:filter_enabled] = flag
+    end
+
+    def filter_enabled?
+      yml[:filter_enabled] == true or yml[:filter_enabled] == 'true'
+    end
+
     
     def to_s
       return YAML.dump(yml)
@@ -136,7 +144,15 @@ module CodeReviewAutoAssignSettings
   class AssignmentFilter
     attr_accessor :accept
     attr_accessor :expression
-    attr_accessor :order
+
+    def order
+      return 0 unless @order
+      @order.to_i
+    end
+
+    def order=(num)
+      @order = num
+    end
 
     def accept?
       @accept == true or @accept == 'true'
@@ -153,6 +169,7 @@ module CodeReviewAutoAssignSettings
       attrs[:accept] = accept?
       attrs[:expression] = @expression
       attrs[:order] = @order
+      attrs
     end
   end
 end

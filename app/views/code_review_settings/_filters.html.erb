@@ -19,8 +19,7 @@
 
 <p>
   <label>filters</label>
-  foo
-  hoge
+  
 
 </p>
 <div style="padding: 5px 0 8px 180px;">
@@ -41,14 +40,14 @@
           <td><%= i + 1 %>
             <%= hidden_field_tag "auto_assign[filters][#{i}][accept]", filter.accept? %>
             <%= hidden_field_tag "auto_assign[filters][#{i}][expression]", filter.expression %>
-            <%= hidden_field_tag "auto_assign[filters][#{i}][order]", (1+1) * 10 %>
+            <%= hidden_field_tag "auto_assign[filters][#{i}][order]", (i+1) * 10 %>
           </td>
           <td><%= filter.accept? ? 'accept' : 'drop'%> </td>
           <td><%= filter.expression %></td>
           <td align="center" style="width:15%;">
             <%
             name = 'auto_assign_filter'
-            url = {:controller => 'code_review_settings', :action => 'sort', :id => @project}
+            url = {:controller => 'code_review_settings', :action => 'sort', :id => @project, "#{name}[num]" => i}
             -%>
             <%=
             link_to_remote(image_tag('2uparrow.png',   :alt => l(:label_sort_highest)), :url => url.merge({"#{name}[move_to]" => 'highest'}), :method => :post, :title => l(:label_sort_highest), :update => 'auto_assignment_filters', :submit => 'code_review_form') +
@@ -68,6 +67,7 @@
       <tr id="add_filter_form" style="display: none;">
         <td><%= @auto_assign.filters.length + 1 %> </td>
         <td>
+          <%= hidden_field_tag 'auto_assign_add_filter[order]', 999999999 %>
           <%= select_tag('auto_assign_add_filter[accept]',
             options_for_select([['accept', true], ['drop', false]])) %>
         </td>
