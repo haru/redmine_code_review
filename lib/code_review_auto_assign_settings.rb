@@ -81,6 +81,30 @@ module CodeReviewAutoAssignSettings
       return YAML.dump(@yml) if @yml
       nil
     end
+
+    def filters=(list)
+      unless list
+        return @yml[:filters] = nil 
+      end
+      @yml[:filters] = list.collect do |filter|
+        filter.attributes
+      end
+    end
+
+    def filters
+      return [] unless @yml[:filters]
+      @yml[:filters].collect do |hash|
+        filter = AssignmentFilter.new
+        filter.attributes=(hash)
+        filter
+      end
+    end
+
+    def add_filter(filter)
+      @yml[:filters] ||= []
+      @yml[:filters] << filter.attributes
+    end
+
     private
     def load_yml(yml_string)
       @yml = YAML.load(yml_string)
@@ -95,6 +119,27 @@ module CodeReviewAutoAssignSettings
       end
       list.delete(assign_to)
       select_assign_to_with_list(project, list)
+    end
+  end
+
+  class AssignmentFilter
+    attr_accessor :accept
+    attr_accessor :expression
+
+    def accept?
+      @accept == true or @accept == 'true'
+    end
+
+    def attributes=(attrs)
+      @accept = attrs[:accept]
+      @expression = attrs[:expression]
+    end
+
+    def attributes
+      attrs = Hash.new
+      attrs[:accept] = accept?
+      attrs[:expression] = @expression
+      attrs
     end
   end
 end

@@ -19,6 +19,7 @@ class CodeReviewSettingsController < ApplicationController
   unloadable
   layout 'base'
   menu_item :code_review
+  include CodeReviewAutoAssignSettings
 
   before_filter :find_project, :authorize, :find_user
 
@@ -46,6 +47,21 @@ class CodeReviewSettingsController < ApplicationController
     end
     redirect_to :controller => 'projects', :action => "settings", :id => @project, :tab => 'code_review'
 
+  end
+
+  def add_filter
+    setting = CodeReviewProjectSetting.find_or_create(@project)
+    @auto_assign = setting.auto_assign_settings
+    filters = params[:auto_assign_filters]
+    filters = [] unless filters
+    filters << params[:auto_assign_filter]
+
+    @auto_assign.filters = filters.collect{|f|
+      filter = AssignmentFilter.new
+      filter.attributes = f
+      filter
+    }
+    render :partial => "code_review_settings/filters"
   end
 
   private

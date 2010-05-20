@@ -29,7 +29,7 @@
     :url => {:controller => 'code_review_settings',
     :action => 'update', :id => @project, :tab => 'code_review',
     :partial => 'code_review_settings/update',
-    :setting_id => @code_review_setting.id} do |f| %>
+    :setting_id => @code_review_setting.id}, :html => {:id => 'code_review_form'} do |f| %>
     <%= error_messages_for 'code_review_setting' %>
     <div class="box">
       <%= f.hidden_field :lock_version %>
@@ -88,6 +88,11 @@
                    :rows => 12,
                    :accesskey => accesskey(:edit),
                    :class => 'wiki-edit' %>
+        </p>
+        <p>
+        <div id="auto_assignment_filters">
+          <%= render :partial => 'code_review_settings/filters' %>
+        </div>
         </p>
       </div>
       <% if @old_reviews and @old_reviews.any? %>

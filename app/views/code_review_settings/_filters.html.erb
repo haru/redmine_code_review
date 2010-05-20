@@ -1,0 +1,63 @@
+<%
+# Code Review plugin for Redmine
+# Copyright (C) 2009-2010  Haruyuki Iida
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-%>
+
+<p>
+  <label>filters</label>
+foo
+hoge
+
+</p>
+<div style="padding: 5px 0 8px 180px;">
+  <%= link_to_function(l(:button_add), "Effect.BlindDown('add_filter_form');") %>
+<table class="list">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>accept/drop</th>
+      <th>expression</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @auto_assign.filters.each_with_index do |filter, i| -%>
+    <tr class="<%= cycle 'odd', 'even' %>">
+      <td><%= i + 1 %> 
+        <%= hidden_field_tag "auto_assign_filters[][accept]", filter.accept? %>
+        <%= hidden_field_tag "auto_assign_filters[][expression]", filter.expression %>
+      </td>
+      <td><%= filter.accept? %> </td>
+      <td><%= filter.expression %></td>
+    </tr>
+    <% end -%>
+    <tr id="add_filter_form" style="display: none;">
+      <td></td>
+      <td>
+        <%= select_tag('auto_assign_filter[accept]',
+          options_for_select([['accept', true], ['drop', false]])) %>
+      </td>
+      <td><%= text_field_tag('auto_assign_filter[expression]', '', :size => 60)%>
+        <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'add_filter', :id => @project},
+        :update => 'auto_assignment_filters', :submit => 'code_review_form') %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
