@@ -60,7 +60,8 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
       setting = CodeReviewProjectSetting.find(1)
 
-      post :update, :id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3}
+      post :update, :id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3},
+        :auto_assign => {:filters => {:a => 1}}
       assert_response :redirect
       project = Project.find(1)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
@@ -71,12 +72,13 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_equal(2, setting.tracker_id)
       assert_equal(3, setting.assignment_tracker_id)
 
-      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true'
+      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true',
+        :auto_assign => {}
       assert_response :redirect
       project = Project.find(1)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
 
-      post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}
+      post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}, :auto_assign => {}
       assert_response :redirect
       project = Project.find(2)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
