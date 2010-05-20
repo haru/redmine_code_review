@@ -19,51 +19,66 @@
 
 <p>
   <label>filters</label>
-foo
-hoge
+  foo
+  hoge
 
 </p>
 <div style="padding: 5px 0 8px 180px;">
   <%= link_to_function(l(:button_add), "Effect.BlindDown('add_filter_form');") %>
-<table class="list">
-  <thead>
-    <tr>
-      <th style="width: 1em; text-align: right;">#</th>
-      <th style="width: 8em;">accept/drop</th>
-      <th>expression</th>
-      <th><%=h l(:button_sort) %> </th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @auto_assign.filters.each_with_index do |filter, i| -%>
-    <tr class="<%= cycle 'odd', 'even' %>" id="auto_assign_tr_<%= i%>">
-      <td><%= i + 1 %> 
-        <%= hidden_field_tag "auto_assign[filters][#{i}][accept]", filter.accept? %>
-        <%= hidden_field_tag "auto_assign[filters][#{i}][expression]", filter.expression %>
-      </td>
-      <td><%= filter.accept? ? 'accept' : 'drop'%> </td>
-      <td><%= filter.expression %></td>
-      <td></td>
-      <td>
-        <%= link_to_function(l(:button_delete), "new function(){$('auto_assign_tr_#{i}').remove;};", :html => {:class => 'icon icon-delete'})%>
-      </td>
-    </tr>
-    <% end -%>
-    <tr id="add_filter_form" style="display: none;">
-      <td><%= @auto_assign.filters.length + 1 %> </td>
-      <td>
-        <%= select_tag('auto_assign_add_filter[accept]',
-          options_for_select([['accept', true], ['drop', false]])) %>
-      </td>
-      <td><%= text_field_tag('auto_assign_add_filter[expression]', '', :size => 60)%>
-        <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'add_filter', :id => @project},
-        :update => 'auto_assignment_filters', :submit => 'code_review_form') %>
-      </td>
-      
-    </tr>
-  </tbody>
-</table>
+  <table class="list">
+    <thead>
+      <tr>
+        <th style="width: 1em; text-align: right;">#</th>
+        <th style="width: 8em;">accept/drop</th>
+        <th>expression</th>
+        <th><%=h l(:button_sort) %> </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @auto_assign.filters.each_with_index do |filter, i| -%>
+        <tr class="<%= cycle 'odd', 'even' %>" id="auto_assign_tr_<%= i%>">
+          <td><%= i + 1 %>
+            <%= hidden_field_tag "auto_assign[filters][#{i}][accept]", filter.accept? %>
+            <%= hidden_field_tag "auto_assign[filters][#{i}][expression]", filter.expression %>
+            <%= hidden_field_tag "auto_assign[filters][#{i}][order]", (1+1) * 10 %>
+          </td>
+          <td><%= filter.accept? ? 'accept' : 'drop'%> </td>
+          <td><%= filter.expression %></td>
+          <td align="center" style="width:15%;">
+            <%
+            name = 'auto_assign_filter'
+            url = {:controller => 'code_review_settings', :action => 'sort', :id => @project}
+            -%>
+            <%=
+            link_to_remote(image_tag('2uparrow.png',   :alt => l(:label_sort_highest)), :url => url.merge({"#{name}[move_to]" => 'highest'}), :method => :post, :title => l(:label_sort_highest), :update => 'auto_assignment_filters', :submit => 'code_review_form') +
+              link_to_remote(image_tag('1uparrow.png',   :alt => l(:label_sort_higher)),  :url => url.merge({"#{name}[move_to]" => 'higher'}),  :method => :post, :title => l(:label_sort_higher), :update => 'auto_assignment_filters', :submit => 'code_review_form') +
+              link_to_remote(image_tag('1downarrow.png', :alt => l(:label_sort_lower)),   :url => url.merge({"#{name}[move_to]" => 'lower'}),   :method => :post, :title => l(:label_sort_lower), :update => 'auto_assignment_filters', :submit => 'code_review_form') +
+              link_to_remote(image_tag('2downarrow.png', :alt => l(:label_sort_lowest)),  :url => url.merge({"#{name}[move_to]" => 'lowest'}),  :method => :post, :title => l(:label_sort_lowest), :update => 'auto_assignment_filters', :submit => 'code_review_form')
+          -%>
+
+          </td>
+          <td>
+            <span class="icon icon-del">
+              <%= link_to_function(l(:button_delete), "$('auto_assign_tr_#{i}').remove();")%>
+            </span>
+          </td>
+        </tr>
+      <% end -%>
+      <tr id="add_filter_form" style="display: none;">
+        <td><%= @auto_assign.filters.length + 1 %> </td>
+        <td>
+          <%= select_tag('auto_assign_add_filter[accept]',
+            options_for_select([['accept', true], ['drop', false]])) %>
+        </td>
+        <td><%= text_field_tag('auto_assign_add_filter[expression]', '', :size => 60)%>
+          <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'add_filter', :id => @project},
+            :update => 'auto_assignment_filters', :submit => 'code_review_form') %>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 

@@ -53,7 +53,7 @@ class CodeReviewSettingsController < ApplicationController
   def add_filter
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    filters = params[:auto_assign][:filters].values
+    filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
     filters = [] unless filters
     filters << params[:auto_assign_add_filter]
 
@@ -65,6 +65,19 @@ class CodeReviewSettingsController < ApplicationController
     render :partial => "code_review_settings/filters"
   end
 
+  def sort
+    setting = CodeReviewProjectSetting.find_or_create(@project)
+    @auto_assign = setting.auto_assign_settings
+    filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
+    filters = [] unless filters
+
+    @auto_assign.filters = filters.collect{|f|
+      filter = AssignmentFilter.new
+      filter.attributes = f
+      filter
+    }
+    render :partial => "code_review_settings/filters"
+  end
   private
   def find_project
     # @project variable must be set before calling the authorize filter

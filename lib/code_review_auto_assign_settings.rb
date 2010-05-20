@@ -77,6 +77,7 @@ module CodeReviewAutoAssignSettings
       yml[:subject]
     end
 
+    
     def to_s
       return YAML.dump(yml)
       nil
@@ -93,11 +94,12 @@ module CodeReviewAutoAssignSettings
 
     def filters
       return [] unless yml[:filters]
-      yml[:filters].collect do |hash|
+      list = yml[:filters].collect do |hash|
         filter = AssignmentFilter.new
         filter.attributes=(hash)
         filter
       end
+      list.sort {|a, b| a.order <=> b.order}
     end
 
     def add_filter(filter)
@@ -134,6 +136,7 @@ module CodeReviewAutoAssignSettings
   class AssignmentFilter
     attr_accessor :accept
     attr_accessor :expression
+    attr_accessor :order
 
     def accept?
       @accept == true or @accept == 'true'
@@ -142,13 +145,14 @@ module CodeReviewAutoAssignSettings
     def attributes=(attrs)
       @accept = attrs[:accept]
       @expression = attrs[:expression]
+      @order = attrs[:order].to_i unless attrs[:order].blank?
     end
 
     def attributes
       attrs = Hash.new
       attrs[:accept] = accept?
       attrs[:expression] = @expression
-      attrs
+      attrs[:order] = @order
     end
   end
 end
