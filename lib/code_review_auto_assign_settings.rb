@@ -18,7 +18,7 @@
 module CodeReviewAutoAssignSettings
   class AutoAssignSettings
     def initialize(yml_string = nil)
-      yml_string = {:enabled => false}.to_yaml unless yml_string
+      yml_string = {:enabled => false}.to_yaml if yml_string.blank?
       load_yml(yml_string)
     end
       
@@ -27,29 +27,29 @@ module CodeReviewAutoAssignSettings
     end
 
     def enabled=(flag)
-      @yml[:enabled] = flag
+      yml[:enabled] = flag
     end
 
     def enabled?
-      return false unless @yml
-      @yml[:enabled] == true or @yml[:enabled] == 'true'
+      return false unless yml
+      yml[:enabled] == true or yml[:enabled] == 'true'
     end
 
     def author_id=(id)
-      @yml[:author_id] = id
+      yml[:author_id] = id
     end
 
     def author_id
-      @yml[:author_id].to_i unless @yml[:author_id].blank?
+      yml[:author_id].to_i unless yml[:author_id].blank?
     end
 
     def assignable_list=(list)
-      @yml[:assignable_list] = list
+      yml[:assignable_list] = list
     end
 
     def assignable_list
-      return nil unless @yml[:assignable_list]
-      @yml[:assignable_list].collect { |id| id.to_i  }
+      return nil unless yml[:assignable_list]
+      yml[:assignable_list].collect { |id| id.to_i  }
     end
 
     def assignable?(user)
@@ -62,38 +62,38 @@ module CodeReviewAutoAssignSettings
     end
 
     def description=(desc)
-      @yml[:description] = desc
+      yml[:description] = desc
     end
 
     def description
-      @yml[:description]
+      yml[:description]
     end
 
     def subject=(sbj)
-      @yml[:subject] = sbj
+      yml[:subject] = sbj
     end
 
     def subject
-      @yml[:subject]
+      yml[:subject]
     end
 
     def to_s
-      return YAML.dump(@yml) if @yml
+      return YAML.dump(yml)
       nil
     end
 
     def filters=(list)
       unless list
-        return @yml[:filters] = nil 
+        return yml[:filters] = nil 
       end
-      @yml[:filters] = list.collect do |filter|
+      yml[:filters] = list.collect do |filter|
         filter.attributes
       end
     end
 
     def filters
-      return [] unless @yml[:filters]
-      @yml[:filters].collect do |hash|
+      return [] unless yml[:filters]
+      yml[:filters].collect do |hash|
         filter = AssignmentFilter.new
         filter.attributes=(hash)
         filter
@@ -101,11 +101,20 @@ module CodeReviewAutoAssignSettings
     end
 
     def add_filter(filter)
-      @yml[:filters] ||= []
-      @yml[:filters] << filter.attributes
+      yml[:filters] ||= []
+      yml[:filters] << filter.attributes
     end
 
     private
+
+    def yml
+      unless @yml
+        yml_string = {:enabled => false}.to_yaml
+        load_yml(yml_string)
+      end
+      @yml
+    end
+
     def load_yml(yml_string)
       @yml = YAML.load(yml_string)
     end

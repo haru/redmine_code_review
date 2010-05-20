@@ -52,7 +52,7 @@ class CodeReviewSettingsController < ApplicationController
   def add_filter
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    filters = params[:auto_assign_filters]
+    filters = params[:auto_assign][:filters]
     filters = [] unless filters
     filters << params[:auto_assign_filter]
 

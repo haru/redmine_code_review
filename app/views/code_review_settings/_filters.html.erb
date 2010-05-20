@@ -37,15 +37,15 @@ hoge
     <% @auto_assign.filters.each_with_index do |filter, i| -%>
     <tr class="<%= cycle 'odd', 'even' %>">
       <td><%= i + 1 %> 
-        <%= hidden_field_tag "auto_assign_filters[][accept]", filter.accept? %>
-        <%= hidden_field_tag "auto_assign_filters[][expression]", filter.expression %>
+        <%= hidden_field_tag "auto_assign[filters][][accept]", filter.accept? %>
+        <%= hidden_field_tag "auto_assign[filters][][expression]", filter.expression %>
       </td>
       <td><%= filter.accept? %> </td>
       <td><%= filter.expression %></td>
     </tr>
     <% end -%>
     <tr id="add_filter_form" style="display: none;">
-      <td></td>
+      <td><%= @auto_assign.filters.length + 1 %> </td>
       <td>
         <%= select_tag('auto_assign_filter[accept]',
           options_for_select([['accept', true], ['drop', false]])) %>
