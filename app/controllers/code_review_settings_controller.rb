@@ -29,6 +29,7 @@ class CodeReviewSettingsController < ApplicationController
 
       @setting.attributes = params[:setting]
       @setting.updated_by = @user.id
+      params[:auto_assign][:filters] = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
       @setting.auto_assign_settings = params[:auto_assign].to_yaml
 
       @setting.save!
@@ -52,9 +53,9 @@ class CodeReviewSettingsController < ApplicationController
   def add_filter
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    filters = params[:auto_assign][:filters]
+    filters = params[:auto_assign][:filters].values
     filters = [] unless filters
-    filters << params[:auto_assign_filter]
+    filters << params[:auto_assign_add_filter]
 
     @auto_assign.filters = filters.collect{|f|
       filter = AssignmentFilter.new
