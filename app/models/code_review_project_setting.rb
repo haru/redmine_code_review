@@ -36,6 +36,7 @@ class CodeReviewProjectSetting < ActiveRecord::Base
     unless setting
       setting = CodeReviewProjectSetting.new
       setting.project_id = project.id
+      return setting if project.trackers.length == 0
       setting.tracker = project.trackers[0]
       setting.assignment_tracker = project.trackers[0]
       setting.save!
