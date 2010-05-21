@@ -74,7 +74,7 @@
           <td>
             <%= hidden_field_tag "auto_assign_edit_filter[#{i}][order]", (i + 1) * 10 %>
             <%= select_tag("auto_assign_edit_filter[#{i}][accept]",
-              options_for_select([['accept', true], ['drop', false]])) %>
+              options_for_select([['accept', true], ['drop', false]], filter.accept?)) %>
           </td>
           <td><%= text_field_tag("auto_assign_edit_filter[#{i}][expression]", filter.expression, :size => 60)%>
           </td>
