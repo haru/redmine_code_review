@@ -66,7 +66,23 @@ class CodeReviewSettingsController < ApplicationController
   end
 
   def edit_filter
-    
+    setting = CodeReviewProjectSetting.find_or_create(@project)
+    @auto_assign = setting.auto_assign_settings
+    num = params[:num].to_i
+    filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
+    filters = [] unless filters
+    i = 0
+    @auto_assign.filters = filters.collect{|f|
+      filter = AssignmentFilter.new
+      if i == num
+        filter.attributes = params[:auto_assign_edit_filter][num.to_s]
+      else
+        filter.attributes = f
+      end
+      i = i + 1
+      filter
+    }
+    render :partial => "code_review_settings/filters"
   end
 
   def sort

@@ -72,15 +72,15 @@
             <%= i + 1 %>
           </td>
           <td>
-            <%= hidden_field_tag 'auto_assign_edit_filter[order]', (i + 1) * 10 %>
-            <%= select_tag('auto_assign_edit_filter[accept]',
+            <%= hidden_field_tag "auto_assign_edit_filter[#{i}][order]", (i + 1) * 10 %>
+            <%= select_tag("auto_assign_edit_filter[#{i}][accept]",
               options_for_select([['accept', true], ['drop', false]])) %>
           </td>
-          <td><%= text_field_tag('auto_assign_edit_filter[expression]', '', :size => 60)%>
+          <td><%= text_field_tag("auto_assign_edit_filter[#{i}][expression]", filter.expression, :size => 60)%>
           </td>
           <td></td>
           <td>
-            <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'edit_filter', :id => @project, "#{name}[num]" => i},
+            <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'edit_filter', :id => @project, "num" => i},
               :update => 'auto_assignment_filters', :submit => 'code_review_form') %>
           </td>
         </tr>
