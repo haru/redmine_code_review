@@ -115,6 +115,14 @@ module CodeReviewAutoAssignSettings
       yml[:filters] << filter.attributes
     end
 
+    def accept_for_default=(flag)
+      yml[:accept_for_default] = flag
+    end
+
+    def accept_for_default
+      yml[:accept_for_default] == true or yml[:accept_for_default] == 'true'
+    end
+
     private
 
     def yml
@@ -170,6 +178,13 @@ module CodeReviewAutoAssignSettings
       attrs[:expression] = @expression
       attrs[:order] = @order
       attrs
+    end
+
+    def match?(path)
+      return false unless @expression
+      return false unless path
+      reqexp = Regexp.compile(@expression)
+      reqexp.match(path) != nil
     end
   end
 end

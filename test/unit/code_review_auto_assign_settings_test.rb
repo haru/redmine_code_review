@@ -55,6 +55,26 @@ EOF
         assert !@settings.enabled?
       end
     end
+    
+    context "accept_for_default" do
+      setup do
+        @settings = AutoAssignSettings.new
+      end
+
+      should "return false if accept_for_default is not setted." do
+        assert !@settings.accept_for_default
+      end
+
+      should "return true if accept_for_default is setted to true." do
+        @settings.accept_for_default = true
+        assert @settings.accept_for_default
+      end
+
+      should "return false if accept_for_default is setted to false" do
+        @settings.accept_for_default = false
+        assert !@settings.accept_for_default
+      end
+    end
 
     context "author_id" do
       setup do
@@ -232,6 +252,28 @@ EOF
         @filter.attributes = hash
         assert @filter.accept
         assert_equal 'hoge', @filter.expression
+      end
+    end
+
+    context "match?" do
+      should "return false if expression is nil" do
+        @filter.expression = nil
+        assert !@filter.match?("/aaa/bbb")
+      end
+
+      should "return false if path is nil" do
+        @filter.expression = 'abc'
+        assert !@filter.match?(nil)
+      end
+
+      should "return true if expression matches." do
+        @filter.expression = '.*\\.java$'
+        assert @filter.match?("/test/aaa/bbb/foo.java")
+      end
+
+      should "return false if expression doesn't match." do
+        @filter.expression = '.*\\.rb$'
+        assert !@filter.match?("/test/aaa/bbb/foo.java")
       end
     end
   end

@@ -17,6 +17,28 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <div id="code_review_settings">
+  <script type="text/javascript">
+  function setAutoAssignSettingFormEnable(flag) {
+    var form = $('cr_auto_assign_settings');
+    if (flag) {
+      new Effect.BlindDown(form);
+    }
+    else {
+      new Effect.BlindUp(form);
+    }
+  }
+
+  function setAutoAssignSettingFiltersEnable(flag) {
+    var form = $('auto_assignment_filter_form');
+    if (flag) {
+      new Effect.BlindDown(form);
+    }
+    else {
+      new Effect.BlindUp(form);
+    }
+  }
+</script>
+  
   <%
   @code_review_setting = CodeReviewProjectSetting.find_or_create(@project)
 
@@ -108,15 +130,5 @@
   <% end %>
 </div>
 <%= wikitoolbar_for 'auto_assign_description' %>
-<script type="text/javascript">
-  function setAutoAssignSettingFormEnable(flag) {
-    var form = $('cr_auto_assign_settings');
-    if (flag) {
-      new Effect.BlindDown(form);
-    }
-    else {
-      new Effect.BlindUp(form);
-    }
-  }
-</script>
+
 <%= observe_field 'auto_assign_enabled', {:function => "setAutoAssignSettingFormEnable(value);"} %>

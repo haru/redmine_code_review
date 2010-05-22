@@ -53,3 +53,5 @@ ja:
 
   label_auto_assign_settings: 自動アサイン
   label_candidates_of_reviewer: アサイン候補
+  label_auto_assignment_filters: フィルタ
+  auto_assign_filter_expression: 正規表現

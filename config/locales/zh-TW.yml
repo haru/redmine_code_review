@@ -53,3 +53,5 @@
 
   label_auto_assign_settings: Auto assignment
   label_candidates_of_reviewer: Candidates of reviewer
+  label_auto_assignment_filters: Filters
+  auto_assign_filter_expression: Regular expression
