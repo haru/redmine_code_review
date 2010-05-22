@@ -163,6 +163,7 @@ module ChangesetInstanceMethodsCodeReview
     setting = CodeReviewProjectSetting.find_or_create(project)
     auto_assign = setting.auto_assign_settings
     return ret unless auto_assign.enabled?
+    return unless auto_assign.match_with_changeset?(self)
     CodeReviewAssignment.create_with_changeset(self)
     ret
   end

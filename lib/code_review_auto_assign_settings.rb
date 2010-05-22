@@ -123,6 +123,21 @@ module CodeReviewAutoAssignSettings
       yml[:accept_for_default] == true or yml[:accept_for_default] == 'true'
     end
 
+    def match_with_changeset?(changeset)
+      return true unless filter_enabled?
+      changeset.changes.each{|change|
+        return if match_with_change?(change)  
+      }
+      return false
+    end
+
+    def match_with_change?(change)
+      filters.each { |filter|
+        next unless filter.match(change.path)
+        return filter.accept?
+      }
+      return accept_for_default
+    end
     private
 
     def yml
