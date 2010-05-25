@@ -276,26 +276,27 @@ function formPopup(evt, popup){
     var frame_height = $('review-form-frame').style.height;
     var win = null;
     if (review_form_dialog != null) {
-        win = review_form_dialog;
+        review_form_dialog.destroy();
+        review_form_dialog = null;
     }
-    else {
-        win = new Window({
-            className: "mac_os_x",
-            width:640,
-            height:frame_height,
-            zIndex: topZindex,
-            resizable: true,
-            title: add_form_title,
-            showEffect:Effect.Grow,
-            showEffectOptions:{
-                direction: 'top-left'
-            },
-            hideEffect: Effect.SwitchOff,
-            //destroyOnClose: true,
-            draggable:true,
-            wiredDrag: true
-        });
-    }
+    
+    win = new Window({
+        className: "mac_os_x",
+        width:640,
+        height:frame_height,
+        zIndex: topZindex,
+        resizable: true,
+        title: add_form_title,
+        showEffect:Effect.Grow,
+        showEffectOptions:{
+            direction: 'top-left'
+        },
+        hideEffect: Effect.SwitchOff,
+        //destroyOnClose: true,
+        draggable:true,
+        wiredDrag: true
+    });
+    
     win.setZIndex(topZindex);
     win.setContent("review-form-frame");
     win.setLocation(evt.pointerY(), evt.pointerX() + 5);
