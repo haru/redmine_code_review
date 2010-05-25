@@ -138,6 +138,11 @@ module CodeReviewAutoAssignSettings
       }
       return accept_for_default
     end
+
+    def attributes
+      yml
+    end
+    
     private
 
     def yml
@@ -182,6 +187,7 @@ module CodeReviewAutoAssignSettings
     end
 
     def attributes=(attrs)
+      attrs ||= {}
       @accept = attrs[:accept]
       @expression = attrs[:expression]
       @order = attrs[:order].to_i unless attrs[:order].blank?

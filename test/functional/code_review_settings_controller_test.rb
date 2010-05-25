@@ -20,6 +20,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
   fixtures :code_reviews, :projects, :users, :trackers, :projects, :projects_trackers,
     :code_review_project_settings, :issues, :issue_statuses, :enumerations
 
+  include CodeReviewAutoAssignSettings
   def setup
     @controller = CodeReviewSettingsController.new
     @request    = ActionController::TestRequest.new
@@ -82,6 +83,28 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_response :redirect
       project = Project.find(2)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
+    end
+  end
+
+  context "add_filter" do
+    setup do
+      @project = Project.find(1)
+      @request.session[:user_id] = 1
+      @setting = CodeReviewProjectSetting.find_or_create(@project)
+      @setting.auto_assign = AutoAssignSettings.new
+    end
+
+    should "add filter" do
+      count = @setting.auto_assign.filters.length
+      filter = AssignmentFilter.new
+      filter.expression = 'aaa'
+      filter.order = 10
+      filter.accept = true
+      post :add_filter, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge({:add_filter => filter.attributes})
+      @auto_assign = assigns(:auto_assign)
+      assert_not_nil @auto_assign
+      assert_equal(count + 1, @auto_assign.filters.length)
+      assert_response :success
     end
   end
 
