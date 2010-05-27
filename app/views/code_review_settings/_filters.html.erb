@@ -84,7 +84,7 @@
             <td></td>
             <td>
               <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'edit_filter', :id => @project, "num" => i},
-                :update => 'auto_assignment_filters', :submit => 'code_review_form') %>
+                :update => 'auto_assignment_filters', :submit => 'code_review_form', :condition => "is_valid_expression($('auto_assign_edit_filter_#{i}_expression'))") %>
             </td>
           </tr>
         <% end -%>
@@ -100,7 +100,7 @@
           <td></td>
           <td>
             <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'add_filter', :id => @project},
-              :update => 'auto_assignment_filters', :submit => 'code_review_form') %>
+              :update => 'auto_assignment_filters', :submit => 'code_review_form', :condition => "is_valid_expression($('auto_assign_add_filter_expression'))") %>
           </td>
 
         </tr>

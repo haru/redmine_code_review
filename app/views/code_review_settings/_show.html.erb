@@ -37,6 +37,22 @@
       new Effect.BlindUp(form);
     }
   }
+
+  function is_valid_expression(field) {
+    if (field.value == '') {
+      return false;
+    }
+
+    try {
+      new RegExp(field.value);
+    }
+    catch (e) {
+      alert(e);
+      return false;
+    }
+
+    return true;
+  }
 </script>
   
   <%
