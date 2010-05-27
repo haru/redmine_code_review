@@ -31,7 +31,7 @@
       <thead>
         <tr>
           <th style="width: 1em; text-align: right;">#</th>
-          <th style="width: 8em;">accept/drop</th>
+          <th style="width: 8em;"><%=h l(:auto_assign_filter_assign)%>/<%=h l(:auto_assign_filter_drop) %></th>
           <th><%=h l(:auto_assign_filter_expression)%> </th>
           <th><%=h l(:button_sort) %> </th>
           <th></th>
@@ -41,13 +41,13 @@
         <% @auto_assign.filters.each_with_index do |filter, i| -%>
           <% tr_class =  cycle('odd', 'even') -%>
           <tr class="<%= tr_class %>" id="auto_assign_tr_<%= i%>">
-            <td><%= i + 1 %>
+            <td style="text-align: right"><%= i + 1 %>
               <%= hidden_field_tag "auto_assign[filters][#{i}][accept]", filter.accept? %>
               <%= hidden_field_tag "auto_assign[filters][#{i}][expression]", filter.expression %>
               <%= hidden_field_tag "auto_assign[filters][#{i}][order]", (i+1) * 10 %>
             </td>
-            <td><%= filter.accept? ? 'accept' : 'drop'%> </td>
-            <td><%= filter.expression %></td>
+            <td style="text-align: center"><%= filter.accept? ? l(:auto_assign_filter_assign) : l(:auto_assign_filter_drop)%> </td>
+            <td style="text-align: center"><%= filter.expression %></td>
             <td align="center" style="width:15%;">
               <%
               name = 'auto_assign_filter'
@@ -71,13 +71,13 @@
             </td>
           </tr>
           <tr class="<%= tr_class %>" id="auto_assign_edit_tr_<%= i%>" style="display: none;">
-            <td>
+            <td style="text-align: right">
               <%= i + 1 %>
             </td>
-            <td>
+            <td style="text-align: center">
               <%= hidden_field_tag "auto_assign_edit_filter[#{i}][order]", (i + 1) * 10 %>
               <%= select_tag("auto_assign_edit_filter[#{i}][accept]",
-                options_for_select([['accept', true], ['drop', false]], filter.accept?)) %>
+                options_for_select([[l(:auto_assign_filter_assign), true], [l(:auto_assign_filter_drop), false]], filter.accept?)) %>
             </td>
             <td><%= text_field_tag("auto_assign_edit_filter[#{i}][expression]", filter.expression, :size => 60)%>
             </td>
@@ -93,7 +93,7 @@
           <td>
             <%= hidden_field_tag 'auto_assign_add_filter[order]', 999999999 %>
             <%= select_tag('auto_assign_add_filter[accept]',
-              options_for_select([['accept', true], ['drop', false]])) %>
+              options_for_select([[l(:auto_assign_filter_assign), true], [l(:auto_assign_filter_drop), false]])) %>
           </td>
           <td><%= text_field_tag('auto_assign_add_filter[expression]', '', :size => 60)%>
           </td>
@@ -110,7 +110,7 @@
   </div>
   <p>
     <label><%=h l(:label_default)%></label>
-    <%= select(:auto_assign, :accept_for_default,  [['accept', true], ['drop', false]]) %>
+    <%= select(:auto_assign, :accept_for_default,  [[l(:auto_assign_filter_assign), true], [l(:auto_assign_filter_drop), false]]) %>
   </p>
 
 </div>
