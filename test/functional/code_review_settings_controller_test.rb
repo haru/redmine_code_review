@@ -137,11 +137,63 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     end
   end
 
-  def test_convert
-    setting = CodeReviewProjectSetting.find(1)
-    @request.session[:user_id] = User.anonymous.id
-    get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id},
-      :convert => true
-    assert_response :redirect
+  context "sort" do
+    setup do
+      @project = Project.find(1)
+      @request.session[:user_id] = 1
+      @setting = CodeReviewProjectSetting.find_or_create(@project)
+      @setting.auto_assign = AutoAssignSettings.new
+
+      @filters = {}
+      filter = AssignmentFilter.new
+      filter.expression = 'aaa'
+      filter.order = 10
+      filter.accept = true
+
+      filter2 = AssignmentFilter.new
+      filter2.expression = 'bbb'
+      filter2.order = 20
+      filter2.accept = false
+
+      @filters['1'] = filter.attributes
+      @filters['2'] = filter2.attributes
+
+    end
+
+    should "sort filters" do    
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+        :auto_assign_filter => {:num => 2, :move_to => :highest}
+      @auto_assign = assigns(:auto_assign)
+      assert_not_nil @auto_assign
+      assert_response :success
+
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+        :auto_assign_filter => {:num => 2, :move_to => :high}
+      @auto_assign = assigns(:auto_assign)
+      assert_not_nil @auto_assign
+      assert_response :success
+
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+        :auto_assign_filter => {:num => 2, :move_to => :low}
+      @auto_assign = assigns(:auto_assign)
+      assert_not_nil @auto_assign
+      assert_response :success
+
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+        :auto_assign_filter => {:num => 2, :move_to => :lowest}
+      @auto_assign = assigns(:auto_assign)
+      assert_not_nil @auto_assign
+      assert_response :success
+    end
+  end
+
+  context "test_convert" do
+    should "convert old data to new data." do
+      setting = CodeReviewProjectSetting.find(1)
+      @request.session[:user_id] = User.anonymous.id
+      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id},
+        :convert => true
+      assert_response :redirect
+    end
   end
 end
