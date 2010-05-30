@@ -212,6 +212,58 @@ EOF
     end
   end
 
+  context "match_with_change?" do
+    setup do
+      @settings = AutoAssignSettings.new
+      filters = []
+      filter = AssignmentFilter.new
+      filter.accept = false
+      filter.expression = '.*test\\.rb$'
+      filters << filter
+      filter = AssignmentFilter.new
+      filter.accept = true
+      filter.expression = '.*\\.rb$'
+      filters << filter
+      @settings.filters = filters
+      @settings.accept_for_default = true
+    end
+
+    should "return true if filters.length is 0 and accept_for_default is true." do
+      @settings.filters = []
+      change = Change.generate!()
+      assert @settings.match_with_change?(change)
+    end
+
+    should "return true if filter matches and accept? is true" do
+      change = Change.generate!(:path => '/aaa/bbb/ccc.rb')
+      assert @settings.match_with_change?(change)
+    end
+
+    should "return false if filter matches and accept? is false" do
+      change = Change.generate!(:path => '/aaa/bbb/ccctest.rb')
+      assert !@settings.match_with_change?(change)
+    end
+
+    should "return false if filter doesn't matches and accept_for_default is false" do
+      change = Change.generate!(:path => '/aaa/bbb/ccctest.html')
+      @settings.accept_for_default = false
+      assert !@settings.match_with_change?(change)
+    end
+
+    should "return true if filter doesn't matches and accept_for_default is true" do
+      change = Change.generate!(:path => '/aaa/bbb/ccctest.html')
+      @settings.accept_for_default = true
+      assert @settings.match_with_change?(change)
+    end
+
+    should "return false if filters.length is 0 and accept_for_default is false." do
+      @settings.filters = []
+      @settings.accept_for_default = false
+      change = Change.generate!()
+      assert !@settings.match_with_change?(change)
+    end
+  end
+
   context "AssignmentFilter" do
     setup do
       @filter = AssignmentFilter.new
