@@ -224,6 +224,10 @@ EOF
       filter.accept = true
       filter.expression = '.*\\.rb$'
       filters << filter
+      filter = AssignmentFilter.new
+      filter.accept = true
+      filter.expression = '.*/redmine_code_review/.*'
+      filters << filter
       @settings.filters = filters
       @settings.accept_for_default = true
     end
@@ -235,7 +239,10 @@ EOF
     end
 
     should "return true if filter matches and accept? is true" do
+      @settings.accept_for_default = false
       change = Change.generate!(:path => '/aaa/bbb/ccc.rb')
+      assert @settings.match_with_change?(change)
+      change = Change.generate!(:path => '/trunk/plugins/redmine_code_review/lib/ccc.rb')
       assert @settings.match_with_change?(change)
     end
 

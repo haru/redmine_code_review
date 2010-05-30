@@ -108,6 +108,35 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     end
   end
 
+  context "edit_filter" do
+    setup do
+      @project = Project.find(1)
+      @request.session[:user_id] = 1
+      @setting = CodeReviewProjectSetting.find_or_create(@project)
+      @setting.auto_assign = AutoAssignSettings.new
+    end
+
+    should "update filter" do
+
+      filter = AssignmentFilter.new
+      filter.expression = 'aaa'
+      filter.order = 10
+      filter.accept = true
+      
+      filter2 = AssignmentFilter.new
+      filter2.expression = 'bbb'
+      filter2.order = 10
+      filter2.accept = false
+
+      post :edit_filter, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => {'0' => filter.attributes}), :num => 0,
+        :auto_assign_edit_filter => {'0' => filter2.attributes}
+      @auto_assign = assigns(:auto_assign)
+      assert_not_nil @auto_assign
+      assert_equal(1, @auto_assign.filters.length)
+      assert_response :success
+    end
+  end
+
   def test_convert
     setting = CodeReviewProjectSetting.find(1)
     @request.session[:user_id] = User.anonymous.id
