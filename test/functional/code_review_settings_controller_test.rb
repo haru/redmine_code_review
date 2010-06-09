@@ -155,8 +155,14 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       filter2.order = 20
       filter2.accept = false
 
+      filter3 = AssignmentFilter.new
+      filter3.expression = 'ccc'
+      filter3.order = 30
+      filter3.accept = false
+
       @filters['1'] = filter.attributes
       @filters['2'] = filter2.attributes
+      @filters['3'] = filter2.attributes
 
     end
 
