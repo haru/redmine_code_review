@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2010  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,58 +20,61 @@
 
 <div class="box">
   <h2>
-  <%= l(:label_line_number, :line => @review.line) %>
-</h2>
-<% form_for :review, @review,
-  :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
-<%= error_messages_for 'review' %>
-<%= error_messages_for 'issue' %>
-<%= error_messages_for 'relation' %>
-<%= f.hidden_field(:change_id) %>
-<%= f.hidden_field(:line) %>
-<%= hidden_field_tag(:action_type, @review.action_type) %>
-<%= hidden_field_tag(:rev, @review.revision) %>
-<%= hidden_field_tag(:rev_to, @review.rev_to) %>
-<%= hidden_field_tag(:path, @review.path) %>
-  <%= hidden_field_tag(:file_count, @review.file_count) %>
-  <%= hidden_field_tag(:attachment_id, @review.attachment_id) %>
-  <p>
-    <label><b><%=h l(:field_subject)%>:</b></label>
-    <%= f.text_field :subject, :size => 70, :required => true %>
-  </p>
-<p>
-  <%= f.text_area :comment,
-                   :cols => 30,
-                   :rows => 12,
-                   :accesskey => accesskey(:edit),
-                   :class => 'wiki-edit' %>
- 
-</p>
-<p>
-  <label><b><%=h l(:field_assigned_to) %>:</b></label>
-  <%= select :issue, :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %>
-</p>
-<p>
+    <%= l(:label_line_number, :line => @review.line) %>
+  </h2>
+  <% form_for :review, @review,
+    :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
+    <%= error_messages_for 'review' %>
+    <%= error_messages_for 'issue' %>
+    <%= error_messages_for 'relation' %>
+    <%= f.hidden_field(:change_id) %>
+    <%= f.hidden_field(:line) %>
+    <%= hidden_field_tag(:action_type, @review.action_type) %>
+    <%= hidden_field_tag(:rev, @review.revision) %>
+    <%= hidden_field_tag(:rev_to, @review.rev_to) %>
+    <%= hidden_field_tag(:path, @review.path) %>
+    <%= hidden_field_tag(:file_count, @review.file_count) %>
+    <%= hidden_field_tag(:attachment_id, @review.attachment_id) %>
+    <p>
+      <label><b><%=h l(:field_subject)%>:</b></label>
+      <%= f.text_field :subject, :size => 70, :required => true %>
+    </p>
+    <p>
+      <%= f.text_area :comment,
+        :cols => 30,
+        :rows => 12,
+        :accesskey => accesskey(:edit),
+        :class => 'wiki-edit' %>
 
-</p>
-  <label><b><%=h l(:field_fixed_version) %>:</b></label>
-  <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
-<p>
+    </p>
+    <p>
+      <label><b><%=h l(:field_assigned_to) %>:</b></label>
+      <%= select :issue, :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %>
+    </p>
+    <p>
+      <label><b><%=h l(:field_category) %>:</b></label>
+      <%= select :issue, :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
+
+
+    </p>
+    <label><b><%=h l(:field_fixed_version) %>:</b></label>
+    <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
+    <p>
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();" %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= link_to_remote l(:label_preview),
-                       { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
-                         :method => 'post',
-                         :update => 'preview',
-                         :with => "Form.serialize('review_form')",
-                         :complete => "Element.scrollTo('preview')"
-                       }, :accesskey => accesskey(:preview) %>
-</p>
-<div id="preview" class="wiki"></div>
- <%= wikitoolbar_for 'review_comment' %>
-<% end %>
+        { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+        :method => 'post',
+        :update => 'preview',
+        :with => "Form.serialize('review_form')",
+        :complete => "Element.scrollTo('preview')"
+      }, :accesskey => accesskey(:preview) %>
+    </p>
+    <div id="preview" class="wiki"></div>
+    <%= wikitoolbar_for 'review_comment' %>
+  <% end %>
 
 </div>
 
