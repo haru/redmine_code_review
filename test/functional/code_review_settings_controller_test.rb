@@ -162,25 +162,25 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
 
     should "sort filters" do    
       post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => :highest}
+        :auto_assign_filter => {:num => 2, :move_to => 'highest'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
       post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => :high}
+        :auto_assign_filter => {:num => 2, :move_to => 'higher'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
       post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => :low}
+        :auto_assign_filter => {:num => 2, :move_to => 'lowest'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
       post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => :lowest}
+        :auto_assign_filter => {:num => 2, :move_to => 'lower'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
