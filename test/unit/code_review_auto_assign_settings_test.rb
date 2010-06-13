@@ -18,7 +18,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
-  fixtures :code_review_project_settings, :projects, :users, :trackers
+  fixtures :code_review_project_settings, :projects, :users, :trackers, :repositories
 
   include CodeReviewAutoAssignSettings
   
@@ -230,35 +230,42 @@ EOF
       filters << filter
       @settings.filters = filters
       @settings.accept_for_default = true
+
+      project = Project.find(1)
+      project.repository.destroy if project.repository
+      repository = Repository.new
+      repository.project = project
+      @changeset = Changeset.generate!
+      @changeset.repository = repository
     end
 
     should "return true if filters.length is 0 and accept_for_default is true." do
       @settings.filters = []
-      change = Change.generate!()
+      change = Change.generate!(:changeset => @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return true if filter matches and accept? is true" do
       @settings.accept_for_default = false
-      change = Change.generate!(:path => '/aaa/bbb/ccc.rb')
+      change = Change.generate!(:path => '/aaa/bbb/ccc.rb', :changeset => @changeset)
       assert @settings.match_with_change?(change)
-      change = Change.generate!(:path => '/trunk/plugins/redmine_code_review/lib/ccc.rb')
+      change = Change.generate!(:path => '/trunk/plugins/redmine_code_review/lib/ccc.rb', :changeset => @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return false if filter matches and accept? is false" do
-      change = Change.generate!(:path => '/aaa/bbb/ccctest.rb')
+      change = Change.generate!(:path => '/aaa/bbb/ccctest.rb', :changeset => @changeset)
       assert !@settings.match_with_change?(change)
     end
 
     should "return false if filter doesn't matches and accept_for_default is false" do
-      change = Change.generate!(:path => '/aaa/bbb/ccctest.html')
+      change = Change.generate!(:path => '/aaa/bbb/ccctest.html', :changeset => @changeset)
       @settings.accept_for_default = false
       assert !@settings.match_with_change?(change)
     end
 
     should "return true if filter doesn't matches and accept_for_default is true" do
-      change = Change.generate!(:path => '/aaa/bbb/ccctest.html')
+      change = Change.generate!(:path => '/aaa/bbb/ccctest.html', :changeset => @changeset)
       @settings.accept_for_default = true
       assert @settings.match_with_change?(change)
     end
@@ -266,7 +273,7 @@ EOF
     should "return false if filters.length is 0 and accept_for_default is false." do
       @settings.filters = []
       @settings.accept_for_default = false
-      change = Change.generate!()
+      change = Change.generate!(:changeset => @changeset)
       assert !@settings.match_with_change?(change)
     end
   end

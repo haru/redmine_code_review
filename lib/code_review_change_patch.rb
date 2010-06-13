@@ -75,6 +75,8 @@ module ChangeInstanceMethodsCodeReview
 
   def after_save
     return unless changeset.code_review_assignments.length == 0
+    return unless changeset.repository
+    return unless changeset.repository.project
     setting = CodeReviewProjectSetting.find_or_create(changeset.repository.project)
     auto_assign = setting.auto_assign_settings
     return unless auto_assign.enabled?
