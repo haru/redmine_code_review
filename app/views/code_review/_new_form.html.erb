@@ -61,7 +61,9 @@
     <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
     <p>
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
-        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line}, :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();" %>
+        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line},
+        :method => :post, :change_id => @review.change_id, 220 => "$('review-form-frame').hide();",
+        :loading => "$('add_review_submit').disabled = true;", :html => {:id => 'add_review_submit'} %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= link_to_remote l(:label_preview),
