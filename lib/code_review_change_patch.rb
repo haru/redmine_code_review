@@ -72,6 +72,15 @@ module ChangeInstanceMethodsCodeReview
   def closed_assignment_count
     code_review_assignments.select { |o| o.is_closed? }.length
   end
+
+  def after_save
+    return unless changeset.code_review_assignments.length == 0
+    setting = CodeReviewProjectSetting.find_or_create(changeset.repository.project)
+    auto_assign = setting.auto_assign_settings
+    return unless auto_assign.enabled?
+    return unless auto_assign.match_with_change?(self)
+    CodeReviewAssignment.create_with_changeset(changeset)
+  end
 end
 
 Change.send(:include, CodeReviewChangePatch)
