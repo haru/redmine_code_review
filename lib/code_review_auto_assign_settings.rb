@@ -57,8 +57,9 @@ module CodeReviewAutoAssignSettings
       assignable_list.index(user.id) != nil
     end
 
-    def select_assign_to(project)
-      select_assign_to_with_list(project, assignable_list)
+    def select_assign_to(project, commiter = nil)
+      commiter_id = commiter.id if commiter
+      select_assign_to_with_list(project, assignable_list, commiter_id)
     end
 
     def description=(desc)
@@ -157,8 +158,11 @@ module CodeReviewAutoAssignSettings
       @yml = YAML.load(yml_string)
     end
 
-    def select_assign_to_with_list(project, list)
+    def select_assign_to_with_list(project, list, commiter_id = nil)
       return nil unless list
+      return nil if list.empty?
+      list.collect!{|item| item.to_i}
+      list.delete(commiter_id)
       return nil if list.empty?
       assign_to = list.choice
       project.users.each do |user|
