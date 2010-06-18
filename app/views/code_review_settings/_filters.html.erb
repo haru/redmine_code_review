@@ -85,11 +85,12 @@
             <td>
               <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'edit_filter', :id => @project, "num" => i},
                 :update => 'auto_assignment_filters', :submit => 'code_review_form', :condition => "is_valid_expression($('auto_assign_edit_filter_#{i}_expression'))") %>
+              <%= button_to_function(l(:button_cancel), "$('auto_assign_tr_#{i}').style.display = 'table-row';$('auto_assign_edit_tr_#{i}').style.display = 'none'") %>
             </td>
           </tr>
         <% end -%>
         <tr id="add_filter_form" style="display: none;">
-          <td><%= @auto_assign.filters.length + 1 %> </td>
+          <td style="text-align: right"><%= @auto_assign.filters.length + 1 %> </td>
           <td>
             <%= hidden_field_tag 'auto_assign_add_filter[order]', 999999999 %>
             <%= select_tag('auto_assign_add_filter[accept]',
@@ -98,9 +99,11 @@
           <td><%= text_field_tag('auto_assign_add_filter[expression]', '', :size => 60)%>
           </td>
           <td></td>
-          <td>
+          <td style="white-space: nowrap;">
             <%= button_to_remote(l(:button_apply), :url => {:controller => 'code_review_settings', :action => 'add_filter', :id => @project},
               :update => 'auto_assignment_filters', :submit => 'code_review_form', :condition => "is_valid_expression($('auto_assign_add_filter_expression'))") %>
+            <%= button_to_function(l(:button_cancel), "$('add_filter_form').style.display = 'none'") %>
+
           </td>
 
         </tr>
