@@ -156,7 +156,10 @@ EOF
 
       should "not return id that equals user.id" do
         @settings.assignable_list = [1,2]
-        assert_equal(2, @settings.select_assign_to(@project, User.find(1)))
+        user = User.find(1)
+        assert_equal(2, @settings.select_assign_to(@project, user))
+        @settings.assignable_list = [1]
+        assert_nil(@settings.select_assign_to(@project, user))
       end
 
       should "return nil if assignable_list has no project member" do
