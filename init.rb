@@ -27,7 +27,6 @@ require 'code_review_issue_patch'
 require 'code_review_issue_hooks'
 require 'code_review_projects_helper_patch'
 require 'code_review_attachment_patch'
-#require 'code_review_repositories_controller_patch'
 
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'

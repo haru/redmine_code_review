@@ -35,3 +35,13 @@ end if File.exist?(spec_exemplars_path)
 
 # Ensure that we are using the temporary fixture path
 Engines::Testing.set_fixture_path
+
+# Mock out a file
+  def mock_file
+    file = 'a_file.png'
+    file.stubs(:size).returns(32)
+    file.stubs(:original_filename).returns('a_file.png')
+    file.stubs(:content_type).returns('image/png')
+    file.stubs(:read).returns(false)
+    file
+  end
