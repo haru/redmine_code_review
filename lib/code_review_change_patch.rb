@@ -74,7 +74,7 @@ module ChangeInstanceMethodsCodeReview
   end
 
   def after_save
-    return unless changeset.code_review_assignments.length == 0
+    return unless CodeReviewAssignment.find(:all, :conditions => ['changeset_id = ?', changeset.id]).length == 0
     return unless changeset.repository
     return unless changeset.repository.project
     setting = CodeReviewProjectSetting.find_or_create(changeset.repository.project)

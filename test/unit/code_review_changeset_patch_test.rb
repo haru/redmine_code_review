@@ -17,8 +17,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers
+  fixtures :code_reviews, :projects, :users, :repositories, :changesets, 
+    :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers,
+    :projects_trackers
 
+  include CodeReviewAutoAssignSettings
+  
   def test_review_count
     changeset = Changeset.find(100)
     assert_equal(2, changeset.review_count)
@@ -159,5 +163,47 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       assert_equal(3, changeset.assignment_issues.length)
     end
     
+  end
+
+  context "after_save" do
+    setup do
+      project = Project.find(1)
+      setting = CodeReviewProjectSetting.find_or_create(project)
+      project.repository.destroy if project.repository
+      repository = Repository.new
+      repository.project = project
+      @changeset = Changeset.generate!
+      @changeset.repository = repository
+      auto_assign = AutoAssignSettings.new
+      auto_assign.enabled = true
+      filters = []
+      filter = AssignmentFilter.new
+      filter.accept = false
+      filter.expression = '.*test\\.rb$'
+      filters << filter
+      filter = AssignmentFilter.new
+      filter.accept = true
+      filter.expression = '.*\\.rb$'
+      filters << filter
+      filter = AssignmentFilter.new
+      filter.accept = true
+      filter.expression = '.*/redmine_code_review/.*'
+      filters << filter
+      auto_assign.filters = filters
+      auto_assign.accept_for_default = true
+      auto_assign.author_id = 1
+      setting.auto_assign_settings = auto_assign
+      setting.tracker = project.trackers[0]
+      setting.assignment_tracker = project.trackers[0]
+      setting.save!
+    end
+
+    should "create assignments" do
+      count = CodeReviewAssignment.find(:all).length
+      change1 = Change.generate!(:path => '/aaa/bbb/ccc.rb', :changeset => @changeset)
+      assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
+      change2 = Change.generate!(:path => '/aaa/bbb/ccc2.rb', :changeset => @changeset)
+      assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
+    end
   end
 end

@@ -18,7 +18,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
-  fixtures :code_review_project_settings, :projects, :users, :trackers, :repositories
+  fixtures :code_review_project_settings, :projects, :users, :trackers, :repositories, :projects_trackers
 
   include CodeReviewAutoAssignSettings
   
