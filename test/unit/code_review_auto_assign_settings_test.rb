@@ -341,7 +341,7 @@ EOF
       end
 
       should "return true if expression matches." do
-        @filter.expression = '.*\\.java$'
+        @filter.expression = '/aaa/.*\\.java$'
         assert @filter.match?("/test/aaa/bbb/foo.java")
       end
 

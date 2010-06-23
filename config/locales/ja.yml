@@ -54,6 +54,6 @@ ja:
   label_auto_assign_settings: 自動アサイン
   label_candidates_of_reviewer: アサイン候補
   label_auto_assignment_filters: フィルタ
-  auto_assign_filter_expression: パス(正規表現)
+  auto_assign_filter_expression: 'パス(正規表現:例 "/src/.*\.java$")'
   auto_assign_filter_assign: アサイン
   auto_assign_filter_drop: 除外
