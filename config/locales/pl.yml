@@ -1,0 +1,59 @@
+pl:
+  label_add_review: Dodaj code review
+  label_show_review: Pokaż code review
+  code_reviews: Code reviews
+  code_review: Code review
+  project_module_code_review: Code reviews
+  label_code_path: Ścieżka
+  label_code_reviewer: Reviewer
+  label_code_author: Autor
+  label_code_line: Linia
+
+  label_review_open: Otwarty
+  label_review_closed: Zamknięty
+
+  label_reopen_review: Otwórz ponownie
+  label_close_review: Zamknij
+
+  label_code_review_plural: Code reviews
+
+  label_line_number: 'Linia: {{line}}'
+  notice_review_updated: Code review został pomyślnie zaktualizowany.
+  label_show_closed_reviews: Pokaż zamknięte code reviews.
+  label_review: review
+  label_review_new: Nowy review
+  review_notify_only_involved_in: "Tylko dla tych, w których uczestniczę"
+  review_notify_all: "Wszystkie zmiany we wszystkich moich projektach"   
+
+  old_review_data_found: 'Znaleziono kilka starych code reviews. Czy chcesz je przekonwertować do nowego rekordu?'
+  select_tracker_for_code_reviews: 'Wybierz tracker do code reviews.'
+  field_hide_code_review_tab: 'Ukryj zakładkę "Code Reviews".'
+  lable_no_code_reviews: 'Brak code reviews'
+  field_comment: Komentarz
+
+  label_if_revision_has_issues: 'Jeśli rewizja ma jeszcze jedno zagadnienie'
+  label_review_issue_relates: 'Zagadnienie review odnosi się do nich'
+  label_review_issue_blocks: 'Zagadnienie review blokuje go'
+  label_review_issue_do_nothing: 'Nic nie rób'
+
+  permission_view_code_review: Zobacz code review
+  permission_add_code_review: Dodaj code review
+  permission_edit_code_review: Edytuj code review
+  permission_delete_code_review: Usuń code review
+  permission_code_review_setting: Zarządzaj code reviews
+  permission_assign_code_review: Przypisz code review
+
+  select_tracker_for_code_review_assignment: 'Wybierz tracker do code review assignment.'
+  field_assignment_tracker: 'Tracker'
+  review_assignments: Review assignment
+  review_assigned_for: Review przypisany do
+  code_review_assigned: Przypisany
+  code_review_reviewed: Reviewed
+  code_review_requrest: Poproś o code review
+
+  label_auto_assign_settings: Auto assignment
+  label_candidates_of_reviewer: Kandydat na code reviewer
+  label_auto_assignment_filters: Filtry
+  auto_assign_filter_expression: 'Ścieżka(Wyrażenie regularne: np. "/src/.*\.java$")'
+  auto_assign_filter_assign: Przypisz
+  auto_assign_filter_drop: Usuń

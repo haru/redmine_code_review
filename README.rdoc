@@ -34,5 +34,6 @@ This plugin works only on production mode.
 * ru.yml - Mykhaylo Sorochan
 * sk.yml - Milan Freml
 * es.yml - Ignacio Carrera
+* pl.yml - Rafal Grzymkowski
 
 
