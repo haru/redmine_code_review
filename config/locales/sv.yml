@@ -1,0 +1,59 @@
+sv:
+  label_add_review: Skapa granskning
+  label_show_review: Visa granskning
+  code_reviews: Kodgranskningar
+  code_review: Kodgranskning
+  project_module_code_review: Kodgranskningar
+  label_code_path: Sökväg
+  label_code_reviewer: Granskare
+  label_code_author: Committer
+  label_code_line: Rad
+
+  label_review_open: Öppen
+  label_review_closed: Stängd
+
+  label_reopen_review: Öppna granskningen igen
+  label_close_review: Stäng granskningen
+
+  label_code_review_plural: Kodgranskningar
+
+  label_line_number: 'Rad: {{line}}'
+  notice_review_updated: Granskningen är uppdaterad.
+  label_show_closed_reviews: Visa stängda granskningar.
+  label_review: granskning
+  label_review_new: Ny granskning
+  review_notify_only_involved_in: "Bara sånt som jag är delaktig i"
+  review_notify_all: "För alla granskningar blend mina projekt"
+
+  old_review_data_found: 'Gammalt granskningdata hittades. Vill du konvertera dessa till nytt ?'
+  select_tracker_for_code_reviews: 'Välj tracker för kodgranskningar.'
+  field_hide_code_review_tab: 'Göm "Kodgranskningar" fliken.'
+  lable_no_code_reviews: 'Inga granskningar'
+  field_comment: Kommentar
+
+  label_if_revision_has_issues: 'Om revisionen har ärenden'
+  label_review_issue_relates: 'Granskningsärendet relaterar till dessa'
+  label_review_issue_blocks: 'Granskningsärendet blockerar dessa'
+  label_review_issue_do_nothing: 'Gör ingentinig'
+
+  permission_view_code_review: Visa kodgranskningar
+  permission_add_code_review: Skapa kodgranskningar
+  permission_edit_code_review: Ändra kodgranskningar
+  permission_delete_code_review: Ta bort kodgranskningar
+  permission_code_review_setting: Hantera kodgranskningar
+  permission_assign_code_review: Tilldela kodgranskningar
+
+  select_tracker_for_code_review_assignment: 'Välj ärendetyp för kodgranskningstilldelningar.'
+  field_assignment_tracker: 'Ärendetyp'
+  review_assignments: Granskningstilldelningar
+  review_assigned_for: Granskning tilldelad
+  code_review_assigned: Tilldelad
+  code_review_reviewed: Granskad
+  code_review_requrest: Granskningsbegäran
+
+  label_auto_assign_settings: Auto-tilldelning
+  label_candidates_of_reviewer: Granskningskandidater
+  label_auto_assignment_filters: Filter
+  auto_assign_filter_expression: 'Sökväg(Reguljärt uttryck: t.ex. "/src/.*\.java$")'
+  auto_assign_filter_assign: Tilldela
+  auto_assign_filter_drop: Ta bort

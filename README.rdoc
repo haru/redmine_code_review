@@ -35,5 +35,5 @@ This plugin works only on production mode.
 * sk.yml - Milan Freml
 * es.yml - Ignacio Carrera
 * pl.yml - Rafal Grzymkowski
-
+* sv.yml - André Jonsson
 
