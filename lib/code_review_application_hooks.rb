@@ -205,6 +205,7 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     return unless lastrev.identifier
     changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
     change = nil
+    return unless changeset
     changeset.changes.each {|c|
       relative_path = c.relative_path
       change = c if relative_path == path
