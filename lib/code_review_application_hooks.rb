@@ -114,12 +114,13 @@ class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
     project = context[:project]
     controller = context[:controller]
     changesets = controller.get_selected_changesets
+    return unless changesets
     changeset_ids = ''
     changesets.each { |changeset|
       changeset_ids << changeset.revision
       changeset_ids << ','
     }
-    return unless changesets
+    
     url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project
 
     o = ''
