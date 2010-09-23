@@ -84,7 +84,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     assignment.attachment_id = code[:attachment_id].to_i unless code[:attachment_id].blank?
     assignment.file_path = code[:path] unless code[:path].blank?
     assignment.rev = code[:rev] unless code[:rev].blank?
-    assignment.rev = code[:rev_to] unless code[:rev_to].blank?
+    assignment.rev_to = code[:rev_to] unless code[:rev_to].blank?
     assignment.action_type = code[:action_type] unless code[:action_type].blank?
     assignment.save!
   end
