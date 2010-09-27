@@ -57,7 +57,10 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   end
 
   def test_completed_assignment_pourcent
-    changeset = Changeset.find(100)
+    changeset = Changeset.generate!
+    Change.generate!(:changeset => changeset)
+    Change.generate!(:changeset => changeset)
+    changeset.reload
     change = changeset.changes[0]
     change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
     change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
@@ -69,17 +72,19 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       issues[i - 1] = Issue.find(i)
       issues[i - 1].status_id = 1
       issues[i - 1].due_date = nil
+      issues[i - 1].done_ratio = 0
       issues[i - 1].save!
     }
     changeset.save!
     assert_equal(0, changeset.completed_assignment_pourcent)
     issues[0].status_id = 5
     issues[0].save!
-    changeset = Changeset.find(100)
+    assert issues[0].closed?
+    changeset = Changeset.find(changeset.id)
     assert_equal(25, changeset.completed_assignment_pourcent)
     issues[1].done_ratio = 50
     issues[1].save!
-    changeset = Changeset.find(100)
+    changeset = Changeset.find(changeset.id)
     assert_equal(37.5, changeset.completed_assignment_pourcent)
   end
 
