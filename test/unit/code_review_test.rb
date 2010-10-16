@@ -39,7 +39,6 @@ class CodeReviewTest < ActiveSupport::TestCase
     
     code_review.destroy
 
-    assert faile
   end
 
   def test_close
