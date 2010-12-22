@@ -38,7 +38,6 @@ class CodeReviewTest < ActiveSupport::TestCase
     assert code_review.save
     
     code_review.destroy
-
   end
 
   def test_close

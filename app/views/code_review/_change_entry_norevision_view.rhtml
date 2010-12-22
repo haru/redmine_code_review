@@ -1,0 +1,47 @@
+<%
+# Code Review plugin for Redmine
+# Copyright (C) 2010  Haruyuki Iida
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-%>
+<%
+parameters = request.parameters
+patharray = parameters['path']
+unless patharray.blank? or patharray.empty?
+  path = ''
+  patharray.each{|el| path << '/' + el}
+  entry = project.repository.entry(path)
+  lastrev = entry.lastrev if entry
+  if lastrev and lastrev.identifier
+    changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
+    change = nil
+
+    changeset.changes.each {|c|
+      relative_path = c.relative_path
+      change = c if relative_path == path
+      change = c if '/' + relative_path == path
+    } if changeset
+
+    if change
+      link = link_to(l(:label_add_review), {:controller => 'code_review',
+          :action => 'forward_to_revision', :id => project, :path => path}, :class => 'icon icon-edit')
+    %>
+
+      <script type="text/javascript">
+        make_addreview_link('<%=project.name%>', '<%=link%>');
+      </script>
+    <% end %>
+  <% end %>
+<% end %>

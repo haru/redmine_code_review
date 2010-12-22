@@ -1,6 +1,7 @@
+<%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
-#rev
+# Copyright (C) 2010  Haruyuki Iida
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -14,8 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-%>
+<%
+changesets = controller.get_selected_changesets
+if changesets
+  changeset_ids = ''
+  changesets.each { |changeset|
+    changeset_ids << changeset.revision
+    changeset_ids << ','
+  }
 
-class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
-  render_on :view_layouts_base_html_head, :partial => 'code_review/html_header'
-  render_on :view_layouts_base_body_bottom, :partial => 'code_review/body_bottom'
-end
+  url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project
+%>
+
+  <div id="code_review_revisions"></div>
+
+  <script type="text/javascript">
+    document.observe('dom:loaded', function() {
+      new Ajax.Updater('code_review_revisions', '<%=url%>',
+      {evalScripts:true, method:'get', parameters: 'changeset_ids=<%=url_encode(changeset_ids)%>'});
+    });
+
+  </script>
+
+<% end %>
