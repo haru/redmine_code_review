@@ -20,7 +20,7 @@
 <%
 is_target = false
 
-if project and controller
+if project and controller and project.module_enabled?(:code_review)
   is_target = true
   is_target = false unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
   setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', project.id])
