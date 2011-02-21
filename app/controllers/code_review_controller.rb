@@ -33,7 +33,7 @@ class CodeReviewController < ApplicationController
 
   def index
     sort_init "#{Issue.table_name}.id", 'desc'
-    sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
+    sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "#{Issue.table_name}.subject",  "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and issue_id is NOT NULL', @project.id])

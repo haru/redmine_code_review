@@ -18,87 +18,93 @@
 -%>
 
 <div id="code_review_list">
-<h2>
-  <%=h l(:code_reviews) %>
-</h2>
+  <h2>
+    <%=h l(:code_reviews) %>
+  </h2>
 
-<% if @all_review_count > 0 %>
-<p>
-<% form_tag 'show_option', :controller => 'code_review', :action=>'index', :id => @project do %>
-    <%= check_box_tag 'show_closed', 'true', @show_closed %> <%=h l(:label_show_closed_reviews) %>
-<% end %>
-<%= observe_field 'show_closed', :with => 'show_closed', :update => 'content' %>
-</p>
-<% end %>
+  <% if @all_review_count > 0 %>
+    <p>
+      <% form_tag 'show_option', :controller => 'code_review', :action=>'index', :id => @project do %>
+        <%= check_box_tag 'show_closed', 'true', @show_closed %> <%=h l(:label_show_closed_reviews) %>
+      <% end %>
+      <%= observe_field 'show_closed', :with => 'show_closed', :update => 'content' %>
+    </p>
+  <% end %>
 
-<% if @reviews == nil or @reviews.length == 0 %>
-<p class="nodata"><%= l(:label_no_data) %></p>
-<% else %>
+  <% if @reviews == nil or @reviews.length == 0 %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+  <% else %>
 
 
-<table class="list">
-  <thead>
-    <tr>
-      <th>
-        <%= sort_header_tag("#{Issue.table_name}.id", :caption => '#') %>
-      </th>
-      <th>
-        <%= sort_header_tag "#{Issue.table_name}.status_id", :caption => l(:field_status)%>
-      </th>
-      <th>
-        <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
-      </th>
-      <th>
-        <%=h l(:label_code_line)%>
-      </th>
-      <th>
-        <%= sort_header_tag "#{Changeset.table_name}.revision", :caption => l(:label_revision)%>
-      </th>
-      <th>
-        <%= sort_header_tag "#{Changeset.table_name}.committer", :caption => l(:label_code_author)%>
-      </th>
-      <th>
-        <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
-      </th>
-      <th>
-        <%= sort_header_tag 'updated_at', :caption => l(:label_date) %>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <% for review in @reviews %>
-      <tr class="<%= cycle 'odd', 'even' %>">
-        <td colspan="2">
-          <%= link_to review.issue.id.to_s, {:controller => 'issues', :action => 'show',
-               :id => review.issue.id}, :title => review.issue.subject %>
-        </td>
-                
-        <td colspan="2" class="status">
-          <%=h  review.issue.status %>
-        </td>
-        <td colspan="2" class="path">
-          <%
-            codepath = review.path
-            if (review.path.length > 55)
-              codepath = review.path[0, 15] + '...' + review.path[review.path.length - 35, 35]
-            end
-          -%>
-<%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.path) -%>
-      　</td>
-        <td><%=h review.line %></td>
-        <td colspan="2"><%=h review.revision %></td>
-        <td colspan="2"><%=h review.committer %></td>
-        <td colspan="2"><%=h review.user.name %></td>
-        <td colspan="2"><%=h format_time(review.created_at) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<p class="pagination"><%= pagination_links_full @review_pages, @review_count %></p>
+    <table class="list">
+      <thead>
+        <tr>
+          <th>
+            <%= sort_header_tag("#{Issue.table_name}.id", :caption => '#') %>
+          </th>
+          <th>
+            <%= sort_header_tag "#{Issue.table_name}.status_id", :caption => l(:field_status)%>
+          </th>
+          <th>
+            <%= sort_header_tag "#{Issue.table_name}.subject", :caption => l(:field_subject)%>
+          </th>
+          <th>
+            <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
+          </th>
+          <th>
+            <%=h l(:label_code_line)%>
+          </th>
+          <th>
+            <%= sort_header_tag "#{Changeset.table_name}.revision", :caption => l(:label_revision)%>
+          </th>
+          <th>
+            <%= sort_header_tag "#{Changeset.table_name}.committer", :caption => l(:label_code_author)%>
+          </th>
+          <th>
+            <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
+          </th>
+          <th>
+            <%= sort_header_tag 'updated_at', :caption => l(:label_date) %>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for review in @reviews %>
+          <tr class="<%= cycle 'odd', 'even' %>">
+            <td colspan="2">
+              <%= link_to review.issue.id.to_s, {:controller => 'issues', :action => 'show',
+                :id => review.issue.id}, :title => review.issue.subject %>
+            </td>
 
-<% end %>
+            <td colspan="2" class="status">
+              <%=h  review.issue.status %>
+            </td>
+            <td colspan="2" class="subject">
+              <%=h  review.issue.subject %>
+            </td>
+            <td colspan="2" class="path">
+              <%
+              codepath = review.path
+              if (review.path.length > 55)
+                codepath = review.path[0, 15] + '...' + review.path[review.path.length - 35, 35]
+              end
+              -%>
+              <%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.path) -%>
+           </td>
+            <td><%=h review.line %></td>
+            <td colspan="2"><%=h review.revision %></td>
+            <td colspan="2"><%=h review.committer %></td>
+            <td colspan="2"><%=h review.user.name %></td>
+            <td colspan="2"><%=h format_time(review.created_at) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <p class="pagination"><%= pagination_links_full @review_pages, @review_count %></p>
 
-<% content_for :header_tags do %>
-  <%= stylesheet_link_tag "code_review.css", :plugin => "redmine_code_review", :media => "screen" %>
-<% end %>
+  <% end %>
+
+  <% content_for :header_tags do %>
+    <%= stylesheet_link_tag "code_review.css", :plugin => "redmine_code_review", :media => "screen" %>
+  <% end %>
 </div>
