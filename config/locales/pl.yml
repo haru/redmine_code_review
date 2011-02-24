@@ -57,3 +57,5 @@ pl:
   auto_assign_filter_expression: 'Ścieżka(Wyrażenie regularne: np. "/src/.*\.java$")'
   auto_assign_filter_assign: Przypisz
   auto_assign_filter_drop: Usuń
+
+  label_parent_suggestion: Maybe "{{issue_id}}" ?

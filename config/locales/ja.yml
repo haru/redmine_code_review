@@ -57,3 +57,6 @@ ja:
   auto_assign_filter_expression: 'パス(正規表現:例 "/src/.*\.java$")'
   auto_assign_filter_assign: アサイン
   auto_assign_filter_drop: 除外
+
+  label_parent_suggestion: もしかして "{{issue_id}}" ?
+

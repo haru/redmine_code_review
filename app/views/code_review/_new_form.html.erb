@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,6 +38,14 @@
     <p>
       <label><b><%=h l(:field_subject)%>:</b></label>
       <%= f.text_field :subject, :size => 70, :required => true %>
+    </p>
+    <p>
+      <label><b><%=h l(:field_parent_issue)%>:</b></label>
+      <%= f.text_field :parent_id, :size => 10 %>
+      <% if @parent_candidate %>
+        <%= l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
+      <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('review_parent_id').value = <%= @parent_candidate.id %>"/>
+      <% end %>
     </p>
     <p>
       <%= f.text_area :comment,

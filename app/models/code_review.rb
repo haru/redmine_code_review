@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -147,6 +147,14 @@ class CodeReview < ActiveRecord::Base
 
   def subject
     issue.subject
+  end
+
+  def parent_id= (p)
+    issue.parent_issue_id = p
+  end
+
+  def parent_id
+    issue.parent_issue_id
   end
 
   def status_id=(s)

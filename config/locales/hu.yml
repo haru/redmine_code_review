@@ -57,3 +57,5 @@ hu:
   auto_assign_filter_expression: 'Path(Regular expression:ex. "/src/.*\.java$")'
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
+
+  label_parent_suggestion: Maybe "{{issue_id}}" ?

@@ -57,3 +57,5 @@ sv:
   auto_assign_filter_expression: 'Sökväg(Reguljärt uttryck: t.ex. "/src/.*\.java$")'
   auto_assign_filter_assign: Tilldela
   auto_assign_filter_drop: Ta bort
+
+  label_parent_suggestion: Maybe "{{issue_id}}" ?

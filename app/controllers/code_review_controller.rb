@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -56,7 +56,7 @@ class CodeReviewController < ApplicationController
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
       "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
       :offset =>  @review_pages.current.offset
-    @i_am_member = am_i_member?
+    @i_am_member = @user.member_of?(@project)
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?
   end
 
@@ -80,7 +80,8 @@ class CodeReviewController < ApplicationController
         @review.file_count = params[:file_count].to_i unless params[:file_count].blank?
         @review.attachment_id = params[:attachment_id].to_i unless params[:attachment_id].blank?
         @issue = @review.issue
-        
+
+        @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
 
         if request.post?
           @review.issue.attributes = params[:issue]
@@ -348,12 +349,13 @@ class CodeReviewController < ApplicationController
     @setting = CodeReviewProjectSetting.find_or_create(@project)
   end
 
-
-  def am_i_member?
-    @project.members.each{|m|
-      return true if @user == m.user
+  def get_parent_candidate(revision)
+    changeset = Changeset.find_by_revision(revision)
+    changeset.issues.each {|issue|
+      if issue.parent_issue_id
+        return Issue.find(issue.parent_issue_id)
+      end
     }
-    return false
+    nil
   end
-
 end
