@@ -176,7 +176,7 @@ class CodeReviewController < ApplicationController
     @rev_to = params[:rev_to] unless params[:rev_to].blank?
     @path = params[:path]
     @action_type = params[:action_type]
-    changeset = Changeset.find_by_revision(@rev, :conditions => ['repository_id = (?)',@project.repository.id])
+    changeset = @project.repository.find_changeset_by_name(@rev)
     repository = @project.repository
     url = repository.url
     root_url = repository.root_url
@@ -350,7 +350,7 @@ class CodeReviewController < ApplicationController
   end
 
   def get_parent_candidate(revision)
-    changeset = Changeset.find_by_revision(revision)
+    changeset = @project.repository.find_changeset_by_name(revision)
     changeset.issues.each {|issue|
       if issue.parent_issue_id
         return Issue.find(issue.parent_issue_id)
