@@ -16,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-<% if @project %>
+<% if @project and @project.module_enabled?('code_review') %>
 <%
 baseurl = url_for(:controller => 'code_review', :action => 'index', :id => @project) + '/../../..'
 
@@ -29,5 +29,5 @@ baseurl = url_for(:controller => 'code_review', :action => 'index', :id => @proj
 <%= stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/code_review.css") %>
 <%= stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/window_js/default.css") %>
 <%= stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/window_js/mac_os_x.css") %>
-
+<%= stylesheet_link_tag(baseurl + "/stylesheets/jstoolbar.css") %>
 <% end %>
