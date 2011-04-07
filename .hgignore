@@ -1,0 +1,5 @@
+^coverage/
+^rails/
+^VERSION$
+^code_review.gemspec
+^pkg/
