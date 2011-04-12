@@ -34,6 +34,7 @@
   assignments = @change.code_review_assignments if @change
   attachment_id = @attachment.id if @attachment
   assignments = @attachment.code_review_assignments if @attachment
+  escaped_path = @path.gsub("'"){"\\'"}
   -%>
 
   <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
@@ -55,7 +56,8 @@
   action_type = '<%= @action_type %>';
   rev = '<%= @rev %>';
   rev_to = '<%= @rev_to %>';
-  path = '<%= @path %>';
+  path = '<%= escaped_path -%>';
+
   setAddReviewButton(addReviewUrl, '<%= @change.id if @change %>', '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= @attachment_id%>' );
 
   showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';

@@ -63,8 +63,9 @@ if changesets
     if relative_path[0] != ?/
       relative_path = '/' + relative_path
     end
+    escaped_relative_path = relative_path.gsub("'"){"\\'"}
   %>
-    code_reviews_map['<%=relative_path%>'] = reviewlist;
+    code_reviews_map['<%escaped_relative_path%>'] = reviewlist;
   <%
   }
 %>
