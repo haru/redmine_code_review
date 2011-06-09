@@ -22,7 +22,8 @@ patharray = parameters['path']
 unless patharray.blank? or patharray.empty?
   path = ''
   patharray.each{|el| path << '/' + el}
-  entry = project.repository.entry(path)
+  entries = project.repository.scm.entries(patharray[0..-2].join('/'), nil, {:report_last_commit => true})
+  entry = entries ? entries.detect {|e| e.name == patharray[-1]} : nil
   lastrev = entry.lastrev if entry
   if lastrev and lastrev.identifier
     if lastrev.scmid

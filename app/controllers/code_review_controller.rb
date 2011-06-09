@@ -311,7 +311,9 @@ class CodeReviewController < ApplicationController
 
   def forward_to_revision
     path = params[:path]
-    entry = @project.repository.entry(path)
+    patharray = path.split('/')
+    entries = @project.repository.scm.entries(patharray[1..-2].join('/'), nil, {:report_last_commit => true})
+    entry = entries ? entries.detect {|e| e.name == patharray[-1]} : nil
     lastrev = entry.lastrev
     identifier = lastrev.identifier
     redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project) + path + '?rev=' + identifier.to_s
