@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2010-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,7 +25,11 @@ unless patharray.blank? or patharray.empty?
   entry = project.repository.entry(path)
   lastrev = entry.lastrev if entry
   if lastrev and lastrev.identifier
-    changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
+    if lastrev.scmid
+      changeset = Changeset.find(:first, :conditions =>['scmid = ? and repository_id = (?)', lastrev.scmid, project.repository.id])
+    else
+      changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
+    end
     change = nil
 
     changeset.changes.each {|c|
