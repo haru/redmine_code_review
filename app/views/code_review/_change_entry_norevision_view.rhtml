@@ -19,34 +19,20 @@
 <%
 parameters = request.parameters
 patharray = parameters['path']
+rev = parameters['rev']
 unless patharray.blank? or patharray.empty?
-  path = ''
-  patharray.each{|el| path << '/' + el}
-  entries = project.repository.scm.entries(patharray[0..-2].join('/'), nil, {:report_last_commit => true})
-  entry = entries ? entries.detect {|e| e.name == patharray[-1]} : nil
-  lastrev = entry.lastrev if entry
-  if lastrev and lastrev.identifier
-    if lastrev.scmid
-      changeset = Changeset.find(:first, :conditions =>['scmid = ? and repository_id = (?)', lastrev.scmid, project.repository.id])
-    else
-      changeset = Changeset.find(:first, :conditions =>['revision = ? and repository_id = (?)', lastrev.identifier, project.repository.id])
-    end
-    change = nil
+  path = patharray.join('/')
+  changesets = project.repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
+  change = changesets[0]
 
-    changeset.changes.each {|c|
-      relative_path = c.relative_path
-      change = c if relative_path == path
-      change = c if '/' + relative_path == path
-    } if changeset
+  if change
+    link = link_to(l(:label_add_review), {:controller => 'code_review',
+        :action => 'forward_to_revision', :id => project, :path => path, :rev => rev}, :class => 'icon icon-edit')
+  %>
 
-    if change
-      link = link_to(l(:label_add_review), {:controller => 'code_review',
-          :action => 'forward_to_revision', :id => project, :path => path}, :class => 'icon icon-edit')
-    %>
-
-      <script type="text/javascript">
-        make_addreview_link('<%=project.name%>', '<%=link%>');
-      </script>
-    <% end %>
+    <script type="text/javascript">
+      make_addreview_link('<%=project.name%>', '<%=link%>');
+    </script>
   <% end %>
+
 <% end %>

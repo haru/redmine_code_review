@@ -311,12 +311,12 @@ class CodeReviewController < ApplicationController
 
   def forward_to_revision
     path = params[:path]
-    patharray = path.split('/')
-    entries = @project.repository.scm.entries(patharray[1..-2].join('/'), nil, {:report_last_commit => true})
-    entry = entries ? entries.detect {|e| e.name == patharray[-1]} : nil
-    lastrev = entry.lastrev
-    identifier = lastrev.identifier
-    redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project) + path + '?rev=' + identifier.to_s
+    rev = params[:rev]
+    changesets = @project.repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
+    change = changesets[0]
+   
+    identifier = change.identifier
+    redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project) + '/' + path + '?rev=' + identifier.to_s
 
   end
 
