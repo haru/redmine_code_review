@@ -17,7 +17,7 @@ ko:
 
   label_code_review_plural: 코드 리뷰
 
-  label_line_number: '라인: {{line}}'
+  label_line_number: '라인: %{line}'
   notice_review_updated: 리뷰가 성공적으로 업데이트 되었습니다.
   label_show_closed_reviews: 닫힌 리뷰 보기
   label_review: 리뷰
@@ -58,4 +58,4 @@ ko:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?

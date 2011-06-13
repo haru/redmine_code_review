@@ -17,7 +17,7 @@ pl:
 
   label_code_review_plural: Code reviews
 
-  label_line_number: 'Linia: {{line}}'
+  label_line_number: 'Linia: %{line}'
   notice_review_updated: Code review został pomyślnie zaktualizowany.
   label_show_closed_reviews: Pokaż zamknięte code reviews.
   label_review: review
@@ -58,4 +58,4 @@ pl:
   auto_assign_filter_assign: Przypisz
   auto_assign_filter_drop: Usuń
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?

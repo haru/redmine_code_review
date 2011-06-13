@@ -17,7 +17,7 @@ sv:
 
   label_code_review_plural: Kodgranskningar
 
-  label_line_number: 'Rad: {{line}}'
+  label_line_number: 'Rad: %{line}'
   notice_review_updated: Granskningen är uppdaterad.
   label_show_closed_reviews: Visa stängda granskningar.
   label_review: granskning
@@ -58,4 +58,4 @@ sv:
   auto_assign_filter_assign: Tilldela
   auto_assign_filter_drop: Ta bort
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?

@@ -17,7 +17,7 @@ ja:
 
   label_code_review_plural: コードレビュー
 
-  label_line_number: "{{line}}行目"
+  label_line_number: "%{line}行目"
   notice_review_updated: レビューが更新されました。
   label_show_closed_reviews: 完了したレビューも表示する。
   label_review: レビュー
@@ -58,5 +58,5 @@ ja:
   auto_assign_filter_assign: アサイン
   auto_assign_filter_drop: 除外
 
-  label_parent_suggestion: もしかして "{{issue_id}}" ?
+  label_parent_suggestion: もしかして "%{issue_id}" ?
 

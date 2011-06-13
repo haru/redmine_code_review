@@ -17,7 +17,7 @@ ru:
 
   label_code_review_plural: Обзоры кода
 
-  label_line_number: 'Строка: {{line}}'
+  label_line_number: 'Строка: %{line}'
   notice_review_updated: Обзор был успешно обновлен.
   label_show_closed_reviews: Показать закрытые обзоры.
   label_review: обзор
@@ -58,4 +58,4 @@ ru:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?
