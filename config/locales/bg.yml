@@ -1,0 +1,61 @@
+bg:
+  label_add_review: Добавяне на код ревю
+  label_show_review: Разглеждане на кодревю
+  code_reviews: Код ревюта
+  code_review: Код ревю
+  project_module_code_review: Код ревю
+  label_code_path: Път
+  label_code_reviewer: Преглеждащ
+  label_code_author: Автор
+  label_code_line: Ред
+
+  label_review_open: Отворено
+  label_review_closed: Затворено
+
+  label_reopen_review: Повторно отваряне на това код ревю
+  label_close_review: Затваряне на това код ревю
+
+  label_code_review_plural: Код ревюта
+
+  label_line_number: 'Ред %{line}'
+  notice_review_updated: Код ревюто беше обновено успешно.
+  label_show_closed_reviews: Показване на затворените код ревюта.
+  label_review: код ревю
+  label_review_new: Ново код ревю
+  review_notify_only_involved_in: "Само за неща, в които участвам"
+  review_notify_all: "За всички код ревюта във всички мои проекти"
+
+  old_review_data_found: 'Някои стари код ревюта бяха намерени. Искате ли да ги преобразувате в новия формат ?'
+  select_tracker_for_code_reviews: 'Изберете тракер за код ревюта.'
+  field_hide_code_review_tab: 'Скриване на "Код ревю" меню.'
+  lable_no_code_reviews: 'Няма код ревюта'
+  field_comment: Коментар
+
+  label_if_revision_has_issues: 'Ако ревизията има една или повече асоциирани задачи'
+  label_review_issue_relates: 'Задачата на код ревюто е свързана с тях'
+  label_review_issue_blocks: 'Задачата на код ревюто ги блокира'
+  label_review_issue_do_nothing: 'Нищо'
+
+  permission_view_code_review: Разглеждане на код ревюта
+  permission_add_code_review: Добавяне на код ревюта
+  permission_edit_code_review: Редактиране на код ревюта
+  permission_delete_code_review: Изтриване на код ревюта
+  permission_code_review_setting: Управление на код ревюта
+  permission_assign_code_review: Назначаване на код ревюта
+
+  select_tracker_for_code_review_assignment: 'Изберете тракер за назначаване на код ревюта.'
+  field_assignment_tracker: 'Тракер'
+  review_assignments: Назначения за код ревюта
+  review_assigned_for: Назначени код ревюта за
+  code_review_assigned: Назначено
+  code_review_reviewed: Изпълнено
+  code_review_requrest: Заявка за код ревю
+
+  label_auto_assign_settings: Автоматично назначаване
+  label_candidates_of_reviewer: Кандидати за преглеждащ
+  label_auto_assignment_filters: Филтри
+  auto_assign_filter_expression: 'Път (Регулярен израз: например "/src/.*\.java$")'
+  auto_assign_filter_assign: Назначаване
+  auto_assign_filter_drop: Премахване
+
+  label_parent_suggestion: Може би "%{issue_id}" ?

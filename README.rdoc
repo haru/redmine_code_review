@@ -36,4 +36,4 @@ This plugin works only on production mode.
 * es.yml - Ignacio Carrera
 * pl.yml - Rafal Grzymkowski
 * sv.yml - André Jonsson
-
+* bg.yml - Ivan Cenov
