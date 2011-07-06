@@ -17,7 +17,7 @@ fr:
   
   label_code_review_plural: Revues de code
   
-  label_line_number: 'Ligne: {{line}}'
+  label_line_number: 'Ligne: %{line}'
   notice_review_updated: La revue a ete mise a jour avec succes.
   label_show_closed_reviews: Voir les revues fermees.
   label_review: revue
@@ -58,4 +58,4 @@ fr:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?

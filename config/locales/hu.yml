@@ -17,7 +17,7 @@ hu:
 
   label_code_review_plural: Kódszemlék
 
-  label_line_number: 'Sor: {{line}}'
+  label_line_number: 'Sor: %{line}'
   notice_review_updated: A vizsgálat adatai sikeresen frissültek.
   label_show_closed_reviews: Lezárt vizsgálatok megjelenítése
   label_review: vizsgálat
@@ -58,4 +58,4 @@ hu:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?

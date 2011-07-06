@@ -17,7 +17,7 @@ pt-BR:
 
   label_code_review_plural: Revisões de código
 
-  label_line_number: 'Linha: {{line}}'
+  label_line_number: 'Linha: %{line}'
   notice_review_updated: Revisão atualizada com sucesso.
   label_show_closed_reviews: Exibir revisões fechadas.
   label_review: revisão
@@ -58,4 +58,4 @@ pt-BR:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?

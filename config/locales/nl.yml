@@ -17,7 +17,7 @@ nl:
 
   label_code_review_plural: Code reviews
 
-  label_line_number: 'Regel: {{line}}'
+  label_line_number: 'Regel: %{line}'
   notice_review_updated: Review was succesvol geupdate.
   label_show_closed_reviews: Toon gesloten reviews.
   label_review: review
@@ -58,4 +58,4 @@ nl:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "{{issue_id}}" ?
+  label_parent_suggestion: Maybe "%{issue_id}" ?
