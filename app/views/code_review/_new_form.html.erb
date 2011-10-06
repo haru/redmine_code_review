@@ -44,9 +44,13 @@
       <%= f.text_field :parent_id, :size => 10 %>
       <% if @parent_candidate %>
         <%= l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
-      <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('review_parent_id').value = <%= @parent_candidate.id %>"/>
+        <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('review_parent_id').value = <%= @parent_candidate.id %>"/>
       <% end %>
     </p>
+    <% @issue.custom_field_values.each do |value| %>
+      <% next unless value.required? -%>
+      <p><%= custom_field_tag_with_label :issue, value %></p>
+    <% end %>
     <p>
       <%= f.text_area :comment,
         :cols => 30,
