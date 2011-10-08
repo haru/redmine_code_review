@@ -113,6 +113,11 @@ class CodeReviewController < ApplicationController
             @relation.issue_from_id = @review.issue.id
             @relation.issue_to_id = issue.id
             @relation.save!
+            watcher = Watcher.new
+            watcher.watchable_id = @review.issue.id
+            watcher.watchable_type = 'Issue'
+            watcher.user = issue.author
+            watcher.save!
           }
           @review.save!
 
