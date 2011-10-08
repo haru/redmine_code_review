@@ -72,6 +72,10 @@ table.filecontent th.line-num img{
     text-align: left;
 }
 
+#code_review_list table.list td.subject {
+    text-align: left;
+}
+
 .icon-review {
     background-image: url(../images/review.png);
     background-repeat: no-repeat;
