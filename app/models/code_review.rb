@@ -25,10 +25,8 @@ class CodeReview < ActiveRecord::Base
   #deprecated
   has_many :children, :class_name => 'CodeReview', :foreign_key=> :old_parent_id, :dependent => :destroy
 
-  validates_presence_of :comment
   validates_presence_of :project_id
   validates_presence_of :user_id
-  #validates_presence_of :change_id
   validates_presence_of :updated_by_id
   validates_presence_of :issue
   validates_presence_of :subject
