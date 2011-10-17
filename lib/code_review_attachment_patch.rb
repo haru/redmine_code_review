@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -35,4 +35,4 @@ module AttachmentInstanceMethodsCodeReview
   
 end
 
-Attachment.send(:include, CodeReviewAttachmentPatch)
+
