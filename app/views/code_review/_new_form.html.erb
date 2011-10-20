@@ -64,13 +64,17 @@
       <%= select :issue, :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %>
     </p>
     <% unless @project.issue_categories.empty? %>
-    <p>
-      <label><b><%=h l(:field_category) %>:</b></label>
-      <%= select :issue, :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
-    </p>
+      <p>
+        <label><b><%=h l(:field_category) %>:</b></label>
+        <%= select :issue, :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
+      </p>
     <% end %>
-    <label><b><%=h l(:field_fixed_version) %>:</b></label>
-    <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
+    <% unless @issue.assignable_versions.empty? %>
+      <p>
+        <label><b><%=h l(:field_fixed_version) %>:</b></label>
+        <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
+      </p>
+    <% end %>
     <p>
       <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line},
