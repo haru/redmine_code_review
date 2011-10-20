@@ -17,10 +17,6 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 
 5. Go to code review setting tab in the project setting page and select tracker.
 
-=== Note
-
-This plugin works only on production mode.
-
 === Language contributors
 
 * de.yml - Michael Diederich, Sebastian Bernhard
