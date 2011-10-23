@@ -164,9 +164,19 @@ class CodeReviewController < ApplicationController
     code[:changeset_id] = params[:changeset_id].to_i unless params[:changeset_id].blank?
     code[:attachment_id] = params[:attachment_id].to_i unless params[:attachment_id].blank?
 
-
+    changeset = Changeset.find(code[:changeset_id]) if code[:changeset_id]
+    if (changeset == nil and code[:change_id] != nil)
+      change = Change.find(code[:change_id])
+      changeset = change.changeset if change
+    end
+    attachment = Attachment.find(code[:attachment_id]) if code[:attachment_id]
+    
     issue = {}
     issue[:subject] = l(:code_review_requrest)
+    issue[:subject] << " [#{changeset.text_tag}: #{changeset.short_comments}]" if changeset
+    unless changeset
+      issue[:subject] << " [#{attachment.filename}]"
+    end
     issue[:tracker_id] = @setting.assignment_tracker_id if @setting.assignment_tracker_id
 
     redirect_to :controller => 'issues', :action => "new" , :project_id => @project,
