@@ -175,7 +175,7 @@ class CodeReviewController < ApplicationController
     issue[:subject] = l(:code_review_requrest)
     issue[:subject] << " [#{changeset.text_tag}: #{changeset.short_comments}]" if changeset
     unless changeset
-      issue[:subject] << " [#{attachment.filename}]"
+      issue[:subject] << " [#{attachment.filename}]" if attachment
     end
     issue[:tracker_id] = @setting.assignment_tracker_id if @setting.assignment_tracker_id
 
