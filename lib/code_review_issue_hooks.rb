@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,13 +25,6 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     end
     controller = context[:controller]
     return '' unless controller
-    if RAILS_ENV == 'development'
-      load 'code_review_issue_patch.rb' unless Issue.respond_to?('code_review')
-      load 'code_review_projects_helper_patch.rb' unless respond_to?('project_settings_tabs_with_code_review')
-      load 'code_review_change_patch.rb' unless Change.respond_to?('code_review')
-      load 'code_review_changeset_patch.rb' unless Change.respond_to?('review_count')
-    end
-    
     request = context[:request]
     issue = context[:issue]
 

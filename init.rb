@@ -28,12 +28,37 @@ require 'code_review_issue_hooks'
 require 'code_review_projects_helper_patch'
 require 'code_review_attachment_patch'
 
+require 'dispatcher'
+Dispatcher.to_prepare :redmine_code_review do
+  # Guards against including the module multiple time (like in tests)
+  # and registering multiple callbacks
+  unless Change.included_modules.include? CodeReviewChangePatch
+    Change.send(:include, CodeReviewChangePatch)
+  end
+  
+  unless Changeset.included_modules.include? CodeReviewChangesetPatch
+    Changeset.send(:include, CodeReviewChangesetPatch)
+  end
+  
+  unless Issue.included_modules.include? CodeReviewIssuePatch
+    Issue.send(:include, CodeReviewIssuePatch)
+  end
+  
+  unless ProjectsHelper.included_modules.include? CodeReviewProjectsHelperPatch
+    ProjectsHelper.send(:include, CodeReviewProjectsHelperPatch)
+  end
+  
+  unless Attachment.included_modules.include? CodeReviewAttachmentPatch
+    Attachment.send(:include, CodeReviewAttachmentPatch)
+  end
+end
+
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.4.3'
+  version '0.4.5'
   requires_redmine :version_or_higher => '1.2.0'
 
   project_module :code_review do

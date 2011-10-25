@@ -77,6 +77,9 @@ class IssuesControllerTest < ActionController::TestCase
     issue = Issue.generate_for_project!(Project.find(1))
     assignment = CodeReviewAssignment.generate!(:issue => issue, :rev => 'aaa', :file_path => '/aaa/bbb')
     get :show, :id => assignment.issue.id
+    
+    review = CodeReview.generate_for_project!(project)
+    get :show, :id => review.issue.id
 
   end
 
@@ -92,5 +95,14 @@ class IssuesControllerTest < ActionController::TestCase
 
     # TODO: 0.9.xのサポート終了時に以下を有効にする。
     #assert_response :SUCESS
+  end
+  
+  context "create" do
+    should "create code_review_assignment." do
+      @request.session[:user_id] = 1
+      project = Project.find(1)
+      post :create, :project_id => 1, :issue => {:subject => 'test'}, :code => {:change_id => 1, :changeset_id => 1}
+      assert_response :redirect
+    end
   end
 end
