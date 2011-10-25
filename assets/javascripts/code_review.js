@@ -109,24 +109,26 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
     var filetables = [];
     var j = 0;
     var i = 0;
-    for (i = 0; i < tables.length; i++) {
+    var tl = 0;
+    for (i = 0, tl = tables.length; i < tl; i++) {
         if (Element.hasClassName(tables[i], 'filecontent')) {
             filetables[j] = tables[i];
             j++;
         }
     }
+    addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
+        '&rev=' + rev + '&path=' + escape(path) + '&rev_to=' + rev_to +
+        '&attachment_id=' + attachment_id;
+    var num = 0;
+    if (is_diff) {
+        num = 1;
+    }
 
-    for (i = 0; i < filetables.length; i++) {
+    for (i = 0, tl = filetables.length; i < tl; i++) {
         var table = filetables[i];
-        var tbody = table.getElementsByTagName('tbody')[0];
-        var trs = tbody.getElementsByTagName('tr');
+        var trs = table.getElementsByTagName('tr');
 
-        var num = 0;
-        if (is_diff) {
-            num = 1;
-        }
-
-        for (j = 0; j < trs.length; j++) {
+        for (j = 0,l = trs.length; j < l; j++) {
             var tr = trs[j];
             var ths = tr.getElementsByTagName('th');
 
@@ -135,35 +137,26 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
                 continue;
             }
 
-            Element.setStyle(th, {
-                'text-align':'left'
-            })
+            var th_html = th.innerHTML;
 
-            var line = th.innerHTML.match(/[0-9]+/);
+            var line = th_html.match(/[0-9]+/);
             if (line == null) {
                 continue;
             }
-     
-            addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
-            '&rev=' + rev + '&path=' + escape(path) + '&rev_to=' + rev_to +
-            '&attachment_id=' + attachment_id;
 
-            var span = new Element('span', {
-                'white-space': 'nowrap'
-            });
-            span.id = 'review_span_' + line + '_' + i;
-            th.insert(span);
+            var span_html = '<span white-space="nowrap" id="review_span_' + line + '_' + i + '">';
 
-            if (is_readonly) {
-                continue;
+            if (!is_readonly) {
+                span_html += image_tag;
             }
-            span.insert(image_tag);
+            span_html += '</span>';
+            th.innerHTML = th_html + span_html;
 
-            var img = span.getElementsByTagName('img')[0];
-            img.id = 'add_revew_img_' + line + '_' + i;
-            //img.oncontextmenu = 'return false;';
-            //img.onclick = clickPencil;
-            Element.observe(img, 'click', clickPencil);
+            var img = th.getElementsByTagName('img')[0];
+            if (img != null ) {
+                img.id = 'add_revew_img_' + line + '_' + i;
+                Element.observe(img, 'click', clickPencil);
+            }
         }
     }
 
