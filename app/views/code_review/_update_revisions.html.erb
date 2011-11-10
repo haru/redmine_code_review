@@ -34,7 +34,7 @@
     end
     
   else
-    progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '<span  style="white-space: nowrap;">' + link_to(l(:label_assign_review), {:controller => 'code_review',
+    progress = '<p class="progress-info"><span  style="white-space: nowrap;">' + l(:lable_no_code_reviews) + '<span><br/><span  style="white-space: nowrap;">' + link_to(l(:label_assign_review), {:controller => 'code_review',
         :action => 'assign', :id=>@project, 
         :rev => changeset.revision, 
         :changeset_id => changeset.id}) + '</span></p>'
