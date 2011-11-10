@@ -24,7 +24,7 @@
     progress = '<span style="white-space: nowrap">' + progress_bar([changeset.closed_review_pourcent, changeset.completed_review_pourcent],
       :width => '60px',
       :legend => "#{sprintf("%0.1f", changeset.completed_review_pourcent)}%") + '</span>' +
-      '<p class="progress-info">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
+      '<p class="progress-info" style="white-space: nowrap">' + "#{changeset.closed_review_count} #{l(:label_closed_issues)}" +
       "   #{changeset.open_review_count} #{l(:label_open_issues)}" + '</p>'
   elsif changeset.assignment_count > 0
     if (changeset.open_assignment_count > 0)
@@ -34,7 +34,10 @@
     end
     
   else
-    progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '</p>'
+    progress = '<p class="progress-info">' + l(:lable_no_code_reviews) + '<span  style="white-space: nowrap;">' + link_to(l(:label_assign_review), {:controller => 'code_review',
+        :action => 'assign', :id=>@project, 
+        :rev => changeset.revision, 
+        :changeset_id => changeset.id}) + '</span></p>'
   end
 %>
 

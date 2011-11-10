@@ -59,4 +59,6 @@ ja:
   auto_assign_filter_drop: 除外
 
   label_parent_suggestion: もしかして "%{issue_id}" ?
+  
+  label_assign_review: "アサインする"
 
