@@ -52,6 +52,16 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   def auto_assign_settings=(settings)
     @auto_assign_settings = settings
   end
+  
+  def issue_relation_type
+    return IssueRelation::TYPE_RELATES if auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+    return IssueRelation::TYPE_BLOCKS if auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+    return nil
+  end
+  
+  def auto_relation?
+    issue_relation_type != nil
+  end
 
   private
   def set_assignment_settings

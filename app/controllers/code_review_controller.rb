@@ -88,23 +88,14 @@ class CodeReviewController < ApplicationController
           @review.issue.save!
           if @review.changeset
             @review.changeset.issues.each {|issue|
-              create_relation @review, issue
-            } unless @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
-            
+              create_relation @review, issue, @setting.issue_relation_type
+            } if @setting.auto_relation?            
           elsif @review.attachment and @review.attachment.container_type == 'Issue'
             issue = Issue.find_by_id(@review.attachment.container_id)
-            unless (@setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE)
-              create_relation @review, issue
-            end
+            create_relation @review, issue, @setting.issue_relation_type if @setting.auto_relation?
           end
           @review.open_assignment_issues(@user.id).each {|issue|
-            if issue.project == @project
-              relation = IssueRelation.new
-              relation.relation_type = IssueRelation::TYPE_RELATES
-              relation.issue_from_id = @review.issue.id
-              relation.issue_to_id = issue.id
-              relation.save!
-            end
+            create_relation @review, issue, IssueRelation::TYPE_RELATES
             watcher = Watcher.new
             watcher.watchable_id = @review.issue.id
             watcher.watchable_type = 'Issue'
@@ -366,11 +357,10 @@ class CodeReviewController < ApplicationController
     nil
   end
   
-  def create_relation(review, issue)
+  def create_relation(review, issue, type)
     return unless issue.project == @project
     relation = IssueRelation.new
-    relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
-    relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+    relation.relation_type = type
     relation.issue_from_id = review.issue.id
     relation.issue_to_id = issue.id
     relation.save!

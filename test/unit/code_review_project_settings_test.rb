@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2010-2011  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -50,6 +50,58 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
       assert setting.save
       setting = CodeReviewProjectSetting.find(id)
       assert setting.auto_assign_settings.enabled?
+    end
+  end
+  
+  context "issue_relation_type" do
+    setup do
+      @setting = CodeReviewProjectSetting.new
+    end
+    
+    should "return IssueRelation::TYPE_RELATES if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES" do
+      @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+      assert_equal(IssueRelation::TYPE_RELATES, @setting.issue_relation_type)
+    end
+    
+    should "return IssueRelation::TYPE_BLOCKS if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS" do
+      @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+      assert_equal(IssueRelation::TYPE_BLOCKS, @setting.issue_relation_type)
+    end
+    
+    should "return nil if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_NONE" do
+      @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
+      assert_nil(@setting.issue_relation_type)
+    end
+    
+    should "return nil if auto_relation is nil" do
+      @setting.auto_relation =nil
+      assert_nil(@setting.issue_relation_type)
+    end
+  end
+  
+  context "auto_relation?" do
+    setup do
+      @setting = CodeReviewProjectSetting.new
+    end
+    
+    should "return true if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES" do
+      @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+      assert(@setting.issue_relation_type)
+    end
+    
+    should "return true if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS" do
+      @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+      assert(@setting.issue_relation_type)
+    end
+    
+    should "return false if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_NONE" do
+      @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
+      assert !(@setting.issue_relation_type)
+    end
+    
+    should "return false if auto_relation is nil" do
+      @setting.auto_relation =nil
+      assert !(@setting.issue_relation_type)
     end
   end
 end
