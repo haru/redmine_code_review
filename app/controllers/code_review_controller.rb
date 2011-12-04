@@ -88,31 +88,23 @@ class CodeReviewController < ApplicationController
           @review.issue.save!
           if @review.changeset
             @review.changeset.issues.each {|issue|
-              @relation = IssueRelation.new
-              @relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
-              @relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
-              @relation.issue_from_id = @review.issue.id
-              @relation.issue_to_id = issue.id
-              @relation.save!
+              create_relation @review, issue
             } unless @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
             
           elsif @review.attachment and @review.attachment.container_type == 'Issue'
             issue = Issue.find_by_id(@review.attachment.container_id)
             unless (@setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_NONE)
-              @relation = IssueRelation.new
-              @relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
-              @relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
-              @relation.issue_from_id = @review.issue.id
-              @relation.issue_to_id = issue.id
-              @relation.save!
+              create_relation @review, issue
             end
           end
           @review.open_assignment_issues(@user.id).each {|issue|
-            @relation = IssueRelation.new
-            @relation.relation_type = IssueRelation::TYPE_RELATES
-            @relation.issue_from_id = @review.issue.id
-            @relation.issue_to_id = issue.id
-            @relation.save!
+            if issue.project == @project
+              relation = IssueRelation.new
+              relation.relation_type = IssueRelation::TYPE_RELATES
+              relation.issue_from_id = @review.issue.id
+              relation.issue_to_id = issue.id
+              relation.save!
+            end
             watcher = Watcher.new
             watcher.watchable_id = @review.issue.id
             watcher.watchable_type = 'Issue'
@@ -369,10 +361,18 @@ class CodeReviewController < ApplicationController
   def get_parent_candidate(revision)
     changeset = @project.repository.find_changeset_by_name(revision)
     changeset.issues.each {|issue|
-      if issue.parent_issue_id
-        return Issue.find(issue.parent_issue_id)
-      end
+      return Issue.find(issue.parent_issue_id) if issue.parent_issue_id
     }
     nil
+  end
+  
+  def create_relation(review, issue)
+    return unless issue.project == @project
+    relation = IssueRelation.new
+    relation.relation_type = IssueRelation::TYPE_RELATES if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
+    relation.relation_type = IssueRelation::TYPE_BLOCKS if @setting.auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
+    relation.issue_from_id = review.issue.id
+    relation.issue_to_id = issue.id
+    relation.save!
   end
 end
