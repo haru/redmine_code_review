@@ -19,13 +19,14 @@
 <div class="code_review">
 
 </div>
+
 <div id="review-form-frame">
   <div id="review-form">
 
   </div>
 </div>
 
-<div id="code-review-assign-form"/>
+<div id="code-review-assign-form" />
 
 <div id="code-review-assign-link" style="text-align: right;">
   <%
@@ -38,21 +39,20 @@
   -%>
 
   <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
-  
 </div>
 
 <script type="text/javascript">
   add_form_title = "<%= l(:label_add_review) %>";
   review_dialog_title = "<%= l(:code_review) %>";
-  var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id=>@project %>';
+  var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id => @project %>';
   var is_readonly = true;
-<% if authorize_for('code_review', 'new') -%>
+  <% if authorize_for('code_review', 'new') -%>
     is_readonly = false;
-<% end %>
+  <% end %>
   var is_diff = false;
-<% if @action_type == 'diff' or (@attachment and @attachment.is_diff?) -%>
+  <% if @action_type == 'diff' or (@attachment and @attachment.is_diff?) -%>
     is_diff = true;
-<% end %>
+  <% end %>
   action_type = '<%= @action_type %>';
   rev = '<%= @rev %>';
   rev_to = '<%= @rev_to %>';
@@ -64,18 +64,17 @@
   showReviewImageTag = '<%= image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
   showClosedReviewImageTag = '<%= image_tag('closed_review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
 
-<% for review in @reviews do %>
-      setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed?%>, <%= review.file_count %> );
+  <% for review in @reviews do %>
+    setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed? %>, <%= review.file_count %> );
   <% end %>
 
   <% if @show_review_id -%>
-      popupReview(<%= @show_review.line %>, <%= @show_review_id %>);
+    popupReview(<%= @show_review_id %>);
   <% end -%>
 
-   var tables = $$('#content table.filecontent');
-   if (tables.length > 0) {
-     var table = tables[0];
-     new Insertion.Before(table, $('code-review-assign-link'));
-   }
-
-  </script>
+  var tables = $$('#content table.filecontent');
+  if (tables.length > 0) {
+    var table = tables[0];
+    new Insertion.Before(table, $('code-review-assign-link'));
+  }
+</script>

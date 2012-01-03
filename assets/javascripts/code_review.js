@@ -211,17 +211,33 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
     });
 }
 
-function popupReview(line, review_id) {
-    var target = $('show_review_' + review_id);
-    var span = $('review_' + review_id);
-
+function popupReview(review_id) {
+    var span   = $('review_'      + review_id); // span element of view review button
+    var target = $('show_review_' + review_id); // target element for popup dialog
+    // create popup dialog
     var win = showReview(showReviewUrl, review_id, target);
-  
-    win.setLocation(span.positionedOffset().top, span.positionedOffset().left + 10 + 5);
+    // position and show popup dialog
+    var pos_top  = 0;
+    var pos_left = 0;
+    var element  = span;
+    if (element.offsetParent) {
+        while (1) { // work-around for Safari
+            pos_top  = pos_top  + element.offsetTop;
+            pos_left = pos_left + element.offsetLeft;
+            if (!element.offsetParent) {
+                break;
+            }
+            element = element.offsetParent;
+        };
+    } else {
+        pos_top  = element.x;
+        pos_left = element.y;
+    }
+    win.setLocation(pos_top + 25, pos_left + 10 + 5);
     win.toFront();
     win.show();
+    // scroll to line
     span.scrollTo();
-    
 }
 
 function showReview(url, review_id, element) {
