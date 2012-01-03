@@ -41,19 +41,19 @@
   :html => {:class => 'icon icon-del'}) %>
 <% end -%>
 </div>
-  <h2>
-    <%= link_to '#' + @review.issue.id.to_s, :controller => 'issues', :action => 'show',
-               :id => @review.issue.id %>:
-    <%= l(:label_line_number, :line => @review.line) %>:
-    <%=h @review.subject%>
-  </h2>
- 
+
+<h2>
+  <%= link_to h(@issue.tracker.name) + ' #' +@issue.id.to_s + ' (' + h(@review.issue.status) + ')',
+          :controller => 'issues', :action => 'show', :id => @review.issue.id %>:
+  <br />
+  <%=h @review.subject %>
+</h2>
 <p class="author">
   <%= avatar(@review.user, :size => "64") %>
-        <%= authoring @review.created_at, @review.user %>.
-        <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
+  <br />
+  <%= authoring @review.created_at, @review.user %>.
+  <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
 </p>
-
 
 <table>
 <tr>
@@ -117,14 +117,23 @@
 </div>
 
 </div>
-<% if @review.issue.journals.length > 0 %>
- <h3>
-    <%=  l(:label_comment) %>
-  </h3>
+
+<% journals = @review.issue.journals.sort {|a, b| a.id <=> b.id } %>
+<% if respond_to?('render_journal') %>
+  <% # ChiliProject -%>
+  <% if journals.length > 0 %>
+    <div id="history">
+      <h3 class="rounded-background"><%= l(:label_history) %></h3>
+      <%= render :partial => 'history', :locals => { :issue => @review.issue, :journals => journals } %>
+    </div>
+  <% end %>
+<% else %>
+  <% # Redmine -%>
+  <% if journals.length > 0 %>
+    <h3><%= l(:label_comment) %></h3>
+  <% end %>
+  <%= render :partial => 'reply', :collection => journals %>
 <% end %>
-
-<%= render :partial => 'reply', :collection => @review.issue.journals.sort{|a, b| a.id <=> b.id} %>
-
 
 <% if authorize_for('code_review', 'reply') -%>
 <p><%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %></p>
