@@ -39,50 +39,34 @@
     <table class="list">
       <thead>
         <tr>
-          <th>
-            <%= sort_header_tag("#{Issue.table_name}.id", :caption => '#') %>
-          </th>
-          <th>
-            <%= sort_header_tag "#{Issue.table_name}.status_id", :caption => l(:field_status)%>
-          </th>
-          <th>
-            <%= sort_header_tag "#{Issue.table_name}.subject", :caption => l(:field_subject)%>
-          </th>
-          <th>
-            <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
-          </th>
+          <%= sort_header_tag "#{Issue.table_name}.id", :caption => '#'  %>
+          <%= sort_header_tag "#{Issue.table_name}.status_id", :caption => l(:field_status)%>
+          <%= sort_header_tag "#{Issue.table_name}.subject", :caption => l(:field_subject)%>
+          <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
           <th>
             <%=h l(:label_code_line)%>
           </th>
-          <th>
-            <%= sort_header_tag "#{Changeset.table_name}.revision", :caption => l(:label_revision)%>
-          </th>
-          <th>
-            <%= sort_header_tag "#{Changeset.table_name}.committer", :caption => l(:label_code_author)%>
-          </th>
-          <th>
-            <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
-          </th>
-          <th>
-            <%= sort_header_tag 'updated_at', :caption => l(:label_date) %>
-          </th>
+          <%= sort_header_tag "#{Changeset.table_name}.revision", :caption => l(:label_revision)%>
+          <%= sort_header_tag "#{Changeset.table_name}.committer", :caption => l(:label_code_author)%>
+          <%= sort_header_tag 'user_id', :caption => l(:label_code_reviewer)%>
+          <%= sort_header_tag 'updated_at', :caption => l(:label_date) %>
         </tr>
       </thead>
       <tbody>
         <% for review in @reviews %>
           <tr class="<%= cycle 'odd', 'even' %>">
-            <td colspan="2">
+            <td>
               <%= link_to review.issue.id.to_s, {:controller => 'issues', :action => 'show',
                 :id => review.issue.id}, :title => review.issue.subject %>
             </td>
 
-            <td colspan="2" class="status">
+            <td class="status">
               <%=h  review.issue.status %>
             </td>
-            <td colspan="2" class="subject">
+            <td class="subject">
               <%=h  review.issue.subject %>
             </td>
-            <td colspan="2" class="path">
+            <td class="path">
               <%
               codepath = review.path
               if (review.path.length > 55)
@@ -92,10 +76,10 @@
               <%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.path) -%>
            </td>
             <td><%=h review.line %></td>
-            <td colspan="2"><%=h review.revision %></td>
-            <td colspan="2"><%=h review.committer %></td>
-            <td colspan="2"><%=h review.user.name %></td>
-            <td colspan="2"><%=h format_time(review.created_at) %></td>
+            <td><%=h review.revision %></td>
+            <td><%=h review.committer %></td>
+            <td><%=h review.user.name %></td>
+            <td><%=h format_time(review.created_at) %></td>
           </tr>
         <% end %>
       </tbody>
