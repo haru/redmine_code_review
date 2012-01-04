@@ -17,6 +17,72 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <% for journal in journals %>
-  <%= render_journal issue, journal, :edit_permission => :edit_issue_notes,
-      :edit_own_permission => :edit_own_issue_notes %>
+
+  <!-- skip initial entry of code review creation -->
+  <% if not journal.initial? %>
+
+    <!-- header and notes/comments -->
+    <%
+    header = <<-HTML
+        <h4>
+          #{authoring journal.created_at, journal.user, :label => :label_updated_time_by}
+          #{content_tag('a', '', :name => "note-#{journal.anchor}")}
+        </h4>
+
+        <div class="profile-wrap">
+          #{avatar(journal.user, :size => "40")}
+        </div>
+      HTML
+
+    if not journal.notes.blank?
+      if User.current.logged?
+        editable = User.current.allowed_to?(:edit_issue_notes, journal.project)
+        if journal.user == User.current
+          editable ||= User.current.allowed_to?(:edit_own_issue_notes, journal.project)
+        end
+      end
+
+      links = [].tap do |l|
+        #if reply_links
+        #  l << link_to_remote(image_tag('comment.png'), :title => l(:button_quote),
+        #    :url => {:controller => controller, :action => action, :id => model, :journal_id => journal})
+        #end
+        if editable
+          l << link_to_in_place_notes_editor(image_tag('edit.png'), "journal-#{journal.id}-notes",
+                { :controller => 'journals', :action => 'edit', :id => journal },
+                  :title => l(:button_edit))
+        end
+      end
+
+      css_classes = "wiki"
+      css_classes << " editable" if editable
+
+      content = ''
+      content << content_tag('div', links.join(' '), :class => 'contextual') unless links.empty?
+      content << textilizable(journal, :notes)
+
+      header << content_tag("div", content, :id => "journal-#{journal.id}-notes", :class => css_classes)
+    end
+    %>
+
+    <!-- details such as attribute changes -->
+    <%
+    details = ''
+    if journal.details.any?
+      content = journal.details.collect do |detail|
+                  if d = journal.render_detail(detail)
+                    content_tag("li", d)
+                  end
+                end.compact.join(' ')
+
+      details = content_tag("ul", content, :class => "details journal-attributes") unless content.empty?
+    end
+    %>
+
+    <!-- output HTML code -->
+    <%= content_tag "div", "#{header}#{details}",
+            { :id => "change-#{journal.id}", :class => journal.css_classes } %>
+
+  <% end %>
+
 <% end %>

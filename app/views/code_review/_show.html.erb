@@ -18,168 +18,169 @@
 -%>
 <div class="code-review-dialog" id="code-review-dialog-<%= @review.id%>">
 
-
 <div class="code_review_body">
-    <%= error_messages_for 'review' -%>
-    <%= error_messages_for 'reply' -%>
-    <% if @notice -%>
-      <div class="flash notice"><%= @notice -%></div>
-    <% end -%>
-    <% if @error -%>
-      <div class="flash error"><%= @error -%></div>
-    <% end -%>
-<div class="code_review_viewer issue">
-<div class="contextual">
-  <% if authorize_for('code_review', 'update') -%>
-      <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;", :class => 'icon icon-edit' %>
-  <% end %>
-<% if authorize_for('code_review', 'destroy') -%>
-<%= link_to_remote(l(:button_delete), :update => "show_review_#{@review.id}",
-  :url => {:controller => 'code_review', :action => 'destroy', :id => @project, :review_id => @review},
-  :confirm => l(:text_are_you_sure),
-  :success => "deleteReview(#{@review.id})",
-  :html => {:class => 'icon icon-del'}) %>
-<% end -%>
-</div>
 
-<h2>
-  <%= link_to h(@issue.tracker.name) + ' #' +@issue.id.to_s + ' (' + h(@review.issue.status) + ')',
-          :controller => 'issues', :action => 'show', :id => @review.issue.id %>:
-  <br />
-  <%=h @review.subject %>
-</h2>
-<p class="author">
-  <%= avatar(@review.user, :size => "64") %>
-  <br />
-  <%= authoring @review.created_at, @review.user %>.
-  <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
-</p>
+  <!-- flash -->
+  <%= error_messages_for 'review' -%>
+  <%= error_messages_for 'reply' -%>
+  <% if @notice -%>
+    <div class="flash notice"><%= @notice -%></div>
+  <% end -%>
+  <% if @error -%>
+    <div class="flash error"><%= @error -%></div>
+  <% end -%>
 
-<table>
-<tr>
-    <td style="width:20%; white-space:nowrap;" class="status"><b><%=h l(:field_status) %>:</b>
-    </td>
-    <td><%=h @review.issue.status %></td>
+  <!-- code review view -->
+  <div class="code_review_viewer issue">
 
-</tr>
- </table>
- 
-<hr/>
-  <div class="wiki">
-<%= textilizable @review, :comment %>
-  </div>
-  <div class="box" id="update-form-<%= @review.id %>" style="display:none;">
+    <!-- toolbar -->
+    <div class="contextual">
+      <% if authorize_for('code_review', 'update') -%>
+        <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;", :class => 'icon icon-edit' %>
+      <% end %>
+      <% if authorize_for('code_review', 'destroy') -%>
+        <%= link_to_remote(l(:button_delete), :update => "show_review_#{@review.id}",
+                :url => {:controller => 'code_review',
+                         :action => 'destroy',
+                         :id => @project,
+                         :review_id => @review},
+                :confirm => l(:text_are_you_sure),
+                :success => "deleteReview(#{@review.id})",
+                :html => {:class => 'icon icon-del'}) %>
+      <% end -%>
+    </div>
 
-<% remote_form_for :review, @review,
-  :url => {:controller => 'code_review', :action => 'update', :id=>@project, :review_id => @review.id},
-  :update => "show_review_#{@review.id}" , :html => {:id => 'review_form'} do |f|  %>
-<%= f.hidden_field :lock_version %>
-<%= hidden_field :issue,  :lock_version%>
-    <p>
-      <label><b>
-        <%=h l(:field_subject)%>:
-        </b></label>
-      <%= f.text_field :subject, :size => 70, :value => @review.subject%>
+    <!-- title -->
+    <h2>
+      <%= link_to h(@issue.tracker.name) + ' #' +@issue.id.to_s + ' (' + h(@review.issue.status) + ')',
+              :controller => 'issues', :action => 'show', :id => @review.issue.id %>:
+      <br />
+      <%=h @review.subject %>
+    </h2>
+
+    <!-- author and creation time -->
+    <p class="author">
+      <%= avatar(@review.user, :size => "64") %>
+      <br />
+      <%= authoring @review.created_at, @review.user %>.
+      <%= l(:label_updated_time, distance_of_time_in_words(Time.now, @review.updated_at)) + '.' if @review.created_at != @review.updated_at %>
     </p>
+    <hr />
 
-      <% if @allowed_statuses and @allowed_statuses.any? %>
+    <!-- review comment -->
+    <div class="wiki">
+      <%= textilizable @review, :comment %>
+    </div>
+
+    <!-- review comment edit form -->
+    <div class="box" id="update-form-<%= @review.id %>" style="display:none;">
+      <% remote_form_for :review, @review,
+             :url => {:controller => 'code_review',
+                      :action => 'update',
+                      :id => @project,
+                      :review_id => @review.id},
+             :update => "show_review_#{@review.id}",
+             :html => {:id => 'review_form'} do |f|  %>
+        <%= f.hidden_field :lock_version %>
+        <%= hidden_field :issue, :lock_version%>
+        <p>
+          <label><b><%=h l(:field_subject)%>:</b></label>
+          <%= f.text_field :subject, :size => 70, :value => @review.subject%>
+        </p>
+        <% if @allowed_statuses and @allowed_statuses.any? %>
+          <p>
+            <label><b><%=h l(:field_status)%>:</b></label>
+            <%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
+          </p>
+        <% end %>
+        <p>
+          <%= f.text_area :comment,
+                          :cols => 30,
+                          :rows => 10,
+                          :accesskey => accesskey(:edit),
+                          :class => 'wiki-edit',
+                          :id => 'review_comment_' + @review.id.to_s %>
+        </p>
+        <p>
+          <%= submit_tag l(:button_apply) %>
+          <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("update-form-<%= @review.id %>").hide();' />
+          <%= link_to_remote l(:label_preview),
+                  { :url => {:controller => 'code_review', :action => 'preview', :id => @project},
+                    :method => 'post',
+                    :update => 'preview',
+                    :with => "Form.serialize('review_form')",
+                    :complete => "Element.scrollTo('preview')"
+                  }, :accesskey => accesskey(:preview) %>
+        </p>
+        <div id="preview" class="wiki"></div>
+        <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- review replies -->
+  <% journals = @review.issue.journals.sort {|a, b| a.id <=> b.id } %>
+  <% if respond_to?('render_journal') %>
+    <% # ChiliProject -%>
+    <% if journals.length > 0 %>
+      <div id="history">
+        <h3 class="rounded-background"><%= l(:label_history) %></h3>
+        <%= render :partial => 'history', :locals => { :issue => @review.issue, :journals => journals } %>
+      </div>
+    <% end %>
+  <% else %>
+    <% # Redmine -%>
+    <% if journals.length > 0 %>
+      <h3><%= l(:label_history) %></h3>
+    <% end %>
+    <%= render :partial => 'reply', :collection => journals %>
+  <% end %>
+
+  <!-- reply form -->
+  <% if authorize_for('code_review', 'reply') -%>
     <p>
-      <label>
-        <b><%=h l(:field_status)%>:</b>
-      </label>
-<%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %></p>
-<% end %>
-    
-<p>
-  <%= f.text_area :comment,
-                   :cols => 30,
-                   :rows => 10,
-                   :accesskey => accesskey(:edit),
-                   :class => 'wiki-edit',
-                   :id => 'review_comment_' + @review.id.to_s%>
-
-</p>
-<p>
-      <%= submit_tag l(:button_apply) %>
-      <input type="button" value="<%=h l(:button_cancel) %> " onclick='$("update-form-<%= @review.id %>").hide();'/>
-<%= link_to_remote l(:label_preview),
-                       { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
-                         :method => 'post',
-                         :update => 'preview',
-                         :with => "Form.serialize('review_form')",
-                         :complete => "Element.scrollTo('preview')"
-                       }, :accesskey => accesskey(:preview) %>
-</p>
-<div id="preview" class="wiki"></div>
- <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
-<% end %>
-
-</div>
-
-</div>
-
-<% journals = @review.issue.journals.sort {|a, b| a.id <=> b.id } %>
-<% if respond_to?('render_journal') %>
-  <% # ChiliProject -%>
-  <% if journals.length > 0 %>
-    <div id="history">
-      <h3 class="rounded-background"><%= l(:label_history) %></h3>
-      <%= render :partial => 'history', :locals => { :issue => @review.issue, :journals => journals } %>
+      <%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %>
+    </p>
+    <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
+      <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
+        <%= hidden_field_tag :review_id, @review.id %>
+        <%= hidden_field :review,  :lock_version%>
+        <%= hidden_field :issue,  :lock_version%>
+        <% if @allowed_statuses and @allowed_statuses.any? %>
+          <p>
+            <label><%=h l(:field_status) %>:</label>
+            <%  # select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
+            <%= select :review, :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
+          </p>
+        <% end %>
+        <p>
+          <%= f.text_area :comment,
+                          :cols => 30,
+                          :rows => 10,
+                          :accesskey => accesskey(:edit),
+                          :class => 'wiki-edit',
+                          :id => 'reply_comment_' + @review.id.to_s %>
+        </p>
+        <p>
+          <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
+                  :url => {:controller => 'code_review', :action => 'reply', :id=>@project},
+                  :method => :post,
+                  :loading => "$('add_review_comment_submit').disabled = true;",
+                  :html => {:id => 'add_review_comment_submit'} %>
+          <%= link_to_remote l(:label_preview),
+                  { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+                    :method => 'post',
+                    :update => 'reply-preview',
+                    :with => "Form.serialize('message-form')",
+                    :complete => "Element.scrollTo('reply-preview')"
+                  }, :accesskey => accesskey(:preview) %>
+        </p>
+        <div id="reply-preview" class="wiki"></div>
+        <%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>
+      <% end %>
     </div>
   <% end %>
-<% else %>
-  <% # Redmine -%>
-  <% if journals.length > 0 %>
-    <h3><%= l(:label_comment) %></h3>
-  <% end %>
-  <%= render :partial => 'reply', :collection => journals %>
-<% end %>
-
-<% if authorize_for('code_review', 'reply') -%>
-<p><%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %></p>
-<div id="reply_<%= @review.id  %>" style="display:none;" class="box">
-<% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
-  <%= hidden_field_tag :review_id, @review.id %>
-  <%= hidden_field :review,  :lock_version%>
-  <%= hidden_field :issue,  :lock_version%>
-  <% if @allowed_statuses and @allowed_statuses.any? %>
-  <p>
-      <label>
-        <%=h l(:field_status) %>:
-      </label>
-      <%  # select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
-<%= select :review, :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
-
-  </p>
-    <% end %>
-<p>
-  <%= f.text_area :comment,
-                   :cols => 30,
-                   :rows => 10,
-                   :accesskey => accesskey(:edit),
-                   :class => 'wiki-edit',
-                   :id => 'reply_comment_' + @review.id.to_s %>
- 
-</p>
-<p>
-  <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
-        :url => {:controller => 'code_review', :action => 'reply', :id=>@project},
-        :method => :post, :loading => "$('add_review_comment_submit').disabled = true;", :html => {:id => 'add_review_comment_submit'} %>
-<%= link_to_remote l(:label_preview),
-                       { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
-                         :method => 'post',
-                         :update => 'reply-preview',
-                         :with => "Form.serialize('message-form')",
-                         :complete => "Element.scrollTo('reply-preview')"
-                       }, :accesskey => accesskey(:preview) %>
-</p>
-<div id="reply-preview" class="wiki"></div>
-<%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>
-<% end %>
-</div>
-
-<% end %>
-</div>
 
 </div>
 
+</div>
