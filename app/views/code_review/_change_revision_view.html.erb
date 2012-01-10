@@ -21,7 +21,7 @@ changesets = controller.get_selected_changesets
 if changesets
   changeset = changesets[0]
   urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project) +
-    '/' + changeset.revision + '/entry'
+    '/' + changeset.identifier + '/entry'
 %>
   <div id="code_review_assignments">
     <%=h l(:review_assignments)%>
@@ -65,7 +65,7 @@ if changesets
     end
     escaped_relative_path = relative_path.gsub("'"){"\\'"}
   %>
-    code_reviews_map['<%escaped_relative_path%>'] = reviewlist;
+    code_reviews_map['<%=escaped_relative_path%>'] = reviewlist;
   <%
   }
 %>
