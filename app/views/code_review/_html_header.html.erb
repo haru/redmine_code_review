@@ -18,7 +18,7 @@
 -%>
 <% if @project and @project.module_enabled?('code_review') %>
 <%
-baseurl = url_for(:controller => 'code_review', :action => 'index', :id => @project) + '/../../..'
+baseurl = Redmine::Utils.relative_url_root
 
 -%>
 <%= javascript_include_tag(baseurl + "/plugin_assets/redmine_code_review/javascripts/code_review.js") %>
