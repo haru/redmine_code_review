@@ -93,6 +93,11 @@ class CodeReview < ActiveRecord::Base
   def repository
     @repository ||= changeset.repository if changeset
   end
+  
+  def repository_identifier
+    return nil unless repository
+    @repository_identifier ||= repository.identifier_param if repository.respond_to?("identifier_param")
+  end
 
   def comment=(str)  
     issue.description = str if issue

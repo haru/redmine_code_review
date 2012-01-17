@@ -17,37 +17,36 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <%
-changesets = controller.get_selected_changesets
-if changesets
-  changeset = changesets[0]
-  urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project) +
-    '/' + changeset.identifier + '/entry'
+repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+if @changeset
+  urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project, :repository_id => repository_id) +
+    '/' + @changeset.identifier + '/entry'
 %>
   <div id="code_review_assignments">
     <%=h l(:review_assignments)%>
-    <% changeset.code_review_assignments.each do |assignment|
+    <% @changeset.code_review_assignments.each do |assignment|
       issue = assignment.issue %>
       <%= link_to("##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
         :class => issue.css_classes, :title => "#{issue}(#{issue.status})") %>
-    <% end if changeset.code_review_assignments %>
+    <% end if @changeset.code_review_assignments %>
 
     <%= link_to(l(:button_add), {:controller => 'code_review',
         :action => 'assign', :id=>project, 
-        :rev => changeset.revision, 
-        :changeset_id => changeset.id}, :class => 'icon icon-add') %>
+        :rev => @changeset.revision, 
+        :changeset_id => @changeset.id, :repository_id => repository_id}, :class => 'icon icon-add') %>
   </div>
 
   <script type="text/javascript">
     new Insertion.After('changes-legend', $('code_review_assignments'));
     urlprefix = '<%=urlprefix%>';
-  <% changeset.changes.each{|change| %>
+  <% @changeset.changes.each{|change| %>
     var reviewlist = [];
     <%
     cnt = 0
     change.code_reviews.each {|review|
       issue = review.issue
       url = link_to('#' + "#{issue.id} #{review.subject}(#{issue.status})",
-        :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
+        :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => repository_id)
     %>
       var review = new CodeReview(<%=review.id%>);
       review.url = '<%=url%>';
