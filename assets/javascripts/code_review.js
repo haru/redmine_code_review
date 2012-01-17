@@ -26,6 +26,7 @@ var urlprefix = '';
 var review_form_dialog = null;
 var add_form_title = null;
 var review_dialog_title = null;
+var repository_id = null;
 
 var ReviewCount = function(total, open, progress){
     this.total = total;
@@ -119,7 +120,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
     }
     addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
         '&rev=' + rev + '&path=' + encodeURIComponent(path) + '&rev_to=' + rev_to +
-        '&attachment_id=' + attachment_id;
+        '&attachment_id=' + attachment_id + '&repository_id=' + encodeURIComponent(repository_id);
     var num = 0;
     if (is_diff) {
         num = 1;
