@@ -107,28 +107,6 @@ class CodeReviewTest < ActiveSupport::TestCase
 
   end
 
-  def test_children
-    review = CodeReview.find(1)
-    assert_equal(3, review.children.length)
-    reviews = CodeReview.find(:all, :conditions => 'old_parent_id is not null')
-    assert_equal(4, reviews.length)
-    review.destroy
-    reviews = CodeReview.find(:all, :conditions => 'old_parent_id is not null')
-    assert_equal(0, reviews.length)
-  end
-
-  def test_all_children
-    review = CodeReview.find(1)
-    assert_equal(4, review.all_children.length)
-    review = CodeReview.find(2)
-    assert_equal(1, review.all_children.length)
-  end
-
-  def test_convert_to_new_data
-    review = CodeReview.find(1)
-    assert review.convert_to_new_data
-  end
-
   def test_user
     review = CodeReview.find(10)
     user = User.find(2)

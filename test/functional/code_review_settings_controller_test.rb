@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -190,16 +190,6 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
-    end
-  end
-
-  context "test_convert" do
-    should "convert old data to new data." do
-      setting = CodeReviewProjectSetting.find(1)
-      @request.session[:user_id] = User.anonymous.id
-      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id},
-        :convert => true
-      assert_response :redirect
     end
   end
 end

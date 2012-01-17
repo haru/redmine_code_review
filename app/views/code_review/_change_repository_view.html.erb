@@ -25,7 +25,7 @@ if changesets
     changeset_ids << ','
   }
 
-  url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project
+  url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project, :repository_id => @repository.identifier_param
 %>
 
   <div id="code_review_revisions"></div>

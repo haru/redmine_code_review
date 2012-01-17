@@ -1,6 +1,5 @@
-<%
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2011  Haruyuki Iida
+# Copyright (C) 2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,24 +14,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
--%>
-<%
-parameters = request.parameters
-patharray = parameters['path']
-rev = parameters['rev']
-unless patharray.blank? or patharray.empty?
-  path = patharray.join('/')
-  changesets = @repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
-  change = changesets[0]
 
-  if change
-    link = link_to(l(:label_add_review), {:controller => 'code_review',
-        :action => 'forward_to_revision', :id => project, :path => path, :rev => rev}, :class => 'icon icon-edit')
-  %>
+class DeleteOldFields < ActiveRecord::Migration
+  OLD_FIELDS=["old_parent_id", "old_user_id", "old_comment", "old_status"]
+  def self.up
+    remove_column(:code_reviews, "old_parent_id")
+    remove_column(:code_reviews, "old_user_id")
+    remove_column(:code_reviews, "old_comment")
+    remove_column(:code_reviews, "old_status")
+  end
 
-    <script type="text/javascript">
-      make_addreview_link('<%=project.name%>', '<%=link%>');
-    </script>
-  <% end %>
-
-<% end %>
+  def self.down
+    add_column(:code_reviews, "old_parent_id", :integer)
+    add_column(:code_reviews, "old_user_id", :integer)
+    add_column(:code_reviews, "old_comment", :text)
+    add_column(:code_reviews, "old_status", :integer)
+  end
+end

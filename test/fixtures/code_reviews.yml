@@ -8,15 +8,9 @@ one:
 
   updated_at: 2009-04-11 22:09:57
 
-  old_user_id: 1
-
-  old_comment: Review 1
-
   updated_by_id: 1
 
   change_id: 1
-  
-  old_status: 0
   
 
   
@@ -25,21 +19,14 @@ two:
 
   project_id: 1
 
-  old_parent_id: 1
-
   created_at: 2009-04-12 22:09:57
 
   updated_at: 2009-04-12 22:09:57
-
-  old_user_id: 2
-
-  old_comment: Review 2
 
   updated_by_id: 1
 
   change_id: 1
 
-  old_status: 0
   
 
 three:
@@ -47,21 +34,14 @@ three:
 
   project_id: 1
 
-  old_parent_id: 1
-
   created_at: 2009-04-13 22:09:57
 
   updated_at: 2009-04-13 22:09:57
-
-  old_user_id: 2
-
-  old_comment: Review 2
 
   updated_by_id: 1
 
   change_id: 1
 
-  old_status: 0
   action_type: diff
 
 four:
@@ -69,21 +49,14 @@ four:
 
   project_id: 1
 
-  old_parent_id: 1
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
-
-  old_user_id: 3
-
-  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 1
 
-  old_status: 1
   action_type: diff
   
 five:
@@ -91,21 +64,14 @@ five:
 
   project_id: 1
 
-  old_parent_id:
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
-
-  old_user_id: 3
-
-  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 1
 
-  old_status: 1
   action_type: diff
 
 six:
@@ -113,42 +79,28 @@ six:
 
   project_id: 1
 
-  old_parent_id:
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
-
-  old_user_id: 3
-
-  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 2
 
-  old_status: 1
   action_type: diff
 seven:
   id: 7
 
   project_id: 1
 
-  old_parent_id:
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
-
-  old_user_id: 3
-
-  old_comment: Review 2
 
   updated_by_id: 3
 
   change_id: 2
 
-  old_status: 0
   action_type: diff
 
 eight:
@@ -156,21 +108,12 @@ eight:
 
   project_id: 1
 
-  old_parent_id:
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  old_user_id: 3
-
-  old_comment: Review 2
-
-  updated_by_id: 3
-
   change_id: 2
 
-  old_status: 0
   action_type: diff
 
 nine:
@@ -178,21 +121,13 @@ nine:
 
   project_id: 1
 
-  old_parent_id:
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  old_user_id: 3
-
-  old_comment: Review 2
-
   updated_by_id: 3
 
   change_id: 2
-
-  old_status: 0
 
   issue_id: 1
   action_type: diff
@@ -202,21 +137,13 @@ ten:
 
   project_id: 1
 
-  old_parent_id:
-
   created_at: 2009-04-14 22:09:57
 
   updated_at: 2009-04-15 22:09:57
 
-  old_user_id: 3
-
-  old_comment: Review 10
-
   updated_by_id: 3
 
   change_id: 2
-
-  old_status: 0
 
   issue_id: 2
   action_type: diff
@@ -226,21 +153,13 @@ eleven:
 
   project_id: 1
 
-  old_parent_id: 2
-
   created_at: 2009-04-12 22:09:57
 
   updated_at: 2009-04-12 22:09:57
 
-  old_user_id: 2
-
-  old_comment: Review 2
-
   updated_by_id: 1
 
   change_id: 3
-
-  old_status: 0
 
   action_type: diff
 

@@ -17,7 +17,7 @@
 
 class CodeReviewController < ApplicationController
   unloadable
-  before_filter :find_project, :authorize, :find_user, :find_setting
+  before_filter :find_project, :authorize, :find_user, :find_setting, :find_repository
 
   helper :sort
   include SortHelper
@@ -174,10 +174,10 @@ class CodeReviewController < ApplicationController
     @rev_to = params[:rev_to] unless params[:rev_to].blank?
     @path = params[:path]
     @action_type = params[:action_type]
-    changeset = @project.repository.find_changeset_by_name(@rev)
-    repository = @project.repository
-    url = repository.url
-    root_url = repository.root_url
+    changeset = @repository.find_changeset_by_name(@rev)
+
+    url = @repository.url
+    root_url = @repository.root_url
     if (url == nil || root_url == nil)
       fullpath = @path
     else
@@ -310,7 +310,7 @@ class CodeReviewController < ApplicationController
   def forward_to_revision
     path = params[:path]
     rev = params[:rev]
-    changesets = @project.repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
+    changesets = @repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
     change = changesets[0]
    
     identifier = change.identifier
@@ -329,12 +329,20 @@ class CodeReviewController < ApplicationController
     changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
     @changesets = []
     changeset_ids.each {|id|
-      @changesets << @project.repository.find_changeset_by_name(id) unless id.blank?
+      @changesets << @repository.find_changeset_by_name(id) unless id.blank?
     }
     render :partial => 'update_revisions'
   end
   
   private
+  def find_repository
+    if params[:repository_id].present? and @project.repositories
+      @repository = @project.repositories.find_by_identifier_param(params[:repository_id])
+    else
+      @repository = @project.repository
+    end
+  end
+  
   def find_project
     # @project variable must be set before calling the authorize filter
     @project = Project.find(params[:id])
@@ -350,7 +358,7 @@ class CodeReviewController < ApplicationController
   end
 
   def get_parent_candidate(revision)
-    changeset = @project.repository.find_changeset_by_name(revision)
+    changeset = @repository.find_changeset_by_name(revision)
     changeset.issues.each {|issue|
       return Issue.find(issue.parent_issue_id) if issue.parent_issue_id
     }

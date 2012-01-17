@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2011  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,9 +21,6 @@ class CodeReview < ActiveRecord::Base
   belongs_to :issue
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :attachment
-
-  #deprecated
-  has_many :children, :class_name => 'CodeReview', :foreign_key=> :old_parent_id, :dependent => :destroy
 
   validates_presence_of :project_id
   validates_presence_of :user_id
@@ -90,14 +87,7 @@ class CodeReview < ActiveRecord::Base
   end
 
   def changeset
-    return @changeset if @changeset
-    if change
-      @changeset = Changeset.find(change.changeset_id)
-    else
-      repository_id = project.repository.id if project.repository
-      @changeset = Changeset.find(:first, :conditions => ['id = ? and revision = ?', repository_id, rev])
-    end
-    
+    @changeset ||= change.changeset if change
   end
 
   def repository
@@ -177,58 +167,5 @@ class CodeReview < ActiveRecord::Base
     }
 
     issues
-  end
-
-  def convert_to_new_data
-    closed_status = IssueStatus.find(:first, :conditions => 'id = 5')
-    closed_status = IssueStatus.find(:first, :conditions => ['is_closed = ?', true]) unless closed_status
-    setting = CodeReviewProjectSetting.find_by_project_id(self.project_id)
-    review = CodeReview.new
-    review.project_id = self.project_id
-    review.issue = Issue.new
-    review.issue.project_id = self.project_id
-    review.issue.tracker_id = setting.tracker_id
-    review.issue.start_date = self.created_at
-    review.issue.created_on = self.created_at
-    review.comment = self.old_comment
-    review.comment = 'No comment.' unless review.comment
-    review.user_id = self.old_user_id
-    review.change_id = self.change_id
-    review.issue.assigned_to_id = self.changeset.user_id if self.changeset
-    review.updated_by = self.updated_by
-    review.subject = 'Old code review #' + self.id.to_s
-    review.line = self.line
-    review.action_type = 'diff' unless review.action_type
-    if closed_status and self.old_status != 0
-      review.issue.status_id = closed_status.id
-    end
-    review.save!
-    review.issue.save!
-
-    self.all_children.each{|child|
-      issue = Issue.find(review.issue.id)
-      user = User.find(child.old_user_id)
-      journal = issue.init_journal(user, child.old_comment)
-      journal.created_on = child.created_at
-      if (child.status_changed_to == 1)
-        issue.status_id = closed_status.id if closed_status
-      elsif (child.status_changed_to == 0)
-        issue.status_id = 1
-      end
-      
-      issue.save!
-    }
-
-    return review
-  end
-
-  #deprecated
-  def all_children
-    return @all_children if @all_children
-    @all_children = children
-    children.each {|child|
-      @all_children = @all_children + child.all_children
-    }
-    @all_children = @all_children.sort{|a, b| a.id <=> b.id}
   end
 end

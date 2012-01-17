@@ -51,7 +51,7 @@
     var href = link.getAttribute('href');
   }
   var links = $$('p.pagination a');
-  var url = "<%= url_for( url_for :controller => 'code_review', :action => 'update_revisions_view', :id => @project) %>";
+  var url = "<%= url_for( url_for :controller => 'code_review', :action => 'update_revisions_view', :id => @project, :repository_id => @repository_id) %>";
 
   for (var i = 0; i < links.length; i++) {
     var link = links[i];

@@ -65,7 +65,7 @@ if changesets
     end
     escaped_relative_path = relative_path.gsub("'"){"\\'"}
   %>
-    code_reviews_map['<%=escaped_relative_path%>'] = reviewlist;
+    code_reviews_map['<%=escaped_relative_path-%>'] = reviewlist;
   <%
   }
 %>
