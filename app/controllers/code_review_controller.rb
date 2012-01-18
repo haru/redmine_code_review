@@ -146,6 +146,7 @@ class CodeReviewController < ApplicationController
     code[:change_id] = params[:change_id].to_i unless params[:change_id].blank?
     code[:changeset_id] = params[:changeset_id].to_i unless params[:changeset_id].blank?
     code[:attachment_id] = params[:attachment_id].to_i unless params[:attachment_id].blank?
+    code[:repository_id] = @repository_id if @repository_id
 
     changeset = Changeset.find(code[:changeset_id]) if code[:changeset_id]
     if (changeset == nil and code[:change_id] != nil)
@@ -222,7 +223,10 @@ class CodeReviewController < ApplicationController
 
   def show
     @review = CodeReview.find(params[:review_id].to_i) unless params[:review_id].blank?
+    @repository = @review.repository if @review
     @assignment = CodeReviewAssignment.find(params[:assignment_id].to_i) unless params[:assignment_id].blank?
+    @repository = @assignment.repository if @assignment
+    @repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
     @issue = @review.issue if @review
     @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current) if @review
     target = @review if @review
@@ -314,7 +318,7 @@ class CodeReviewController < ApplicationController
     change = changesets[0]
    
     identifier = change.identifier
-    redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project) + '/' + path + '?rev=' + identifier.to_s
+    redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project, :repository_id => @repository_id) + '/' + path + '?rev=' + identifier.to_s
 
   end
 

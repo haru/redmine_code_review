@@ -35,6 +35,17 @@ class CodeReviewAssignment < ActiveRecord::Base
     return rev if rev
     changeset.revision if changeset
   end
+  
+  def repository
+    @repository ||= change.changeset.repository if change
+    @repository ||= changeset.repository if changeset
+    @repository
+  end
+  
+  def repository_identifier
+    return nil unless repository
+    @repository_identifier ||= repository.identifier_param if repository.respond_to?("identifier_param")
+  end
 
   def self.create_with_changeset(changeset)
     project = changeset.project

@@ -75,7 +75,7 @@ class CodeReviewAssignmentTest < ActiveSupport::TestCase
     end
     should "create new assignment" do
       count = CodeReviewAssignment.find(:all).length
-      changeset = Changeset.generate!(:repository => @repository, :revision => '5000')
+      changeset = Changeset.generate!(:repository => @project.repository, :revision => '5000')
       CodeReviewAssignment.create_with_changeset(changeset)
       assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
     end
