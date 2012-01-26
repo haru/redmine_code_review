@@ -1,27 +1,28 @@
+# Translation by Ki Won Kim (http://xyz37.blog.me, xyz37@naver.com)
 ko:
-  label_add_review: 리뷰 작성
-  label_show_review: 리뷰 보기
-  code_reviews: 코드 리뷰
-  code_review: 코드 리뷰
-  project_module_code_review: 코드 리뷰
-  label_code_path: 경로
-  label_code_reviewer: 리뷰어
-  label_code_author: 커밋 사용자
-  label_code_line: 라인
+  label_add_review: "리뷰 작성"
+  label_show_review: "리뷰 보기"
+  code_reviews: "코드 리뷰"
+  code_review: "코드 리뷰"
+  project_module_code_review: "코드 리뷰"
+  label_code_path: "경로"
+  label_code_reviewer: "리뷰어"
+  label_code_author: "커밋 사용자"
+  label_code_line: "라인"
 
-  label_review_open: 열림
-  label_review_closed: 닫힘
+  label_review_open: "열림"
+  label_review_closed: "닫힘"
 
-  label_reopen_review: 리뷰 다시 열기
-  label_close_review: 리뷰 닫기
+  label_reopen_review: "리뷰 다시 열기"
+  label_close_review: "리뷰 닫기"
 
-  label_code_review_plural: 코드 리뷰
+  label_code_review_plural: "코드 리뷰"
 
   label_line_number: '라인: %{line}'
-  notice_review_updated: 리뷰가 성공적으로 업데이트 되었습니다.
-  label_show_closed_reviews: 닫힌 리뷰 보기
-  label_review: 리뷰
-  label_review_new: 새 리뷰
+  notice_review_updated: "리뷰가 성공적으로 업데이트 되었습니다."
+  label_show_closed_reviews: "닫힌 리뷰 보기"
+  label_review: "리뷰"
+  label_review_new: "새 리뷰"
   review_notify_only_involved_in: "내가 참여하는 프로젝트의 리뷰만"
   review_notify_all: "모든 프로젝트의 리뷰"
 
@@ -29,35 +30,35 @@ ko:
   select_tracker_for_code_reviews: '코드 리뷰 할 일감 유형를 선택하십시오 '
   field_hide_code_review_tab: '"코드 리뷰" 탭 숨기기'
   lable_no_code_reviews: '리뷰 없음'
-  field_comment: 주석
+  field_comment: "주석"
 
   label_if_revision_has_issues: '개정판에 한개 이상의 일감이 있으면'
   label_review_issue_relates: '리뷰중인 일감과 관련이 있음'
   label_review_issue_blocks: '리뷰중인 일감을 block 시킴'
   label_review_issue_do_nothing: '아무것도 하지않음'
 
-  permission_view_code_review: 코드 리뷰 보기
-  permission_add_code_review: 코드 리뷰 추가
-  permission_edit_code_review: 코드 리뷰 수정
-  permission_delete_code_review: 코드 리뷰 삭제
-  permission_code_review_setting: 코드 리뷰 관리
-  permission_assign_code_review: 코드 리뷰 할당
+  permission_view_code_review: "코드 리뷰 보기"
+  permission_add_code_review: "코드 리뷰 추가"
+  permission_edit_code_review: "코드 리뷰 수정"
+  permission_delete_code_review: "코드 리뷰 삭제"
+  permission_code_review_setting: "코드 리뷰 관리"
+  permission_assign_code_review: "코드 리뷰 할당"
 
-  select_tracker_for_code_review_assignment: '코드 리뷰를 할당할 일감 유형를 선택하십시오 '
-  field_assignment_tracker: '일감 유형'
-  review_assignments: '코드 리뷰 일감 할당'
-  review_assigned_for: '코드 리뷰 할당됨'
-  code_review_assigned: '코드 리뷰 할당됨'
-  code_review_reviewed: '코드 리뷰 됨'
-  code_review_requrest: '코드 리뷰 요청'
+  select_tracker_for_code_review_assignment: "코드 리뷰를 할당할 일감 유형를 선택하십시오 "
+  field_assignment_tracker: "일감 유형"
+  review_assignments: "코드 리뷰 일감 할당"
+  review_assigned_for: "코드 리뷰 할당됨"
+  code_review_assigned: "코드 리뷰 할당됨"
+  code_review_reviewed: "코드 리뷰 됨"
+  code_review_requrest: "코드 리뷰 요청"
 
-  label_auto_assign_settings: Auto assignment
-  label_candidates_of_reviewer: Candidates of reviewer
-  label_auto_assignment_filters: Filters
-  auto_assign_filter_expression: 'Path(Regular expression:ex. "/src/.*\.java$")'
-  auto_assign_filter_assign: Assign
-  auto_assign_filter_drop: Drop
+  label_auto_assign_settings: "자동 할당"
+  label_candidates_of_reviewer: "후보 리뷰어"
+  label_auto_assignment_filters: "필터"
+  auto_assign_filter_expression: '경로(정규식:ex. "/src/.*\.java$")'
+  auto_assign_filter_assign: '할당'
+  auto_assign_filter_drop: '제거'
 
-  label_parent_suggestion: Maybe "%{issue_id}" ?
+  label_parent_suggestion: '"%{issue_id}" 정도'
   
-  label_assign_review: "Assign"
+  label_assign_review: "할당"
