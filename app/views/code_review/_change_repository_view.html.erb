@@ -17,10 +17,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <%
-changesets = controller.get_selected_changesets
-if changesets
+
+if @changesets
   changeset_ids = ''
-  changesets.each { |changeset|
+  @changesets.each { |changeset|
     changeset_ids << changeset.revision
     changeset_ids << ','
   }
