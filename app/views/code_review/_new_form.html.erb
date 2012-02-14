@@ -40,6 +40,13 @@
       <label><b><%=h l(:field_subject)%>:</b></label>
       <%= f.text_field :subject, :size => 70, :required => true %>
     </p>
+
+    <% if @setting.tracker_in_review_dialog %>
+      <p>
+        <label><b><%=h l(:label_tracker) %>:</b></label>
+        <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
+      </p>
+    <% end %>
     <p>
       <label><b><%=h l(:field_parent_issue)%>:</b></label>
       <%= f.text_field :parent_id, :size => 10 %>
