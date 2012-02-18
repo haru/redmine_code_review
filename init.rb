@@ -28,6 +28,8 @@ require 'code_review_issue_hooks'
 require 'code_review_projects_helper_patch'
 require 'code_review_attachment_patch'
 
+require 'code_review_project_setting'
+
 require 'dispatcher'
 Dispatcher.to_prepare :redmine_code_review do
   # Guards against including the module multiple time (like in tests)
@@ -58,7 +60,7 @@ Redmine::Plugin.register :redmine_code_review do
   author 'Haruyuki Iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.4.7'
+  version '0.4.8'
   requires_redmine :version_or_higher => '1.3.0'
 
   project_module :code_review do
