@@ -66,7 +66,7 @@ class CodeReviewController < ApplicationController
         @review = CodeReview.new
         @review.issue = Issue.new
         @review.issue.tracker_id = @setting.tracker_id
-        @review.attributes = params[:review]
+        @review.safe_attributes = params[:review]
         @review.project_id = @project.id
         @review.issue.project_id = @project.id
 
@@ -84,7 +84,7 @@ class CodeReviewController < ApplicationController
         @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
 
         if request.post?
-          @review.issue.attributes = params[:issue]
+          @review.issue.safe_attributes = params[:issue]
           @review.issue.save!
           if @review.changeset
             @review.changeset.issues.each {|issue|
@@ -260,7 +260,7 @@ class CodeReviewController < ApplicationController
       @issue.lock_version = params[:issue][:lock_version]
       comment = params[:reply][:comment]
       journal = @issue.init_journal(User.current, comment)
-      @review.attributes = params[:review]
+      @review.safe_attributes = params[:review]
       @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
 
       @issue.save!
@@ -285,7 +285,7 @@ class CodeReviewController < ApplicationController
         @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
         @issue = @review.issue
         @issue.lock_version = params[:issue][:lock_version]
-        @review.attributes = params[:review]
+        @review.safe_attributes = params[:review]
         @review.updated_by_id = @user.id
         @review.save!
         @review.issue.save!

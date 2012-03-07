@@ -21,6 +21,7 @@ class CodeReview < ActiveRecord::Base
   #generator_for :comment => 'Comment'
   generator_for :updated_by_id => 1
   generator_for :action_type => 'diff'
+  generator_for :line => 30
 
   
   def self.next_subject

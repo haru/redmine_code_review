@@ -61,7 +61,8 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
       setting = CodeReviewProjectSetting.find(1)
 
-      post :update, :id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3},
+      post :update, :id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3, 
+        :hide_code_review_tab => true, :auto_relation => CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS},
         :auto_assign => {:filters => {:a => 1}}
       assert_response :redirect
       project = Project.find(1)
@@ -72,6 +73,8 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_equal(project.id, setting.project_id)
       assert_equal(2, setting.tracker_id)
       assert_equal(3, setting.assignment_tracker_id)
+      assert_equal(true, setting.hide_code_review_tab)
+      assert_equal(CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS, setting.auto_relation)
 
       get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true',
         :auto_assign => {}

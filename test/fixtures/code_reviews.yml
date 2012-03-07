@@ -12,6 +12,8 @@ one:
 
   change_id: 1
   
+  line: 5
+  
 
   
 two:
@@ -26,8 +28,7 @@ two:
   updated_by_id: 1
 
   change_id: 1
-
-  
+  line: 5
 
 three:
   id: 3
@@ -43,6 +44,7 @@ three:
   change_id: 1
 
   action_type: diff
+  line: 5
 
 four:
   id: 4
@@ -57,7 +59,8 @@ four:
 
   change_id: 1
 
-  action_type: diff
+  action_type: diff  
+  line: 5  
   
 five:
   id: 5
@@ -72,7 +75,8 @@ five:
 
   change_id: 1
 
-  action_type: diff
+  action_type: diff  
+  line: 5
 
 six:
   id: 6
@@ -87,7 +91,8 @@ six:
 
   change_id: 2
 
-  action_type: diff
+  action_type: diff 
+  line: 5
 seven:
   id: 7
 
@@ -102,6 +107,7 @@ seven:
   change_id: 2
 
   action_type: diff
+  line: 5
 
 eight:
   id: 8
@@ -115,6 +121,7 @@ eight:
   change_id: 2
 
   action_type: diff
+  line: 5
 
 nine:
   id: 9
@@ -131,6 +138,7 @@ nine:
 
   issue_id: 1
   action_type: diff
+  line: 5
   
 ten:
   id: 10
@@ -146,7 +154,8 @@ ten:
   change_id: 2
 
   issue_id: 2
-  action_type: diff
+  action_type: diff  
+  line: 5
 
 eleven:
   id: 11
@@ -161,5 +170,6 @@ eleven:
 
   change_id: 3
 
-  action_type: diff
+  action_type: diff  
+  line: 5
 

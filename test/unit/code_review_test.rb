@@ -34,6 +34,7 @@ class CodeReviewTest < ActiveSupport::TestCase
     code_review.updated_by_id = 1;
     code_review.subject = "aaa"
     code_review.action_type = 'diff'
+    code_review.line = 20
 
     assert code_review.save
     

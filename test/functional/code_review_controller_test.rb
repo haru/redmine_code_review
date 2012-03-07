@@ -109,6 +109,29 @@ class CodeReviewControllerTest < ActionController::TestCase
         :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
       assert_response 220
     end
+    
+    should "save safe_attributes" do
+           @request.session[:user_id] = 1
+      project = Project.find(1)
+      change = Change.find(3)
+      changeset = change.changeset
+      issue = Issue.generate_for_project!(project)
+      changeset.issues << issue
+      changeset.save
+      count = CodeReview.find(:all).length
+      post :new, :id => 1, :review => {:line => 10, :change_id => 3,
+        :comment => 'aaa', :subject => 'bbb', :parent_id => 1, :status_id => 1}, :action_type => 'diff'
+      assert_response :success
+      assert_template '_add_success'
+      
+      review = assigns :review
+      assert_equal(1, review.project_id)
+      assert_equal(3, review.change_id)
+      assert_equal("bbb", review.subject)
+      assert_equal(1, review.parent_id)
+      assert_equal("aaa", review.comment)
+      assert_equal(1, review.status_id)
+    end
 
     should "create review for attachment" do
       @request.session[:user_id] = 1

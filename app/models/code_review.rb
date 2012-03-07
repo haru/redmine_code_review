@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class CodeReview < ActiveRecord::Base
+  include Redmine::SafeAttributes
   unloadable
   belongs_to :project
   belongs_to :change
@@ -22,15 +23,13 @@ class CodeReview < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :attachment
 
-  validates_presence_of :project_id
-  validates_presence_of :user_id
-  validates_presence_of :updated_by_id
-  validates_presence_of :issue
-  validates_presence_of :subject
-  validates_presence_of :action_type
+  validates_presence_of :project_id, :user_id, :updated_by_id, :issue, 
+    :subject, :action_type, :line
 
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
+  
+  safe_attributes 'change_id', 'subject', 'line', 'parent_id', 'comment', 'status_id'
 
   def before_create
     issue = Issue.new unless issue

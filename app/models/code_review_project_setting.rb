@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class CodeReviewProjectSetting < ActiveRecord::Base
   unloadable
+  include Redmine::SafeAttributes
   include CodeReviewAutoAssignSettings
 
   belongs_to :project
@@ -27,6 +28,8 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   validates_presence_of :assignment_tracker_id
 
   before_save :set_assignment_settings
+  
+  safe_attributes 'tracker_id', 'assignment_tracker_id', 'hide_code_review_tab', 'auto_relation'
 
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1
