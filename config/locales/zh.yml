@@ -26,39 +26,39 @@ zh:
   review_notify_only_involved_in: "仅包含我参加的工作"
   review_notify_all: "所有我参加项目的评论"
 
-  old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
-  select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
-  field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
-  lable_no_code_reviews: 'No reviews'
-  field_comment: Comment
+  old_review_data_found: '已发现现有评审记录。您想将它们转换为新记录吗？'
+  select_tracker_for_code_reviews: '设置代码评审的默认跟踪标签'
+  field_hide_code_review_tab: '隐藏代码评审页'
+  lable_no_code_reviews: '无评审'
+  field_comment: 评论
 
-  label_if_revision_has_issues: 'If revision has one more issues'
-  label_review_issue_relates: 'Review issue relates to them'
-  label_review_issue_blocks: 'Review issue blocks them'
-  label_review_issue_do_nothing: 'Do nothing'
+  label_if_revision_has_issues: '若修订存在问题'
+  label_review_issue_relates: '与之相关的评审问题'
+  label_review_issue_blocks: '与之无关的评审问题'
+  label_review_issue_do_nothing: '什么也不做'
 
-  permission_view_code_review: View code reviews
-  permission_add_code_review: Add code reviews
-  permission_edit_code_review: Edit code reviews
-  permission_delete_code_review: Delete code reiews
-  permission_code_review_setting: Manage code reviews
-  permission_assign_code_review: Assign code reviews
+  permission_view_code_review: 查看评审
+  permission_add_code_review: 添加评审
+  permission_edit_code_review: 编辑评审
+  permission_delete_code_review: 删除评审
+  permission_code_review_setting: 管理评审
+  permission_assign_code_review: 分配评审任务
 
-  select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
-  field_assignment_tracker: 'Tracker'
-  review_assignments: Review assignments
-  review_assigned_for: Review assigned for
-  code_review_assigned: Assigned
-  code_review_reviewed: Reviewed
-  code_review_requrest: Review request
+  select_tracker_for_code_review_assignment: '代码评审指派时，设置跟踪标签。'
+  field_assignment_tracker: '跟踪'
+  review_assignments: 评审任务
+  review_assigned_for: 评审分配给
+  code_review_assigned: 已分配
+  code_review_reviewed: 已评审
+  code_review_requrest: 评审请求
 
-  label_auto_assign_settings: Auto assignment
-  label_candidates_of_reviewer: Candidates of reviewer
-  label_auto_assignment_filters: Filters
-  auto_assign_filter_expression: 'Path(Regular expression:ex. "/src/.*\.java$")'
-  auto_assign_filter_assign: Assign
-  auto_assign_filter_drop: Drop
+  label_auto_assign_settings: 自动分派
+  label_candidates_of_reviewer: 候选评审员
+  label_auto_assignment_filters: 过滤器
+  auto_assign_filter_expression: '路径(Regular expression:ex. "/src/.*\.java$")'
+  auto_assign_filter_assign: 指派
+  auto_assign_filter_drop: 移除
 
   label_parent_suggestion: Maybe "%{issue_id}" ?
   
-  label_assign_review: "Assign"
+  label_assign_review: "分配给"
