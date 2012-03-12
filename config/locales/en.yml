@@ -62,3 +62,4 @@ en:
   
    
   label_assign_review: "Assign"
+  field_tracker_in_review_dialog: 'Allow selecting tracker when creating code review?'

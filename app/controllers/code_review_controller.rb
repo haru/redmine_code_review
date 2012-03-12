@@ -65,7 +65,9 @@ class CodeReviewController < ApplicationController
       CodeReview.transaction {
         @review = CodeReview.new
         @review.issue = Issue.new
-        @review.issue.tracker_id = @setting.tracker_id
+        unless @setting.tracker_in_review_dialog
+          @review.issue.tracker_id = @setting.tracker_id
+        end
         @review.safe_attributes = params[:review]
         @review.project_id = @project.id
         @review.issue.project_id = @project.id
