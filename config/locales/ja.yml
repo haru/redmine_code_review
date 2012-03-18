@@ -61,4 +61,5 @@ ja:
   label_parent_suggestion: もしかして "%{issue_id}" ?
   
   label_assign_review: "アサインする"
+  field_tracker_in_review_dialog: "レビュー作成時にトラッカーを選択する"
 
