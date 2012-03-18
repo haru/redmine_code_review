@@ -65,9 +65,8 @@ class CodeReviewController < ApplicationController
       CodeReview.transaction {
         @review = CodeReview.new
         @review.issue = Issue.new
-        unless @setting.tracker_in_review_dialog
-          @review.issue.tracker_id = @setting.tracker_id
-        end
+        @review.issue.tracker_id = @setting.tracker_id
+        @review.issue.safe_attributes = params[:issue] unless params[:issue].blank? 
         @review.safe_attributes = params[:review]
         @review.project_id = @project.id
         @review.issue.project_id = @project.id
@@ -84,9 +83,8 @@ class CodeReviewController < ApplicationController
         @issue = @review.issue
 
         @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
-
-        if request.post?
-          @review.issue.safe_attributes = params[:issue]
+        
+        if request.post?          
           @review.issue.save!
           if @review.changeset
             @review.changeset.issues.each {|issue|
@@ -111,11 +109,12 @@ class CodeReviewController < ApplicationController
         else
           change_id = params[:change_id].to_i unless params[:change_id].blank?
           @review.change = Change.find(change_id) if change_id
-          @review.line = params[:line].to_i
+          @review.line = params[:line].to_i unless params[:line].blank? 
           if (@review.changeset and @review.changeset.user_id)
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
-          if @review.changeset
+          @default_version_id = @review.issue.fixed_version.id if @review.issue.fixed_version
+          if @review.changeset and @default_version_id.blank?
             @review.changeset.issues.each {|issue|
               if issue.fixed_version
                 @default_version_id = issue.fixed_version.id
