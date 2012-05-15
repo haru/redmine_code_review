@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require 'redmine'
 begin
-require 'config/initializers/session_store.rb'
+  require 'config/initializers/session_store.rb'
 rescue LoadError
 end
 require 'gravatar'
@@ -28,31 +28,25 @@ require 'code_review_issue_hooks'
 require 'code_review_projects_helper_patch'
 require 'code_review_attachment_patch'
 
-require 'code_review_project_setting'
 
-require 'dispatcher'
-Dispatcher.to_prepare :redmine_code_review do
-  # Guards against including the module multiple time (like in tests)
-  # and registering multiple callbacks
-  unless Change.included_modules.include? CodeReviewChangePatch
-    Change.send(:include, CodeReviewChangePatch)
-  end
+unless Change.included_modules.include? CodeReviewChangePatch
+  Change.send(:include, CodeReviewChangePatch)
+end
   
-  unless Changeset.included_modules.include? CodeReviewChangesetPatch
-    Changeset.send(:include, CodeReviewChangesetPatch)
-  end
+unless Changeset.included_modules.include? CodeReviewChangesetPatch
+  Changeset.send(:include, CodeReviewChangesetPatch)
+end
   
-  unless Issue.included_modules.include? CodeReviewIssuePatch
-    Issue.send(:include, CodeReviewIssuePatch)
-  end
+unless Issue.included_modules.include? CodeReviewIssuePatch
+  Issue.send(:include, CodeReviewIssuePatch)
+end
   
-  unless ProjectsHelper.included_modules.include? CodeReviewProjectsHelperPatch
-    ProjectsHelper.send(:include, CodeReviewProjectsHelperPatch)
-  end
+unless ProjectsHelper.included_modules.include? CodeReviewProjectsHelperPatch
+  ProjectsHelper.send(:include, CodeReviewProjectsHelperPatch)
+end
   
-  unless Attachment.included_modules.include? CodeReviewAttachmentPatch
-    Attachment.send(:include, CodeReviewAttachmentPatch)
-  end
+unless Attachment.included_modules.include? CodeReviewAttachmentPatch
+  Attachment.send(:include, CodeReviewAttachmentPatch)
 end
 
 Redmine::Plugin.register :redmine_code_review do
@@ -75,9 +69,9 @@ Redmine::Plugin.register :redmine_code_review do
 
   menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
     :if => Proc.new{|project|
-                  setting = CodeReviewProjectSetting.find_or_create(project)
-                  project.repository != nil  and setting and !setting.hide_code_review_tab
-             }, :after => :repository
+    setting = CodeReviewProjectSetting.find_or_create(project)
+    project.repository != nil  and setting and !setting.hide_code_review_tab
+  }, :after => :repository
 
   
   Redmine::WikiFormatting::Macros.register do

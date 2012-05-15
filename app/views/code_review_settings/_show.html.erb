@@ -59,7 +59,7 @@
   @code_review_setting = CodeReviewProjectSetting.find_or_create(@project)
 %>
 
-  <% labelled_tabular_form_for :setting, @code_review_setting,
+  <%= labelled_form_for :setting, @code_review_setting,
     :url => {:controller => 'code_review_settings',
     :action => 'update', :id => @project, :tab => 'code_review',
     :partial => 'code_review_settings/update',
@@ -105,7 +105,9 @@
         <p>
           <label><%=h l(:field_author)%></label>
           <%= select :auto_assign, :author_id,
-            (@project.members.collect {|m| [m.user.name, m.user.id]}), :selected => @auto_assign.author_id, :required => true %>
+            (@project.users.collect {|user|
+              [user.name, user.id]
+            }), :selected => @auto_assign.author_id, :required => true %>
         </p>
         <p>
           <label><%=h l(:label_candidates_of_reviewer)%></label>
