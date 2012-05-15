@@ -74,7 +74,7 @@
 
     <!-- review comment edit form -->
     <div class="box" id="update-form-<%= @review.id %>" style="display:none;">
-      <% remote_form_for :review, @review,
+      <%= remote_form_for :review, @review,
              :url => {:controller => 'code_review',
                       :action => 'update',
                       :id => @project,
@@ -142,7 +142,7 @@
       <%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %>
     </p>
     <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
-      <% form_for :reply, @reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
+      <%= form_for @reply, :as => :reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
         <%= hidden_field_tag :review_id, @review.id %>
         <%= hidden_field :review,  :lock_version%>
         <%= hidden_field :issue,  :lock_version%>

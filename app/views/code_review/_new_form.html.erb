@@ -22,7 +22,7 @@
   <h2>
     <%= l(:label_line_number, :line => @review.line) %>
   </h2>
-  <% form_for :review, @review,
+  <%= form_for @review,:as => :review,
     :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
     <%= error_messages_for 'review' %>
     <%= error_messages_for 'issue' %>
