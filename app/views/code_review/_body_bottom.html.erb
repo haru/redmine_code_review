@@ -51,10 +51,9 @@ if project and controller and project.module_enabled?(:code_review)
           rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
           review_id = parameters['review_id']
           rev = parameters['rev']
-          patharray = parameters['path']
-          unless (patharray.blank? or patharray.empty?)
-            path = ''
-            patharray.each{|el| path << '/' + el}
+          path = parameters['path']
+
+          unless path.blank?
             path = url_encode(path)
             repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
             url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project, :repository_id => repository_id

@@ -39,7 +39,7 @@
   escaped_path = @path.gsub("'"){"\\'"} if @path
   -%>
 
-  <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
+  <%= raw show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
 </div>
 
 <script type="text/javascript">

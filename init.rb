@@ -54,8 +54,8 @@ Redmine::Plugin.register :redmine_code_review do
   author 'Haruyuki Iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.4.8'
-  requires_redmine :version_or_higher => '1.3.0'
+  version '0.5.0'
+  requires_redmine :version_or_higher => '2.0.0'
 
   project_module :code_review do
     permission :view_code_review, {:code_review => [:update_diff_view, :update_attachment_view, :update_revisions_view, :index, :show]}
