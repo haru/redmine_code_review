@@ -196,7 +196,7 @@ class CodeReviewController < ApplicationController
     end
     @change = nil
     changeset.changes.each{|chg|
-      @change = chg if ((chg.path == fullpath) or ('/' + chg.path == fullpath))
+      @change = chg if ((chg.path == fullpath) or ("/#{chg.path}" == fullpath)) or (chg.path == "/#{@path}")
     }
     unless @change
       @changeset = changeset
