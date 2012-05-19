@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 require 'attachments_controller'
 
 # Re-raise errors caught by the controller.
@@ -30,7 +30,7 @@ class AttachmentsControllerTest < ActionController::TestCase
     @controller = AttachmentsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    Attachment.storage_path = "#{RAILS_ROOT}/test/fixtures/files"
+    Attachment.storage_path = "#{Rails.root}/test/fixtures/files"
     EnabledModule.generate!(:project_id => 1, :name => 'code_review')
     EnabledModule.generate!(:project_id => 2, :name => 'code_review')
 

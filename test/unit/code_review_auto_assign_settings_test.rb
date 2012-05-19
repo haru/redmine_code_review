@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require File.dirname(__FILE__) + '/../test_helper'
+require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   fixtures :code_review_project_settings, :projects, :users, :trackers, :repositories, :projects_trackers
