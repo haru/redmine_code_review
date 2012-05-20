@@ -28,11 +28,28 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 #ngines::Testing.set_fixture_path
 
 # Mock out a file
-  def mock_file
-    file = 'a_file.png'
-    file.stubs(:size).returns(32)
-    file.stubs(:original_filename).returns('a_file.png')
-    file.stubs(:content_type).returns('image/png')
-    file.stubs(:read).returns(false)
-    file
+def mock_file
+  file = 'a_file.png'
+  file.stubs(:size).returns(32)
+  file.stubs(:original_filename).returns('a_file.png')
+  file.stubs(:content_type).returns('image/png')
+  file.stubs(:read).returns(false)
+  file
+end
+
+FactoryGirl.define do
+
+  factory :attachment do
+  
+    container{
+      Project.find(1)
+    }
+    file {
+      ActiveSupport::TestCase.mock_file
+    }
+    author {
+      User.find(1)
+    }
   end
+
+end

@@ -24,15 +24,20 @@ class AttachmentsController; def rescue_action(e) raise e end; end
 
 class AttachmentsControllerTest < ActionController::TestCase
   fixtures :users, :projects, :roles, :members, :member_roles, :enabled_modules, :issues, :trackers, :attachments,
-           :versions, :wiki_pages, :wikis, :documents
+    :versions, :wiki_pages, :wikis, :documents
   
   def setup
     @controller = AttachmentsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     Attachment.storage_path = "#{Rails.root}/test/fixtures/files"
-    EnabledModule.generate!(:project_id => 1, :name => 'code_review')
-    EnabledModule.generate!(:project_id => 2, :name => 'code_review')
+    
+    [1, 2].each { |num|
+      project = Project.find(num)
+      project.enable_module!('code_review')
+      project.save!
+    }
+    
 
     roles = Role.find(:all)
     roles.each {|role|
@@ -45,8 +50,8 @@ class AttachmentsControllerTest < ActionController::TestCase
    
   def test_show_diff
     @request.session[:user_id] = 1
-    attachment = Attachment.generate!(:filename => "test.diff")
-    get :show, :id => attachment.id
+    attachment = FactoryGirl.create(:attachment, filename: "test.diff")
+    get :show, :id => attachment.id, :type => 'inline'
     assert_response :success
     assert_template 'diff'
     assert_equal 'text/html', @response.content_type
@@ -54,8 +59,8 @@ class AttachmentsControllerTest < ActionController::TestCase
   
   def test_show_text_file
     @request.session[:user_id] = 1
-    attachment = Attachment.generate!(:filename => "test.rb")
-    get :show, :id => attachment.id
+    attachment = FactoryGirl.create(:attachment, filename: "test.rb")
+    get :show, :id => attachment.id, :type => 'inline'
     assert_response :success
     assert_template 'file'
     assert_equal 'text/html', @response.content_type
