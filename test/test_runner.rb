@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2012  Haruyuki Iida
+# Copyright (C) 2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,34 +15,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 
-# Ensure that we are using the temporary fixture path
-#ngines::Testing.set_fixture_path
+require 'simplecov'
+require 'simplecov-rcov'
+SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+SimpleCov.start 'rails'
 
-# Mock out a file
-def mock_file
-  file = 'a_file.png'
-  file.stubs(:size).returns(32)
-  file.stubs(:original_filename).returns('a_file.png')
-  file.stubs(:content_type).returns('image/png')
-  file.stubs(:read).returns(false)
-  file
-end
+require 'fileutils'
+testdir = File.dirname(File.expand_path(__FILE__))
 
-FactoryGirl.define do
+Dir::chdir("#{testdir}/..")
 
-  factory :attachment do
-  
-    container{
-      Project.find(1)
-    }
-    file {
-      ActiveSupport::TestCase.mock_file
-    }
-    author {
-      User.find(1)
-    }
-  end
+require "#{testdir}/test_helper"
 
-end
+Dir::glob("#{testdir}/fixtures/*.yml").each {|f|
+  FileUtils.copy(f, "#{testdir}/../../../test/fixtures/")
+}
+
+Dir::glob("#{testdir}/**/*test.rb").each {|f|
+  require f
+}

@@ -3,3 +3,4 @@
 ^VERSION$
 ^code_review.gemspec
 ^pkg/
+^Gemfile.lock$
