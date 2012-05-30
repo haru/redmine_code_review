@@ -56,16 +56,15 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   def test_revision
     @request.session[:user_id] = 1
-    change = Change.generate!
+    change = FactoryGirl.create(:change)
     changeset = change.changeset
     project = Project.find(1)
     project.repository.destroy
     project.repository = changeset.repository
     issue = Issue.generate_for_project!(project, {:description => 'test'})
-    review = CodeReview.generate!(:change => change, :project => project, :issue => issue)
+    review = FactoryGirl.create(:code_review, change: change, project: project, issue: issue)
     get :revision, :id => project.id, :rev => changeset.revision, :path => change.path.split('/')
     #assert_response :success
-    
   end
 
   def test_revisions
@@ -82,15 +81,13 @@ class RepositoriesControllerTest < ActionController::TestCase
   
   def test_diff
     @request.session[:user_id] = 1
-    #get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/')
-    get :diff, :id => 1, :path => ['/'], :rev => 1
+    get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/'), :rev => 2
     #assert_response :success
-
   end
 
   def test_entry
     @request.session[:user_id] = 1
-    get :entry, :id => 1, :path => ['/']
+    get :entry, :id => 1, :path => 'test/some/path/in/the/repo'.split('/'), :rev => 2
     assert_response :success
   end
 end
