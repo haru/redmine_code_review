@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -47,20 +47,20 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
   end
 
   def test_assignment_count    
-    change = Change.generate
+    change = FactoryGirl.create(:change)
     assert_equal(0, change.assignment_count)
-    change.code_review_assignments << CodeReviewAssignment.generate
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
     assert_equal(1, change.assignment_count)
-    change.code_review_assignments << CodeReviewAssignment.generate
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
     assert_equal(2, change.assignment_count)
   end
 
   def test_open_assignment_count
-    change = Change.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
+    change = FactoryGirl.create(:change)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
     assert_equal(4, change.open_assignment_count)
     close_status = IssueStatus.find(5)
     change.code_review_assignments[0].issue.status = close_status
@@ -70,11 +70,11 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
   end
 
   def test_closed_assignment_count
-    change = Change.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
-    change.code_review_assignments << CodeReviewAssignment.generate
+    change = FactoryGirl.create(:change)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
     assert_equal(0, change.closed_assignment_count)
     close_status = IssueStatus.find(5)
     change.code_review_assignments[0].issue.status = close_status
@@ -85,14 +85,14 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
 
   context "open_assignments" do
     should "return empty array if change has no assignments." do
-      change = Change.generate
+      change = FactoryGirl.create(:change)
       assert_equal(0, change.open_assignments.length)
     end
 
     should "return empty array if change has no open assignments" do
-      change = Change.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
+      change = FactoryGirl.create(:change)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
       close_status = IssueStatus.find(5)
       change.code_review_assignments.each{|assignments|
         assignments.issue.status = close_status
@@ -101,10 +101,10 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     end
 
     should "return 2 assignments if change has 2 open assignments" do
-      change = Change.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
+      change = FactoryGirl.create(:change)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
       close_status = IssueStatus.find(5)
       change.code_review_assignments[0].issue.status = close_status
 
@@ -112,11 +112,11 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     end
 
     should "return 2 assignments if change has 2 open assignments which are assigned to user_id 1" do
-      change = Change.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
-      change.code_review_assignments << CodeReviewAssignment.generate
+      change = FactoryGirl.create(:change)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
       close_status = IssueStatus.find(5)
       change.code_review_assignments[0].issue.status = close_status
       change.code_review_assignments[0].issue.assigned_to_id = 1

@@ -89,7 +89,7 @@ FactoryGirl.define do
   end
   
   factory :code_review_assignment do
-    
+    issue_id 1
   end
   
   factory :issue do
