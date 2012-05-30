@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -137,7 +137,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
       project = Project.find(1)
       issue = Issue.generate_for_project!(project)
-      attachment = Attachment.generate!(:container => issue)
+      attachment = FactoryGirl.create(:attachment, container: issue)
       count = CodeReview.find(:all).length
       post :new, :id => 1, :review => {:line => 1, :comment => 'aaa',
         :subject => 'bbb', :attachment_id => attachment.id}, :action_type => 'diff'
@@ -157,7 +157,7 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_destroy
     project = Project.find(1)
     issue = Issue.generate_for_project!(project)
-    review = CodeReview.generate_for_project!(project)
+    review = FactoryGirl.create(:code_review, project: project)
     count = CodeReview.find(:all).length
     @request.session[:user_id] = 1
     get :destroy, :id => 1, :review_id => review.id

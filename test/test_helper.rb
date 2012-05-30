@@ -98,5 +98,12 @@ FactoryGirl.define do
       User.find(1)
     }
   end
+  
+  factory :code_review do
+    issue_id 1
+    updated_by_id 1
+    line 10
+    action_type 'diff'
+  end
 
 end
