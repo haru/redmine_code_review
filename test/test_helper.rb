@@ -87,5 +87,16 @@ FactoryGirl.define do
       FactoryGirl.create(:changeset)
     }
   end
+  
+  factory :code_review_assignment do
+    
+  end
+  
+  factory :issue do
+    subject 'hoge'
+    author{
+      User.find(1)
+    }
+  end
 
 end

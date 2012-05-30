@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -48,25 +48,26 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     changeset = Changeset.find(100)
     assert_equal(0, changeset.assignment_count)
     change = changeset.changes[0]
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 2)
     change = changeset.changes[1]
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 3)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
 
     assert_equal(3, changeset.assignment_count)
   end
 
   def test_completed_assignment_pourcent
-    changeset = Changeset.generate!
-    Change.generate!(:changeset => changeset)
-    Change.generate!(:changeset => changeset)
-    changeset.reload
+    changeset = FactoryGirl.create(:changeset)
+    FactoryGirl.create(:change, changeset: changeset)
+    FactoryGirl.create(:change, changeset: changeset)
+    
+    changeset = Changeset.find(changeset.id)
     change = changeset.changes[0]
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 2)
     change = changeset.changes[1]
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 3)
-    change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 4)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
+    change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 4)
     issues = []
     1.upto(4) {|i|
       issues[i - 1] = Issue.find(i)
@@ -91,50 +92,50 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   context "closed_assignment_pourcent" do
    
     should "returns 0 if changeset has no assignments." do
-      change = Change.generate!
+      change = FactoryGirl.create(:change)
       changeset = change.changeset
       assert_equal(0, changeset.closed_assignment_pourcent)
     end
 
     should "returns 0 if changeset has no closed assignments." do
-      change = Change.generate!
+      change = FactoryGirl.create(:change)
       changeset = change.changeset
       @project = Project.generate!
       issue1 = Issue.generate_for_project!(@project, :status_id => 1)
       issue2 = Issue.generate_for_project!(@project, :status_id => 1)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
       assert_equal(0, changeset.closed_assignment_pourcent)
     end
 
     should "returns 100 if changeset has no closed assignments." do
-      change = Change.generate!
+      change = FactoryGirl.create(:change)
       changeset = change.changeset
-      @project = Project.generate!
+      @project = Project.find(1)
       issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
       changeset =Changeset.find(changeset.id)
       assert_equal(100, changeset.closed_assignment_pourcent)
     end
 
     should "returns 50 if half of assignments were closed." do
-      change = Change.generate!
+      change = FactoryGirl.create(:change)
       changeset = change.changeset
       @project = Project.generate!
       issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
       issue3 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       issue4 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue1)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue2)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
-      change = Change.generate!(:changeset => changeset)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue3)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue => issue4)
+      change = FactoryGirl.create(:change, changeset: changeset)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue3)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue4)
       change.save!
       assert_equal(50, changeset.closed_assignment_pourcent)
     end
@@ -142,25 +143,25 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
 
   context "assignment_issues" do
     should "returns empty array if changeset has no assignments." do
-      change = Change.generate!
+      change = FactoryGirl.create(:change)
       changeset = change.changeset
       assert_not_nil(changeset.assignment_issues)
     end
 
     should "returns assignments if changeset has assignments." do
-      change = Change.generate!
+      change = FactoryGirl.create(:change)
       changeset = change.changeset
 
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 1)
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 2)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 2)
       change.save!
  
       assert_not_nil(changeset.assignment_issues)
       assert_equal(2, changeset.assignment_issues.length)
 
-      change = Change.generate!(:changeset => changeset)
+      change = FactoryGirl.create(:change, changeset: changeset)
 
-      change.code_review_assignments << CodeReviewAssignment.generate!(:issue_id => 3)
+      change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
       change.save!
       changeset = Changeset.find(changeset.id)
 
@@ -174,11 +175,11 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     setup do
       project = Project.find(1)
       setting = CodeReviewProjectSetting.find_or_create(project)
-      project.repository.destroy if project.repository
-      repository = Repository.new
-      repository.project = project
-      @changeset = Changeset.generate!
-      @changeset.repository = repository
+
+      repository = project.repository
+
+      @changeset = FactoryGirl.create(:changeset, repository: repository)
+      
       auto_assign = AutoAssignSettings.new
       auto_assign.enabled = true
       filters = []
@@ -205,9 +206,9 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
 
     should "create assignments" do
       count = CodeReviewAssignment.find(:all).length
-      change1 = Change.generate!(:path => '/aaa/bbb/ccc.rb', :changeset => @changeset)
+      change1 = FactoryGirl.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
       assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
-      change2 = Change.generate!(:path => '/aaa/bbb/ccc2.rb', :changeset => @changeset)
+      change2 = FactoryGirl.create(:change, path: '/aaa/bbb/ccc2.rb', changeset: @changeset)
       assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
     end
   end
