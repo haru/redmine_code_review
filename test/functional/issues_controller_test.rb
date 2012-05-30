@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -71,14 +71,14 @@ class IssuesControllerTest < ActionController::TestCase
     get :show, :id => issue.id
 
     issue = Issue.generate_for_project!(project)
-    assignment = CodeReviewAssignment.generate!(:issue => issue, :rev => 'aaa', :file_path => nil)
+    assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: nil)
     get :show, :id => assignment.issue.id
 
     issue = Issue.generate_for_project!(Project.find(1))
-    assignment = CodeReviewAssignment.generate!(:issue => issue, :rev => 'aaa', :file_path => '/aaa/bbb')
+    assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: '/aaa/bbb')
     get :show, :id => assignment.issue.id
     
-    review = CodeReview.generate_for_project!(project)
+    review = FactoryGirl.create(:code_review, project: project)
     get :show, :id => review.issue.id
 
   end

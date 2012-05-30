@@ -105,5 +105,11 @@ FactoryGirl.define do
     line 10
     action_type 'diff'
   end
+  
+  factory :code_review_project_setting do
+    project_id 1
+    tracker_id 1
+    assignment_tracker_id 1
+  end
 
 end
