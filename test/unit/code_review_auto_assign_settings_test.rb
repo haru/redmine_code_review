@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2010-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
       should "return string if @yml is not nil." do
       
         str =<<EOF
---- 
+---
 aaa: bbb
 ccc: ccc
 EOF
@@ -109,12 +109,12 @@ EOF
     
       should "return false if assignable_list is nil" do
         @settings.assignable_list = nil
-        assert !@settings.assignable?(1)
+        assert !@settings.assignable?(User.find(1))
       end
 
       should "return false if assignable_list is empty" do
         @settings.assignable_list = []
-        assert !@settings.assignable?(1)
+        assert !@settings.assignable?(User.find(1))
       end
 
       should "return false if assignable_list hasn't specified user_id" do
@@ -240,40 +240,40 @@ EOF
       @settings.accept_for_default = true
 
       project = Project.find(1)
-      project.repository.destroy if project.repository
-      repository = Repository.new
-      repository.project = project
-      @changeset = Changeset.generate!
-      @changeset.repository = repository
+      #project.repository.destroy if project.repository
+      #repository = Repository.new
+      #repository.project = project
+      @changeset = FactoryGirl.create(:changeset, repository: project.repository)
+      #@changeset.repository = repository
     end
 
     should "return true if filters.length is 0 and accept_for_default is true." do
       @settings.filters = []
-      change = Change.generate!(:changeset => @changeset)
+      change = FactoryGirl.create(:change, changeset: @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return true if filter matches and accept? is true" do
       @settings.accept_for_default = false
-      change = Change.generate!(:path => '/aaa/bbb/ccc.rb', :changeset => @changeset)
+      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
       assert @settings.match_with_change?(change)
-      change = Change.generate!(:path => '/trunk/plugins/redmine_code_review/lib/ccc.rb', :changeset => @changeset)
+      change = FactoryGirl.create(:change, path: '/trunk/plugins/redmine_code_review/lib/ccc.rb', changeset: @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return false if filter matches and accept? is false" do
-      change = Change.generate!(:path => '/aaa/bbb/ccctest.rb', :changeset => @changeset)
+      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccctest.rb', changeset: @changeset)
       assert !@settings.match_with_change?(change)
     end
 
     should "return false if filter doesn't matches and accept_for_default is false" do
-      change = Change.generate!(:path => '/aaa/bbb/ccctest.html', :changeset => @changeset)
+      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
       @settings.accept_for_default = false
       assert !@settings.match_with_change?(change)
     end
 
     should "return true if filter doesn't matches and accept_for_default is true" do
-      change = Change.generate!(:path => '/aaa/bbb/ccctest.html', :changeset => @changeset)
+      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
       @settings.accept_for_default = true
       assert @settings.match_with_change?(change)
     end
@@ -281,7 +281,7 @@ EOF
     should "return false if filters.length is 0 and accept_for_default is false." do
       @settings.filters = []
       @settings.accept_for_default = false
-      change = Change.generate!(:changeset => @changeset)
+      change = FactoryGirl.create(:change, changeset: @changeset)
       assert !@settings.match_with_change?(change)
     end
   end

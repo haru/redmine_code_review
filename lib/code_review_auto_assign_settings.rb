@@ -164,7 +164,7 @@ module CodeReviewAutoAssignSettings
       list.collect!{|item| item.to_i}
       list.delete(commiter_id)
       return nil if list.empty?
-      assign_to = list.choice
+      assign_to = list.at(rand(list.size))
       project.users.each do |user|
         return assign_to if assign_to.to_i == user.id
       end

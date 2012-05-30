@@ -44,5 +44,48 @@ FactoryGirl.define do
       User.find(1)
     }
   end
+  
+  factory :repository do
+    project_id 1
+    url "file:///#{Rails.root}/tmp/test/subversion_repository"
+    root_url "file:///#{Rails.root}/tmp/test/subversion_repository"
+    password ""
+    login ""
+    type {
+      scm = 'Subversion'
+      unless Setting.enabled_scm.include?(scm)
+        Setting.enabled_scm << scm
+      end
+      scm
+    }
+    is_default true
+  end
+  
+  factory :changeset do
+    sequence(:revision, 1000)
+    committed_on{
+      Date.today
+    }
+    #association :repository
+    repository {
+      scm = 'Subversion'
+      unless Setting.enabled_scm.include?(scm)
+        Setting.enabled_scm << scm
+      end
+      Repository.find(10)
+    }
+  end
+  
+  factory :change do
+    action {
+      "A"
+    }
+    sequence(:path){ |n|
+      "test/dir/aaa#{n}"
+    }
+    changeset {
+      FactoryGirl.create(:changeset)
+    }
+  end
 
 end
