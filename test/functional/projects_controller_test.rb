@@ -71,7 +71,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
         context "and module" do
           setup do
-            EnabledModule.generate! :project_id => 1, :name => 'code_review'
+            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "not exist tag id get" do
@@ -139,7 +139,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
         context "and module" do
           setup do
-            EnabledModule.generate! :project_id => 1, :name => 'code_review'
+            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "not exist tag id get" do
@@ -218,7 +218,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
         context "and module" do
           setup do
-            EnabledModule.generate! :project_id => 1, :name => 'code_review'
+            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "not exist tag id get" do
@@ -297,7 +297,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
         context "and module" do
           setup do
-            EnabledModule.generate! :project_id => 1, :name => 'code_review'
+            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "exist tag id get" do

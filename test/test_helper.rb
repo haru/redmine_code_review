@@ -111,5 +111,9 @@ FactoryGirl.define do
     tracker_id 1
     assignment_tracker_id 1
   end
+  
+  factory :enabled_module do
+    
+  end
 
 end
