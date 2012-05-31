@@ -25,6 +25,7 @@ module CodeReviewChangePatch
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_reviews, :dependent => :destroy
       has_many :code_review_assignments, :dependent => :destroy
+      after_save :review_auto_assign
       
     end
 
@@ -73,7 +74,7 @@ module ChangeInstanceMethodsCodeReview
     code_review_assignments.select { |o| o.is_closed? }.length
   end
 
-  def after_save
+  def review_auto_assign
     return unless CodeReviewAssignment.find(:all, :conditions => ['changeset_id = ?', changeset.id]).length == 0
     return unless changeset.repository
     return unless changeset.repository.project
