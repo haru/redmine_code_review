@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -67,7 +67,7 @@ module CodeReviewAutoAssignSettings
     end
 
     def description
-      yml[:description]
+      Redmine::CodesetUtil.to_utf8_by_setting(yml[:description])
     end
 
     def subject=(sbj)
@@ -75,7 +75,7 @@ module CodeReviewAutoAssignSettings
     end
 
     def subject
-      yml[:subject]
+      Redmine::CodesetUtil.to_utf8_by_setting(yml[:subject])
     end
 
     def filter_enabled=(flag)
