@@ -60,4 +60,5 @@ bg:
 
   label_parent_suggestion: Може би "%{issue_id}" ?
     
-  label_assign_review: "Assign"
+  label_assign_review: "Назначаване"
+  field_tracker_in_review_dialog: 'Разрешено е да се избира тракер при създаване на код ревю'

@@ -32,4 +32,4 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 * es.yml - Ignacio Carrera
 * pl.yml - Rafal Grzymkowski
 * sv.yml - André Jonsson
-* bg.yml - Ivan Cenov
+* bg.yml - Ivan Cenov, jwalkerbg
