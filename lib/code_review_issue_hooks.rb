@@ -17,7 +17,8 @@
 
 class CodeReviewIssueHooks < Redmine::Hook::ViewListener
   include RepositoriesHelper
-  def view_issues_show_details_bottom(context = { })
+  render_on :view_issues_show_details_bottom, :partial => 'code_review/issues_show_details_bottom'
+  def view_issues_show_details_bottom_org(context = { })
     project = context[:project]
     return '' unless project
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'show'}, project)
