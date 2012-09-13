@@ -96,13 +96,13 @@
     <% end %>
     <p>
 
-      <%= submit_to_remote 'apply', l(:button_apply), :update => 'review-form',
+      <%= submit_to 'apply', l(:button_apply), :update => 'review-form', :remote => true,
         :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line},
         :method => :post, :change_id => @review.change_id, :loading => "$('add_review_submit').disabled = true;", :html => {:id => 'add_review_submit'} %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
-      <%= link_to_remote l(:label_preview),
-        { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+      <%= link_to l(:label_preview),
+        { :remote => true, :url => { :controller => 'code_review', :action => 'preview', :id => @project},
         :method => 'post',
         :update => 'preview',
         :with => "Form.serialize('review_form')",

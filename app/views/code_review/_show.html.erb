@@ -39,7 +39,8 @@
         <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;", :class => 'icon icon-edit' %>
       <% end %>
       <% if authorize_for('code_review', 'destroy') -%>
-        <%= link_to_remote(l(:button_delete), :update => "show_review_#{@review.id}",
+        <%= link_to(l(:button_delete), :update => "show_review_#{@review.id}",
+          :remote => true,
                 :url => {:controller => 'code_review',
                          :action => 'destroy',
                          :id => @project,
@@ -104,8 +105,10 @@
         <p>
           <%= submit_tag l(:button_apply) %>
           <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("update-form-<%= @review.id %>").hide();' />
-          <%= link_to_remote l(:label_preview),
-                  { :url => {:controller => 'code_review', :action => 'preview', :id => @project},
+          <%= link_to l(:label_preview),
+                  { 
+                  :remote => true
+                  :url => {:controller => 'code_review', :action => 'preview', :id => @project},
                     :method => 'post',
                     :update => 'preview',
                     :with => "Form.serialize('review_form')",
@@ -162,13 +165,16 @@
                           :id => 'reply_comment_' + @review.id.to_s %>
         </p>
         <p>
-          <%= submit_to_remote 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
+          <%= submit_to 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
+            :remote => true
                   :url => {:controller => 'code_review', :action => 'reply', :id=>@project},
                   :method => :post,
                   :loading => "$('add_review_comment_submit').disabled = true;",
                   :html => {:id => 'add_review_comment_submit'} %>
-          <%= link_to_remote l(:label_preview),
-                  { :url => { :controller => 'code_review', :action => 'preview', :id => @project},
+          <%= link_to l(:label_preview),
+                  { 
+                  :remote => true,
+                  :url => { :controller => 'code_review', :action => 'preview', :id => @project},
                     :method => 'post',
                     :update => 'reply-preview',
                     :with => "Form.serialize('message-form')",
