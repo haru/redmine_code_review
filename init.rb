@@ -57,8 +57,8 @@ Redmine::Plugin.register :redmine_code_review do
   author_url 'http://twitter.com/haru_iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.5.1'
-  requires_redmine :version_or_higher => '2.0.1'
+  version '0.6.0'
+  requires_redmine :version_or_higher => '2.1.0'
 
   project_module :code_review do
     permission :view_code_review, {:code_review => [:update_diff_view, :update_attachment_view, :update_revisions_view, :index, :show]}
