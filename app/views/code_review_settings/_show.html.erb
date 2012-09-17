@@ -99,7 +99,7 @@
         @auto_assign.subject = l(:code_review_requrest) if @auto_assign.subject.blank?
       -%>
         <label><%=h l(:label_auto_assign_settings)%></label>
-        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled? %><%=h l(:button_activate)%>
+        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :onchange => 'setAutoAssignSettingFormEnable(value);'%><%=h l(:button_activate)%>
       </p>
       <div id="cr_auto_assign_settings" style="display: <%=  @auto_assign.enabled? ? 'true' : 'none'%>;">
         <p>
@@ -139,5 +139,3 @@
   <% end %>
 </div>
 <%= wikitoolbar_for 'auto_assign_description' %>
-
-<%= observe_field 'auto_assign_enabled', {:function => "setAutoAssignSettingFormEnable(value);"} %>

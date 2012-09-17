@@ -19,7 +19,7 @@
 
 <p>
   <label><%=h l(:label_auto_assignment_filters)%></label>
-  <%= check_box_tag "auto_assign[filter_enabled]", true, @auto_assign.filter_enabled? %><%=h l(:button_activate)%>
+  <%= check_box_tag "auto_assign[filter_enabled]", true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable(value);' %><%=h l(:button_activate)%>
 
 </p>
 <div id="auto_assignment_filter_form" style="display: <%=  @auto_assign.filter_enabled? ? 'true' : 'none'%>;">
@@ -117,4 +117,3 @@
   </p>
 
 </div>
-<%= observe_field 'auto_assign_filter_enabled', {:function => "setAutoAssignSettingFiltersEnable(value);"} %>
