@@ -18,23 +18,25 @@
 -%>
 <div id="code_review_settings">
   <script type="text/javascript">
-  function setAutoAssignSettingFormEnable(flag) {
-    var form = $('cr_auto_assign_settings');
+  function setAutoAssignSettingFormEnable() {
+    var form = $('#cr_auto_assign_settings');
+    var flag = $('#auto_assign_enabled').is(':checked');
     if (flag) {
-      new Effect.BlindDown(form);
+      form.show('blind');
     }
     else {
-      new Effect.BlindUp(form);
+      form.hide('blind');
     }
   }
 
-  function setAutoAssignSettingFiltersEnable(flag) {
-    var form = $('auto_assignment_filter_form');
+  function setAutoAssignSettingFiltersEnable() {
+    var form = $('#auto_assignment_filter_form');
+    var flag = $('#auto_assign_filter_enabled').is(':checked');
     if (flag) {
-      new Effect.BlindDown(form);
+      form.show('blind');
     }
     else {
-      new Effect.BlindUp(form);
+      form.hide('blind');
     }
   }
 
@@ -99,7 +101,7 @@
         @auto_assign.subject = l(:code_review_requrest) if @auto_assign.subject.blank?
       -%>
         <label><%=h l(:label_auto_assign_settings)%></label>
-        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :onchange => 'setAutoAssignSettingFormEnable(value);'%><%=h l(:button_activate)%>
+        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :onchange => 'setAutoAssignSettingFormEnable();'%><%=h l(:button_activate)%>
       </p>
       <div id="cr_auto_assign_settings" style="display: <%=  @auto_assign.enabled? ? 'true' : 'none'%>;">
         <p>

@@ -19,13 +19,13 @@
 
 <p>
   <label><%=h l(:label_auto_assignment_filters)%></label>
-  <%= check_box_tag "auto_assign[filter_enabled]", true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable(value);' %><%=h l(:button_activate)%>
+  <%= check_box_tag "auto_assign[filter_enabled]", true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable();' %><%=h l(:button_activate)%>
 
 </p>
 <div id="auto_assignment_filter_form" style="display: <%=  @auto_assign.filter_enabled? ? 'true' : 'none'%>;">
   <div style="padding: 5px 0 8px 180px;">
     <div class="contextual">
-      <%= link_to_function(l(:button_add), "Effect.BlindDown('add_filter_form');", :class => 'icon icon-add') %>
+      <%= link_to_function(l(:button_add), "$('#{}add_filter_form').show('blind');", :class => 'icon icon-add') %>
     </div>
     <table class="list">
       <thead>
