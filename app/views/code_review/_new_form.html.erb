@@ -22,7 +22,7 @@
   <h2>
     <%= l(:label_line_number, :line => @review.line) %>
   </h2>
-  <%= form_for @review,:as => :review,
+  <%= form_for @review,:as => :review, :remote => true, :disable_with
     :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
     <%= error_messages_for 'review' %>
     <%= error_messages_for 'issue' %>
@@ -96,9 +96,11 @@
     <% end %>
     <p>
 
-      <%= submit_to 'apply', l(:button_apply), :update => 'review-form', :remote => true,
-        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line},
-        :method => :post, :change_id => @review.change_id, :loading => "$('add_review_submit').disabled = true;", :html => {:id => 'add_review_submit'} %>
+      <%= f.submit 'apply'
+        #submit_to 'apply', l(:button_apply), :update => 'review-form', :remote => true,
+        #:url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line},
+        #:method => :post, :change_id => @review.change_id, :loading => "$('add_review_submit').disabled = true;", :html => {:id => 'add_review_submit'}
+      %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= link_to l(:label_preview),

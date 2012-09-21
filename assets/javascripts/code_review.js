@@ -165,12 +165,12 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
 
 function clickPencil(e)
 {
-    //alert('e.element().id = ' + e.element().id);
-    var result = e.element().id.match(/([0-9]+)_([0-9]+)/);
+//    alert('$(e.target).attr("id") = ' + $(e.target).attr("id"));
+    var result = $(e.target).attr("id").match(/([0-9]+)_([0-9]+)/);
     var line = result[1];
     var file_count = result[2];
     addReview(addReviewUrl + '&line=' + line + '&file_count=' + file_count);
-    formPopup(e, $('review-form-frame'));
+    formPopup(e.pageX, e.pageY);
     e.preventDefault();
 }
 var addReviewUrl = null;
@@ -281,39 +281,24 @@ function showReview(url, review_id, element) {
 
 }
 
-function formPopup(evt, popup){
-    var frame_height = $('review-form-frame').style.height;
-    var win = null;
+function formPopup(x, y){
+    //@see http://docs.jquery.com/UI/Effects/Scale
+    var win = $('#review-form-frame').dialog({
+        show: {effect:'scale', direction: 'both'},// ? 'top-left'
+//        hide: {effect: SwitchOff??},
+//        position: [x, y + 5],
+        width:640,
+//        height:$('#review-form-frame').height(),
+        zIndex: topZindex,
+        title: add_form_title
+    });
+//    win.getContent().style.background = "#ffffff";
     if (review_form_dialog != null) {
         review_form_dialog.destroy();
         review_form_dialog = null;
     }
-    
-    win = new Window({
-        className: "mac_os_x",
-        width:640,
-        height:frame_height,
-        zIndex: topZindex,
-        resizable: true,
-        title: add_form_title,
-        showEffect:Effect.Grow,
-        showEffectOptions:{
-            direction: 'top-left'
-        },
-        hideEffect: Effect.SwitchOff,
-        //destroyOnClose: true,
-        draggable:true,
-        wiredDrag: true
-    });
-    
-    win.setZIndex(topZindex);
-    win.setContent("review-form-frame");
-    win.setLocation(evt.pointerY(), evt.pointerX() + 5);
-    win.getContent().style.background = "#ffffff";
-    win.show();
     review_form_dialog = win;
     topZindex += 10;
-
     return false;
 }
 
@@ -328,12 +313,7 @@ function hideForm() {
     $('review-form').innerHTML = '';
 }
 function addReview(url) {
-    //alert('aaa');
-    new Ajax.Updater('review-form', url, {
-        asynchronous:false,
-        evalScripts:true,
-        method:'get'
-    });
+    injectRemoteContent('#review-form', url);
 }
 
 
