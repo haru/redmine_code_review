@@ -48,76 +48,74 @@ var code_reviews_map = new Array();
 var code_reviews_dialog_map = new Array();
 
 function UpdateRepositoryView(title) {
-    var header = $$('table.changesets thead tr')[0];
-    var th = new Element('th');
-    th.innerHTML = title;
-    header.insert(th);
-    var anchors = $$('tr.changeset td.id a');
-    for (var i = 0; i < anchors.length; i++) {
-        var anchor = anchors[i];
-        var revision = anchor.getAttribute("href");
+    var header = $("table.changesets thead tr:first");
+    var th = $('<th></th>');
+    th.html(title);
+    header.append(th);
+    var anchors = $('tr.changeset td.id a').each(function(i){
+        var revision = this.getAttribute("href");
         revision = revision.substr(revision.lastIndexOf("/") + 1);        
         var review = review_counts['revision_' + revision];
-        var td = new Element('td',{
+        var td = $('<td/>',{
             'class':'progress'
         });
-        td.innerHTML = review.progress;
-        var tr = anchor.parentNode.parentNode;
-        tr.insert(td);
+        td.html(review.progress);
+        $(this.parentNode.parentNode).append(td);
+    });
     }
-}
+//add function $.down
+if(! $.fn.down)
+(function($) {
+    $.fn.down = function() {
+        var el = this[0] && this[0].firstChild;
+        while (el && el.nodeType != 1)
+            el = el.nextSibling;
+        return $(el);
+    };
+})(jQuery);
 
 function UpdateRevisionView() {
-    var lis = $$('li.change');
-
-    for (var i = 0; i < lis.length; i++) {
-        var li = lis[i];
-        if (li.hasClassName('folder')) {
-            continue;
-        }
-        var ul = new Element('ul');
+    $('li.change').each(function(){
+        var li = $(this);
+        if (li.hasClass('folder')) return;
 
         var a = li.down('a');
-        if (a == null) {
-            continue;
-        }
-        var href = a.getAttribute('href')
-        href = href.replace(urlprefix, '');
-        var path = href.replace(/\?.*$/, '');
+        if (a.size() == 0) return;
+        var path = a.attr('href').replace(urlprefix, '').replace(/\?.*$/, '');
 
         var reviewlist = code_reviews_map[path];
-        if (reviewlist == null){
-            continue;
-        }
+        if (reviewlist == null) return;
+
+        var ul = $('<ul></ul>');
         for (var j = 0; j < reviewlist.length; j++) {
             var review = reviewlist[j];
-            var icon = 'icon-review';
-            if (review.is_closed) {
-                icon = 'icon-closed-review';
-            }
-            var item = new Element('li', {
+            var icon = review.is_closed? 'icon-closed-review': 'icon-review';
+            var item = $('<li></li>', {
                 'class': 'icon ' + icon + ' code_review_summary'
                 });
-            item.innerHTML = review.url;
-            ul.insert(item);
+            item.html(review.url);
+            ul.append(item);
         }
-        li.insert(ul);
+        li.append(ul);
+    });
+}
 
-    }
+function injectRemoteContent(id, url){
+    $(document).ready(function() {
+        $.get(url, function(data){
+            $(id).html(data);
+                });
+    });
 }
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id){
-    var tables = document.getElementsByTagName('table');
     var filetables = [];
     var j = 0;
-    var i = 0;
-    var tl = 0;
-    for (i = 0, tl = tables.length; i < tl; i++) {
-        if (Element.hasClassName(tables[i], 'filecontent')) {
-            filetables[j] = tables[i];
-            j++;
+    $('table').each(function(){
+        if($(this).hasClass('filecontent')){
+            filetables[j++] = this;
         }
-    }
+    });
     addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
         '&rev=' + rev + '&path=' + encodeURIComponent(path) + '&rev_to=' + rev_to +
         '&attachment_id=' + attachment_id + '&repository_id=' + encodeURIComponent(repository_id);
@@ -125,7 +123,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
     if (is_diff) {
         num = 1;
     }
-
+    var i, l, tl;
     for (i = 0, tl = filetables.length; i < tl; i++) {
         var table = filetables[i];
         var trs = table.getElementsByTagName('tr');
@@ -157,7 +155,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
             var img = th.getElementsByTagName('img')[0];
             if (img != null ) {
                 img.id = 'add_revew_img_' + line + '_' + i;
-                Element.observe(img, 'click', clickPencil);
+                $(img).click(clickPencil);
             }
         }
     }

@@ -44,28 +44,17 @@
     review_counts['revision_<%=changeset.identifier %>'] = count;
 <% end %>
   UpdateRepositoryView('<%=l(:code_reviews)%>');
-  var changeset_ids = '';
-  var idlinks = $$('tr.changeset td.id a');
-  for (var i = 0; i < idlinks.length; i++) {
-    var link = idlinks[i];
-    var href = link.getAttribute('href');
-  }
-  var links = $$('p.pagination a');
   var url = "<%= url_for( url_for :controller => 'code_review', :action => 'update_revisions_view', :id => @project, :repository_id => @repository_id) %>";
-
-  for (var i = 0; i < links.length; i++) {
-    var link = links[i];
-    //var href = link.getAttribute('href');
-    var onclick = link.getAttribute('onclick');
+  $('p.pagination a').each(function(i){
+    var onclick = $(this).attr('onclick');
     if (onclick.indexOf('onComplete:') > 0) {
       onclick = onclick.replace('onComplete:function(request){window.scrollTo(0,0)}', "onComplete:function(request){window.scrollTo(0,0);call_update_revisions('"+ url + "')}");
     }
     else {
       onclick = onclick.replace('}); return false;', 'onComplete:function(request){call_update_revisions("'+ url + '")}); return false;');
     }
-    link.setAttribute('onclick', onclick);
-  }
-
+    $(this).attr('onclick', onclick);
+  });
 </script>
 
 

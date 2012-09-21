@@ -32,11 +32,7 @@ if @changesets
   <div id="code_review_revisions"></div>
 
   <script type="text/javascript">
-    document.observe('dom:loaded', function() {
-      new Ajax.Updater('code_review_revisions', '<%=url%>',
-      {evalScripts:true, method:'get', parameters: 'changeset_ids=<%=url_encode(changeset_ids)%>'});
-    });
-
+      injectRemoteContent('#code_review_revisions', '<%=url%>?changeset_ids=<%=url_encode(changeset_ids)%>');
   </script>
 
 <% end %>

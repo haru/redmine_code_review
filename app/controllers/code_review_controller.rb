@@ -335,6 +335,7 @@ class CodeReviewController < ApplicationController
 
   def update_revisions_view
     changeset_ids = []
+    #changeset_ids = CGI.unescape(params[:changeset_ids]).split(',') unless params[:changeset_ids].blank?
     changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
     @changesets = []
     changeset_ids.each {|id|

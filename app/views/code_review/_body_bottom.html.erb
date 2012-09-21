@@ -62,10 +62,7 @@ if project and controller and project.module_enabled?(:code_review)
             <div id="code_review">
             </div>
             <script type="text/javascript">
-              document.observe('dom:loaded', function() {
-                new Ajax.Updater('code_review', '<%=url%>', {evalScripts:true, method:'get',
-                  parameters: '<%=scriptparameters%>'});
-              });
+                injectRemoteContent('#code_review', '<%=url%>?<%=scriptparameters%>');
             </script>
           <% end %>
         <% end %>
