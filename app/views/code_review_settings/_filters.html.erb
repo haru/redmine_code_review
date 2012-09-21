@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@
 <div id="auto_assignment_filter_form" style="display: <%=  @auto_assign.filter_enabled? ? 'true' : 'none'%>;">
   <div style="padding: 5px 0 8px 180px;">
     <div class="contextual">
-      <%= link_to_function(l(:button_add), "$('#{}add_filter_form').show('blind');", :class => 'icon icon-add') %>
+      <%= link_to_function(l(:button_add), "$('#add_filter_form').show('blind');", :class => 'icon icon-add') %>
     </div>
     <table class="list">
       <thead>
@@ -84,8 +84,8 @@
             <td></td>
             <td>
               <%= button_to(l(:button_apply), :remote => true, :url => {:controller => 'code_review_settings', :action => 'edit_filter', :id => @project, "num" => i},
-                :update => 'auto_assignment_filters', :submit => 'code_review_form', :condition => "is_valid_expression($('auto_assign_edit_filter_#{i}_expression'))") %>
-              <%= button_to_function(l(:button_cancel), "$('auto_assign_tr_#{i}').style.display = 'table-row';$('auto_assign_edit_tr_#{i}').style.display = 'none'") %>
+                :update => 'auto_assignment_filters', :submit => 'code_review_form', :condition => "is_valid_expression($('#auto_assign_edit_filter_#{i}_expression'))") %>
+              <%= button_to_function(l(:button_cancel), "$('#auto_assign_tr_#{i}').style.display = 'table-row';$('#auto_assign_edit_tr_#{i}').style.display = 'none'") %>
             </td>
           </tr>
         <% end -%>
