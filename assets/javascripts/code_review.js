@@ -48,22 +48,20 @@ var code_reviews_map = new Array();
 var code_reviews_dialog_map = new Array();
 
 function UpdateRepositoryView(title) {
-    var header = $$('table.changesets thead tr')[0];
-    var th = new Element('th');
-    th.innerHTML = title;
-    header.insert(th);
-    var anchors = $$('tr.changeset td.id a');
+    var header = $('table.changesets thead tr');
+    var th = $('<th/>');
+    th.text(title);
+    header.append(th);
+    var anchors = $('tr.changeset td.id a');
     for (var i = 0; i < anchors.length; i++) {
         var anchor = anchors[i];
-        var revision = anchor.getAttribute("href");
+        var revision = anchor.href;
         revision = revision.substr(revision.lastIndexOf("/") + 1);        
         var review = review_counts['revision_' + revision];
-        var td = new Element('td',{
-            'class':'progress'
-        });
+        var td = $('<td/>').addClass('progress')[0];
         td.innerHTML = review.progress;
-        var tr = anchor.parentNode.parentNode;
-        tr.insert(td);
+        var tr = anchor.parentElement.parentElement;
+        tr.appendChild(td);
     }
 }
 

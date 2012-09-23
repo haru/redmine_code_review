@@ -18,6 +18,7 @@
 %>
 
 <script type="text/javascript">
+
 <% @changesets.each do |changeset| %>
   <%
   if changeset.review_count > 0
@@ -40,7 +41,7 @@
 %>
 
     var count = new ReviewCount(<%=  changeset.review_count %>, <%=  changeset.open_review_count %>, '<%= raw  progress %>');
-
+ 
     review_counts['revision_<%=changeset.identifier %>'] = count;
 <% end %>
   UpdateRepositoryView('<%=l(:code_reviews)%>');
