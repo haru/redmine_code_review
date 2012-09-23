@@ -66,20 +66,20 @@ function UpdateRepositoryView(title) {
 }
 
 function UpdateRevisionView() {
-    var lis = $$('li.change');
+    var lis = $('li.change');
 
     for (var i = 0; i < lis.length; i++) {
         var li = lis[i];
-        if (li.hasClassName('folder')) {
+        if (li.classList.contains('folder')) {
             continue;
         }
-        var ul = new Element('ul');
+        var ul = $('<ul>');
 
-        var a = li.down('a');
+        var a = li.children('a');
         if (a == null) {
             continue;
         }
-        var href = a.getAttribute('href')
+        var href = a.href
         href = href.replace(urlprefix, '');
         var path = href.replace(/\?.*$/, '');
 
@@ -102,6 +102,7 @@ function UpdateRevisionView() {
         li.insert(ul);
 
     }
+    alert('end');
 }
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id){

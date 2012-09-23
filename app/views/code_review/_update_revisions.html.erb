@@ -45,14 +45,8 @@
     review_counts['revision_<%=changeset.identifier %>'] = count;
 <% end %>
   UpdateRepositoryView('<%=l(:code_reviews)%>');
-  var changeset_ids = '';
-  /*
-  var idlinks = $('tr.changeset td.id a');
-  for (var i = 0; i < idlinks.length; i++) {
-    var link = idlinks[i];
-    var href = link.href;
-  }
-  */
+  //var changeset_ids = '';
+
   var links = $('p.pagination a');
   var url = "<%= url_for( url_for :controller => 'code_review', :action => 'update_revisions_view', :id => @project, :repository_id => @repository_id) %>";
 
