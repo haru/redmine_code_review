@@ -22,7 +22,7 @@
   <h2>
     <%= l(:label_line_number, :line => @review.line) %>
   </h2>
-  <%= form_for @review,:as => :review,
+  <%= form_for @review,:as => :review, :remote => true,
     :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
     <%= error_messages_for 'review' %>
     <%= error_messages_for 'issue' %>
@@ -45,8 +45,9 @@
       <p>
         <label><b><%=h l(:label_tracker) %>:</b></label>
         <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
-        <%= observe_field(:issue_tracker_id, :update => 'review-form', :controller => 'code_review',
-        :action => 'new', :submit => 'review_form', :method => 'get') %>
+        <%= #TODO migrate
+            observe_field(:issue_tracker_id, :update => 'review-form', :controller => 'code_review',
+                          :action => 'new', :submit => 'review_form', :method => 'get') %>
       </p>
     <% end %>
     <p>
@@ -95,19 +96,10 @@
       <p><label><%= l(:field_status) %></label> <%= h(@issue.status.name) %></p>
     <% end %>
     <p>
-
-      <%= submit_to 'apply', l(:button_apply), :update => 'review-form', :remote => true,
-        :url => {:controller => 'code_review', :action => 'new', :id=>@project, :line => @line},
-        :method => :post, :change_id => @review.change_id, :loading => "$('add_review_submit').disabled = true;", :html => {:id => 'add_review_submit'} %>
-
+      <%= submit_tag l(:button_apply), :id => 'add_review_submit'%>
+      <%= javascript_tag "$('#review_form').bind('ajax:beforeSend', function(){$('#add_review_submit').attr('disabled', 'disabled');}).bind('ajax:success', hideForm);" %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
-      <%= link_to l(:label_preview),
-        { :remote => true, :url => { :controller => 'code_review', :action => 'preview', :id => @project},
-        :method => 'post',
-        :update => 'preview',
-        :with => "Form.serialize('review_form')",
-        :complete => "Element.scrollTo('preview')"
-      }, :accesskey => accesskey(:preview) %>
+      <%= preview_link({ :controller => 'code_review', :action => 'preview', :id => @project}, 'review_form') %>
     </p>
     <div id="preview" class="wiki"></div>
     <%= wikitoolbar_for 'review_comment' %>

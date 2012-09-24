@@ -74,9 +74,5 @@
     popupReview(<%= @show_review_id %>);
   <% end -%>
 
-  var tables = $$('#content table.filecontent');
-  if (tables.length > 0) {
-    var table = tables[0];
-    new Insertion.Before(table, $('code-review-assign-link'));
-  }
+  $('#content table.filecontent:first').before($('#code-review-assign-link'));
 </script>

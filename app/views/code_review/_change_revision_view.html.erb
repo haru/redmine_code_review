@@ -37,10 +37,7 @@ if @changeset
   </div>
 
   <script type="text/javascript">
-
-    $('changes-legend').add($('code_review_assignments'));
-
-    //new Insertion.After('changes-legend', $('code_review_assignments'));
+    $('#changes-legend').after($('#code_review_assignments'));
     urlprefix = '<%=urlprefix%>';
   <% @changeset.changes.each{|change| %>
     var reviewlist = [];
@@ -72,6 +69,5 @@ if @changeset
   }
 %>
   UpdateRevisionView();
-          alert('gg');
   </script>
 <% end %>

@@ -57,15 +57,18 @@ if project and controller and project.module_enabled?(:code_review)
             path = url_encode(path)
             repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
             url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project, :repository_id => repository_id
-            scriptparameters = "rev=#{rev}&path=#{path}&review_id=#{review_id}&action_type=#{action_name}&rev_to=#{rev_to}"
           %>
             <div id="code_review">
             </div>
             <script type="text/javascript">
-              document.observe('dom:loaded', function() {
-                new Ajax.Updater('code_review', '<%=url%>', {evalScripts:true, method:'get',
-                  parameters: '<%=scriptparameters%>'});
-              });
+                $(document).ready(function(){
+                    $('#code_review').load('<%=url%>', {
+                        rev: '<%=rev%>',
+                        path:'<%=path%>',
+                        review_id: '<%=review_id%>',
+                        action_type:'<%=action_name%>',
+                        rev_to: '<%=rev_to%>'});
+                });
             </script>
           <% end %>
         <% end %>

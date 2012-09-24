@@ -48,75 +48,66 @@ var code_reviews_map = new Array();
 var code_reviews_dialog_map = new Array();
 
 function UpdateRepositoryView(title) {
-    var header = $('table.changesets thead tr');
-    var th = $('<th/>');
-    th.text(title);
+    var header = $("table.changesets thead tr:first");
+    var th = $('<th></th>');
+    th.html(title);
     header.append(th);
-    var anchors = $('tr.changeset td.id a');
-    for (var i = 0; i < anchors.length; i++) {
-        var anchor = anchors[i];
-        var revision = anchor.href;
+    $('tr.changeset td.id a').each(function(i){
+        var revision = this.getAttribute("href");
         revision = revision.substr(revision.lastIndexOf("/") + 1);        
         var review = review_counts['revision_' + revision];
-        var td = $('<td/>').addClass('progress')[0];
-        td.innerHTML = review.progress;
-        var tr = anchor.parentElement.parentElement;
-        tr.appendChild(td);
+        var td = $('<td/>',{
+            'class':'progress'
+        });
+        td.html(review.progress);
+        $(this.parentNode.parentNode).append(td);
+    });
     }
-}
+//add function $.down
+if(! $.fn.down)
+(function($) {
+    $.fn.down = function() {
+        var el = this[0] && this[0].firstChild;
+        while (el && el.nodeType != 1)
+            el = el.nextSibling;
+        return $(el);
+    };
+})(jQuery);
 
 function UpdateRevisionView() {
-    var lis = $('li.change');
+    $('li.change').each(function(){
+        var li = $(this);
+        if (li.hasClass('folder')) return;
 
-    for (var i = 0; i < lis.length; i++) {
-        var li = lis[i];
-        if (li.classList.contains('folder')) {
-            continue;
-        }
-        var ul = $('<ul>');
-
-        var a = li.children('a');
-        if (a == null) {
-            continue;
-        }
-        var href = a.href
-        href = href.replace(urlprefix, '');
-        var path = href.replace(/\?.*$/, '');
+        var a = li.down('a');
+        if (a.size() == 0) return;
+        var path = a.attr('href').replace(urlprefix, '').replace(/\?.*$/, '');
 
         var reviewlist = code_reviews_map[path];
-        if (reviewlist == null){
-            continue;
-        }
+        if (reviewlist == null) return;
+
+        var ul = $('<ul></ul>');
         for (var j = 0; j < reviewlist.length; j++) {
             var review = reviewlist[j];
-            var icon = 'icon-review';
-            if (review.is_closed) {
-                icon = 'icon-closed-review';
-            }
-            var item = new Element('li', {
+            var icon = review.is_closed? 'icon-closed-review': 'icon-review';
+            var item = $('<li></li>', {
                 'class': 'icon ' + icon + ' code_review_summary'
                 });
-            item.innerHTML = review.url;
-            ul.insert(item);
+            item.html(review.url);
+            ul.append(item);
         }
-        li.insert(ul);
-
-    }
-    alert('end');
+        li.append(ul);
+    });
 }
 
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id){
-    var tables = document.getElementsByTagName('table');
     var filetables = [];
     var j = 0;
-    var i = 0;
-    var tl = 0;
-    for (i = 0, tl = tables.length; i < tl; i++) {
-        if (Element.hasClassName(tables[i], 'filecontent')) {
-            filetables[j] = tables[i];
-            j++;
+    $('table').each(function(){
+        if($(this).hasClass('filecontent')){
+            filetables[j++] = this;
         }
-    }
+    });
     addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
         '&rev=' + rev + '&path=' + encodeURIComponent(path) + '&rev_to=' + rev_to +
         '&attachment_id=' + attachment_id + '&repository_id=' + encodeURIComponent(repository_id);
@@ -124,7 +115,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
     if (is_diff) {
         num = 1;
     }
-
+    var i, l, tl;
     for (i = 0, tl = filetables.length; i < tl; i++) {
         var table = filetables[i];
         var trs = table.getElementsByTagName('tr');
@@ -156,7 +147,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
             var img = th.getElementsByTagName('img')[0];
             if (img != null ) {
                 img.id = 'add_revew_img_' + line + '_' + i;
-                Element.observe(img, 'click', clickPencil);
+                $(img).click(clickPencil);
             }
         }
     }
@@ -166,12 +157,12 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
 
 function clickPencil(e)
 {
-    //alert('e.element().id = ' + e.element().id);
-    var result = e.element().id.match(/([0-9]+)_([0-9]+)/);
+//    alert('$(e.target).attr("id") = ' + $(e.target).attr("id"));
+    var result = $(e.target).attr("id").match(/([0-9]+)_([0-9]+)/);
     var line = result[1];
     var file_count = result[2];
     addReview(addReviewUrl + '&line=' + line + '&file_count=' + file_count);
-    formPopup(e, $('review-form-frame'));
+    formPopup(e.pageX, e.pageY);
     e.preventDefault();
 }
 var addReviewUrl = null;
@@ -181,162 +172,87 @@ var showClosedReviewImageTag = null;
 
 function setShowReviewButton(line, review_id, is_closed, file_count) {
     //alert('file_count = ' + file_count);
-    var span = $('review_span_' + line + '_' + file_count);
-    if (span == null) {
+    var span = $('#review_span_' + line + '_' + file_count);
+    if (span.size() == 0) {
         return;
     }
-    var innerSpan = new Element('span');
-    //alert('line = ' + line + ', review_id = ' + review_id);
-    innerSpan.id = 'review_' + review_id;
-    span.insert(innerSpan);
-    if (is_closed) {
-        innerSpan.innerHTML = showClosedReviewImageTag;
-
-    }
-    else {
-        innerSpan.innerHTML = showReviewImageTag;
-    }
-
-    var div = new Element('div', {
-        'class':'draggable'
+    var innerSpan = $('<span></span>',{id: 'review_' + review_id});
+    span.append(innerSpan);
+    innerSpan.html(is_closed? showClosedReviewImageTag : showReviewImageTag);
+    var div = $('<div></div>', {
+        'class':'draggable',
+        id: 'show_review_' + review_id
     });
-    div.id = 'show_review_' + review_id;
-    $('code_review').insert(div);
-    innerSpan.down('img').observe('click', function(e) {
-        var review_id = e.element().up().id.match(/[0-9]+/);
-        var target = $('show_review_' + review_id);
-        var win = showReview(showReviewUrl, review_id, target);
-      
-        win.setLocation(e.pointerY(), e.pointerX() + 5);
-        win.show();
+    $('#code_review').append(div);
+    innerSpan.down('img').click(function(e) {
+        var review_id = $(e.target).parent().attr('id').match(/[0-9]+/);
+        showReview(showReviewUrl, review_id, e.pointerX() + 5, e.pointerY());
     });
 }
 
 function popupReview(review_id) {
-    var span   = $('review_'      + review_id); // span element of view review button
-    var target = $('show_review_' + review_id); // target element for popup dialog
-    // create popup dialog
-    var win = showReview(showReviewUrl, review_id, target);
+    var span   = $('#review_' + review_id); // span element of view review button
+    var pos = span.offset();
     // position and show popup dialog
-    var pos_top  = 0;
-    var pos_left = 0;
-    var element  = span;
-    if (element.offsetParent) {
-        while (1) { // work-around for Safari
-            pos_top  = pos_top  + element.offsetTop;
-            pos_left = pos_left + element.offsetLeft;
-            if (!element.offsetParent) {
-                break;
-            }
-            element = element.offsetParent;
-        };
-    } else {
-        pos_top  = element.x;
-        pos_left = element.y;
-    }
-    win.setLocation(pos_top + 25, pos_left + 10 + 5);
-    win.toFront();
-    win.show();
+    // create popup dialog
+    var win = showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top + 25);
+//    win.toFront();
     // scroll to line
-    span.scrollTo();
+//    span.scrollTo(); ??
 }
 
-function showReview(url, review_id, element) {
+function showReview(url, review_id, x, y) {
     if (code_reviews_dialog_map[review_id] != null) {
         var cur_win = code_reviews_dialog_map[review_id];
-        //        cur_win.setZIndex(topZindex);
-        //        topZindex += 10;
-        //        return cur_win;
-        cur_win.destroy();
+        cur_win.hide();
         code_reviews_dialog_map[review_id] = null;
     }
-    new Ajax.Updater(element, url, {
-        asynchronous:false,
-        evalScripts:true,
-        parameters: 'review_id=' + review_id,
-        method:'get'
-    });
-    var frame_height = $("show_review_" + review_id).style.height;
-    var win = new Window({
-        className: "mac_os_x",
+    $('#show_review_' + review_id).load(url, {review_id: review_id});
+
+    var win = $('#show_review_' + review_id).dialog({
+        show: {effect:'scale', direction: 'both'},// ? 'top-left'
+//        position: [x, y + 5],
         width:640,
-        height:frame_height,
         zIndex: topZindex,
-        resizable: true,
-        title: review_dialog_title,
-        showEffect:Effect.Grow,
-        showEffectOptions:{
-            direction: 'top-left'
-        },
-        hideEffect: Effect.SwitchOff,
-        //destroyOnClose: true,
-        draggable:true, 
-        wiredDrag: true
+        title: review_dialog_title
     });
-    win.setContent("show_review_" + review_id);
-    win.getContent().style.color = "#484848";
-    win.getContent().style.background = "#ffffff";
+//    win.getContent().style.color = "#484848";
+//    win.getContent().style.background = "#ffffff";
     topZindex++;
     code_reviews_dialog_map[review_id] = win;
     return win
-
 }
 
-function formPopup(evt, popup){
-    var frame_height = $('review-form-frame').style.height;
-    var win = null;
+function formPopup(x, y){
+    //@see http://docs.jquery.com/UI/Effects/Scale
+    var win = $('#review-form-frame').dialog({
+        show: {effect:'scale', direction: 'both'},// ? 'top-left'
+//        position: [x, y + 5],
+        width:640,
+        zIndex: topZindex,
+        title: add_form_title
+    });
+//    win.getContent().style.background = "#ffffff";
     if (review_form_dialog != null) {
         review_form_dialog.destroy();
         review_form_dialog = null;
     }
-    
-    win = new Window({
-        className: "mac_os_x",
-        width:640,
-        height:frame_height,
-        zIndex: topZindex,
-        resizable: true,
-        title: add_form_title,
-        showEffect:Effect.Grow,
-        showEffectOptions:{
-            direction: 'top-left'
-        },
-        hideEffect: Effect.SwitchOff,
-        //destroyOnClose: true,
-        draggable:true,
-        wiredDrag: true
-    });
-    
-    win.setZIndex(topZindex);
-    win.setContent("review-form-frame");
-    win.setLocation(evt.pointerY(), evt.pointerX() + 5);
-    win.getContent().style.background = "#ffffff";
-    win.show();
     review_form_dialog = win;
     topZindex += 10;
-
     return false;
 }
 
 function hideForm() {
-    //alert('aaa');
-    //$('review-form-frame').style.visibility = false;
     if (review_form_dialog == null) {
         return;
     }
-    review_form_dialog.destroy();
+    review_form_dialog.dialog('close');
     review_form_dialog = null;
-    $('review-form').innerHTML = '';
+    $('#review-form').html('');
 }
 function addReview(url) {
-    //alert('aaa');
-    new Ajax.Updater('review-form', url, {
-        asynchronous:false,
-        evalScripts:true,
-        method:'get'
-    });
+    $('#review-form').load(url);
 }
-
 
 function deleteReview(review_id) {
     $('show_review_' + review_id).remove();
