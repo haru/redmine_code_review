@@ -52,7 +52,7 @@ function UpdateRepositoryView(title) {
     var th = $('<th></th>');
     th.html(title);
     header.append(th);
-    var anchors = $('tr.changeset td.id a').each(function(i){
+    $('tr.changeset td.id a').each(function(i){
         var revision = this.getAttribute("href");
         revision = revision.substr(revision.lastIndexOf("/") + 1);        
         var review = review_counts['revision_' + revision];
@@ -97,14 +97,6 @@ function UpdateRevisionView() {
             ul.append(item);
         }
         li.append(ul);
-    });
-}
-
-function injectRemoteContent(id, url){
-    $(document).ready(function() {
-        $.get(url, function(data){
-            $(id).html(data);
-                });
     });
 }
 
@@ -180,115 +172,63 @@ var showClosedReviewImageTag = null;
 
 function setShowReviewButton(line, review_id, is_closed, file_count) {
     //alert('file_count = ' + file_count);
-    var span = $('review_span_' + line + '_' + file_count);
-    if (span == null) {
+    var span = $('#review_span_' + line + '_' + file_count);
+    if (span.size() == 0) {
         return;
     }
-    var innerSpan = new Element('span');
-    //alert('line = ' + line + ', review_id = ' + review_id);
-    innerSpan.id = 'review_' + review_id;
-    span.insert(innerSpan);
-    if (is_closed) {
-        innerSpan.innerHTML = showClosedReviewImageTag;
-
-    }
-    else {
-        innerSpan.innerHTML = showReviewImageTag;
-    }
-
-    var div = new Element('div', {
-        'class':'draggable'
+    var innerSpan = $('<span></span>',{id: 'review_' + review_id});
+    span.append(innerSpan);
+    innerSpan.html(is_closed? showClosedReviewImageTag : showReviewImageTag);
+    var div = $('<div></div>', {
+        'class':'draggable',
+        id: 'show_review_' + review_id
     });
-    div.id = 'show_review_' + review_id;
-    $('code_review').insert(div);
-    innerSpan.down('img').observe('click', function(e) {
-        var review_id = e.element().up().id.match(/[0-9]+/);
-        var target = $('show_review_' + review_id);
-        var win = showReview(showReviewUrl, review_id, target);
-      
-        win.setLocation(e.pointerY(), e.pointerX() + 5);
-        win.show();
+    $('#code_review').append(div);
+    innerSpan.down('img').click(function(e) {
+        var review_id = $(e.target).parent().attr('id').match(/[0-9]+/);
+        showReview(showReviewUrl, review_id, e.pointerX() + 5, e.pointerY());
     });
 }
 
 function popupReview(review_id) {
-    var span   = $('review_'      + review_id); // span element of view review button
-    var target = $('show_review_' + review_id); // target element for popup dialog
-    // create popup dialog
-    var win = showReview(showReviewUrl, review_id, target);
+    var span   = $('#review_' + review_id); // span element of view review button
+    var pos = span.offset();
     // position and show popup dialog
-    var pos_top  = 0;
-    var pos_left = 0;
-    var element  = span;
-    if (element.offsetParent) {
-        while (1) { // work-around for Safari
-            pos_top  = pos_top  + element.offsetTop;
-            pos_left = pos_left + element.offsetLeft;
-            if (!element.offsetParent) {
-                break;
-            }
-            element = element.offsetParent;
-        };
-    } else {
-        pos_top  = element.x;
-        pos_left = element.y;
-    }
-    win.setLocation(pos_top + 25, pos_left + 10 + 5);
-    win.toFront();
-    win.show();
+    // create popup dialog
+    var win = showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top + 25);
+//    win.toFront();
     // scroll to line
-    span.scrollTo();
+//    span.scrollTo(); ??
 }
 
-function showReview(url, review_id, element) {
+function showReview(url, review_id, x, y) {
     if (code_reviews_dialog_map[review_id] != null) {
         var cur_win = code_reviews_dialog_map[review_id];
-        //        cur_win.setZIndex(topZindex);
-        //        topZindex += 10;
-        //        return cur_win;
-        cur_win.destroy();
+        cur_win.hide();
         code_reviews_dialog_map[review_id] = null;
     }
-    new Ajax.Updater(element, url, {
-        asynchronous:false,
-        evalScripts:true,
-        parameters: 'review_id=' + review_id,
-        method:'get'
-    });
-    var frame_height = $("show_review_" + review_id).style.height;
-    var win = new Window({
-        className: "mac_os_x",
+    $('#show_review_' + review_id).load(url, {review_id: review_id});
+
+    var win = $('#show_review_' + review_id).dialog({
+        show: {effect:'scale', direction: 'both'},// ? 'top-left'
+//        position: [x, y + 5],
         width:640,
-        height:frame_height,
         zIndex: topZindex,
-        resizable: true,
-        title: review_dialog_title,
-        showEffect:Effect.Grow,
-        showEffectOptions:{
-            direction: 'top-left'
-        },
-        hideEffect: Effect.SwitchOff,
-        //destroyOnClose: true,
-        draggable:true, 
-        wiredDrag: true
+        title: review_dialog_title
     });
-    win.setContent("show_review_" + review_id);
-    win.getContent().style.color = "#484848";
-    win.getContent().style.background = "#ffffff";
+//    win.getContent().style.color = "#484848";
+//    win.getContent().style.background = "#ffffff";
     topZindex++;
     code_reviews_dialog_map[review_id] = win;
     return win
-
 }
 
 function formPopup(x, y){
     //@see http://docs.jquery.com/UI/Effects/Scale
     var win = $('#review-form-frame').dialog({
         show: {effect:'scale', direction: 'both'},// ? 'top-left'
-//        hide: {effect: SwitchOff??},
 //        position: [x, y + 5],
         width:640,
-//        height:$('#review-form-frame').height(),
         zIndex: topZindex,
         title: add_form_title
     });
@@ -303,19 +243,16 @@ function formPopup(x, y){
 }
 
 function hideForm() {
-    //alert('aaa');
-    //$('review-form-frame').style.visibility = false;
     if (review_form_dialog == null) {
         return;
     }
-    review_form_dialog.destroy();
+    review_form_dialog.dialog('close');
     review_form_dialog = null;
-    $('review-form').innerHTML = '';
+    $('#review-form').html('');
 }
 function addReview(url) {
-    injectRemoteContent('#review-form', url);
+    $('#review-form').load(url);
 }
-
 
 function deleteReview(review_id) {
     $('show_review_' + review_id).remove();

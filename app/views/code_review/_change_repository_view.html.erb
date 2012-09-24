@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2010-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,8 +31,11 @@ if @changesets
 
   <div id="code_review_revisions"></div>
 
+
   <script type="text/javascript">
-      injectRemoteContent('#code_review_revisions', '<%=url%>?changeset_ids=<%=url_encode(changeset_ids)%>');
+    $(document).ready(function(){
+      $('#code_review_revisions').load('<%=url%>', {changeset_ids: '<%=raw changeset_ids%>'});
+    });
   </script>
 
 <% end %>
