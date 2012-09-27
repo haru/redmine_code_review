@@ -39,12 +39,13 @@
         <%= link_to_function  l(:button_update), "$('update-form-#{@review.id}').show();return false;", :class => 'icon icon-edit' %>
       <% end %>
       <% if authorize_for('code_review', 'destroy') -%>
-        <%= link_to(l(:button_delete), :update => "show_review_#{@review.id}",
-          :remote => true,
-                :url => {:controller => 'code_review',
+        <%= link_to(l(:button_delete),           
+                {:controller => 'code_review',
                          :action => 'destroy',
                          :id => @project,
                          :review_id => @review},
+                       :update => "show_review_#{@review.id}",
+                       :remote => true,
                 :confirm => l(:text_are_you_sure),
                 :success => "deleteReview(#{@review.id})",
                 :html => {:class => 'icon icon-del'}) %>
@@ -75,11 +76,12 @@
 
     <!-- review comment edit form -->
     <div class="box" id="update-form-<%= @review.id %>" style="display:none;">
-      <%= remote_form_for :review, @review,
+      <%= form_for :review,
              :url => {:controller => 'code_review',
                       :action => 'update',
                       :id => @project,
                       :review_id => @review.id},
+                      :remote => true,
              :update => "show_review_#{@review.id}",
              :html => {:id => 'review_form'} do |f|  %>
         <%= f.hidden_field :lock_version %>
@@ -106,14 +108,13 @@
           <%= submit_tag l(:button_apply) %>
           <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("update-form-<%= @review.id %>").hide();' />
           <%= link_to l(:label_preview),
-                  { 
-                  :remote => true
-                  :url => {:controller => 'code_review', :action => 'preview', :id => @project},
+                  {:controller => 'code_review', :action => 'preview', :id => @project},
+                  :remote => true,
                     :method => 'post',
                     :update => 'preview',
                     :with => "Form.serialize('review_form')",
-                    :complete => "Element.scrollTo('preview')"
-                  }, :accesskey => accesskey(:preview) %>
+                    :complete => "Element.scrollTo('preview')",
+                  :accesskey => accesskey(:preview) %>
         </p>
         <div id="preview" class="wiki"></div>
         <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
@@ -165,21 +166,21 @@
                           :id => 'reply_comment_' + @review.id.to_s %>
         </p>
         <p>
-          <%= submit_to 'apply', l(:button_apply), :update => "show_review_#{@review.id}",
-            :remote => true
-                  :url => {:controller => 'code_review', :action => 'reply', :id=>@project},
+          <%= button_to  l(:button_apply), 
+            {:controller => 'code_review', :action => 'reply', :id=>@project},
+            :update => "show_review_#{@review.id}",
+                  :remote => true,
                   :method => :post,
                   :loading => "$('add_review_comment_submit').disabled = true;",
                   :html => {:id => 'add_review_comment_submit'} %>
           <%= link_to l(:label_preview),
-                  { 
+                  { :controller => 'code_review', :action => 'preview', :id => @project},
                   :remote => true,
-                  :url => { :controller => 'code_review', :action => 'preview', :id => @project},
                     :method => 'post',
                     :update => 'reply-preview',
                     :with => "Form.serialize('message-form')",
-                    :complete => "Element.scrollTo('reply-preview')"
-                  }, :accesskey => accesskey(:preview) %>
+                    :complete => "Element.scrollTo('reply-preview')",
+                    :accesskey => accesskey(:preview) %>
         </p>
         <div id="reply-preview" class="wiki"></div>
         <%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>

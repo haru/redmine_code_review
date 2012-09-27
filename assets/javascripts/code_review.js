@@ -185,8 +185,10 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
     });
     $('#code_review').append(div);
     innerSpan.down('img').click(function(e) {
-        var review_id = $(e.target).parent().attr('id').match(/[0-9]+/);
-        showReview(showReviewUrl, review_id, e.pointerX() + 5, e.pointerY());
+        var review_id = $(e.target).parent().attr('id').match(/[0-9]+/)[0];
+        var span   = $('#review_' + review_id); // span element of view review button
+    var pos = span.offset();
+        showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top + 25);
     });
 }
 
