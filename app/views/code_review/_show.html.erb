@@ -77,7 +77,7 @@
       <!-- review comment edit form -->
       <div class="box" id="update-form-<%= @review.id %>" style="display:none;">
         <%
-          review_form_id = "review_form_#{@review.id}"
+        review_form_id = "review_form_#{@review.id}"
         -%>
         <%= form_for :review,
           :url => {:controller => 'code_review',
@@ -141,8 +141,11 @@
       <p>
         <%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %>
       </p>
+      <%  
+      message_form_id = "message-form-#{@review.id}"
+      -%>
       <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
-        <%= form_for @reply, :as => :reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => 'message-form'} do |f| %>
+        <%= form_for @reply, :as => :reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => message_form_id} do |f| %>
           <%= hidden_field_tag :review_id, @review.id %>
           <%= hidden_field :review,  :lock_version%>
           <%= hidden_field :issue,  :lock_version%>
@@ -169,16 +172,12 @@
               :method => :post,
               :loading => "$('add_review_comment_submit').disabled = true;",
               :html => {:id => 'add_review_comment_submit'} %>
-            <%= link_to l(:label_preview),
-              { :controller => 'code_review', :action => 'preview', :id => @project},
-              :remote => true,
-              :method => 'post',
-              :update => 'reply-preview',
-              :with => "Form.serialize('message-form')",
-              :complete => "Element.scrollTo('reply-preview')",
-              :accesskey => accesskey(:preview) %>
+            <%
+            reply_preview_id = "reply_preview_#{@review.id}"
+            -%>
+            <%= link_to_function l(:label_preview), "$('##{reply_preview_id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{message_form_id}').serialize())" %>
           </p>
-          <div id="reply-preview" class="wiki"></div>
+          <div id="<%= reply_preview_id %>" class="wiki"></div>
           <%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>
         <% end %>
       </div>
