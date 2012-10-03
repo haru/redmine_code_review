@@ -167,13 +167,10 @@
               :id => 'reply_comment_' + @review.id.to_s %>
           </p>
           <p>
-            <%= button_to  l(:button_apply), 
-              {:controller => 'code_review', :action => 'reply', :id=>@project},
-              :update => "show_review_#{@review.id}",
-              :remote => true,
-              :method => :post,
-              :loading => "$('add_review_comment_submit').disabled = true;",
-              :html => {:id => 'add_review_comment_submit'} %>
+            <%
+            submit_url = url_for(:controller => 'code_review', :action => 'reply', :id => @project)
+            -%>
+            <%= button_to_function l(:button_apply), "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{message_form_id}').serialize())" %>
             <%
             reply_preview_id = "reply_preview_#{@review.id}"
             -%>
