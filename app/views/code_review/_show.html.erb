@@ -107,9 +107,11 @@
               :id => 'review_comment_' + @review.id.to_s %>
           </p>
           <p>
-            <%= button_to_function l(:button_apply), "$(##{review_form_id}).submit()", :remote => true %>
-            <%= submit_tag l(:button_apply) %>
-            <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#update-form-<%= @review.id %>").hide();' />
+            <%
+            submit_url = url_for(:controller => 'code_review', :action => 'update', :id => @project)
+            -%>
+            <%= button_to_function l(:button_apply), "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
+            <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
             <%= link_to_function l(:label_preview), "$('#preview_#{@review.id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{review_form_id}').serialize())" %>
           </p>
           <div id="preview_<%= @review.id%>" class="wiki"></div>
