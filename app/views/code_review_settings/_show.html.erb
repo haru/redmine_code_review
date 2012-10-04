@@ -41,12 +41,13 @@
   }
 
   function is_valid_expression(field) {
-    if (field.value == '') {
+    var text = field[0].value;
+    if (text == '') {
       return false;
     }
 
     try {
-      new RegExp(field.value);
+      new RegExp(text);
     }
     catch (e) {
       alert(e);
@@ -57,12 +58,18 @@
   }
   
   function add_assign_filter() {
+    if (!is_valid_expression($('#auto_assign_add_filter_expression'))) {
+      return false;
+    }
     var url = '<%=url_for(:controller => 'code_review_settings', :action => 'add_filter', :id => @project) %>';
     var args = $('#code_review_form').serialize2json();
     $('#auto_assignment_filters').load(url, args);
   }
   
   function update_assign_filter(num) {
+    if (!is_valid_expression($('#auto_assign_edit_filter_' + num + '_expression'))) {
+      return false;
+    }
     var url = '<%=url_for(:controller => 'code_review_settings', :action => 'edit_filter', :id => @project) %>';
     var args = $('#code_review_form').serialize2json();
     args['num'] = num;
