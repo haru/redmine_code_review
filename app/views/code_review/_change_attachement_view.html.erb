@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2010-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,15 +23,13 @@ attachment = Attachment.find(id)
 return '' unless attachment.is_text? or attachment.is_diff?
 review_id = parameters[:review_id] unless parameters[:review_id].blank?
 url = url_for :controller => 'code_review', :action => 'update_attachment_view', :id => project
-scriptparams = "attachment_id=#{id}&review_id=#{review_id}"
 -%>
 <div id="code_review">
   <div id="review_comment"/>
 </div>
 
 <script type="text/javascript">
-  document.observe('dom:loaded', function() {
-    new Ajax.Updater('code_review', '<%=url%>', {evalScripts:true, method:'get',
-      parameters: '<%=scriptparams%>'});
+  $(document).ready(function(){
+    $('#code_review').load('<%=url%>', {'attachment_id': '<%=id%>', 'review_id': '<%=review_id%>'});
   });
 </script>

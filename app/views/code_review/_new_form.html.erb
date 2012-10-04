@@ -22,7 +22,7 @@
   <h2>
     <%= l(:label_line_number, :line => @review.line) %>
   </h2>
-  <%= form_for @review,:as => :review, :remote => true,
+  <%= form_for @review,:as => :review,
     :url => {:controller => 'code_review', :action => 'new', :id=>@project}, :html => {:id => 'review_form'} do |f|  %>
     <%= error_messages_for 'review' %>
     <%= error_messages_for 'issue' %>
@@ -55,7 +55,7 @@
       <%= f.text_field :parent_id, :size => 10 %>
       <% if @parent_candidate %>
         <%= l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
-        <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('review_parent_id').value = <%= @parent_candidate.id %>"/>
+        <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('#review_parent_id').value = <%= @parent_candidate.id %>"/>
       <% end %>
     </p>
     <% @issue.custom_field_values.each do |value| %>
@@ -96,6 +96,11 @@
       <p><label><%= l(:field_status) %></label> <%= h(@issue.status.name) %></p>
     <% end %>
     <p>
+      <%
+      submit_url = url_for(:controller => 'code_review', :action => 'new', :id=>@project)
+      %>
+      <%= button_to_function l(:button_apply), "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
+
       <%= submit_tag l(:button_apply), :id => 'add_review_submit'%>
       <%= javascript_tag "$('#review_form').bind('ajax:beforeSend', function(){$('#add_review_submit').attr('disabled', 'disabled');}).bind('ajax:success', hideForm);" %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
@@ -106,4 +111,5 @@
   <% end %>
 
 </div>
+
 
