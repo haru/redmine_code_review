@@ -55,6 +55,19 @@
 
     return true;
   }
+  
+  function add_assign_filter() {
+    var url = '<%=url_for(:controller => 'code_review_settings', :action => 'add_filter', :id => @project) %>';
+    var args = $('#code_review_form').serialize2json();
+    $('#auto_assignment_filters').load(url, args);
+  }
+  
+  function update_assign_filter(num) {
+    var url = '<%=url_for(:controller => 'code_review_settings', :action => 'edit_filter', :id => @project) %>';
+    var args = $('#code_review_form').serialize2json();
+    args['num'] = num;
+    $('#auto_assignment_filters').load(url, args);
+  }
 </script>
   
   <%
