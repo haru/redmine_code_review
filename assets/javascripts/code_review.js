@@ -279,12 +279,12 @@ function changeImage(review_id, is_closed) {
 }
 
 function make_addreview_link(project, link) {
-    var alist = $$('#content p a');
+    var alist = $('#content p a');
     if (alist == null) {
         return;
     }
     var a = alist[0];
-    var p = a.up();
+    var p = a.parentNode;
     p.innerHTML = p.innerHTML + " | " + link;
 }
 
