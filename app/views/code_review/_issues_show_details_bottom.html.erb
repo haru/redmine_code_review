@@ -17,7 +17,10 @@ review = issue.code_review
   <tr>
     <td><b><%= l(:code_review) %>:</b></td>
     <td colspan="3">
-      <%= link_to("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}",
+      <%
+      label = URI.decode("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}")
+      -%>
+      <%= link_to(label,
         :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => review.repository_identifier) %>
     </td>
   </tr>
@@ -31,7 +34,10 @@ review = issue.code_review
     <td><b><%= l(:review_assigned_for) %>:</b></td>
     <td colspan="3">
       <% if assignment.path %>
-        <%= link_to("#{repository_id + ':' if repository_id}#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
+        <%
+        label = URI.decode("#{repository_id + ':' if repository_id}#{assignment.path}#{'@' + assignment.revision if assignment.revision}")
+        -%>
+        <%= link_to(label,
           :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id, :repository_id => repository_id) %>
       <% elsif assignment.revision %>
         <%

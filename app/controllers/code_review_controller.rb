@@ -251,7 +251,7 @@ class CodeReviewController < ApplicationController
         url << '?review_id=' + @review.id.to_s if @review
         redirect_to(url)
       else
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + URI.escape(path) + '?rev=' + target.revision
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
         url << '&review_id=' + @review.id.to_s + rev_to if @review
         redirect_to url
       end
