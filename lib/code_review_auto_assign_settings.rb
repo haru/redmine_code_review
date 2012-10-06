@@ -126,7 +126,7 @@ module CodeReviewAutoAssignSettings
 
     def match_with_changeset?(changeset)
       return true unless filter_enabled?
-      changeset.changes.each{|change|
+      changeset.filechanges.each{|change|
         return if match_with_change?(change)  
       }
       return false
@@ -134,7 +134,7 @@ module CodeReviewAutoAssignSettings
 
     def match_with_change?(change)
       filters.each { |filter|
-        next unless filter.match?(change.path)
+        next unless filter.match?(change.relative_path)
         return filter.accept?
       }
       return accept_for_default
