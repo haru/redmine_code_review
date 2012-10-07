@@ -195,19 +195,17 @@ class CodeReviewController < ApplicationController
       end
     end
     @change = nil
-    changeset.changes.each{|chg|
+    changeset.filechanges.each{|chg|
       @change = chg if ((chg.path == fullpath) or ("/#{chg.path}" == fullpath)) or (chg.path == "/#{@path}")
     }
-    unless @change
-      @changeset = changeset
-      @reviews = CodeReview.find(:all, :conditions => ['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev])
 
-      #render :partial => 'show_error'
-      #return
-    else
-      @reviews = CodeReview.find(:all, :conditions => ['change_id = (?) and issue_id is NOT NULL', @change.id])
-      @review.change_id = @change.id
-    end
+    @changeset = changeset
+    @reviews = CodeReview.find(:all, :conditions => ['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev])
+    @review.change_id = @change.id if @change
+
+    #render :partial => 'show_error'
+    #return
+    
 
     
     render :partial => 'update_diff_view'
