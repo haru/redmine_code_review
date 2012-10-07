@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2011  Haruyuki Iida
+# Copyright (C) 2009-2012 Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -231,7 +231,7 @@ class CodeReviewController < ApplicationController
     @repository = @review.repository if @review
     @assignment = CodeReviewAssignment.find(params[:assignment_id].to_i) unless params[:assignment_id].blank?
     @repository = @assignment.repository if @assignment
-    @repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+    @repository_id = @review.repository_identifier 
     @issue = @review.issue if @review
     @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current) if @review
     target = @review if @review
@@ -240,8 +240,8 @@ class CodeReviewController < ApplicationController
       render :partial => 'show'
     elsif target.path
       #@review = @review.root
-      path = target.path
-      path = '/' + path unless path.match(/^\//)
+      path = URI.decode(target.path)
+      #path = '/' + path unless path.match(/^\//)
       action_name = target.action_type
       rev_to = ''
       rev_to = '&rev_to=' + target.rev_to if target.rev_to
@@ -251,8 +251,10 @@ class CodeReviewController < ApplicationController
         url << '?review_id=' + @review.id.to_s if @review
         redirect_to(url)
       else
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
-        url << '&review_id=' + @review.id.to_s + rev_to if @review
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, 
+          :repository_id => @repository_id, :rev => target.revision, :path => path)
+        #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
+        url << '?review_id=' + @review.id.to_s + rev_to if @review
         redirect_to url
       end
     end

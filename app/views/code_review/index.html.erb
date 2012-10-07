@@ -74,12 +74,13 @@ function change_option(flag) {
             </td>
             <td class="path">
               <%
-              codepath = review.path
-              if (review.path.length > 55)
-                codepath = review.path[0, 15] + '...' + review.path[review.path.length - 35, 35]
+              review_path = URI.decode(review.path)
+              codepath = review_path
+              if (review_path.length > 55)
+                codepath = review_path[0, 15] + '...' + review_path[review_path.length - 35, 35]
               end
               -%>
-              <%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review.path) -%>
+              <%= link_to(raw(codepath), {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review_path) -%>
            </td>
             <td><%=h review.line %></td>
             <td><%=h review.revision %></td>
