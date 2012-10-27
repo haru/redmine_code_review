@@ -47,10 +47,10 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   def test_assignment_count
     changeset = Changeset.find(100)
     assert_equal(0, changeset.assignment_count)
-    change = changeset.changes[0]
+    change = changeset.filechanges[0]
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 2)
-    change = changeset.changes[1]
+    change = changeset.filechanges[1]
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
 
     assert_equal(3, changeset.assignment_count)
@@ -62,10 +62,10 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     FactoryGirl.create(:change, changeset: changeset)
     
     changeset = Changeset.find(changeset.id)
-    change = changeset.changes[0]
+    change = changeset.filechanges[0]
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 2)
-    change = changeset.changes[1]
+    change = changeset.filechanges[1]
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 4)
     issues = []
@@ -110,8 +110,8 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     end
 
     should "returns 100 if changeset has no closed assignments." do
-      changeset = Changeset.find(100)
-      change = changeset[0]
+      change = FactoryGirl.create(:change)
+      changeset = change.changeset
       @project = Project.find(1)
       issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
@@ -124,8 +124,8 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     end
 
     should "returns 50 if half of assignments were closed." do
-      changeset = Changeset.find(100)
-      change = changeset[0]
+      change = FactoryGirl.create(:change)
+      changeset = change.changeset
       @project = Project.generate!
       issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
       issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
@@ -150,14 +150,15 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     end
 
     should "returns assignments if changeset has assignments." do
-      changeset = Changeset.find(100)
-      change = changeset[0]
+      change = FactoryGirl.create(:change)
+      changeset = change.changeset
 
       assert_not_nil change
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 2)
       change.save!
- 
+
+      changeset = Changeset.find(changeset.id)
       assert_not_nil(changeset.assignment_issues)
       assert_equal(2, changeset.assignment_issues.length)
 
@@ -166,6 +167,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
       change.save!
 
+      changeset = Changeset.find(changeset.id)
       assert_not_nil change
       assert_not_nil(changeset.assignment_issues)
       assert_equal(3, changeset.assignment_issues.length)

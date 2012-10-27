@@ -37,7 +37,7 @@ module ChangesetInstanceMethodsCodeReview
   def review_count
     return @review_count if @review_count
     @review_count = 0
-    changes.each{|change|
+    filechanges.each{|change|
       @review_count += change.review_count
     }
     return @review_count
@@ -46,7 +46,7 @@ module ChangesetInstanceMethodsCodeReview
   def open_review_count
     return @open_review_count if @open_review_count
     @open_review_count = 0
-    changes.each{|change|
+    filechanges.each{|change|
       @open_review_count += change.open_review_count
     }
     return @open_review_count
@@ -54,7 +54,7 @@ module ChangesetInstanceMethodsCodeReview
 
   def review_issues
     return @review_issues if @review_issues
-    changes.each{|change|
+    filechanges.each{|change|
       unless @review_issues
         @review_issues = change.code_reviews.collect{|issue| issue}
       else
@@ -98,7 +98,7 @@ module ChangesetInstanceMethodsCodeReview
   def assignment_count
     #return @assignment_count if @assignment_count
     @assignment_count = code_review_assignments.length
-    changes.each{|change|
+    filechanges.each{|change|
       @assignment_count += change.assignment_count
     }
     return @assignment_count
@@ -109,7 +109,7 @@ module ChangesetInstanceMethodsCodeReview
     @open_assignment_count = code_review_assignments.select {|assignment|
       !assignment.is_closed?
     }.length
-    changes.each{|change|
+    filechanges.each{|change|
       @open_assignment_count += change.open_assignment_count
     }
     return @open_assignment_count
@@ -118,7 +118,7 @@ module ChangesetInstanceMethodsCodeReview
   def assignment_issues
     return @assignment_issues if @assignment_issues
     @assignment_issues = code_review_assignments
-    changes.each{|change|     
+    filechanges.each{|change|
         @assignment_issues =  @assignment_issues + change.code_review_assignments.collect{|issue| issue}
     }
     @assignment_issues
