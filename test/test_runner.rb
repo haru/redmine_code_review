@@ -19,7 +19,7 @@
 require 'simplecov'
 require 'simplecov-rcov'
 SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-SimpleCov.start 'rails'
+SimpleCov.start
 
 require 'fileutils'
 testdir = File.dirname(File.expand_path(__FILE__))
