@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2011  Haruyuki Iida
+# Copyright (C) 2009-2012  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -101,7 +101,6 @@
       %>
       <%= button_to_function l(:button_apply), "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
 
-      <%= submit_tag l(:button_apply), :id => 'add_review_submit'%>
       <%= javascript_tag "$('#review_form').bind('ajax:beforeSend', function(){$('#add_review_submit').attr('disabled', 'disabled');}).bind('ajax:success', hideForm);" %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= preview_link({ :controller => 'code_review', :action => 'preview', :id => @project}, 'review_form') %>
