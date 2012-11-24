@@ -49,13 +49,10 @@ class CodeReviewController < ApplicationController
       conditions << false
     end
 
-    @reviews = CodeReview.find :all, :order => sort_clause,
-      :conditions => conditions,
-      :limit  =>  limit,
-      :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " + 
+    @reviews = CodeReview.order(sort_clause).limit(limit).where(conditions).joins(
+      "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
-      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
-      :offset =>  @review_pages.current.offset
+      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id").offset(@review_pages.current.offset)
     @i_am_member = @user.member_of?(@project)
     render :template => 'code_review/index.html.erb', :layout => !request.xhr?
   end
@@ -200,7 +197,7 @@ class CodeReviewController < ApplicationController
     }
 
     @changeset = changeset
-    @reviews = CodeReview.find(:all, :conditions => ['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev])
+    @reviews = CodeReview.where(['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev]).all
     @review.change_id = @change.id if @change
 
     #render :partial => 'show_error'
@@ -219,7 +216,7 @@ class CodeReviewController < ApplicationController
     @action_type = 'attachment'
     @attachment = Attachment.find(@attachment_id)
     
-    @reviews = CodeReview.find(:all, :conditions => ['attachment_id = (?) and issue_id is NOT NULL', @attachment_id])
+    @reviews = CodeReview.where(['attachment_id = (?) and issue_id is NOT NULL', @attachment_id]).all
 
     render :partial => 'update_diff_view'
   end

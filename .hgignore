@@ -4,3 +4,5 @@
 ^code_review.gemspec
 ^pkg/
 ^Gemfile.lock$
+syntax: glob
+test/coverage
