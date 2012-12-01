@@ -44,17 +44,6 @@
     review_counts['revision_<%=changeset.identifier %>'] = count;
 <% end %>
   UpdateRepositoryView('<%=l(:code_reviews)%>');
-  var url = "<%= url_for( url_for :controller => 'code_review', :action => 'update_revisions_view', :id => @project, :repository_id => @repository_id) %>";
-  $('p.pagination a').each(function(i){
-    var onclick = $(this).attr('onclick');
-    if (onclick.indexOf('onComplete:') > 0) {
-      onclick = onclick.replace('onComplete:function(request){window.scrollTo(0,0)}', "onComplete:function(request){window.scrollTo(0,0);call_update_revisions('"+ url + "')}");
-    }
-    else {
-      onclick = onclick.replace('}); return false;', 'onComplete:function(request){call_update_revisions("'+ url + '")}); return false;');
-    }
-    $(this).attr('onclick', onclick);
-  });
 </script>
 
 
