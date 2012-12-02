@@ -108,7 +108,6 @@
       %>
       <%= button_to_function l(:button_apply), "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
 
-      <%= javascript_tag "$('#review_form').bind('ajax:beforeSend', function(){$('#add_review_submit').attr('disabled', 'disabled');}).bind('ajax:success', hideForm);" %>
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= preview_link({ :controller => 'code_review', :action => 'preview', :id => @project}, 'review_form') %>
     </p>
