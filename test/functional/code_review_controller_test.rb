@@ -107,7 +107,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       }
       post :new, :id => 1, :review => {:line => 1, :change_id => 1,
         :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
-      assert_response 220
+      assert_response 200
     end
     
     should "save safe_attributes" do
