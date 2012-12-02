@@ -45,9 +45,16 @@
       <p>
         <label><b><%=h l(:label_tracker) %>:</b></label>
         <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
-        <%= #TODO migrate
-            observe_field(:issue_tracker_id, :update => 'review-form', :controller => 'code_review',
-                          :action => 'new', :submit => 'review_form', :method => 'get') %>
+        <script type="text/javascript">
+
+            $(function(){
+                $('#issue_tracker_id').change(function(){
+                    var url = "<%= url_for(:controller => 'code_review', :action => 'new') -%>";
+                    url = url + '?' + $('#review_form').serialize();
+                    $('#review-form').load(url);
+                });
+            });
+        </script>
       </p>
     <% end %>
     <p>
