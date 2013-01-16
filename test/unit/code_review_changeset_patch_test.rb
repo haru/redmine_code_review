@@ -101,8 +101,8 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change = FactoryGirl.create(:change)
       changeset = change.changeset
       @project = Project.generate!
-      issue1 = Issue.generate_for_project!(@project, :status_id => 1)
-      issue2 = Issue.generate_for_project!(@project, :status_id => 1)
+      issue1 = Issue.generate!({:project => @project, :status_id => 1})
+      issue2 = Issue.generate!({:project => @project, :status_id => 1})
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
@@ -113,8 +113,8 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change = FactoryGirl.create(:change)
       changeset = change.changeset
       @project = Project.find(1)
-      issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
-      issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
+      issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
@@ -127,10 +127,10 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change = FactoryGirl.create(:change)
       changeset = change.changeset
       @project = Project.generate!
-      issue1 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
-      issue2 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
-      issue3 = Issue.generate_for_project!(@project, :status => IssueStatus.find(5))
-      issue4 = Issue.generate_for_project!(@project, :status => IssueStatus.find(1))
+      issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(1)})
+      issue3 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue4 = Issue.generate!({:project => @project, :status => IssueStatus.find(1)})
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!

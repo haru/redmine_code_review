@@ -61,7 +61,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     project = Project.find(1)
     project.repository.destroy
     project.repository = changeset.repository
-    issue = Issue.generate_for_project!(project, {:description => 'test'})
+    issue = Issue.generate!({:project => project, :description => 'test'})
     review = FactoryGirl.create(:code_review, change: change, project: project, issue: issue)
     get :revision, :id => project.id, :rev => changeset.revision, :path => change.path.split('/')
     #assert_response :success

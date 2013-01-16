@@ -67,14 +67,14 @@ class IssuesControllerTest < ActionController::TestCase
   def test_show
     @request.session[:user_id] = 1
     project = Project.find(1)
-    issue = Issue.generate_for_project!(project)
+    issue = Issue.generate!(:project => project)
     get :show, :id => issue.id
 
-    issue = Issue.generate_for_project!(project)
+    issue = Issue.generate!(:project => project)
     assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: nil)
     get :show, :id => assignment.issue.id
 
-    issue = Issue.generate_for_project!(Project.find(1))
+    issue = Issue.generate!(:project => Project.find(1))
     assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: '/aaa/bbb')
     get :show, :id => assignment.issue.id
     

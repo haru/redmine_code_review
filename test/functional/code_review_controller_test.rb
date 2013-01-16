@@ -91,7 +91,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       project = Project.find(1)
       change = Change.find(3)
       changeset = change.changeset
-      issue = Issue.generate_for_project!(project)
+      issue = Issue.generate!(:project => project)
       changeset.issues << issue
       changeset.save
       count = CodeReview.find(:all).length
@@ -115,7 +115,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       project = Project.find(1)
       change = Change.find(3)
       changeset = change.changeset
-      issue = Issue.generate_for_project!(project)
+      issue = Issue.generate!(:project => project)
       changeset.issues << issue
       changeset.save
       count = CodeReview.find(:all).length
@@ -136,7 +136,7 @@ class CodeReviewControllerTest < ActionController::TestCase
     should "create review for attachment" do
       @request.session[:user_id] = 1
       project = Project.find(1)
-      issue = Issue.generate_for_project!(project)
+      issue = Issue.generate!(:project => project)
       attachment = FactoryGirl.create(:attachment, container: issue)
       count = CodeReview.find(:all).length
       post :new, :id => 1, :review => {:line => 1, :comment => 'aaa',

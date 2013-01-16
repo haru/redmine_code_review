@@ -30,10 +30,4 @@ class CodeReview < ActiveRecord::Base
     @last_subject
   end
 
-#  def self.generate_for_project!(project, attributes = {})
-#    attributes[:subject] || next_subject
-#    issue Issue.generate_for_project!(project, {:subject => attributes[:subject]})
-#    CodeReview.generate!(attributes)
-#  end
-
 end
