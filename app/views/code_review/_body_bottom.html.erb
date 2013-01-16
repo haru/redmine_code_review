@@ -53,7 +53,7 @@ if project and controller and project.module_enabled?(:code_review)
           rev = parameters['rev']
           path = parameters['path']
 
-          unless path.blank?
+
             repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
             url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project, :repository_id => repository_id
           %>
@@ -70,7 +70,7 @@ if project and controller and project.module_enabled?(:code_review)
                 });
             </script>
           <% end %>
-        <% end %>
+
       <% end %>
     <% end %>
   <%

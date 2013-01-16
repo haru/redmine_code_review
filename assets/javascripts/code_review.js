@@ -27,6 +27,7 @@ var review_form_dialog = null;
 var add_form_title = null;
 var review_dialog_title = null;
 var repository_id = null;
+var filenames = [];
 
 var ReviewCount = function(total, open, progress){
     this.total = total;
@@ -108,9 +109,17 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
             filetables[j++] = this;
         }
     });
+    j = 0;
+    $('table.filecontent th.filename').each(function(){
+        filenames[j] = $.trim($(this).text());
+        j++;
+    });
     addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
-        '&rev=' + rev + '&path=' + encodeURIComponent(path) + '&rev_to=' + rev_to +
+        '&rev=' + rev + '&rev_to=' + rev_to +
         '&attachment_id=' + attachment_id + '&repository_id=' + encodeURIComponent(repository_id);
+    if (path != null && path.length > 0) {
+        addReviewUrl = addReviewUrl + '&path=' + encodeURIComponent(path);
+    }
     var num = 0;
     if (is_diff) {
         num = 1;
@@ -160,8 +169,13 @@ function clickPencil(e)
 //    alert('$(e.target).attr("id") = ' + $(e.target).attr("id"));
     var result = $(e.target).attr("id").match(/([0-9]+)_([0-9]+)/);
     var line = result[1];
-    var file_count = result[2];
-    addReview(addReviewUrl + '&line=' + line + '&file_count=' + file_count);
+    var file_count = eval(result[2]);
+    var url = addReviewUrl + '&line=' + line + '&file_count=' + file_count;
+
+    if (path == null || path.length == 0) {
+        url = url + '&path=' + encodeURIComponent(filenames[file_count]);
+    }
+    addReview(url);
     formPopup(e.pageX, e.pageY);
     e.preventDefault();
 }
