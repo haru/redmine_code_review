@@ -156,7 +156,7 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_destroy
     project = Project.find(1)
-    issue = Issue.generate_for_project!(project)
+    issue = Issue.generate!(:project => project)
     review = FactoryGirl.create(:code_review, project: project)
     count = CodeReview.find(:all).length
     @request.session[:user_id] = 1
