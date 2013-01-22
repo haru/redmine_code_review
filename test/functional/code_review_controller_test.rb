@@ -154,6 +154,21 @@ class CodeReviewControllerTest < ActionController::TestCase
     #assert_template '_show'
   end
 
+  context "show" do
+    should "be success with review_id" do
+      @request.session[:user_id] = 1
+      get :show, :id => 1, :review_id => 9
+      assert_response 302
+      #assert_template '_show'
+    end
+    should "be success with assignment_id" do
+      @request.session[:user_id] = 1
+      get :show, :id => 1, :assignment_id => 1
+      assert_response 302
+      #assert_template '_show'
+    end
+  end
+
   def test_destroy
     project = Project.find(1)
     issue = Issue.generate!(:project => project)

@@ -10,11 +10,11 @@ one:
 
   file_path: MyString
 
-  rev: MyString
+  rev: 1
 
-  rev_to: MyString
+  rev_to:
 
-  action_type: MyString
+  action_type: diff
 
 two:
   id: 2

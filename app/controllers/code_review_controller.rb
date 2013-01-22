@@ -225,12 +225,12 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.find(params[:review_id].to_i) unless params[:review_id].blank?
     @repository = @review.repository if @review
     @assignment = CodeReviewAssignment.find(params[:assignment_id].to_i) unless params[:assignment_id].blank?
-    @repository = @assignment.repository if @assignment
-    @repository_id = @review.repository_identifier 
+    @repository_id = @assignment.repository_identifier if @assignment
     @issue = @review.issue if @review
     @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current) if @review
     target = @review if @review
     target = @assignment if @assignment
+    @repository_id = target.repository_identifier
     if request.xhr? or !params[:update].blank?
       render :partial => 'show'
     elsif target.path
@@ -246,8 +246,9 @@ class CodeReviewController < ApplicationController
         url << '?review_id=' + @review.id.to_s if @review
         redirect_to(url)
       else
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, 
-          :repository_id => @repository_id, :rev => target.revision, :path => path)
+        path = nil if target.diff_all
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project,
+                      :repository_id => @repository_id, :rev => target.revision, :path => path)
         #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
         url << '?review_id=' + @review.id.to_s + rev_to if @review
         redirect_to url

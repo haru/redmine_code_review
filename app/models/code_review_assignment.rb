@@ -69,5 +69,8 @@ class CodeReviewAssignment < ActiveRecord::Base
 
   end
 
-  
+
+  def diff_all
+    path.blank?
+  end
 end
