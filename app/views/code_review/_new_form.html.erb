@@ -36,6 +36,7 @@
     <%= hidden_field_tag(:file_count, @review.file_count) %>
     <%= hidden_field_tag(:attachment_id, @review.attachment_id) %>
     <%= hidden_field_tag(:repository_id, @repository_id) %>
+    <%= hidden_field_tag(:diff_all, @review.diff_all) %>
     <p>
       <label><b><%=h l(:field_subject)%>:</b></label>
       <%= f.text_field :subject, :size => 70, :required => true %>

@@ -173,7 +173,7 @@ function clickPencil(e)
     var url = addReviewUrl + '&line=' + line + '&file_count=' + file_count;
 
     if (path == null || path.length == 0) {
-        url = url + '&path=' + encodeURIComponent(filenames[file_count]);
+        url = url + '&path=' + encodeURIComponent(filenames[file_count]) + '&diff_all=true';
     }
     addReview(url);
     formPopup(e.pageX, e.pageY);

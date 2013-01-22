@@ -82,6 +82,7 @@ class CodeReviewController < ApplicationController
         @review.file_count = params[:file_count].to_i unless params[:file_count].blank?
         @review.attachment_id = params[:attachment_id].to_i unless params[:attachment_id].blank?
         @issue = @review.issue
+        @review.diff_all = (params[:diff_all] == 'true')
 
         @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
         
@@ -175,9 +176,16 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.new
     @rev = params[:rev] unless params[:rev].blank?
     @rev_to = params[:rev_to] unless params[:rev_to].blank?
-    @path = params[:path]
+    @path = params[:path] unless params[:path].blank?
+    @paths = []
+    @paths << @path unless @path.blank?
+
     @action_type = params[:action_type]
     changeset = @repository.find_changeset_by_name(@rev)
+    if @paths.empty?
+      changeset.filechanges.each{|chg|
+      }
+    end
 
     url = @repository.url
     root_url = @repository.root_url
@@ -247,8 +255,8 @@ class CodeReviewController < ApplicationController
         redirect_to(url)
       else
         path = nil if target.diff_all
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project,
-                      :repository_id => @repository_id, :rev => target.revision, :path => path)
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, 
+          :repository_id => @repository_id, :rev => target.revision, :path => path)
         #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
         url << '?review_id=' + @review.id.to_s + rev_to if @review
         redirect_to url
