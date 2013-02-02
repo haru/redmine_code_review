@@ -1,6 +1,6 @@
 /*
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2013  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -209,12 +209,13 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
 function popupReview(review_id) {
     var span   = $('#review_' + review_id); // span element of view review button
     var pos = span.offset();
+    $('html,body').animate({ scrollTop: pos.top },
+        {duration: 'fast',
+        complete: function(){showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top)}});
     // position and show popup dialog
     // create popup dialog
-    var win = showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top + 25);
+    //var win = showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top);
 //    win.toFront();
-    // scroll to line
-//    span.scrollTo(); ??
 }
 
 function showReview(url, review_id, x, y) {
@@ -224,10 +225,11 @@ function showReview(url, review_id, x, y) {
         code_reviews_dialog_map[review_id] = null;
     }
     $('#show_review_' + review_id).load(url, {review_id: review_id});
+    var review = getReviewObjById(review_id);
 
     var win = $('#show_review_' + review_id).dialog({
-        show: {effect:'scale', direction: 'both'},// ? 'top-left'
-//        position: [x, y + 5],
+        show: {effect:'scale'},// ? 'top-left'
+        //position: [x, y + 5],
         width:640,
         zIndex: topZindex,
         title: review_dialog_title
@@ -237,6 +239,18 @@ function showReview(url, review_id, x, y) {
     topZindex++;
     code_reviews_dialog_map[review_id] = win;
     return win
+}
+
+function getReviewObjById(review_id) {
+    for (var reviewlist in code_reviews_map) {
+        for (var i = 0; i < reviewlist.length; i++) {
+            var review = reviewlist[i];
+            if (review.id == review_id) {
+                return review;
+            }
+        }
+    }
+    return null;
 }
 
 function formPopup(x, y){
