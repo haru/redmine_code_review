@@ -1,4 +1,4 @@
-# Translation by Ki Won Kim (http://xyz37.blog.me, xyz37@naver.com)
+# Translation by Ki Won Kim (http://x10.mine.nu/redmine, http://xyz37.blog.me, xyz37@naver.com)
 ko:
   label_add_review: "리뷰 작성"
   label_show_review: "리뷰 보기"
@@ -62,3 +62,4 @@ ko:
   label_parent_suggestion: '"%{issue_id}" 정도'
   
   label_assign_review: "할당"
+  field_tracker_in_review_dialog: "코드 리뷰가 생성되었을 때 유형 선택을 허용하시겠습니까?"
