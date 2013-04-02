@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012 Haruyuki Iida
+# Copyright (C) 2009-2013 Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -61,8 +61,8 @@ class CodeReviewController < ApplicationController
     begin
       CodeReview.transaction {
         @review = CodeReview.new
-        @review.issue = Issue.new        
-        @review.issue.safe_attributes = params[:issue] unless params[:issue].blank? 
+        @review.issue = Issue.new
+
         if params[:issue] and params[:issue][:tracker_id]
           @review.issue.tracker_id = params[:issue][:tracker_id].to_i
         else
@@ -82,6 +82,7 @@ class CodeReviewController < ApplicationController
         @review.file_count = params[:file_count].to_i unless params[:file_count].blank?
         @review.attachment_id = params[:attachment_id].to_i unless params[:attachment_id].blank?
         @issue = @review.issue
+        @review.issue.safe_attributes = params[:issue] unless params[:issue].blank?
         @review.diff_all = (params[:diff_all] == 'true')
 
         @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
