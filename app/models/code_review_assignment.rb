@@ -62,6 +62,8 @@ class CodeReviewAssignment < ActiveRecord::Base
     issue.author = User.find(auto_assign.author_id)
     issue.assigned_to_id = auto_assign.select_assign_to(project, changeset.user)
     issue.description = auto_assign.description
+    issue.description = issue.description.sub("$REV" , changeset.revision) if issue.description.blank?
+    issue.description = issue.description.sub("$COMMENTS" , changeset.comments) unless changeset.comments.blank?
 
     issue.save!
       
