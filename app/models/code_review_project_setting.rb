@@ -36,7 +36,7 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   AUTORELATION_TYPE_BLOCKS = 2
 
   def self.find_or_create(project)
-    setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', project.id])
+    setting = CodeReviewProjectSetting.find_by_project_id(project.id)
     unless setting
       setting = CodeReviewProjectSetting.new
       setting.project_id = project.id

@@ -112,7 +112,7 @@ class CodeReview < ActiveRecord::Base
 
   def validate
     unless issue.validate
-      return false
+      false
       
     end
   end
