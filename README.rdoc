@@ -20,7 +20,7 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 === Language contributors
 
 * de.yml - Michael Diederich, Sebastian Bernhard
-* fr.yml - Thomas M
+* fr.yml - Thomas M, fcrespel
 * hu.yml - Péter Major
 * ko.yml - Ki-yong Kim, Ki Won Kim
 * nl.yml - Stefan Verstege

@@ -1,63 +1,64 @@
 fr:
-  label_add_review: Ajouter une revue
-  label_show_review: Voir une revue
+  label_add_review: Ajouter une revue de code
+  label_show_review: Voir la revue de code
   code_reviews: Revues de code
   code_review: Revue de code
-  project_module_code_review: Revues de Code
+  project_module_code_review: Revues de code
   label_code_path: Chemin
   label_code_reviewer: Relecteur
   label_code_author: Auteur
   label_code_line: Ligne
   
   label_review_open: Ouvert
-  label_review_closed: Ferme
+  label_review_closed: Fermé
   
-  label_reopen_review: Re-ouvrir cette revue
-  label_close_review: Fermer cette revue
+  label_reopen_review: Re-ouvrir cette revue de code
+  label_close_review: Fermer cette revue de code
   
   label_code_review_plural: Revues de code
   
-  label_line_number: 'Ligne: %{line}'
-  notice_review_updated: La revue a ete mise a jour avec succes.
-  label_show_closed_reviews: Voir les revues fermees.
+  label_line_number: 'Ligne : %{line}'
+  notice_review_updated: La revue de code a été mise à jour avec succès.
+  label_show_closed_reviews: Voir les revues de code fermées
   label_review: revue
-  label_review_new: New Review
-  review_notify_only_involved_in: "Only for things I'm involved in"
-  review_notify_all: "For any review on all my projects"
-
-  old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
-  select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
-  field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
-  lable_no_code_reviews: 'No reviews'
-  field_comment: Comment
-
-  label_if_revision_has_issues: 'If revision has one more issues'
-  label_review_issue_relates: 'Review issue relates to them'
-  label_review_issue_blocks: 'Review issue blocks them'
-  label_review_issue_do_nothing: 'Do nothing'
-
-  permission_view_code_review: View code reviews
-  permission_add_code_review: Add code reviews
-  permission_edit_code_review: Edit code reviews
-  permission_delete_code_review: Delete code reiews
-  permission_code_review_setting: Manage code reviews
-  permission_assign_code_review: Assign code reviews
-
-  select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
-  field_assignment_tracker: 'Tracker'
-  review_assignments: Review assignments
-  review_assigned_for: Review assigned for
-  code_review_assigned: Assigned
-  code_review_reviewed: Reviewed
-  code_review_requrest: Review request
-
-  label_auto_assign_settings: Auto assignment
-  label_candidates_of_reviewer: Candidates of reviewer
-  label_auto_assignment_filters: Filters
-  auto_assign_filter_expression: 'Path(Regular expression:ex. "/src/.*\.java$")'
-  auto_assign_filter_assign: Assign
-  auto_assign_filter_drop: Drop
-
-  label_parent_suggestion: Maybe "%{issue_id}" ?
+  label_review_new: Nouvelle revue de code
+  review_notify_only_involved_in: Uniquement pour les choses dans lesquelles je suis impliqué
+  review_notify_all: Pour toutes les revues de code de tous mes projets
   
-  label_assign_review: "Assign"
+  old_review_data_found: D'anciens enregistrements de revues de code ont été trouvés. Voulez-vous les convertir en de nouveaux enregistrements ?
+  select_tracker_for_code_reviews: Sélectionnez le tracker à utiliser pour les revues de code
+  field_hide_code_review_tab: Masquer l'onglet "Revues de code"
+  lable_no_code_reviews: Aucune revue de code
+  field_comment: Commentaire
+  
+  label_if_revision_has_issues: Si la révision a une ou plusieurs demande(s) associée(s)
+  label_review_issue_relates: Marquer la demande de revue comme liée
+  label_review_issue_blocks: Marquer la demande de revue comme bloquante
+  label_review_issue_do_nothing: Ne rien faire
+  
+  permission_view_code_review: Voir les revues de code
+  permission_add_code_review: Ajouter des revues de code
+  permission_edit_code_review: Modifier les revues de code
+  permission_delete_code_review: Supprimer les revues de code
+  permission_code_review_setting: Gérer les revues de code
+  permission_assign_code_review: Assigner les revues de code
+  
+  select_tracker_for_code_review_assignment: Sélectionnez le tracker à utiliser pour les assignations de revue de code
+  field_assignment_tracker: Tracker
+  review_assignments: Assignations de revue de code
+  review_assigned_for: Revue de code assignée pour
+  code_review_assigned: Assignée
+  code_review_reviewed: Revue effectuée
+  code_review_requrest: Demande de revue
+  
+  label_auto_assign_settings: Assignation automatique
+  label_candidates_of_reviewer: Relecteurs potentiels
+  label_auto_assignment_filters: Filtres
+  auto_assign_filter_expression: 'Chemin (expression régulière : ex. "/src/.*\.java$")'
+  auto_assign_filter_assign: Assigner
+  auto_assign_filter_drop: Retirer
+  
+  label_parent_suggestion: Peut-être "%{issue_id}" ?
+  
+  label_assign_review: Assigner
+  field_tracker_in_review_dialog: Autoriser la sélection du tracker lors de la création d'une revue de code ?
