@@ -36,7 +36,7 @@ class CodeReviewControllerTest < ActionController::TestCase
     enabled_module.save
 
     User.current = nil
-    roles = Role.find(:all)
+    roles = Role.all
     roles.each {|role|
       role.permissions << :view_code_review
       role.save
@@ -74,12 +74,12 @@ class CodeReviewControllerTest < ActionController::TestCase
 
     should "create new review" do
       @request.session[:user_id] = 1
-      count = CodeReview.find(:all).length
+      count = CodeReview.all.length
       post :new, :id => 1, :review => {:line => 1, :change_id => 1,
         :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
       assert_response :success
       assert_template '_add_success'
-      assert_equal(count + 1, CodeReview.find(:all).length)
+      assert_equal(count + 1, CodeReview.all.length)
 
       get :new, :id => 1, :action_type => 'diff', :rev => 5
       assert_response :success
@@ -94,14 +94,14 @@ class CodeReviewControllerTest < ActionController::TestCase
       issue = Issue.generate!(:project => project)
       changeset.issues << issue
       changeset.save
-      count = CodeReview.find(:all).length
+      count = CodeReview.all.length
       post :new, :id => 1, :review => {:line => 1, :change_id => 3,
         :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'
       assert_response :success
       assert_template '_add_success'
-      assert_equal(count + 1, CodeReview.find(:all).length)
+      assert_equal(count + 1, CodeReview.all.length)
 
-      settings = CodeReviewProjectSetting.find(:all)
+      settings = CodeReviewProjectSetting.all
       settings.each{|setting|
         setting.destroy
       }
@@ -118,7 +118,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       issue = Issue.generate!(:project => project)
       changeset.issues << issue
       changeset.save
-      count = CodeReview.find(:all).length
+      count = CodeReview.all.length
       post :new, :id => 1, :review => {:line => 10, :change_id => 3,
         :comment => 'aaa', :subject => 'bbb', :parent_id => 1, :status_id => 1}, :action_type => 'diff'
       assert_response :success
@@ -138,12 +138,12 @@ class CodeReviewControllerTest < ActionController::TestCase
       project = Project.find(1)
       issue = Issue.generate!(:project => project)
       attachment = FactoryGirl.create(:attachment, container: issue)
-      count = CodeReview.find(:all).length
+      count = CodeReview.all.length
       post :new, :id => 1, :review => {:line => 1, :comment => 'aaa',
         :subject => 'bbb', :attachment_id => attachment.id}, :action_type => 'diff'
       assert_response :success
       assert_template '_add_success'
-      assert_equal(count + 1, CodeReview.find(:all).length)
+      assert_equal(count + 1, CodeReview.all.length)
     end
   end
 
@@ -173,11 +173,11 @@ class CodeReviewControllerTest < ActionController::TestCase
     project = Project.find(1)
     issue = Issue.generate!(:project => project)
     review = FactoryGirl.create(:code_review, project: project)
-    count = CodeReview.find(:all).length
+    count = CodeReview.all.length
     @request.session[:user_id] = 1
     get :destroy, :id => 1, :review_id => review.id
     assert_response :success
-    assert_equal(count - 1, CodeReview.find(:all).length)
+    assert_equal(count - 1, CodeReview.all.length)
     
   end
 

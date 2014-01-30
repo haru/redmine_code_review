@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2011  Haruyuki Iida
+# Copyright (C) 2009-2014  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -75,7 +75,7 @@ module ChangeInstanceMethodsCodeReview
   end
 
   def review_auto_assign
-    return unless CodeReviewAssignment.find(:all, :conditions => ['changeset_id = ?', changeset.id]).length == 0
+    return unless CodeReviewAssignment.where(:changeset_id => changeset.id).all.length == 0
     return unless changeset.repository
     return unless changeset.repository.project
     setting = CodeReviewProjectSetting.find_or_create(changeset.repository.project)

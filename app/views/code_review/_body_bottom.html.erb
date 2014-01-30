@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2010  Haruyuki Iida
+# Copyright (C) 2010-2014  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ is_target = false
 if project and controller and project.module_enabled?(:code_review)
   is_target = true
   is_target = false unless User.current.allowed_to?({:controller => 'code_review', :action => 'update_diff_view'}, project)
-  setting = CodeReviewProjectSetting.find(:first, :conditions => ['project_id = ?', project.id])
+  setting = CodeReviewProjectSetting.where(:project_id => project.id) .first
   is_target = false unless setting
   is_target = false if(setting && setting.tracker_id == nil)
   action_name = controller.action_name

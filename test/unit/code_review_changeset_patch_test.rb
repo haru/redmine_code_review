@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2014  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -209,11 +209,11 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     end
 
     should "create assignments" do
-      count = CodeReviewAssignment.find(:all).length
+      count = CodeReviewAssignment.all.length
       change1 = FactoryGirl.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
-      assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
+      assert_equal(count + 1, CodeReviewAssignment.all.length)
       change2 = FactoryGirl.create(:change, path: '/aaa/bbb/ccc2.rb', changeset: @changeset)
-      assert_equal(count + 1, CodeReviewAssignment.find(:all).length)
+      assert_equal(count + 1, CodeReviewAssignment.all.length)
     end
   end
 end

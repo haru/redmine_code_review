@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2010  Haruyuki Iida
+# Copyright (C) 2009-2014  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
 
   def setup
     @project = Project.find(1)
-    @issue = Issue.find(:first, :conditions => ['project_id = ?', 1])
+    @issue = Issue.where(:project_id => 1).first
     @attachment = FactoryGirl.create(:attachment, container: @issue)
   end
   
