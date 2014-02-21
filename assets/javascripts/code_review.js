@@ -53,7 +53,7 @@ function UpdateRepositoryView(title) {
     var th = $('<th></th>');
     th.html(title);
     header.append(th);
-    $('tr.changeset td.id a').each(function(i){
+    $('tr.changeset td.id a:first-child').each(function(i){
         var revision = this.getAttribute("href");
         revision = revision.substr(revision.lastIndexOf("/") + 1);        
         var review = review_counts['revision_' + revision];
