@@ -47,7 +47,7 @@ review = issue.code_review
         <%= l(:label_revision) + " "%>
       <%=  link_to_revision(assignment.revision, repo) %>
       <% elsif assignment.attachment %>
-        <%= link_to(assignment.attachment.filename, :controller => 'attachments', :action => 'show', :id => attachment.id) %>
+        <%= link_to(assignment.attachment.filename, :controller => 'attachments', :action => 'show', :id => assignment.attachment.id) %>
       <% end %>
     </td>
   </tr>
