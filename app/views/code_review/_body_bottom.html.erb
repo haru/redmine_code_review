@@ -51,7 +51,7 @@ if project and controller and project.module_enabled?(:code_review)
           rev_to = parameters['rev_to'] unless parameters['rev_to'].blank?
           review_id = parameters['review_id']
           rev = parameters['rev']
-          path = parameters['path']
+          path = parameters['path'].blank? ? '.' : parameters['path']
 
 
             repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
