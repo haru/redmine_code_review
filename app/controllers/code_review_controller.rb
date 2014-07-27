@@ -98,7 +98,9 @@ class CodeReviewController < ApplicationController
             create_relation @review, issue, @setting.issue_relation_type if @setting.auto_relation?
           end
           @review.open_assignment_issues(@user.id).each {|issue|
-            create_relation @review, issue, IssueRelation::TYPE_RELATES
+            unless @review.issue.parent_id == issue.id
+              create_relation @review, issue, IssueRelation::TYPE_RELATES
+            end
             watcher = Watcher.new
             watcher.watchable_id = @review.issue.id
             watcher.watchable_type = 'Issue'
@@ -136,7 +138,8 @@ class CodeReviewController < ApplicationController
         end
         render :partial => 'new_form', :status => 200
       }
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid => e
+      logger.error e
       render :partial => 'new_form', :status => 200
     end
   end
