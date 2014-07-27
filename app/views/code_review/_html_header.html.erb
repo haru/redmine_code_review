@@ -25,6 +25,7 @@
   <%= javascript_include_tag(baseurl + '/javascripts/jstoolbar/jstoolbar.js') %>
   <%= javascript_include_tag(baseurl + '/javascripts/jstoolbar/textile.js') %>
   <%= javascript_include_tag(baseurl + "/javascripts/jstoolbar/lang/jstoolbar-#{@project.current_language.to_s.downcase}.js") %>
+  <%= include_calendar_headers_tags %>
   <%= stylesheet_link_tag(baseurl + "/plugin_assets/redmine_code_review/stylesheets/code_review.css") %>
   <%= stylesheet_link_tag(baseurl + "/stylesheets/jstoolbar.css") %>
 <% end %>
