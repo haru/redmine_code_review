@@ -16,21 +16,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
+<% if reply.notes.present? %>
 <p class="author">
 
         <%= authoring reply.created_on, reply.user %>.
        </p>
   <%= avatar(reply.user, :size => "32") %>
-    <ul>
-    <% for detail in reply.details %>
-       <li><%= show_detail(detail) %></li>
-    <% end %>
-    </ul>
 
- 
 <div class="wiki">
           <%= textilizable reply, :notes %>
   </div>
 
 
 <hr/>
+<% end %>
