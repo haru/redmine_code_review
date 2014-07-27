@@ -97,15 +97,19 @@ class CodeReviewController < ApplicationController
             issue = Issue.find_by_id(@review.attachment.container_id)
             create_relation @review, issue, @setting.issue_relation_type if @setting.auto_relation?
           end
+          watched_users = []
           @review.open_assignment_issues(@user.id).each {|issue|
             unless @review.issue.parent_id == issue.id
               create_relation @review, issue, IssueRelation::TYPE_RELATES
             end
-            watcher = Watcher.new
-            watcher.watchable_id = @review.issue.id
-            watcher.watchable_type = 'Issue'
-            watcher.user = issue.author
-            watcher.save!
+            unless watched_users.include?(issue.author)
+              watcher = Watcher.new
+              watcher.watchable_id = @review.issue.id
+              watcher.watchable_type = 'Issue'
+              watcher.user = issue.author
+              watcher.save!
+              watched_users.push(watcher.user)
+            end
           }
           @review.save!
 
