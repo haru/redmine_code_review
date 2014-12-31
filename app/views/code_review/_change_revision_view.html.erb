@@ -58,7 +58,7 @@ if @changeset
       cnt += 1
 
     }
-    relative_path = change.relative_path || ""
+    relative_path = change.path || ""
     if relative_path[0] != ?/
       relative_path = '/' + relative_path
     end
