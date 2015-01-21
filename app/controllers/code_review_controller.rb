@@ -54,7 +54,7 @@ class CodeReviewController < ApplicationController
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
       "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id").offset(@review_pages.current.offset)
     @i_am_member = @user.member_of?(@project)
-    render :template => 'code_review/index.html.erb', :layout => !request.xhr?
+    render :template => 'code_review/index', :layout => !request.xhr?
   end
 
   def new
@@ -214,9 +214,9 @@ class CodeReviewController < ApplicationController
 
     @changeset = changeset
     if @path
-      @reviews = CodeReview.where(['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev]).all
+      @reviews = CodeReview.where(['file_path = ? and rev = ? and issue_id is NOT NULL', @path, @rev]).where(:project_id => @project.id).all
     else
-      @reviews = CodeReview.where(['rev = ? and issue_id is NOT NULL', @rev]).all
+      @reviews = CodeReview.where(['rev = ? and issue_id is NOT NULL', @rev]).where(:project_id => @project.id).all
     end
     @review.change_id = @change.id if @change
 
