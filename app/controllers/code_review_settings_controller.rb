@@ -27,7 +27,7 @@ class CodeReviewSettingsController < ApplicationController
     begin
       @setting = CodeReviewProjectSetting.find_or_create(@project)
 
-      @setting.safe_attributes = params[:setting]
+      @setting.assign_attributes params[:setting]
       @setting.updated_by = @user.id
       params[:auto_assign][:filters] = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
       @setting.auto_assign_settings = params[:auto_assign].to_yaml

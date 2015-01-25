@@ -18,5 +18,5 @@
 RedmineApp::Application.routes.draw do
   #map.connect 'projects/:id/code_review/:action', :controller => 'code_review'
   match 'projects/:id/code_review/:action', :controller => 'code_review', :via => [:get, :post]
-  match 'projects/:id/code_review_settings/:action', :controller => 'code_review_settings', :via => [:get, :post, :put]
+  match 'projects/:id/code_review_settings/:action', :controller => 'code_review_settings', :via => [:get, :post, :put, :patch]
 end
