@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@
 
 <p>
   <label><%=h l(:label_auto_assignment_filters)%></label>
-  <%= check_box_tag "auto_assign[filter_enabled]", true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable();' %><%=h l(:button_activate)%>
+  <%= check_box_tag 'auto_assign[filter_enabled]', true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable();' %><%=h l(:button_activate)%>
 
 </p>
 <div id="auto_assignment_filter_form" style="display: <%=  @auto_assign.filter_enabled? ? 'true' : 'none'%>;">
@@ -83,8 +83,8 @@
             </td>
             <td></td>
             <td style="white-space: nowrap">
-              <%= button_to_function(l(:button_apply), "update_assign_filter(#{i})", :condition => "is_valid_expression($('#auto_assign_edit_filter_#{i}_expression'))") %>
-              <%= button_to_function(l(:button_cancel), "$('#auto_assign_tr_#{i}').show();$('#auto_assign_edit_tr_#{i}').hide()") %>
+              <%= button_tag(l(:button_apply), click: "update_assign_filter(#{i})", :condition => "is_valid_expression($('#auto_assign_edit_filter_#{i}_expression'))") %>
+              <%= button_tag(l(:button_cancel), click: "$('#auto_assign_tr_#{i}').show();$('#auto_assign_edit_tr_#{i}').hide()") %>
             </td>
           </tr>
         <% end -%>
@@ -99,8 +99,8 @@
           </td>
           <td></td>
           <td style="white-space: nowrap;">
-            <%= button_to_function(l(:button_apply), "add_assign_filter()") %>
-            <%= button_to_function(l(:button_cancel), "$('#add_filter_form').hide()") %>
+            <%= button_tag(l(:button_apply), click:'add_assign_filter()') %>
+            <%= button_tag(l(:button_cancel), click:"$('#add_filter_form').hide()") %>
 
           </td>
 

@@ -107,7 +107,7 @@
       <%
       submit_url = url_for(:controller => 'code_review', :action => 'new', :id=>@project)
       %>
-      <%= button_to_function l(:button_apply), "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
+      <%= button_tag l(:button_apply), click: "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= preview_link({ :controller => 'code_review', :action => 'preview', :id => @project}, 'review_form') %>
