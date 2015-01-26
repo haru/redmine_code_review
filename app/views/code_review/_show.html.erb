@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -147,7 +147,7 @@
       message_form_id = "message-form-#{@review.id}"
       -%>
       <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
-        <%= form_for @reply, :as => :reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => message_form_id} do |f| %>
+        <%= form_tag({:action => 'reply', :id => @project, :review_id => @review.id}, :id => message_form_id) do |f| %>
           <%= hidden_field_tag :review_id, @review.id %>
           <%= hidden_field :review,  :lock_version%>
           <%= hidden_field :issue,  :lock_version%>
@@ -159,7 +159,7 @@
             </p>
           <% end %>
           <p>
-            <%= f.text_area :comment,
+            <%= text_area :comment,
               :cols => 30,
               :rows => 10,
               :accesskey => accesskey(:edit),
