@@ -159,7 +159,7 @@
             </p>
           <% end %>
           <p>
-            <%= text_area :comment,
+            <%= text_area_tag 'reply[comment]', '',
               :cols => 30,
               :rows => 10,
               :accesskey => accesskey(:edit),
