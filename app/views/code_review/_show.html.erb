@@ -83,7 +83,8 @@
           :url => {:controller => 'code_review',
           :action => 'update',
           :id => @project},
-          :update => "show_review_#{@review.id}",
+          :remote => true,
+          :authenticity_token => true,
           :html => {:id => review_form_id} do |f|  %>
           <%= f.hidden_field :lock_version %>
           <%= hidden_field :issue, :lock_version%>
@@ -110,7 +111,7 @@
             <%
             submit_url = url_for(:controller => 'code_review', :action => 'update', :id => @project)
             -%>
-            <%= button_tag l(:button_apply), click: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
+            <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
             <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
             <%= link_to_function l(:label_preview), "$('#preview_#{@review.id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{review_form_id}').serialize())" %>
           </p>
@@ -170,7 +171,7 @@
             <%
             submit_url = url_for(:controller => 'code_review', :action => 'reply', :id => @project)
             -%>
-            <%= button_tag l(:button_apply), click: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{message_form_id}').serialize())" %>
+            <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{message_form_id}').serialize())" %>
             <%
             reply_preview_id = "reply_preview_#{@review.id}"
             -%>
@@ -185,3 +186,12 @@
   </div>
 
 </div>
+
+<script>
+$(function($){
+    $('#<%=review_form_id%>')
+        .bind("ajax:complete", function(){
+           alert('aaa');
+        });
+});
+</script>
