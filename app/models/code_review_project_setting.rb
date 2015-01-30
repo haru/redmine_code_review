@@ -29,7 +29,7 @@ class CodeReviewProjectSetting < ActiveRecord::Base
 
   before_save :set_assignment_settings
 
-  attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog
+  attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign
 
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1

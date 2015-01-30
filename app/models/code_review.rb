@@ -29,7 +29,7 @@ class CodeReview < ActiveRecord::Base
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
 
-  attr_accessible :change_id, :subject, :line, :parent_id, :comment, :status_id
+  attr_accessible :change_id, :subject, :line, :parent_id, :comment, :status_id, :issue
 
   def before_create
     issue = Issue.new unless issue
