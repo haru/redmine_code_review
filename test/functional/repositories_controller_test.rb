@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2014  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -81,13 +81,13 @@ class RepositoriesControllerTest < ActionController::TestCase
   
   def test_diff
     @request.session[:user_id] = 1
-    get :diff, :id => 1, :path => '/test/some/path/in/the/repo'.split('/'), :rev => 2
+    get :diff, :id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8
     #assert_response :success
   end
 
   def test_entry
     @request.session[:user_id] = 1
-    get :entry, :id => 1, :path => 'test/some/path/in/the/repo'.split('/'), :rev => 2
+    get :entry, :id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8
     assert_response :success
   end
 end
