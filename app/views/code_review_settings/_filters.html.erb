@@ -83,8 +83,8 @@
             </td>
             <td></td>
             <td style="white-space: nowrap">
-              <%= button_tag(l(:button_apply), click: "update_assign_filter(#{i})", :condition => "is_valid_expression($('#auto_assign_edit_filter_#{i}_expression'))") %>
-              <%= button_tag(l(:button_cancel), click: "$('#auto_assign_tr_#{i}').show();$('#auto_assign_edit_tr_#{i}').hide()") %>
+              <%= button_tag(l(:button_apply), type: 'button', onclick: "update_assign_filter(#{i})", :condition => "is_valid_expression($('#auto_assign_edit_filter_#{i}_expression'))") %>
+              <%= button_tag(l(:button_cancel), type: 'button', onclick: "$('#auto_assign_tr_#{i}').show();$('#auto_assign_edit_tr_#{i}').hide()") %>
             </td>
           </tr>
         <% end -%>
@@ -99,8 +99,8 @@
           </td>
           <td></td>
           <td style="white-space: nowrap;">
-            <%= button_tag(l(:button_apply), click:'add_assign_filter()') %>
-            <%= button_tag(l(:button_cancel), click:"$('#add_filter_form').hide()") %>
+            <%= button_tag(l(:button_apply), type: 'button', onclick:'add_assign_filter()') %>
+            <%= button_tag(l(:button_cancel), type: 'button', onclick:"$('#add_filter_form').hide()") %>
 
           </td>
 
