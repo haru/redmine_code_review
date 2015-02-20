@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2011  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -52,6 +52,15 @@ module ChangesetInstanceMethodsCodeReview
     return @open_review_count
   end
 
+  def open_reviews
+    return @open_reviews if @open_reviews
+    @open_reviews = []
+    filechanges.each do |change|
+      @open_reviews = @open_reviews + change.open_reviews
+    end
+    @open_reviews
+  end
+
   def review_issues
     return @review_issues if @review_issues
     filechanges.each{|change|
@@ -82,12 +91,9 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_review_count == 0
       100
     else
-      @completed_review_pourcent ||= (closed_review_count * 100 +
-          CodeReview.sum("#{Issue.table_name}.done_ratio", 
-          :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
-      "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
-      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
-          :conditions => ["#{Changeset.table_name}.id = ? AND #{IssueStatus.table_name}.is_closed = ?", id, false]).to_f) / review_count
+      @completed_review_pourcent ||= (closed_review_count * 100 + open_reviews.collect{|o|
+        o.issue.done_ratio
+      }.inject(:+))/review_count
     end
   end
 
@@ -125,6 +131,12 @@ module ChangesetInstanceMethodsCodeReview
     
   end
 
+  def open_assignments
+    @open_assignments ||= code_review_assignments.select {|assignment|
+      !assignment.is_closed?
+    }
+  end
+
   def closed_assignment_count
     assignment_count - open_assignment_count
   end
@@ -143,12 +155,8 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_assignment_count == 0
       100
     else
-      @completed_assignment_pourcent ||= (closed_assignment_count * 100 +
-          CodeReviewAssignment.sum("#{Issue.table_name}.done_ratio",
-          :joins => "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
-      "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
-      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id",
-          :conditions => ["#{Changeset.table_name}.id = ? AND #{IssueStatus.table_name}.is_closed = ?", id, false]).to_f) / assignment_count
+      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|o.issue.done_ratio}.inject(:+))/assignment_count
+
     end
   end
 

@@ -98,12 +98,12 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     end
 
     should "add filter" do
-      count = @setting.auto_assign.filters.length
+      count = @setting.auto_assign_settings.filters.length
       filter = AssignmentFilter.new
       filter.expression = 'aaa'
       filter.order = 10
       filter.accept = true
-      post :add_filter, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge({:add_filter => filter.attributes})
+      post :add_filter, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge({:add_filter => filter.attributes})
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_equal(count + 1, @auto_assign.filters.length)
@@ -131,7 +131,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       filter2.order = 10
       filter2.accept = false
 
-      post :edit_filter, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => {'0' => filter.attributes}), :num => 0,
+      post :edit_filter, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => {'0' => filter.attributes}), :num => 0,
         :auto_assign_edit_filter => {'0' => filter2.attributes}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
@@ -170,25 +170,25 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     end
 
     should "sort filters" do    
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
         :auto_assign_filter => {:num => 2, :move_to => 'highest'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
         :auto_assign_filter => {:num => 2, :move_to => 'higher'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
         :auto_assign_filter => {:num => 2, :move_to => 'lowest'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign.attributes.merge(:filters => @filters), :num => 0,
+      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
         :auto_assign_filter => {:num => 2, :move_to => 'lower'}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign

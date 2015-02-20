@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2013 Haruyuki Iida
+# Copyright (C) 2009-2015 Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ class CodeReviewController < ApplicationController
     limit = per_page_option
     @review_count = CodeReview.count(:conditions => ['project_id = ? and issue_id is NOT NULL', @project.id])
     @all_review_count = CodeReview.count(:conditions => ['project_id = ?', @project.id])
-    @review_pages = Paginator.new self, @review_count, limit, params['page']
+    @review_pages = Paginator.new @review_count, limit, params['page']
     @show_closed = (params['show_closed'] == 'true')
     show_closed_option = " and #{IssueStatus.table_name}.is_closed = ? "
     if (@show_closed)
@@ -52,7 +52,7 @@ class CodeReviewController < ApplicationController
     @reviews = CodeReview.order(sort_clause).limit(limit).where(conditions).joins(
       "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
-      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id").offset(@review_pages.current.offset)
+      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id").offset(@review_pages.offset)
     @i_am_member = @user.member_of?(@project)
     render :template => 'code_review/index', :layout => !request.xhr?
   end
@@ -68,7 +68,7 @@ class CodeReviewController < ApplicationController
         else
           @review.issue.tracker_id = @setting.tracker_id
         end
-        @review.safe_attributes = params[:review]
+        @review.assign_attributes(params[:review])
         @review.project_id = @project.id
         @review.issue.project_id = @project.id
 
@@ -283,7 +283,7 @@ class CodeReviewController < ApplicationController
       @issue.lock_version = params[:issue][:lock_version]
       comment = params[:reply][:comment]
       journal = @issue.init_journal(User.current, comment)
-      @review.safe_attributes = params[:review]
+      @review.assign_attributes(params[:review])
       @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
 
       @issue.save!
@@ -308,7 +308,7 @@ class CodeReviewController < ApplicationController
         @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
         @issue = @review.issue
         @issue.lock_version = params[:issue][:lock_version]
-        @review.safe_attributes = params[:review]
+        @review.assign_attributes(params[:review])
         @review.updated_by_id = @user.id
         @review.save!
         @review.issue.save!

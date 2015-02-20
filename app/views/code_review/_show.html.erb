@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -83,7 +83,8 @@
           :url => {:controller => 'code_review',
           :action => 'update',
           :id => @project},
-          :update => "show_review_#{@review.id}",
+          :remote => true,
+          :authenticity_token => true,
           :html => {:id => review_form_id} do |f|  %>
           <%= f.hidden_field :lock_version %>
           <%= hidden_field :issue, :lock_version%>
@@ -110,7 +111,7 @@
             <%
             submit_url = url_for(:controller => 'code_review', :action => 'update', :id => @project)
             -%>
-            <%= button_to_function l(:button_apply), "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
+            <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
             <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
             <%= link_to_function l(:label_preview), "$('#preview_#{@review.id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{review_form_id}').serialize())" %>
           </p>
@@ -147,7 +148,7 @@
       message_form_id = "message-form-#{@review.id}"
       -%>
       <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
-        <%= form_for @reply, :as => :reply, :url => {:action => 'reply', :id => @project, :review_id => @review.id}, :html => {:id => message_form_id} do |f| %>
+        <%= form_tag({:action => 'reply', :id => @project, :review_id => @review.id}, :id => message_form_id) do |f| %>
           <%= hidden_field_tag :review_id, @review.id %>
           <%= hidden_field :review,  :lock_version%>
           <%= hidden_field :issue,  :lock_version%>
@@ -159,7 +160,7 @@
             </p>
           <% end %>
           <p>
-            <%= f.text_area :comment,
+            <%= text_area_tag 'reply[comment]', '',
               :cols => 30,
               :rows => 10,
               :accesskey => accesskey(:edit),
@@ -170,7 +171,7 @@
             <%
             submit_url = url_for(:controller => 'code_review', :action => 'reply', :id => @project)
             -%>
-            <%= button_to_function l(:button_apply), "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{message_form_id}').serialize())" %>
+            <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{message_form_id}').serialize())" %>
             <%
             reply_preview_id = "reply_preview_#{@review.id}"
             -%>

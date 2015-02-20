@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@ class CodeReview < ActiveRecord::Base
 
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
-  
-  safe_attributes 'change_id', 'subject', 'line', 'parent_id', 'comment', 'status_id'
+
+  attr_accessible :change_id, :subject, :line, :parent_id, :comment, :status_id, :issue
 
   def before_create
     issue = Issue.new unless issue

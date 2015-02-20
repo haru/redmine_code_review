@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2011  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,8 +28,8 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   validates_presence_of :assignment_tracker_id
 
   before_save :set_assignment_settings
-  
-  safe_attributes 'tracker_id', 'assignment_tracker_id', 'hide_code_review_tab', 'auto_relation', 'tracker_in_review_dialog'
+
+  attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign
 
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1

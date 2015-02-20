@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2014  Haruyuki Iida
+# Copyright (C) 2009-2015  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,15 +42,24 @@ module ChangeInstanceMethodsCodeReview
     }.length
   end
 
-  def open_review_count
-    open_reviews = code_reviews.select { |o| 
+  def open_reviews
+    @open_reviews ||= code_reviews.select { |o|
       o.issue_id != nil and !o.is_closed?
     }
+  end
+
+  def open_review_count
     open_reviews.length
   end
 
   def closed_review_count
-    code_reviews.select { |o| o.issue_id != nil and o.is_closed? }.length
+    closed_reviews.length
+  end
+  
+  def closed_reviews
+    @closed_reviews ||= code_reviews.select do |o|
+      o.issue_id != nil and o.is_closed?
+    end
   end
 
   #
