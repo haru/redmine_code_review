@@ -35,7 +35,7 @@
     progress = '<p class="progress-info" style="white-space: nowrap;"><span  style="white-space: nowrap;">' + l(:lable_no_code_reviews) + '</span>:<span  style="white-space: nowrap;">' + link_to(l(:label_assign_review), {:controller => 'code_review',
         :action => 'assign', :id=>@project, 
         :rev => changeset.revision, 
-        :changeset_id => changeset.id}) + '</span></p>'
+        :changeset_id => changeset.id}) + '</span></p>' if User.current.allowed_to?(:assign_code_review, @projects)
   end
 %>
 
