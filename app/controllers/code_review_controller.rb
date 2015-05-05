@@ -74,7 +74,7 @@ class CodeReviewController < ApplicationController
 
         @review.user_id = @user.id
         @review.updated_by_id = @user.id
-        @review.issue.start_date = Date.today
+        @review.issue.start_date ||= Date.today if Setting.default_issue_start_date_to_creation_date?
         @review.action_type = params[:action_type]
         @review.rev = params[:rev] unless params[:rev].blank?
         @review.rev_to = params[:rev_to] unless params[:rev_to].blank?
