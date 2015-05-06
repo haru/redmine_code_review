@@ -63,24 +63,26 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
   end
   
   def controller_issues_new_after_save(context = { })
-    project = context[:project]
-    request = context[:request]
-    parameters = request.parameters
-    code = parameters[:code]
-    return unless code
-    issue = context[:issue]
-    issue_id = issue.id
+    if context[:request] && context[:project] && context[:issue]
+      project = context[:project]
+      request = context[:request]
+      parameters = request.parameters
+      code = parameters[:code]
+      return unless code
+      issue = context[:issue]
+      issue_id = issue.id
 
-    assignment = CodeReviewAssignment.new
-    assignment.issue_id = issue_id
-    assignment.change_id = code[:change_id].to_i unless code[:change_id].blank?
-    assignment.changeset_id = code[:changeset_id].to_i unless code[:changeset_id].blank?
-    assignment.attachment_id = code[:attachment_id].to_i unless code[:attachment_id].blank?
-    assignment.file_path = code[:path] unless code[:path].blank?
-    assignment.rev = code[:rev] unless code[:rev].blank?
-    assignment.rev_to = code[:rev_to] unless code[:rev_to].blank?
-    assignment.action_type = code[:action_type] unless code[:action_type].blank?
-    assignment.save!
+      assignment = CodeReviewAssignment.new
+      assignment.issue_id = issue_id
+      assignment.change_id = code[:change_id].to_i unless code[:change_id].blank?
+      assignment.changeset_id = code[:changeset_id].to_i unless code[:changeset_id].blank?
+      assignment.attachment_id = code[:attachment_id].to_i unless code[:attachment_id].blank?
+      assignment.file_path = code[:path] unless code[:path].blank?
+      assignment.rev = code[:rev] unless code[:rev].blank?
+      assignment.rev_to = code[:rev_to] unless code[:rev_to].blank?
+      assignment.action_type = code[:action_type] unless code[:action_type].blank?
+      assignment.save!
+    end
   end
 
   private
