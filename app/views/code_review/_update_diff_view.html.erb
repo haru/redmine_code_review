@@ -39,7 +39,7 @@
   escaped_path = @path.gsub("'"){"\\'"} if @path
   -%>
 
-  <%- if User.current.allowed_to?(:assign_code_review, @projects) -%>
+  <%- if User.current.allowed_to?(:assign_code_review, @project) -%>
   <%= raw show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
   <%- end -%>
 </div>

@@ -22,7 +22,7 @@ if @changeset
   urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project, :repository_id => repository_id) +
     '/' + @changeset.identifier + '/entry'
 %>
-<%- if User.current.allowed_to?(:assign_code_review, @projects) -%>
+<%- if User.current.allowed_to?(:assign_code_review, @project) -%>
   <div id="code_review_assignments">
     <%=h l(:review_assignments)%>
     <% @changeset.code_review_assignments.each do |assignment|
