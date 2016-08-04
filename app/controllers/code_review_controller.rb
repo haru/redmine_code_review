@@ -271,6 +271,7 @@ class CodeReviewController < ApplicationController
           :repository_id => @repository_id, :rev => target.revision, :path => path)
         #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
         url << '?review_id=' + @review.id.to_s + rev_to if @review
+        url << '?r=' + rev_to unless @review
         redirect_to url
       end
     end
