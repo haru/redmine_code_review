@@ -1,63 +1,64 @@
 hu:
   label_add_review: Új észrevétel
   label_show_review: Részletek
-  code_reviews: Kódszemlék
+  code_reviews: Felülvizsgálatok
   code_review: Felülvizsgálat
-  project_module_code_review: Code reviews
+  project_module_code_review: Felülvizsgálat
   label_code_path: Elérési út
   label_code_reviewer: Felülvizsgáló
   label_code_author: Szerző
-  label_code_line: Sorszám
+  label_code_line: Sor
 
   label_review_open: Nyitott
-  label_review_closed: Zárt
+  label_review_closed: Lezárt
 
-  label_reopen_review: Vizsgálat újra megnyitása
+  label_reopen_review: Vizsgálat újranyitása
   label_close_review: Vizsgálat lezárása
 
-  label_code_review_plural: Kódszemlék
+  label_code_review_plural: Felülvizsgálat
 
   label_line_number: 'Sor: %{line}'
-  notice_review_updated: A vizsgálat adatai sikeresen frissültek.
-  label_show_closed_reviews: Lezárt vizsgálatok megjelenítése
-  label_review: vizsgálat
+  notice_review_updated: A felülvizsgálat adatai sikeresen frissültek.
+  label_show_closed_reviews: Lezárt felülvizsgálatok megjelenítése
+  label_review: felülvizsgálat
   label_review_new: Új felülvizsgálat
   review_notify_only_involved_in: "Csak amiben részt veszek"
   review_notify_all: "Bármelyik projektemben lévőnél"
 
-  old_review_data_found: 'Some old review records were found. Do you want to convert them to new records ?'
-  select_tracker_for_code_reviews: 'Select the tracker for assign to code reviews.'
-  field_hide_code_review_tab: 'Hide the "Code Reviews" tab.'
-  lable_no_code_reviews: 'No reviews'
-  field_comment: Comment
+  old_review_data_found: 'Található néhány korábbi felülvizsgálat. Konvertáljuk őket új bejegyzésként?'
+  select_tracker_for_code_reviews: 'Válassza ki a feladattípust az észrevételhez'
+  field_hide_code_review_tab: '"Felülvizsgálatok" fül elrejtése'
+  lable_no_code_reviews: 'Nincsenek felülvizsgálatok'
+  field_comment: Megjegyzés
 
-  label_if_revision_has_issues: 'If revision has one more issues'
-  label_review_issue_relates: 'Review issue relates to them'
-  label_review_issue_blocks: 'Review issue blocks them'
-  label_review_issue_do_nothing: 'Do nothing'
+  label_if_revision_has_issues: 'Ha egy revízióhoz feladatok kapcsolódnak'
+  label_review_issue_relates: 'Az új felülvizsgálat kapcsolódjon hozzájuk'
+  label_review_issue_blocks: 'Az új felülvizsgálat zárolja őket'
+  label_review_issue_do_nothing: 'Nincs automatikus összekapcsolás'
 
-  permission_view_code_review: View code reviews
-  permission_add_code_review: Add code reviews
-  permission_edit_code_review: Edit code reviews
-  permission_delete_code_review: Delete code reiews
-  permission_code_review_setting: Manage code reviews
-  permission_assign_code_review: Assign code reviews
+  permission_view_code_review: Felülvizsgálatok megtekintése
+  permission_add_code_review: Felülvizsgálatok felvétele
+  permission_edit_code_review: Felülvizsgálatok szerkesztése
+  permission_delete_code_review: Felülvizsgálatok törlése
+  permission_code_review_setting: Felülvizsgálatok kezelése
+  permission_assign_code_review: Felülvizsgálatok hozzárendelése
 
-  select_tracker_for_code_review_assignment: 'Select the tracker for code review assignments.'
-  field_assignment_tracker: 'Tracker'
-  review_assignments: Review assignments
-  review_assigned_for: Review assigned for
-  code_review_assigned: Assigned
-  code_review_reviewed: Reviewed
-  code_review_requrest: Review request
+  select_tracker_for_code_review_assignment: 'Válassza ki a feladattípust a felülvizsgálathoz'
+  field_assignment_tracker: Típus
+  review_assignments: Felülvizsgálatok
+  review_assigned_for: Felülvizsgálat
+  code_review_assigned: Hozzárendelt
+  code_review_reviewed: Felülvizsgált
+  code_review_requrest: Kódszemle
 
-  label_auto_assign_settings: Auto assignment
-  label_candidates_of_reviewer: Candidates of reviewer
-  label_auto_assignment_filters: Filters
-  auto_assign_filter_expression: 'Path(Regular expression:ex. "/src/.*\.java$")'
-  auto_assign_filter_assign: Assign
-  auto_assign_filter_drop: Drop
+  label_auto_assign_settings: Automatikus hozzárendelés
+  label_candidates_of_reviewer: Felülvizsgálók
+  label_auto_assignment_filters: Szűrők
+  auto_assign_filter_expression: 'Elérési út (Reguláris kifejezés, pl.: "/src/.*\.java$")'
+  auto_assign_filter_assign: Hozzáad
+  auto_assign_filter_drop: Eltávolít
 
-  label_parent_suggestion: Maybe "%{issue_id}" ?
-  
-  label_assign_review: "Assign"
+  label_parent_suggestion: Talán "%{issue_id}" ?
+
+  label_assign_review: "Hozzáad"
+  field_tracker_in_review_dialog: 'Észrevétel létrehozásánál feladattípus kiválasztásának engedélyezése'

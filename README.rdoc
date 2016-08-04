@@ -21,7 +21,7 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 
 * de.yml - Michael Diederich, Sebastian Bernhard
 * fr.yml - Thomas M, fcrespel
-* hu.yml - Péter Major
+* hu.yml - Péter Major, József Kószó
 * ko.yml - Ki-yong Kim, Ki Won Kim
 * nl.yml - Stefan Verstege
 * pt-br.yml - Alessandro Hecht
