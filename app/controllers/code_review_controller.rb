@@ -36,8 +36,8 @@ class CodeReviewController < ApplicationController
     sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "#{Issue.table_name}.subject",  "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
     limit = per_page_option
-    @review_count = CodeReview.count(:conditions => ['project_id = ? and issue_id is NOT NULL', @project.id])
-    @all_review_count = CodeReview.count(:conditions => ['project_id = ?', @project.id])
+    @review_count = CodeReview.where(["project_id = ? and issue_id is NOT NULL", @project.id]).count
+    @all_review_count = CodeReview.where(['project_id = ?', @project.id]).count
     @review_pages = Paginator.new @review_count, limit, params['page']
     @show_closed = (params['show_closed'] == 'true')
     show_closed_option = " and #{IssueStatus.table_name}.is_closed = ? "
@@ -86,13 +86,13 @@ class CodeReviewController < ApplicationController
         @review.diff_all = (params[:diff_all] == 'true')
 
         @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
-        
-        if request.post?          
+
+        if request.post?
           @review.issue.save!
           if @review.changeset
             @review.changeset.issues.each {|issue|
               create_relation @review, issue, @setting.issue_relation_type
-            } if @setting.auto_relation?            
+            } if @setting.auto_relation?
           elsif @review.attachment and @review.attachment.container_type == 'Issue'
             issue = Issue.find_by_id(@review.attachment.container_id)
             create_relation @review, issue, @setting.issue_relation_type if @setting.auto_relation?
@@ -118,7 +118,7 @@ class CodeReviewController < ApplicationController
         else
           change_id = params[:change_id].to_i unless params[:change_id].blank?
           @review.change = Change.find(change_id) if change_id
-          @review.line = params[:line].to_i unless params[:line].blank? 
+          @review.line = params[:line].to_i unless params[:line].blank?
           if (@review.changeset and @review.changeset.user_id)
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
@@ -165,7 +165,7 @@ class CodeReviewController < ApplicationController
       changeset = change.changeset if change
     end
     attachment = Attachment.find(code[:attachment_id]) if code[:attachment_id]
-    
+
     issue = {}
     issue[:subject] = l(:code_review_requrest)
     issue[:subject] << " [#{changeset.text_tag}: #{changeset.short_comments}]" if changeset
@@ -222,9 +222,9 @@ class CodeReviewController < ApplicationController
 
     #render :partial => 'show_error'
     #return
-    
 
-    
+
+
     render :partial => 'update_diff_view'
   end
 
@@ -235,7 +235,7 @@ class CodeReviewController < ApplicationController
     @review = CodeReview.new
     @action_type = 'attachment'
     @attachment = Attachment.find(@attachment_id)
-    
+
     @reviews = CodeReview.where(['attachment_id = (?) and issue_id is NOT NULL', @attachment_id]).all
 
     render :partial => 'update_diff_view'
@@ -267,7 +267,7 @@ class CodeReviewController < ApplicationController
         redirect_to(url)
       else
         path = nil if target.diff_all
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project, 
+        url = url_for(:controller => 'repositories', :action => action_name, :id => @project,
           :repository_id => @repository_id, :rev => target.revision, :path => path)
         #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
         url << '?review_id=' + @review.id.to_s + rev_to if @review
@@ -292,7 +292,7 @@ class CodeReviewController < ApplicationController
         # Only send notification if something was actually changed
         flash[:notice] = l(:notice_successful_update)
       end
-      
+
       render :partial => 'show'
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception
@@ -340,7 +340,7 @@ class CodeReviewController < ApplicationController
     rev = params[:rev]
     changesets = @repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
     change = changesets[0]
-   
+
     identifier = change.identifier
     redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project, :repository_id => @repository_id) + '/' + path + '?rev=' + identifier.to_s
 
@@ -362,7 +362,7 @@ class CodeReviewController < ApplicationController
     }
     render :partial => 'update_revisions'
   end
-  
+
   private
   def find_repository
     if params[:repository_id].present? and @project.repositories
@@ -372,7 +372,7 @@ class CodeReviewController < ApplicationController
     end
     @repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
   end
-  
+
   def find_project
     # @project variable must be set before calling the authorize filter
     @project = Project.find(params[:id])
@@ -394,7 +394,7 @@ class CodeReviewController < ApplicationController
     }
     nil
   end
-  
+
   def create_relation(review, issue, type)
     return unless issue.project == @project
     relation = IssueRelation.new
