@@ -32,19 +32,19 @@ Rails.configuration.to_prepare do
   unless Change.included_modules.include? CodeReviewChangePatch
     Change.send(:include, CodeReviewChangePatch)
   end
-  
+
   unless Changeset.included_modules.include? CodeReviewChangesetPatch
     Changeset.send(:include, CodeReviewChangesetPatch)
   end
-  
+
   unless Issue.included_modules.include? CodeReviewIssuePatch
     Issue.send(:include, CodeReviewIssuePatch)
   end
-  
+
   unless ProjectsHelper.included_modules.include? CodeReviewProjectsHelperPatch
     ProjectsHelper.send(:include, CodeReviewProjectsHelperPatch)
   end
-  
+
   unless Attachment.included_modules.include? CodeReviewAttachmentPatch
     Attachment.send(:include, CodeReviewAttachmentPatch)
   end
@@ -57,8 +57,8 @@ Redmine::Plugin.register :redmine_code_review do
   author_url 'http://twitter.com/haru_iida'
   url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '0.7.0'
-  requires_redmine :version_or_higher => '3.0.0'
+  version '0.8.0'
+  requires_redmine :version_or_higher => '3.3.0'
 
   project_module :code_review do
     permission :view_code_review, {:code_review => [:update_diff_view, :update_attachment_view, :update_revisions_view, :index, :show]}, {:read => true}
@@ -76,7 +76,7 @@ Redmine::Plugin.register :redmine_code_review do
     project.repository != nil  and setting and !setting.hide_code_review_tab
   }, :after => :repository
 
-  
+
   Redmine::WikiFormatting::Macros.register do
     desc "This is my macro link to code review"
     macro :review do |obj, args|
@@ -86,7 +86,7 @@ Redmine::Plugin.register :redmine_code_review do
       review = CodeReview.find(review_id)
       return nil unless review
       link_to(l(:label_review) + '#' + review.id.to_s, :controller => 'code_review', :action => 'show', :id => review.project, :review_id => review.id)
-      
+
     end
   end
 
