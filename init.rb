@@ -41,10 +41,6 @@ Rails.configuration.to_prepare do
     Issue.send(:include, CodeReviewIssuePatch)
   end
 
-  unless ProjectsHelper.included_modules.include? CodeReviewProjectsHelperPatch
-    ProjectsHelper.send(:include, CodeReviewProjectsHelperPatch)
-  end
-
   unless Attachment.included_modules.include? CodeReviewAttachmentPatch
     Attachment.send(:include, CodeReviewAttachmentPatch)
   end
