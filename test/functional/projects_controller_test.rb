@@ -24,8 +24,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
   def setup
     @controller = ProjectsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request    = ActionController::TestRequest.create(self.class.controller_class)
   end
 
   context "#settings" do

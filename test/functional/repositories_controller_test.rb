@@ -24,8 +24,7 @@ class RepositoriesControllerTest < ActionController::TestCase
   
   def setup
     @controller = RepositoriesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request    = ActionController::TestRequest.create(self.class.controller_class)
     User.current = nil
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1

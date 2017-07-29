@@ -23,8 +23,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
   include CodeReviewAutoAssignSettings
   def setup
     @controller = CodeReviewSettingsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request    = ActionController::TestRequest.create(self.class.controller_class)
     @request.env["HTTP_REFERER"] = '/'
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
