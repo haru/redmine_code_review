@@ -34,12 +34,12 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "302 get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 302
       end
 
       should "302 post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 302
       end
 
@@ -49,7 +49,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -59,7 +59,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -74,7 +74,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "not exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -84,7 +84,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "not exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -102,12 +102,12 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "403 get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 403
       end
 
       should "403 post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 403
       end
 
@@ -117,7 +117,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -127,7 +127,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -142,7 +142,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "not exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -152,7 +152,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "not exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -171,7 +171,7 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -181,7 +181,7 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -196,7 +196,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -206,7 +206,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -221,7 +221,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "not exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -231,7 +231,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "not exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -250,7 +250,7 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -260,7 +260,7 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -275,7 +275,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -285,7 +285,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
@@ -300,7 +300,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_tag :div, :attributes => {:class => 'tabs'},
@@ -310,7 +310,7 @@ class ProjectsControllerTest < ActionController::TestCase
           end
 
           should "exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
             assert_tag :div, :attributes => {:class => 'tabs'},

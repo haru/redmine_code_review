@@ -67,40 +67,40 @@ class IssuesControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
     project = Project.find(1)
     issue = Issue.generate!(:project => project)
-    get :show, :id => issue.id
+    get :show, params: {id: issue.id}
 
     issue = Issue.generate!(:project => project)
     assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: nil)
-    get :show, :id => assignment.issue.id
+    get :show, :params => {:id => assignment.issue.id}
 
     issue = Issue.generate!(:project => Project.find(1))
     assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: '/aaa/bbb')
-    get :show, :id => assignment.issue.id
-    
+    get :show, :params => {:id => assignment.issue.id}
+
     review = FactoryGirl.create(:code_review, project: project)
-    get :show, :id => review.issue.id
+    get :show, :params => {:id => review.issue.id}
 
   end
 
   def test_new
     @request.session[:user_id] = 1
-    get :new, :project_id => 1
+    get :new, params: { project_id: 1 }
     assert_response :success
-    get :new, :project_id => 1, :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
+    get :new, :params => {:project_id => 1, :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}}
     assert_response :success
-    post :new, :project_id => 1,
+    post :new, :params => {:project_id => 1,
       :issue => {:tracker_id => 1, :status_id => 1, :subject => 'hoge'},
-      :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
+      :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}}
 
     # TODO: 0.9.xのサポート終了時に以下を有効にする。
     #assert_response :SUCESS
   end
-  
+
   context "create" do
     should "create code_review_assignment." do
       @request.session[:user_id] = 1
       project = Project.find(1)
-      post :create, :project_id => 1, :issue => {:subject => 'test'}, :code => {:change_id => 1, :changeset_id => 1}
+      post :create, :params => {:project_id => 1, :issue => {:subject => 'test'}, :code => {:change_id => 1, :changeset_id => 1}}
       assert_response :redirect
     end
   end

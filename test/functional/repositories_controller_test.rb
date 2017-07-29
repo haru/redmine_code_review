@@ -62,31 +62,31 @@ class RepositoriesControllerTest < ActionController::TestCase
     project.repository = changeset.repository
     issue = Issue.generate!({:project => project, :description => 'test'})
     review = FactoryGirl.create(:code_review, change: change, project: project, issue: issue)
-    get :revision, :id => project.id, :rev => changeset.revision, :path => change.path.split('/')
+    get :revision, :params => {:id => project.id, :rev => changeset.revision, :path => change.path.split('/')}
     #assert_response :success
   end
 
   def test_revisions
     @request.session[:user_id] = 1
-    get :revisions, :id => 1
+    get :revisions, :params => {:id => 1}
     assert_response :success
   end
 
   def test_show
     @request.session[:user_id] = 1
-    get :show, :id => 1
+    get :show, :params => {:id => 1}
     assert_response :success
   end
-  
+
   def test_diff
     @request.session[:user_id] = 1
-    get :diff, :id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8
+    get :diff, :params => {:id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8}
     #assert_response :success
   end
 
   def test_entry
     @request.session[:user_id] = 1
-    get :entry, :id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8
+    get :entry, :params => {:id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8}
     assert_response :success
   end
 end
