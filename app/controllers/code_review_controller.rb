@@ -17,7 +17,7 @@
 
 class CodeReviewController < ApplicationController
   unloadable
-  before_filter :find_project, :authorize, :find_user, :find_setting, :find_repository
+  before_action :find_project, :authorize, :find_user, :find_setting, :find_repository
 
   helper :sort
   include SortHelper
@@ -68,7 +68,7 @@ class CodeReviewController < ApplicationController
         else
           @review.issue.tracker_id = @setting.tracker_id
         end
-        @review.assign_attributes(params[:review])
+        @review.attributes = params.require(:review).permit(:change_id, :subject, :line, :parent_id, :comment, :status_id, :issue) if params[:review]
         @review.project_id = @project.id
         @review.issue.project_id = @project.id
 
@@ -284,7 +284,7 @@ class CodeReviewController < ApplicationController
       @issue.lock_version = params[:issue][:lock_version]
       comment = params[:reply][:comment]
       journal = @issue.init_journal(User.current, comment)
-      @review.assign_attributes(params[:review])
+      @review.attributes = params.require(:review).permit(:change_id, :subject, :line, :parent_id, :comment, :status_id, :issue) if params[:review]
       @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
 
       @issue.save!

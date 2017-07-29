@@ -21,13 +21,13 @@ class CodeReviewSettingsController < ApplicationController
   menu_item :code_review
   include CodeReviewAutoAssignSettings
 
-  before_filter :find_project, :authorize, :find_user
+  before_action :find_project, :authorize, :find_user
 
   def update
     begin
       @setting = CodeReviewProjectSetting.find_or_create(@project)
 
-      @setting.assign_attributes params[:setting]
+      @setting.attributes = params.require(:setting).permit(:tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign)
       @setting.updated_by = @user.id
       params[:auto_assign][:filters] = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
       @setting.auto_assign_settings = params[:auto_assign].to_yaml
