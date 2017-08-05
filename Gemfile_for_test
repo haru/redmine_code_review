@@ -1,7 +1,8 @@
-source 'http://rubygems.org'
+
 
 group :test do
   gem "simplecov-rcov"
   gem 'factory_girl_rails'
   gem 'shoulda'
+  gem 'rails-controller-testing'
 end

@@ -45,14 +45,18 @@ FactoryGirl.define do
   factory :attachment do
 
     container{
-      Project.find(1)
+      Issue.find(1)
     }
     file {
-      AttachmentTest.MockFile.new(:original_filename => "path/to/the/file")
+      uploaded_test_file("hg-export.diff", "text/plain")
     }
     author {
       User.find(1)
     }
+  end
+
+  def uploaded_test_file(name, mime)
+    fixture_file_upload("files/#{name}", mime, true)
   end
 
   factory :repository do
