@@ -52,14 +52,14 @@ class ProjectsControllerTest < ActionController::TestCase
           get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_select 'div.tabs ul li a#id', 'tab-code_review'
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         should "not exist tag id post" do
           post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_select 'div.tabs ul li a#id', 'tab-code_review'
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         context "and module" do
@@ -71,14 +71,14 @@ class ProjectsControllerTest < ActionController::TestCase
             get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
 
           should "not exist tag id post" do
             post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
         end
       end
@@ -108,14 +108,14 @@ class ProjectsControllerTest < ActionController::TestCase
           get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_select 'div.tabs ul li a#id', 'tab-code_review'
+          assert_select 'div.tabs ul li a#tab-code_review'
         end
 
         should "not exist tag id post" do
           post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_select 'div.tabs ul li a#id', 'tab-code_review'
+          assert_select 'div.tabs ul li a#tab-code_review'
         end
 
         context "and module" do
@@ -127,14 +127,14 @@ class ProjectsControllerTest < ActionController::TestCase
             get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
 
           should "not exist tag id post" do
             post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
         end
       end
@@ -150,20 +150,14 @@ class ProjectsControllerTest < ActionController::TestCase
         get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_no_tag :div, :attributes => {:class => 'tabs'},
-          :descendant => {:tag => 'ul',
-            :descendant => {:tag => 'li',
-              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+        assert_select 'div.tabs ul li a#tab-code_review'
       end
 
       should "not exist tag id post" do
         get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_no_tag :div, :attributes => {:class => 'tabs'},
-          :descendant => {:tag => 'ul',
-            :descendant => {:tag => 'li',
-              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+        assert_select 'div.tabs ul li a#tab-code_review'
       end
 
       context "with permission" do
@@ -175,20 +169,14 @@ class ProjectsControllerTest < ActionController::TestCase
           get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         should "not exist tag id post" do
           post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         context "and module" do
@@ -200,14 +188,14 @@ class ProjectsControllerTest < ActionController::TestCase
             get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
 
           should "not exist tag id post" do
             post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
         end
       end
@@ -223,14 +211,14 @@ class ProjectsControllerTest < ActionController::TestCase
         get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_select 'div.tabs ul li a#id', 'tab-code_review'
+        assert_select 'div.tabs ul li a#tab-code_review'
       end
 
       should "not exist tag id post" do
         get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_select 'div.tabs ul li a#id', 'tab-code_review'
+        assert_select 'div.tabs ul li a#tab-code_review'
       end
 
       context "with permission" do
@@ -242,14 +230,14 @@ class ProjectsControllerTest < ActionController::TestCase
           get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_select 'div.tabs ul li a#id', 'tab-code_review'
+          assert_select 'div.tabs ul li a#tab-code_review'
         end
 
         should "not exist tag id post" do
           post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_select 'div.tabs ul li a#id', 'tab-code_review'
+          assert_select 'div.tabs ul li a#tab-code_review'
         end
 
         context "and module" do
@@ -261,14 +249,14 @@ class ProjectsControllerTest < ActionController::TestCase
             get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
 
           should "exist tag id post" do
             post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#id', 'tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
         end
       end

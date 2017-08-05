@@ -26,6 +26,7 @@ SimpleCov.start do
 end
 
 require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
+include ActionDispatch::TestProcess
 
 # Ensure that we are using the temporary fixture path
 #ngines::Testing.set_fixture_path
@@ -40,9 +41,13 @@ def mock_file
   file
 end
 
+def uploaded_test_file(name, mime)
+  fixture_file_upload(Rails.root.to_s + "/test/fixtures/files/#{name}", mime, true)
+end
 FactoryGirl.define do
 
   factory :attachment do
+
 
     container{
       Issue.find(1)
@@ -55,9 +60,7 @@ FactoryGirl.define do
     }
   end
 
-  def uploaded_test_file(name, mime)
-    fixture_file_upload("files/#{name}", mime, true)
-  end
+
 
   factory :repository do
     project_id 1

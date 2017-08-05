@@ -51,7 +51,7 @@ class AttachmentsControllerTest < ActionController::TestCase
   def test_show_diff
     @request.session[:user_id] = 1
     attachment = FactoryGirl.create(:attachment, filename: "test.diff")
-    get :show, :id => attachment.id, :type => 'inline'
+    get :show, :params => {:id => attachment.id, :type => 'inline'}
     assert_response :success
     assert_template 'diff'
     #assert_equal 'text/html', @response.content_type
@@ -60,7 +60,7 @@ class AttachmentsControllerTest < ActionController::TestCase
   def test_show_text_file
     @request.session[:user_id] = 1
     attachment = FactoryGirl.create(:attachment, filename: "test.rb")
-    get :show, :id => attachment.id, :type => 'inline'
+    get :show, :params => {:id => attachment.id, :type => 'inline'}
     assert_response :success
     assert_template 'file'
     #assert_equal 'text/html', @response.content_type

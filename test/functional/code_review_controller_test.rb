@@ -189,7 +189,7 @@ class CodeReviewControllerTest < ActionController::TestCase
         :reply => {:comment => 'aaa'}, :issue=> {:lock_version => review.issue.lock_version}}
       assert_response :success
       assert_template '_show'
-      assert_equal(nil, assigns(:error))
+      assert_nil assigns(:error)
     end
 
     should "not create reply if anyone replied sametime" do

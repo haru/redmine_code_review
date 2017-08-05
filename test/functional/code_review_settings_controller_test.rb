@@ -75,13 +75,13 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_equal(true, setting.hide_code_review_tab)
       assert_equal(CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS, setting.auto_relation)
 
-      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true',
-        :auto_assign => {}
+      get :update, :params => {:id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true',
+        :auto_assign => {}}
       assert_response :redirect
       project = Project.find(1)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
 
-      post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}, :auto_assign => {}
+      post :update, :params => {:id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}, :auto_assign => {}}
       assert_response :redirect
       project = Project.find(2)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
