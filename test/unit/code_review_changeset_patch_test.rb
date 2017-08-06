@@ -77,6 +77,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       issues[i - 1].save!
     }
     changeset.save!
+    changeset = Changeset.find(changeset.id)
     assert_equal(0, changeset.completed_assignment_pourcent)
     issues[0].status_id = 5
     issues[0].save!
@@ -90,7 +91,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   end
 
   context "closed_assignment_pourcent" do
-   
+
     should "returns 0 if changeset has no assignments." do
       change = FactoryGirl.create(:change)
       changeset = change.changeset

@@ -153,7 +153,9 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_assignment_count == 0
       100
     else
-      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|o.issue.done_ratio}.inject(:+))/assignment_count
+      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|
+        o.issue.done_ratio
+      }.sum)/assignment_count
 
     end
   end
