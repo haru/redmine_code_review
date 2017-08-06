@@ -20,8 +20,9 @@ require 'repositories_controller'
 
 
 class RepositoriesControllerTest < ActionController::TestCase
-  fixtures :projects, :users, :roles, :members, :repositories, :issues, :issue_statuses, :changesets, :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers
-  
+  fixtures :projects, :users, :roles, :members, :repositories, :issues, :issue_statuses, :changesets,
+   :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers
+
   def setup
     @controller = RepositoriesController.new
     @request    = ActionController::TestRequest.create(self.class.controller_class)
@@ -60,7 +61,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     project = Project.find(1)
     project.repository.destroy
     project.repository = changeset.repository
-    issue = Issue.generate!({:project => project, :description => 'test'})
+    issue = Issue.generate!({:project_id => project.id, :description => 'test', :tracker_id =>1, :status_id => 1})
     review = FactoryGirl.create(:code_review, change: change, project: project, issue: issue)
     get :revision, :params => {:id => project.id, :rev => changeset.revision, :path => change.path.split('/')}
     #assert_response :success

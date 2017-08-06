@@ -19,8 +19,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 class CodeReviewControllerTest < ActionController::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
     :changesets, :changes, :members, :roles, :issues, :issue_statuses,
-    :enumerations, :issue_categories, :trackers, :trackers, :projects, :projects_trackers,
-    :code_review_project_settings, :attachments
+    :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+    :code_review_project_settings, :attachments, :code_review_assignments,
+    :code_review_user_settings
   def setup
     @controller = CodeReviewController.new
     @request    = ActionController::TestRequest.create(self.class.controller_class)
@@ -280,7 +281,7 @@ class CodeReviewControllerTest < ActionController::TestCase
 
   def test_forward_to_revision
     @request.session[:user_id] = 1
-    post :forward_to_revision, :params => {:id => 1, :path => '/test/some/path/in/the/repo'}
+    post :forward_to_revision, :params => {:id => 1, :path => '/subversion_test/folder/helloworld.rb'}
   end
 
   def test_update_attachment_view

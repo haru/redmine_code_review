@@ -115,11 +115,15 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       changeset = change.changeset
       @project = Project.find(1)
       issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue1.status = IssueStatus.find(5);
       issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue2.status = IssueStatus.find(5);
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
       changeset =Changeset.find(changeset.id)
+      assert issue1.closed?
+      assert issue2.closed?
       assert_equal(2, changeset.assignment_count)
       assert_equal(100, changeset.closed_assignment_pourcent)
     end
