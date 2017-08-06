@@ -69,7 +69,6 @@ class IssuesControllerTest < ActionController::TestCase
     issue = Issue.generate!(:project => project)
     get :show, params: {id: issue.id}
 
-    issue = Issue.generate!(:project => project)
     assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: nil)
     get :show, :params => {:id => assignment.issue.id}
 
