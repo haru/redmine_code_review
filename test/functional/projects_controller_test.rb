@@ -71,14 +71,14 @@ class ProjectsControllerTest < ActionController::TestCase
             get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
 
           should "not exist tag id post" do
             post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
         end
       end
@@ -127,14 +127,14 @@ class ProjectsControllerTest < ActionController::TestCase
             get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
 
           should "not exist tag id post" do
             post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review'
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
         end
       end
@@ -150,14 +150,14 @@ class ProjectsControllerTest < ActionController::TestCase
         get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_select 'div.tabs ul li a#tab-code_review'
+        assert_select 'div.tabs ul li a#tab-code_review', false
       end
 
       should "not exist tag id post" do
         get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_select 'div.tabs ul li a#tab-code_review'
+        assert_select 'div.tabs ul li a#tab-code_review', false
       end
 
       context "with permission" do

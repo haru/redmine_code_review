@@ -137,6 +137,8 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
         @project = Project.find(1)
+        member = Member.new(:project => @project, :user_id => 2)
+        @project.members << member
       end
     
       should "return nil if assignable_list is nil" do
