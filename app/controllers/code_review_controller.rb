@@ -309,7 +309,7 @@ class CodeReviewController < ApplicationController
         @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
         @issue = @review.issue
         @issue.lock_version = params[:issue][:lock_version]
-        @review.assign_attributes(params[:review])
+        @review.attributes = params.require(:review).permit(:change_id, :subject, :lock_version, :parent_id, :comment, :status_id, :issue)
         @review.updated_by_id = @user.id
         @review.save!
         @review.issue.save!
@@ -323,8 +323,9 @@ class CodeReviewController < ApplicationController
       # Optimistic locking exception
       @error = l(:notice_locking_conflict)
       render :partial => 'show'
-    rescue
-      render :partial => 'show'
+    #rescue => e
+      #throw e
+      #render :partial => 'show'
     end
   end
 

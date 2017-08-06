@@ -137,8 +137,11 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
         @project = Project.find(1)
-        member = Member.new(:project => @project, :user_id => 2)
-        @project.members << member
+        members = []
+        2.upto(5) {|i|
+          members << Member.new(:project => @project, :user_id => i)
+        }
+        @project.members << members
       end
     
       should "return nil if assignable_list is nil" do

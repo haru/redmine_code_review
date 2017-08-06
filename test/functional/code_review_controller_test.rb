@@ -257,14 +257,15 @@ class CodeReviewControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
     review_id = 9
     review = CodeReview.find(review_id)
+    review.save!
     assert_equal('Unable to print recipes', review.comment)
     post :update, :params => {:id => 1, :review_id => review_id,
       :review => {:comment => 'bbb', :lock_version => review.lock_version},
       :issue => {:lock_version => 1}}
+    assert_not_nil assigns(:error)
     assert_response :success
     review = CodeReview.find(review_id)
     assert_equal('Unable to print recipes', review.comment)
-    assert assigns(:error)
   end
 
   def test_update_diff_view
