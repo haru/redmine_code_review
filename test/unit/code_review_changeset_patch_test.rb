@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2014  Haruyuki Iida
+# Copyright (C) 2009-2017  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,12 +17,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, 
-    :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers,
-    :projects_trackers
+  fixtures :code_reviews, :projects, :users, :repositories,
+    :changesets, :changes, :members, :roles, :issues, :issue_statuses,
+    :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+    :code_review_project_settings, :attachments, :code_review_assignments,
+    :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
-  
+
   def test_review_count
     changeset = Changeset.find(100)
     assert_equal(2, changeset.review_count)

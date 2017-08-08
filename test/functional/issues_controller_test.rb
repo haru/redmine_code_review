@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2014  Haruyuki Iida
+# Copyright (C) 2009-2017  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -42,7 +42,9 @@ class IssuesControllerTest < ActionController::TestCase
            :time_entries,
            :journals,
            :journal_details,
-           :code_reviews
+           :code_reviews,
+           :code_review_assignments,
+           :code_review_user_settings
   
   def setup
     @controller = IssuesController.new
