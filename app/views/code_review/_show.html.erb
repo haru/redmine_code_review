@@ -47,7 +47,6 @@
             :update => "show_review_#{@review.id}",
             :remote => true,
             :data => {:confirm => l(:text_are_you_sure)},
-            :success => "deleteReview(#{@review.id})",
             :class => 'icon icon-del', :id => 'delete-review-link') %>
         <% end -%>
         <script>
