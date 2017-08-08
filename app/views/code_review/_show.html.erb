@@ -39,17 +39,21 @@
           <%= link_to_function  l(:button_update), "$('#update-form-#{@review.id}').show();return false;", :class => 'icon icon-edit' %>
         <% end %>
         <% if authorize_for('code_review', 'destroy') -%>
-          <%= link_to(l(:button_delete),           
+          <%= link_to(l(:button_delete),
             {:controller => 'code_review',
               :action => 'destroy',
               :id => @project,
               :review_id => @review},
             :update => "show_review_#{@review.id}",
             :remote => true,
-            :confirm => l(:text_are_you_sure),
-            :success => "deleteReview(#{@review.id})",
-            :class => 'icon icon-del') %>
+            :data => {:confirm => l(:text_are_you_sure)},
+            :class => 'icon icon-del', :id => 'delete-review-link') %>
         <% end -%>
+        <script>
+          $('#delete-review-link').bind('ajax:complete', function() {
+            location.reload();
+          });
+        </script>
       </div>
 
       <!-- title -->
