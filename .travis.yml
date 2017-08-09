@@ -14,7 +14,7 @@ env:
 
 script:
   - export TESTSPACE=`pwd`/testspace
-  - export NAME_OF_PLUGIN=redmine_code_reviewS
+  - export NAME_OF_PLUGIN=redmine_code_review
   - export PATH_TO_PLUGIN=`pwd`
   - export PATH_TO_REDMINE=$TESTSPACE/redmine
   - mkdir $TESTSPACE
