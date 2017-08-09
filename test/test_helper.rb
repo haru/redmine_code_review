@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2014  Haruyuki Iida
+# Copyright (C) 2010-2017  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +18,8 @@
 
 require 'simplecov'
 require 'simplecov-rcov'
+require 'coveralls'
+Coveralls.wear!
 SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
 
 SimpleCov.start do
