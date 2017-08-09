@@ -31,6 +31,7 @@ export BUNDLE_GEMFILE=$PATH_TO_REDMINE/Gemfile
 
 # checkout redmine
 git clone $REDMINE_GIT_REPO $PATH_TO_REDMINE
+cp test/fixtures/* ${PATH_TO_REDMINE}/test/fixtures/
 cd $PATH_TO_REDMINE
 if [ ! "$REDMINE_GIT_TAG" = "master" ];
 then
@@ -40,7 +41,6 @@ fi
 # create a link to the backlogs plugin
 ln -sf $PATH_TO_PLUGIN plugins/$NAME_OF_PLUGIN
 
-mv $TESTSPACE/database.yml.travis config/database.yml
 
 cat << EOS > config/database.yml
 test:
