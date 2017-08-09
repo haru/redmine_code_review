@@ -29,6 +29,11 @@ export REDMINE_GIT_REPO=git://github.com/redmine/redmine.git
 export REDMINE_GIT_TAG=$REDMINE_VER
 export BUNDLE_GEMFILE=$PATH_TO_REDMINE/Gemfile
 
+if [ -f Gemfile_for_test ]
+then
+  cp Gemfile_for_test Gemfile
+fi
+
 # checkout redmine
 git clone $REDMINE_GIT_REPO $PATH_TO_REDMINE
 cp test/fixtures/* ${PATH_TO_REDMINE}/test/fixtures/
