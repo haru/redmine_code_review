@@ -1,0 +1,21 @@
+language: ruby
+rvm:
+  - 2.2
+  - 2.3
+
+#branches:
+
+env:
+  - REDMINE_VER=3.4-stable
+
+#install: "echo skip bundle install"
+
+#before_script:
+
+script:
+  - export TESTSPACE=`pwd`/testspace
+  - export NAME_OF_PLUGIN=redmine_code_review
+  - export PATH_TO_PLUGIN=`pwd`
+  - export PATH_TO_REDMINE=$TESTSPACE/redmine
+  - mkdir $TESTSPACE
+  - bash -x ./travis.sh
