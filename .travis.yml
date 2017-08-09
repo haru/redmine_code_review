@@ -6,7 +6,7 @@ rvm:
 #branches:
 
 env:
-  - REDMINE_VER=3.4-stable
+  - REDMINE_VER=master
 
 #install: "echo skip bundle install"
 
