@@ -130,8 +130,14 @@ module ChangesetInstanceMethodsCodeReview
   end
 
   def open_assignments
-    @open_assignments ||= code_review_assignments.select {|assignment|
+    return @open_assignments if @open_assignments
+    @open_assignments = code_review_assignments.select {|assignment|
       !assignment.is_closed?
+    }
+    filechanges.each{|change|
+      @open_assignments = @open_assignments + change.code_review_assignments.select {|assignment|
+        !assignment.is_closed?
+      }
     }
   end
 
@@ -155,7 +161,6 @@ module ChangesetInstanceMethodsCodeReview
     else
       opens = open_assignments
       @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|
-        puts o.issue.done_ratio
         o.issue.done_ratio
       }.sum)/assignment_count
 
