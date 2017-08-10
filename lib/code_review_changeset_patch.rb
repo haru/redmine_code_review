@@ -100,7 +100,7 @@ module ChangesetInstanceMethodsCodeReview
   #
   # for assignment issues
   #
-  
+
   def assignment_count
     #return @assignment_count if @assignment_count
     @assignment_count = code_review_assignments.length
@@ -128,12 +128,18 @@ module ChangesetInstanceMethodsCodeReview
         @assignment_issues =  @assignment_issues + change.code_review_assignments.collect{|issue| issue}
     }
     @assignment_issues
-    
+
   end
 
   def open_assignments
-    @open_assignments ||= code_review_assignments.select {|assignment|
+    return @open_assignments if @open_assignments
+    @open_assignments = code_review_assignments.select {|assignment|
       !assignment.is_closed?
+    }
+    filechanges.each{|change|
+      @open_assignments = @open_assignments + change.code_review_assignments.select {|assignment|
+        !assignment.is_closed?
+      }
     }
   end
 
@@ -155,7 +161,10 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_assignment_count == 0
       100
     else
-      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|o.issue.done_ratio}.inject(:+))/assignment_count
+      opens = open_assignments
+      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|
+        o.issue.done_ratio
+      }.sum)/assignment_count
 
     end
   end

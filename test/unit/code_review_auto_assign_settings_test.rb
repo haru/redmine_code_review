@@ -18,14 +18,18 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
-  fixtures :code_review_project_settings, :projects, :users, :trackers, :repositories, :projects_trackers
+  fixtures :code_reviews, :projects, :users, :repositories,
+  :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
+  :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+  :code_review_project_settings, :attachments, :code_review_assignments,
+  :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
-  
+
   context "AutoAssignSettings" do
     context "to_s" do
       should "return string if @yml is not nil." do
-      
+
         str =<<EOF
 ---
 aaa: bbb
@@ -55,7 +59,7 @@ EOF
         assert !@settings.enabled?
       end
     end
-    
+
     context "accept_for_default" do
       setup do
         @settings = AutoAssignSettings.new
@@ -80,7 +84,7 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
       end
-    
+
       should "return 3 if author_id is 3" do
         @settings.author_id = 3
         assert_equal(3, @settings.author_id)
@@ -106,7 +110,7 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
       end
-    
+
       should "return false if assignable_list is nil" do
         @settings.assignable_list = nil
         assert !@settings.assignable?(User.find(1))
@@ -138,7 +142,7 @@ EOF
         @settings = AutoAssignSettings.new
         @project = Project.find(1)
       end
-    
+
       should "return nil if assignable_list is nil" do
         @settings.assignable_list = nil
         assert_nil @settings.select_assign_to @project
@@ -204,7 +208,7 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
       end
-      
+
       should "return empty array if :filters is nil" do
         @settings.filters = nil
         assert_equal(0, @settings.filters.length)
