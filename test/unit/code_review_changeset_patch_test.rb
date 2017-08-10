@@ -89,7 +89,9 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     issues[1].done_ratio = 50
     issues[1].save!
     changeset = Changeset.find(changeset.id)
-    assert_equal(37.5, changeset.completed_assignment_pourcent)
+    assert_equal(4, changeset.assignment_count)
+    assert_equal(3, changeset.open_assignment_count)
+    assert_equal(37.5.to_i, changeset.completed_assignment_pourcent)
   end
 
   context "closed_assignment_pourcent" do
@@ -127,6 +129,9 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       assert issue1.closed?
       assert issue2.closed?
       assert_equal(2, changeset.assignment_count)
+      assert_equal(1, changeset.filechanges.length)
+      assert_equal(0, changeset.open_assignment_count)
+      assert_equal(2, changeset.closed_assignment_count)
       assert_equal(100, changeset.closed_assignment_pourcent)
     end
 
@@ -145,6 +150,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue3)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue4)
       change.save!
+      changeset = Changeset.find(changeset.id)
       assert_equal(50, changeset.closed_assignment_pourcent)
     end
   end

@@ -18,9 +18,21 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
-  fixtures :code_review_project_settings, :projects, :users, :trackers, :repositories, :projects_trackers
+  fixtures :code_reviews, :projects, :users, :repositories,
+    :changesets, :changes, :members, :roles, :issues, :issue_statuses,
+    :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+    :code_review_project_settings, :attachments, :code_review_assignments,
+    :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
+
+  def startup
+    #DatabaseRewinder.clean_all
+  end
+
+  def teardown
+    #DatabaseRewinder.clean
+  end
   
   context "AutoAssignSettings" do
     context "to_s" do
