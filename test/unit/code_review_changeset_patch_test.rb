@@ -18,7 +18,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
-    :changesets, :changes, :members, :roles, :issues, :issue_statuses,
+    :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
     :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
     :code_review_project_settings, :attachments, :code_review_assignments,
     :code_review_user_settings

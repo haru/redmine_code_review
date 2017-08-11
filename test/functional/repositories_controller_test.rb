@@ -20,8 +20,8 @@ require 'repositories_controller'
 
 
 class RepositoriesControllerTest < ActionController::TestCase
-  fixtures :projects, :users, :roles, :members, :repositories, :issues, :issue_statuses, :changesets,
-   :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers
+  fixtures :projects, :users, :roles, :members, :member_roles, :repositories, :issues, :issue_statuses, :changesets,
+   :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers, :projects_trackers
 
   def setup
     @controller = RepositoriesController.new

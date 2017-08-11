@@ -26,6 +26,7 @@ class IssuesControllerTest < ActionController::TestCase
            :users,
            :roles,
            :members,
+           :member_roles,
            :issues,
            :issue_statuses,
            :versions,
