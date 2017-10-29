@@ -33,6 +33,12 @@ end
 require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 include ActionDispatch::TestProcess
 
+fixtures = []
+Dir.chdir(File.dirname(__FILE__) + '/fixtures/') do
+  fixtures = Dir.glob('*.yml').map{|s| s.gsub(/.yml$/, '')}
+end
+ActiveRecord::FixtureSet.create_fixtures(File.dirname(__FILE__) + '/fixtures/', fixtures)
+
 # Ensure that we are using the temporary fixture path
 #ngines::Testing.set_fixture_path
 
