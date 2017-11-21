@@ -17,6 +17,8 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 
 5. Go to code review setting tab in the project setting page and select tracker.
 
+6. Go to "Roles and permissions" and add "Code Review" permissions to the roles you want to see/edit/manage code reviews.
+
 === Language contributors
 
 * de.yml - Michael Diederich, Sebastian Bernhard
