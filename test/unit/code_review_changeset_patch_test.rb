@@ -17,12 +17,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
-  fixtures :code_reviews, :projects, :users, :repositories, :changesets, 
-    :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers,
-    :projects_trackers
+  fixtures :code_reviews, :projects, :users, :repositories,
+  :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
+  :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+  :code_review_project_settings, :attachments, :code_review_assignments,
+  :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
-  
+
   def test_review_count
     changeset = Changeset.find(100)
     assert_equal(2, changeset.review_count)
@@ -60,7 +62,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     changeset = FactoryGirl.create(:changeset)
     FactoryGirl.create(:change, changeset: changeset)
     FactoryGirl.create(:change, changeset: changeset)
-    
+
     changeset = Changeset.find(changeset.id)
     change = changeset.filechanges[0]
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
@@ -90,7 +92,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   end
 
   context "closed_assignment_pourcent" do
-   
+
     should "returns 0 if changeset has no assignments." do
       change = FactoryGirl.create(:change)
       changeset = change.changeset
@@ -172,7 +174,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       assert_not_nil(changeset.assignment_issues)
       assert_equal(3, changeset.assignment_issues.length)
     end
-    
+
   end
 
   context "after_save" do
@@ -183,7 +185,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       repository = project.repository
 
       @changeset = FactoryGirl.create(:changeset, repository: repository)
-      
+
       auto_assign = AutoAssignSettings.new
       auto_assign.enabled = true
       filters = []

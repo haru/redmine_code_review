@@ -48,18 +48,18 @@ end
 FactoryGirl.define do
 
   factory :attachment do
-  
+
     container{
       Project.find(1)
     }
     file {
-      ActiveSupport::TestCase.mock_file
+      mock_file
     }
     author {
       User.find(1)
     }
   end
-  
+
   factory :repository do
     project_id 1
     url "file:///#{Rails.root}/tmp/test/subversion_repository"
@@ -75,7 +75,7 @@ FactoryGirl.define do
     }
     is_default true
   end
-  
+
   factory :changeset do
     sequence(:revision, 1000)
     committed_on{
@@ -90,7 +90,7 @@ FactoryGirl.define do
       Repository.find(10)
     }
   end
-  
+
   factory :change do
     action {
       "A"
@@ -102,33 +102,33 @@ FactoryGirl.define do
       FactoryGirl.create(:changeset)
     }
   end
-  
+
   factory :code_review_assignment do
     issue_id 1
   end
-  
+
   factory :issue do
     subject 'hoge'
     author{
       User.find(1)
     }
   end
-  
+
   factory :code_review do
     issue_id 1
     updated_by_id 1
     line 10
     action_type 'diff'
   end
-  
+
   factory :code_review_project_setting do
     project_id 1
     tracker_id 1
     assignment_tracker_id 1
   end
-  
+
   factory :enabled_module do
-    
+
   end
 
 end
