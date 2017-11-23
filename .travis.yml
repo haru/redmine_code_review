@@ -2,6 +2,7 @@ language: ruby
 rvm:
 - 2.2
 - 2.3
+- 2.4
 env:
 - REDMINE_VER=3.4-stable
 script:
