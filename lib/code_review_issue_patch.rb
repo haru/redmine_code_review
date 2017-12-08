@@ -25,14 +25,9 @@ module CodeReviewIssuePatch
       unloadable # Send unloadable so it will not be unloaded in development
       has_one :code_review, :dependent => :destroy
       has_one :code_review_assignment, :dependent => :destroy
-      
     end
-
   end
 end
 
 module IssueInstanceMethodsCodeReview
-  
 end
-
-

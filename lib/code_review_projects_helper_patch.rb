@@ -29,5 +29,3 @@ module ProjectsHelperMethodsCodeReview
 end
 
 ProjectsHelper.prepend(ProjectsHelperMethodsCodeReview)
-
-

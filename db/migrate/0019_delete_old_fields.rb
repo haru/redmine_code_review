@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class DeleteOldFields < ActiveRecord::Migration[4.2]
-  OLD_FIELDS=["old_parent_id", "old_user_id", "old_comment", "old_status"]
+  OLD_FIELDS = ["old_parent_id", "old_user_id", "old_comment", "old_status"]
   def self.up
     remove_column(:code_reviews, "old_parent_id")
     remove_column(:code_reviews, "old_user_id")

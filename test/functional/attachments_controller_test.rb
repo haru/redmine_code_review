@@ -21,14 +21,13 @@ require 'attachments_controller'
 # Re-raise errors caught by the controller.
 class AttachmentsController; def rescue_action(e) raise e end; end
 
-
 class AttachmentsControllerTest < ActionController::TestCase
   fixtures :users, :projects, :roles, :members, :member_roles, :enabled_modules, :issues, :trackers, :attachments,
     :versions, :wiki_pages, :wikis, :documents
 
   def setup
     @controller = AttachmentsController.new
-    @request    = ActionController::TestRequest.create(self.class.controller_class)
+    @request = ActionController::TestRequest.create(self.class.controller_class)
     #@response   = ActionController::TestResponse.new
     Attachment.storage_path = "#{Rails.root}/test/fixtures/files"
 
@@ -38,15 +37,13 @@ class AttachmentsControllerTest < ActionController::TestCase
       project.save!
     }
 
-
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.save
     }
     User.current = nil
   end
-
 
   def test_show_diff
     @request.session[:user_id] = 1
@@ -65,5 +62,4 @@ class AttachmentsControllerTest < ActionController::TestCase
     assert_template 'file'
     #assert_equal 'text/html', @response.content_type
   end
-
 end

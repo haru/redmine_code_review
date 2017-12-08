@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-
 require 'simplecov'
 require 'simplecov-rcov'
 SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
@@ -28,10 +27,10 @@ Dir::chdir("#{testdir}/..")
 
 require "#{testdir}/test_helper"
 
-Dir::glob("#{testdir}/fixtures/*.yml").each {|f|
+Dir::glob("#{testdir}/fixtures/*.yml").each { |f|
   FileUtils.copy(f, "#{testdir}/../../../test/fixtures/")
 }
 
-Dir::glob("#{testdir}/**/*test.rb").each {|f|
+Dir::glob("#{testdir}/**/*test.rb").each { |f|
   require f
 }

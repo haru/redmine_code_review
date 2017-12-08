@@ -23,7 +23,7 @@ class CodeReview < ActiveRecord::Base
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :attachment
 
-  validates_presence_of :project_id, :user_id, :updated_by_id, :issue, 
+  validates_presence_of :project_id, :user_id, :updated_by_id, :issue,
     :subject, :action_type, :line
 
   STATUS_OPEN = 0
@@ -47,7 +47,7 @@ class CodeReview < ActiveRecord::Base
     issue.status = IssueStatus.find(1)
     #self.root.status = STATUS_OPEN
   end
-  
+
   def committer
     return changeset.author if changeset
   end
@@ -72,7 +72,7 @@ class CodeReview < ActiveRecord::Base
         @path = change.path
       else
         @path = change.path[rootpath.length, change.path.length - rootpath.length]
-      end      
+      end
     rescue => ex
       return ex.to_s
     end
@@ -90,13 +90,13 @@ class CodeReview < ActiveRecord::Base
   def repository
     @repository ||= changeset.repository if changeset
   end
-  
+
   def repository_identifier
     return nil unless repository
     @repository_identifier ||= repository.identifier_param
   end
 
-  def comment=(str)  
+  def comment=(str)
     issue.description = str if issue
   end
 
@@ -111,7 +111,6 @@ class CodeReview < ActiveRecord::Base
   def validate
     unless issue.validate
       false
-      
     end
   end
 
@@ -139,7 +138,7 @@ class CodeReview < ActiveRecord::Base
     issue.subject
   end
 
-  def parent_id= (p)
+  def parent_id=(p)
     issue.parent_issue_id = p
   end
 
@@ -162,7 +161,7 @@ class CodeReview < ActiveRecord::Base
     assignments = assignments + changeset.code_review_assignments if changeset
     assignments = assignments + attachment.code_review_assignments if attachment
 
-    assignments.each {|assignment|
+    assignments.each { |assignment|
       unless assignment.is_closed?
         issues << assignment.issue if user_id == assignment.issue.assigned_to_id
       end

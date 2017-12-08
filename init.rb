@@ -44,7 +44,6 @@ Rails.configuration.to_prepare do
   unless Attachment.included_modules.include? CodeReviewAttachmentPatch
     Attachment.send(:include, CodeReviewAttachmentPatch)
   end
-
 end
 
 Redmine::Plugin.register :redmine_code_review do
@@ -63,15 +62,13 @@ Redmine::Plugin.register :redmine_code_review do
     permission :delete_code_review, {:code_review => [:destroy]}, :require => :member
     permission :assign_code_review, {:code_review => [:assign]}, :require => :member
     permission :code_review_setting, {:code_review_settings => [:show, :update, :add_filter, :edit_filter, :sort]}, :require => :member
-
   end
 
-  menu :project_menu, :code_review, { :controller => 'code_review', :action => 'index' }, :caption => :code_reviews,
-    :if => Proc.new{|project|
-    setting = CodeReviewProjectSetting.find_or_create(project)
-    project.repository != nil  and setting and !setting.hide_code_review_tab
-  }, :after => :repository
-
+  menu :project_menu, :code_review, {:controller => 'code_review', :action => 'index'}, :caption => :code_reviews,
+                                                                                        :if => Proc.new { |project|
+                                                                                          setting = CodeReviewProjectSetting.find_or_create(project)
+                                                                                          project.repository != nil and setting and !setting.hide_code_review_tab
+                                                                                        }, :after => :repository
 
   Redmine::WikiFormatting::Macros.register do
     desc "This is my macro link to code review"
@@ -82,8 +79,6 @@ Redmine::Plugin.register :redmine_code_review do
       review = CodeReview.find(review_id)
       return nil unless review
       link_to(l(:label_review) + '#' + review.id.to_s, :controller => 'code_review', :action => 'show', :id => review.project, :review_id => review.id)
-
     end
   end
-
 end

@@ -18,14 +18,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 require 'repositories_controller'
 
-
 class RepositoriesControllerTest < ActionController::TestCase
   fixtures :projects, :users, :roles, :members, :member_roles, :repositories, :issues, :issue_statuses, :changesets,
-   :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers, :projects_trackers
+           :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers, :projects_trackers
 
   def setup
     @controller = RepositoriesController.new
-    @request    = ActionController::TestRequest.create(self.class.controller_class)
+    @request = ActionController::TestRequest.create(self.class.controller_class)
     User.current = nil
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
@@ -46,7 +45,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
     User.current = nil
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.permissions << :add_code_review
       role.permissions << :browse_repository

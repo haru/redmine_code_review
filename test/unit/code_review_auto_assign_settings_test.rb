@@ -33,12 +33,11 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   def teardown
     #DatabaseRewinder.clean
   end
-  
+
   context "AutoAssignSettings" do
     context "to_s" do
       should "return string if @yml is not nil." do
-      
-        str =<<EOF
+        str = <<EOF
 ---
 aaa: bbb
 ccc: ccc
@@ -67,7 +66,7 @@ EOF
         assert !@settings.enabled?
       end
     end
-    
+
     context "accept_for_default" do
       setup do
         @settings = AutoAssignSettings.new
@@ -92,7 +91,7 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
       end
-    
+
       should "return 3 if author_id is 3" do
         @settings.author_id = 3
         assert_equal(3, @settings.author_id)
@@ -118,7 +117,7 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
       end
-    
+
       should "return false if assignable_list is nil" do
         @settings.assignable_list = nil
         assert !@settings.assignable?(User.find(1))
@@ -130,17 +129,17 @@ EOF
       end
 
       should "return false if assignable_list hasn't specified user_id" do
-        @settings.assignable_list = [1,3,4,5]
+        @settings.assignable_list = [1, 3, 4, 5]
         assert !@settings.assignable?(User.find(2))
       end
 
       should "return true if assignable_list has specified user_id" do
-        @settings.assignable_list = [1,2,3,4]
+        @settings.assignable_list = [1, 2, 3, 4]
         assert @settings.assignable?(User.find(3))
       end
 
       should "return true if assignable_list has specified user_id's string" do
-        @settings.assignable_list = ["1","2","3","4"]
+        @settings.assignable_list = ["1", "2", "3", "4"]
         assert @settings.assignable?(User.find(3))
       end
     end
@@ -150,12 +149,12 @@ EOF
         @settings = AutoAssignSettings.new
         @project = Project.find(1)
         members = []
-        2.upto(5) {|i|
+        2.upto(5) { |i|
           members << Member.new(:project => @project, :user_id => i)
         }
         @project.members << members
       end
-    
+
       should "return nil if assignable_list is nil" do
         @settings.assignable_list = nil
         assert_nil @settings.select_assign_to @project
@@ -167,12 +166,12 @@ EOF
       end
 
       should "return user_id" do
-        @settings.assignable_list = [1,2,3,4,5]
+        @settings.assignable_list = [1, 2, 3, 4, 5]
         assert_not_nil @settings.select_assign_to(@project)
       end
 
       should "not return id that equals user.id" do
-        @settings.assignable_list = [1,2]
+        @settings.assignable_list = [1, 2]
         user = User.find(1)
         assert_equal(2, @settings.select_assign_to(@project, user))
         @settings.assignable_list = [1]
@@ -221,7 +220,7 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
       end
-      
+
       should "return empty array if :filters is nil" do
         @settings.filters = nil
         assert_equal(0, @settings.filters.length)
@@ -394,5 +393,4 @@ EOF
       assert @settings.filter_enabled?
     end
   end
-
 end

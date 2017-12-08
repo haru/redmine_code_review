@@ -16,9 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AddLockVersion < ActiveRecord::Migration[4.2]
- 
   def self.up
-    add_column(:code_reviews, "lock_version", :integer, :default=>0, :null => false)
+    add_column(:code_reviews, "lock_version", :integer, :default => 0, :null => false)
   end
 
   def self.down

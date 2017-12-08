@@ -62,7 +62,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     changeset = FactoryGirl.create(:changeset)
     FactoryGirl.create(:change, changeset: changeset)
     FactoryGirl.create(:change, changeset: changeset)
-    
+
     changeset = Changeset.find(changeset.id)
     change = changeset.filechanges[0]
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 1)
@@ -71,7 +71,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 4)
     issues = []
-    1.upto(4) {|i|
+    1.upto(4) { |i|
       issues[i - 1] = Issue.find(i)
       issues[i - 1].status_id = 1
       issues[i - 1].due_date = nil
@@ -95,7 +95,6 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   end
 
   context "closed_assignment_pourcent" do
-
     should "returns 0 if changeset has no assignments." do
       change = FactoryGirl.create(:change)
       changeset = change.changeset
@@ -119,13 +118,13 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       changeset = change.changeset
       @project = Project.find(1)
       issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
-      issue1.status = IssueStatus.find(5);
+      issue1.status = IssueStatus.find(5)
       issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
-      issue2.status = IssueStatus.find(5);
+      issue2.status = IssueStatus.find(5)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
-      changeset =Changeset.find(changeset.id)
+      changeset = Changeset.find(changeset.id)
       assert issue1.closed?
       assert issue2.closed?
       assert_equal(2, changeset.assignment_count)
@@ -185,7 +184,6 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       assert_not_nil(changeset.assignment_issues)
       assert_equal(3, changeset.assignment_issues.length)
     end
-    
   end
 
   context "after_save" do
@@ -196,7 +194,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       repository = project.repository
 
       @changeset = FactoryGirl.create(:changeset, repository: repository)
-      
+
       auto_assign = AutoAssignSettings.new
       auto_assign.enabled = true
       filters = []

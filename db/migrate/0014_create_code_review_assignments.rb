@@ -18,7 +18,6 @@
 class CreateCodeReviewAssignments < ActiveRecord::Migration[4.2]
   def self.up
     create_table :code_review_assignments do |t|
-
       t.column :issue_id, :int
 
       t.column :change_id, :int
@@ -32,7 +31,6 @@ class CreateCodeReviewAssignments < ActiveRecord::Migration[4.2]
       t.column :rev_to, :string
 
       t.column :action_type, :string
-
     end
   end
 

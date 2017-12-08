@@ -46,10 +46,10 @@ class IssuesControllerTest < ActionController::TestCase
            :code_reviews,
            :code_review_assignments,
            :code_review_user_settings
-  
+
   def setup
     @controller = IssuesController.new
-    @request    = ActionController::TestRequest.create(self.class.controller_class)
+    @request = ActionController::TestRequest.create(self.class.controller_class)
     User.current = nil
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
@@ -60,7 +60,7 @@ class IssuesControllerTest < ActionController::TestCase
     enabled_module.name = 'code_review'
     enabled_module.save
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.save
     }
@@ -81,18 +81,17 @@ class IssuesControllerTest < ActionController::TestCase
 
     review = FactoryGirl.create(:code_review, project: project)
     get :show, :params => {:id => review.issue.id}
-
   end
 
   def test_new
     @request.session[:user_id] = 1
-    get :new, params: { project_id: 1 }
+    get :new, params: {project_id: 1}
     assert_response :success
-    get :new, :params => {:project_id => 1, :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}}
+    get :new, :params => {:project_id => 1, :code => {:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}}
     assert_response :success
     post :new, :params => {:project_id => 1,
-      :issue => {:tracker_id => 1, :status_id => 1, :subject => 'hoge'},
-      :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}}
+                        :issue => {:tracker_id => 1, :status_id => 1, :subject => 'hoge'},
+                        :code => {:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}}
 
     # TODO: 0.9.xのサポート終了時に以下を有効にする。
     #assert_response :SUCESS

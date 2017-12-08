@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AddFileCount < ActiveRecord::Migration[4.2]
- 
   def self.up
     add_column(:code_reviews, "file_count", :integer, :default => 0, :null => false)
   end

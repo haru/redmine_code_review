@@ -19,7 +19,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 class CodeReviewChangePatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers
 
-  
   def test_review_count
     change = Change.find(2)
     assert_equal(2, change.review_count)
@@ -33,7 +32,6 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     issue.save
     change = Change.find(2)
     assert_equal(1, change.open_review_count)
-
   end
 
   def test_closed_review_count
@@ -46,7 +44,7 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     assert_equal(1, change.closed_review_count)
   end
 
-  def test_assignment_count    
+  def test_assignment_count
     change = FactoryGirl.create(:change)
     assert_equal(0, change.assignment_count)
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
@@ -94,7 +92,7 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment)
       close_status = IssueStatus.find(5)
-      change.code_review_assignments.each{|assignments|
+      change.code_review_assignments.each { |assignments|
         assignments.issue.status = close_status
       }
       assert_equal(0, change.open_assignments.length)

@@ -23,11 +23,9 @@ class CodeReview < ActiveRecord::Base
   generator_for :action_type => 'diff'
   generator_for :line => 30
 
-  
   def self.next_subject
     @last_subject ||= 'Code Review 0'
     @last_subject.succ!
     @last_subject
   end
-
 end
