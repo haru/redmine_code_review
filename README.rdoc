@@ -1,3 +1,6 @@
+{<img src="https://travis-ci.org/haru/redmine_code_review.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/haru/redmine_code_review]
+{<img src="https://coveralls.io/repos/github/haru/redmine_code_review/badge.svg?branch=master" alt="Coverage Status" />}[https://coveralls.io/github/haru/redmine_code_review?branch=master]
+
 = Redmine Code Review Plugin
 
 This is a plugin for Redmine which lets you annotate source code within the repository browser.
@@ -16,6 +19,8 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 4. Add code review module into your project.
 
 5. Go to code review setting tab in the project setting page and select tracker.
+
+6. Go to "Roles and permissions" and add "Code Review" permissions to the roles you want to see/edit/manage code reviews.
 
 === Language contributors
 

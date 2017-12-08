@@ -7,3 +7,4 @@
 ^Gemfile$
 syntax: glob
 test/coverage
+.flow
