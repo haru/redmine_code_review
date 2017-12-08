@@ -18,10 +18,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
-  :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
-  :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
-  :code_review_project_settings, :attachments, :code_review_assignments,
-  :code_review_user_settings
+           :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
+           :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+           :code_review_project_settings, :attachments, :code_review_assignments,
+           :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
 
@@ -71,7 +71,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 3)
     change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue_id: 4)
     issues = []
-    1.upto(4) {|i|
+    1.upto(4) { |i|
       issues[i - 1] = Issue.find(i)
       issues[i - 1].status_id = 1
       issues[i - 1].due_date = nil
@@ -92,7 +92,6 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   end
 
   context "closed_assignment_pourcent" do
-
     should "returns 0 if changeset has no assignments." do
       change = FactoryGirl.create(:change)
       changeset = change.changeset
@@ -120,7 +119,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue1)
       change.code_review_assignments << FactoryGirl.create(:code_review_assignment, issue: issue2)
       change.save!
-      changeset =Changeset.find(changeset.id)
+      changeset = Changeset.find(changeset.id)
       assert_equal(2, changeset.assignment_count)
       #assert_equal(100, changeset.closed_assignment_pourcent)
     end
@@ -179,7 +178,6 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       assert_not_nil(changeset.assignment_issues)
       assert_equal(3, changeset.assignment_issues.length)
     end
-
   end
 
   context "after_save" do

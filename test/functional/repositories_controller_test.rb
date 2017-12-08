@@ -18,14 +18,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 require 'repositories_controller'
 
-
 class RepositoriesControllerTest < ActionController::TestCase
   fixtures :projects, :users, :roles, :members, :repositories, :issues, :issue_statuses, :changesets, :changes, :issue_categories, :enumerations, :custom_fields, :custom_values, :trackers
-  
+
   def setup
     @controller = RepositoriesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
     User.current = nil
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
@@ -46,7 +45,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
     User.current = nil
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.permissions << :add_code_review
       role.permissions << :browse_repository
@@ -78,7 +77,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     get :show, :id => 1
     assert_response :success
   end
-  
+
   def test_diff
     @request.session[:user_id] = 1
     get :diff, :id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8

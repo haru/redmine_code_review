@@ -19,18 +19,17 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
-  :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
-  :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
-  :code_review_project_settings, :attachments, :code_review_assignments,
-  :code_review_user_settings
+           :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
+           :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+           :code_review_project_settings, :attachments, :code_review_assignments,
+           :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
 
   context "AutoAssignSettings" do
     context "to_s" do
       should "return string if @yml is not nil." do
-
-        str =<<EOF
+        str = <<EOF
 ---
 aaa: bbb
 ccc: ccc
@@ -122,17 +121,17 @@ EOF
       end
 
       should "return false if assignable_list hasn't specified user_id" do
-        @settings.assignable_list = [1,3,4,5]
+        @settings.assignable_list = [1, 3, 4, 5]
         assert !@settings.assignable?(User.find(2))
       end
 
       should "return true if assignable_list has specified user_id" do
-        @settings.assignable_list = [1,2,3,4]
+        @settings.assignable_list = [1, 2, 3, 4]
         assert @settings.assignable?(User.find(3))
       end
 
       should "return true if assignable_list has specified user_id's string" do
-        @settings.assignable_list = ["1","2","3","4"]
+        @settings.assignable_list = ["1", "2", "3", "4"]
         assert @settings.assignable?(User.find(3))
       end
     end
@@ -154,12 +153,12 @@ EOF
       end
 
       should "return user_id" do
-        @settings.assignable_list = [1,2,3,4,5]
+        @settings.assignable_list = [1, 2, 3, 4, 5]
         assert_not_nil @settings.select_assign_to(@project)
       end
 
       should "not return id that equals user.id" do
-        @settings.assignable_list = [1,2]
+        @settings.assignable_list = [1, 2]
         user = User.find(1)
         assert_equal(2, @settings.select_assign_to(@project, user))
         @settings.assignable_list = [1]
@@ -381,5 +380,4 @@ EOF
       assert @settings.filter_enabled?
     end
   end
-
 end

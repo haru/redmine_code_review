@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-
 require 'simplecov'
 require 'simplecov-rcov'
 require 'coveralls'
@@ -46,10 +45,8 @@ def mock_file
 end
 
 FactoryGirl.define do
-
   factory :attachment do
-
-    container{
+    container {
       Project.find(1)
     }
     file {
@@ -78,7 +75,7 @@ FactoryGirl.define do
 
   factory :changeset do
     sequence(:revision, 1000)
-    committed_on{
+    committed_on {
       Date.today
     }
     #association :repository
@@ -95,7 +92,7 @@ FactoryGirl.define do
     action {
       "A"
     }
-    sequence(:path){ |n|
+    sequence(:path) { |n|
       "test/dir/aaa#{n}"
     }
     changeset {
@@ -109,7 +106,7 @@ FactoryGirl.define do
 
   factory :issue do
     subject 'hoge'
-    author{
+    author {
       User.find(1)
     }
   end
@@ -128,7 +125,5 @@ FactoryGirl.define do
   end
 
   factory :enabled_module do
-
   end
-
 end

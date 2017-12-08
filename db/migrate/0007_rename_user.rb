@@ -16,12 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class RenameUser < ActiveRecord::Migration
- 
   def self.up
     rename_column(:code_reviews, "user_id", "old_user_id")
   end
 
   def self.down
-       rename_column(:code_reviews, "old_user_id", "user_id")
+    rename_column(:code_reviews, "old_user_id", "user_id")
   end
 end

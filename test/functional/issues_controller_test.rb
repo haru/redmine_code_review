@@ -43,11 +43,11 @@ class IssuesControllerTest < ActionController::TestCase
            :journals,
            :journal_details,
            :code_reviews
-  
+
   def setup
     @controller = IssuesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
     User.current = nil
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
@@ -58,7 +58,7 @@ class IssuesControllerTest < ActionController::TestCase
     enabled_module.name = 'code_review'
     enabled_module.save
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.save
     }
@@ -77,26 +77,25 @@ class IssuesControllerTest < ActionController::TestCase
     issue = Issue.generate!(:project => Project.find(1))
     assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: '/aaa/bbb')
     get :show, :id => assignment.issue.id
-    
+
     review = FactoryGirl.create(:code_review, project: project)
     get :show, :id => review.issue.id
-
   end
 
   def test_new
     @request.session[:user_id] = 1
     get :new, :project_id => 1
     assert_response :success
-    get :new, :project_id => 1, :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
+    get :new, :project_id => 1, :code => {:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
     assert_response :success
     post :new, :project_id => 1,
-      :issue => {:tracker_id => 1, :status_id => 1, :subject => 'hoge'},
-      :code =>{:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
+            :issue => {:tracker_id => 1, :status_id => 1, :subject => 'hoge'},
+            :code => {:rev => 1, :rev_to => 2, :path => '/aaa/bbb', :action_type => 'diff'}
 
     # TODO: 0.9.xのサポート終了時に以下を有効にする。
     #assert_response :SUCESS
   end
-  
+
   context "create" do
     should "create code_review_assignment." do
       @request.session[:user_id] = 1

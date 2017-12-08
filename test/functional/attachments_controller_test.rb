@@ -21,33 +21,30 @@ require 'attachments_controller'
 # Re-raise errors caught by the controller.
 class AttachmentsController; def rescue_action(e) raise e end; end
 
-
 class AttachmentsControllerTest < ActionController::TestCase
   fixtures :users, :projects, :roles, :members, :member_roles, :enabled_modules, :issues, :trackers, :attachments,
     :versions, :wiki_pages, :wikis, :documents
-  
+
   def setup
     @controller = AttachmentsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
     Attachment.storage_path = "#{Rails.root}/test/fixtures/files"
-    
+
     [1, 2].each { |num|
       project = Project.find(num)
       project.enable_module!('code_review')
       project.save!
     }
-    
 
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.save
     }
     User.current = nil
   end
-  
-   
+
   def test_show_diff
     @request.session[:user_id] = 1
     attachment = FactoryGirl.create(:attachment, filename: "test.diff")
@@ -56,7 +53,7 @@ class AttachmentsControllerTest < ActionController::TestCase
     assert_template 'diff'
     assert_equal 'text/html', @response.content_type
   end
-  
+
   def test_show_text_file
     @request.session[:user_id] = 1
     attachment = FactoryGirl.create(:attachment, filename: "test.rb")
@@ -65,5 +62,4 @@ class AttachmentsControllerTest < ActionController::TestCase
     assert_template 'file'
     assert_equal 'text/html', @response.content_type
   end
-  
 end

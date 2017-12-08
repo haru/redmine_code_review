@@ -15,9 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-
 class AddTrackerToReviewDialog < ActiveRecord::Migration
-
   def self.up
     add_column(:code_review_project_settings, "tracker_in_review_dialog", :boolean, :default => false)
   end

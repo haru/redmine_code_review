@@ -16,11 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 module CodeReviewObjectDaddyHelpers
-    def CodeReview.generate_for_project!(project, attributes={})
-      attributes[:comment] = 'test comment' unless attributes[:comment]
-      attributes[:issue] = Issue.generate_for_project!({:project => project, :description => attributes[:comment], :subject => 'test'}) unless attributes[:issue]
-      attributes[:project] = project
-      review = CodeReview.generate!(attributes)
-      review
-    end
+  def CodeReview.generate_for_project!(project, attributes = {})
+    attributes[:comment] = 'test comment' unless attributes[:comment]
+    attributes[:issue] = Issue.generate_for_project!({:project => project, :description => attributes[:comment], :subject => 'test'}) unless attributes[:issue]
+    attributes[:project] = project
+    review = CodeReview.generate!(attributes)
+    review
+  end
 end

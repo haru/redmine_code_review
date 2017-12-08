@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class LinkToIssue < ActiveRecord::Migration
- 
   def self.up
     add_column(:code_reviews, "issue_id", :integer)
     rename_column(:code_reviews, "status", "old_status")

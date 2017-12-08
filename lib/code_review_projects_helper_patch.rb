@@ -26,7 +26,6 @@ module CodeReviewProjectsHelperPatch
 
       alias_method_chain :project_settings_tabs, :code_review
     end
-
   end
 end
 
@@ -40,5 +39,3 @@ module ProjectsHelperMethodsCodeReview
     tabs
   end
 end
-
-

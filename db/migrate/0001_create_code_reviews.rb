@@ -18,7 +18,6 @@
 class CreateCodeReviews < ActiveRecord::Migration
   def self.up
     create_table :code_reviews do |t|
-
       t.column :project_id, :integer
 
       t.column :parent_id, :integer
@@ -36,7 +35,6 @@ class CreateCodeReviews < ActiveRecord::Migration
       t.column :status, :integer
 
       t.column :line, :integer
-
     end
   end
 

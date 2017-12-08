@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AddStatusChanged < ActiveRecord::Migration
- 
   def self.up
     add_column(:code_reviews, "status_changed_from", :integer)
     add_column(:code_reviews, "status_changed_to", :integer)

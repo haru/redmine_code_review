@@ -33,7 +33,7 @@ class CodeReviewController < ApplicationController
 
   def index
     sort_init "#{Issue.table_name}.id", 'desc'
-    sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "#{Issue.table_name}.subject",  "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
+    sort_update ["#{Issue.table_name}.id", "#{Issue.table_name}.status_id", "#{Issue.table_name}.subject", "path", "updated_at", "user_id", "#{Changeset.table_name}.committer", "#{Changeset.table_name}.revision"]
 
     limit = per_page_option
     @review_count = CodeReview.where(["project_id = ? and issue_id is NOT NULL", @project.id]).count
@@ -52,7 +52,8 @@ class CodeReviewController < ApplicationController
     @reviews = CodeReview.order(sort_clause).limit(limit).where(conditions).joins(
       "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
       "left join #{Issue.table_name} on issue_id = #{Issue.table_name}.id " +
-      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id").offset(@review_pages.offset)
+      "left join #{IssueStatus.table_name} on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id"
+    ).offset(@review_pages.offset)
     @i_am_member = @user.member_of?(@project)
     render :template => 'code_review/index', :layout => !request.xhr?
   end
@@ -85,12 +86,12 @@ class CodeReviewController < ApplicationController
         @review.issue.safe_attributes = params[:issue] unless params[:issue].blank?
         @review.diff_all = (params[:diff_all] == 'true')
 
-        @parent_candidate = get_parent_candidate(@review.rev) if  @review.rev
+        @parent_candidate = get_parent_candidate(@review.rev) if @review.rev
 
         if request.post?
           @review.issue.save!
           if @review.changeset
-            @review.changeset.issues.each {|issue|
+            @review.changeset.issues.each { |issue|
               create_relation @review, issue, @setting.issue_relation_type
             } if @setting.auto_relation?
           elsif @review.attachment and @review.attachment.container_type == 'Issue'
@@ -98,7 +99,7 @@ class CodeReviewController < ApplicationController
             create_relation @review, issue, @setting.issue_relation_type if @setting.auto_relation?
           end
           watched_users = []
-          @review.open_assignment_issues(@user.id).each {|issue|
+          @review.open_assignment_issues(@user.id).each { |issue|
             unless @review.issue.parent_id == issue.id
               create_relation @review, issue, IssueRelation::TYPE_RELATES
             end
@@ -124,21 +125,19 @@ class CodeReviewController < ApplicationController
           end
           @default_version_id = @review.issue.fixed_version.id if @review.issue.fixed_version
           if @review.changeset and @default_version_id.blank?
-            @review.changeset.issues.each {|issue|
+            @review.changeset.issues.each { |issue|
               if issue.fixed_version
                 @default_version_id = issue.fixed_version.id
-                break;
+                break
               end
             }
           end
-          @review.open_assignment_issues(@user.id).each {|issue|
+          @review.open_assignment_issues(@user.id).each { |issue|
             if issue.fixed_version
               @default_version_id = issue.fixed_version.id
-              break;
+              break
             end
           } unless @default_version_id
-
-
         end
         render :partial => 'new_form', :status => 200
       }
@@ -174,7 +173,7 @@ class CodeReviewController < ApplicationController
     end
     issue[:tracker_id] = @setting.assignment_tracker_id if @setting.assignment_tracker_id
 
-    redirect_to :controller => 'issues', :action => "new" , :project_id => @project,
+    redirect_to :controller => 'issues', :action => "new", :project_id => @project,
       :issue => issue, :code => code
   end
 
@@ -191,8 +190,7 @@ class CodeReviewController < ApplicationController
     @action_type = params[:action_type]
     changeset = @repository.find_changeset_by_name(@rev)
     if @paths.empty?
-      changeset.filechanges.each{|chg|
-      }
+      changeset.filechanges.each { |chg| }
     end
 
     url = @repository.url
@@ -208,9 +206,9 @@ class CodeReviewController < ApplicationController
       end
     end
     @change = nil
-    changeset.filechanges.each{|chg|
+    changeset.filechanges.each { |chg|
       @change = chg if ((chg.path == fullpath) or ("/#{chg.path}" == fullpath)) or (chg.path == "/#{@path}")
-    }  unless @path.blank?
+    } unless @path.blank?
 
     @changeset = changeset
     if @path
@@ -222,8 +220,6 @@ class CodeReviewController < ApplicationController
 
     #render :partial => 'show_error'
     #return
-
-
 
     render :partial => 'update_diff_view'
   end
@@ -268,7 +264,7 @@ class CodeReviewController < ApplicationController
       else
         path = nil if target.diff_all
         url = url_for(:controller => 'repositories', :action => action_name, :id => @project,
-          :repository_id => @repository_id, :rev => target.revision, :path => path)
+                      :repository_id => @repository_id, :rev => target.revision, :path => path)
         #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
         url << '?review_id=' + @review.id.to_s + rev_to if @review
         url << '?r=' + rev_to unless @review
@@ -328,7 +324,6 @@ class CodeReviewController < ApplicationController
     end
   end
 
-
   def destroy
     @review = CodeReview.find(params[:review_id].to_i)
     @review.issue.destroy if @review
@@ -343,7 +338,6 @@ class CodeReviewController < ApplicationController
 
     identifier = change.identifier
     redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project, :repository_id => @repository_id) + '/' + path + '?rev=' + identifier.to_s
-
   end
 
   def preview
@@ -357,13 +351,14 @@ class CodeReviewController < ApplicationController
     #changeset_ids = CGI.unescape(params[:changeset_ids]).split(',') unless params[:changeset_ids].blank?
     changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
     @changesets = []
-    changeset_ids.each {|id|
+    changeset_ids.each { |id|
       @changesets << @repository.find_changeset_by_name(id) unless id.blank?
     }
     render :partial => 'update_revisions'
   end
 
   private
+
   def find_repository
     if params[:repository_id].present? and @project.repositories
       @repository = @project.repositories.find_by_identifier_param(params[:repository_id])
@@ -382,14 +377,13 @@ class CodeReviewController < ApplicationController
     @user = User.current
   end
 
-
   def find_setting
     @setting = CodeReviewProjectSetting.find_or_create(@project)
   end
 
   def get_parent_candidate(revision)
     changeset = @repository.find_changeset_by_name(revision)
-    changeset.issues.each {|issue|
+    changeset.issues.each { |issue|
       return Issue.find(issue.parent_issue_id) if issue.parent_issue_id
     }
     nil

@@ -17,7 +17,6 @@
 class CreateCodeReviewProjectSettings < ActiveRecord::Migration
   def self.up
     create_table :code_review_project_settings do |t|
-
       t.column :project_id, :integer
 
       t.column :tracker_id, :integer
@@ -27,7 +26,6 @@ class CreateCodeReviewProjectSettings < ActiveRecord::Migration
       t.column :updated_at, :timestamp
 
       t.column :updated_by, :integer
-
     end
   end
 

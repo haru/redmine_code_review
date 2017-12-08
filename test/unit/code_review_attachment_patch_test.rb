@@ -26,7 +26,7 @@ class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
     @issue = Issue.where(:project_id => 1).first
     @attachment = FactoryGirl.create(:attachment, container: @issue)
   end
-  
+
   context "code_review_assginments" do
     should "returns empty array if attachment has no assignments" do
       assert_not_nil(@attachment.code_review_assignments)

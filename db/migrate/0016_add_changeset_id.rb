@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AddChangesetId < ActiveRecord::Migration
- 
   def self.up
     add_column(:code_review_assignments, "changeset_id", :integer)
   end

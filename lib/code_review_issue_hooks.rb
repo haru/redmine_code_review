@@ -18,7 +18,8 @@
 class CodeReviewIssueHooks < Redmine::Hook::ViewListener
   include RepositoriesHelper
   render_on :view_issues_show_details_bottom, :partial => 'code_review/issues_show_details_bottom'
-  def view_issues_show_details_bottom_org(context = { })
+
+  def view_issues_show_details_bottom_org(context = {})
     project = context[:project]
     return '' unless project
     unless User.current.allowed_to?({:controller => 'code_review', :action => 'show'}, project)
@@ -36,7 +37,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     return o
   end
 
-  def view_issues_form_details_bottom(context = { })
+  def view_issues_form_details_bottom(context = {})
     project = context[:project]
     request = context[:request]
     parameters = request.parameters
@@ -58,11 +59,10 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     o << "\n"
     o << hidden_field_tag("code[attachment_id]", code[:attachment_id].to_i) unless code[:attachment_id].blank?
 
-
     return o
   end
-  
-  def controller_issues_new_after_save(context = { })
+
+  def controller_issues_new_after_save(context = {})
     if context[:request] && context[:project] && context[:issue]
       project = context[:project]
       request = context[:request]
@@ -86,12 +86,13 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
   end
 
   private
+
   def create_review_info(project, review)
     o = '<tr>'
     o << "<td><b>#{l(:code_review)}:</b></td>"
     o << '<td colspan="3">'
     o << link_to("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}",
-      :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => review.repository_identifier)
+                 :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => review.repository_identifier)
     o << '</td>'
     o << '</tr>'
     return o
@@ -104,7 +105,7 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     o << '<td colspan="3">'
     if assignment.path
       o << link_to("#{repository_id + ':' if repository_id}#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
-        :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id, :repository_id => repository_id)
+                   :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id, :repository_id => repository_id)
     elsif assignment.revision
       repo = project unless repository_id
       repo ||= assignment.repository

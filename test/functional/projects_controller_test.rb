@@ -24,8 +24,8 @@ class ProjectsControllerTest < ActionController::TestCase
 
   def setup
     @controller = ProjectsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
   end
 
   context "#settings" do
@@ -54,9 +54,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         should "not exist tag id post" do
@@ -64,9 +64,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         context "and module" do
@@ -79,9 +79,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                                :descendant => {:tag => 'ul',
+                                                :descendant => {:tag => 'li',
+                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
 
           should "not exist tag id post" do
@@ -89,9 +89,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                                :descendant => {:tag => 'ul',
+                                                :descendant => {:tag => 'li',
+                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
         end
       end
@@ -122,9 +122,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         should "not exist tag id post" do
@@ -132,9 +132,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         context "and module" do
@@ -147,9 +147,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                                :descendant => {:tag => 'ul',
+                                                :descendant => {:tag => 'li',
+                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
 
           should "not exist tag id post" do
@@ -157,9 +157,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                                :descendant => {:tag => 'ul',
+                                                :descendant => {:tag => 'li',
+                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
         end
       end
@@ -176,9 +176,9 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
-          :descendant => {:tag => 'ul',
-            :descendant => {:tag => 'li',
-              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                            :descendant => {:tag => 'ul',
+                                            :descendant => {:tag => 'li',
+                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
       end
 
       should "not exist tag id post" do
@@ -186,9 +186,9 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
-          :descendant => {:tag => 'ul',
-            :descendant => {:tag => 'li',
-              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                            :descendant => {:tag => 'ul',
+                                            :descendant => {:tag => 'li',
+                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
       end
 
       context "with permission" do
@@ -201,9 +201,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         should "not exist tag id post" do
@@ -211,9 +211,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         context "and module" do
@@ -226,9 +226,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                                :descendant => {:tag => 'ul',
+                                                :descendant => {:tag => 'li',
+                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
 
           should "not exist tag id post" do
@@ -236,9 +236,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_no_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                                :descendant => {:tag => 'ul',
+                                                :descendant => {:tag => 'li',
+                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
         end
       end
@@ -255,9 +255,9 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
-          :descendant => {:tag => 'ul',
-            :descendant => {:tag => 'li',
-              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                            :descendant => {:tag => 'ul',
+                                            :descendant => {:tag => 'li',
+                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
       end
 
       should "not exist tag id post" do
@@ -265,9 +265,9 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
         assert_template 'settings'
         assert_no_tag :div, :attributes => {:class => 'tabs'},
-          :descendant => {:tag => 'ul',
-            :descendant => {:tag => 'li',
-              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                            :descendant => {:tag => 'ul',
+                                            :descendant => {:tag => 'li',
+                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
       end
 
       context "with permission" do
@@ -280,9 +280,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         should "not exist tag id post" do
@@ -290,9 +290,9 @@ class ProjectsControllerTest < ActionController::TestCase
           assert_response :success
           assert_template 'settings'
           assert_no_tag :div, :attributes => {:class => 'tabs'},
-            :descendant => {:tag => 'ul',
-              :descendant => {:tag => 'li',
-                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                              :descendant => {:tag => 'ul',
+                                              :descendant => {:tag => 'li',
+                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
         end
 
         context "and module" do
@@ -305,9 +305,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                             :descendant => {:tag => 'ul',
+                                             :descendant => {:tag => 'li',
+                                                             :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
 
           should "exist tag id post" do
@@ -315,9 +315,9 @@ class ProjectsControllerTest < ActionController::TestCase
             assert_response :success
             assert_template 'settings'
             assert_tag :div, :attributes => {:class => 'tabs'},
-              :descendant => {:tag => 'ul',
-                :descendant => {:tag => 'li',
-                  :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+                             :descendant => {:tag => 'ul',
+                                             :descendant => {:tag => 'li',
+                                                             :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
           end
         end
       end

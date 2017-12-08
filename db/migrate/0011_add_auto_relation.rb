@@ -16,12 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AddAutoRelation < ActiveRecord::Migration
- 
   def self.up
     add_column(:code_review_project_settings, "auto_relation", :integer, :default => 1)
   end
 
   def self.down
-    remove_column(:code_review_project_settings, "auto_relation")    
+    remove_column(:code_review_project_settings, "auto_relation")
   end
 end
