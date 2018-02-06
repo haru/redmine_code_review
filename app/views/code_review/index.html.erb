@@ -19,7 +19,7 @@
 
 <script>
 function change_option(flag) {
-  var url = "<%= raw url_for(:controller => 'code_review', :action=>'index', :id => @project) %>";
+  var url = "<%= j url_for(:controller => 'code_review', :action=>'index', :id => @project) %>";
   $('#content').load(url, {'show_closed': flag});
 }
 </script>
@@ -80,13 +80,13 @@ function change_option(flag) {
                 codepath = review_path[0, 15] + '...' + review_path[review_path.length - 35, 35]
               end
               -%>
-              <%= link_to(raw(codepath), {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review_path) -%>
+              <%= link_to(codepath, {:controller => 'code_review', :action => 'show', :id => @project, :review_id => review.id}, :title => review_path) -%>
            </td>
-            <td><%=h review.line %></td>
-            <td><%=h review.revision %></td>
-            <td><%=h review.committer %></td>
-            <td><%=h review.user.name %></td>
-            <td><%=h format_time(review.created_at) %></td>
+            <td><%= review.line %></td>
+            <td><%= review.revision %></td>
+            <td><%= review.committer %></td>
+            <td><%= review.user.name %></td>
+            <td><%= format_time(review.created_at) %></td>
           </tr>
         <% end %>
       </tbody>
