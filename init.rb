@@ -24,9 +24,7 @@ Rails.configuration.to_prepare do
     Change.send(:include, CodeReviewChangePatch)
   end
 
-  unless Changeset.included_modules.include? CodeReviewChangesetPatch
-    Changeset.send(:include, CodeReviewChangesetPatch)
-  end
+  CodeReviewChangesetPatch.apply
 
   unless Issue.included_modules.include? CodeReviewIssuePatch
     Issue.send(:include, CodeReviewIssuePatch)
