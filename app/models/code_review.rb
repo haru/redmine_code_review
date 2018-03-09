@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class CodeReview < ActiveRecord::Base
   include Redmine::SafeAttributes
-  unloadable
   belongs_to :project
   belongs_to :change
   belongs_to :issue
