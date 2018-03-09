@@ -348,19 +348,16 @@ class CodeReviewController < ApplicationController
 
   def preview
     @text = params[:review][:comment]
-    @text = params[:reply][:comment] unless @text
-    render :partial => 'common/preview'
+    @text ||= params[:reply][:comment]
+    render partial: 'common/preview'
   end
 
   def update_revisions_view
-    changeset_ids = []
-    #changeset_ids = CGI.unescape(params[:changeset_ids]).split(',') unless params[:changeset_ids].blank?
-    changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
-    @changesets = []
-    changeset_ids.each {|id|
-      @changesets << @repository.find_changeset_by_name(id) unless id.blank?
-    }
-    render :partial => 'update_revisions'
+    changeset_ids = params[:changeset_ids].to_s.split(',')
+    @changesets = changeset_ids.map do |id|
+      @repository.find_changeset_by_name(id) unless id.blank?
+    end
+    render partial: 'update_revisions'
   end
 
   private
