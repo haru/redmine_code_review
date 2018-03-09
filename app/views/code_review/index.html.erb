@@ -25,13 +25,13 @@ function change_option(flag) {
 </script>
 <div id="code_review_list">
   <h2>
-    <%=h l(:code_reviews) %>
+    <%= l(:code_reviews) %>
   </h2>
 
   <% if @all_review_count > 0 %>
     <p>
       <%= form_tag({:controller => 'code_review', :action=>'index', :id => @project}, :id => 'optionform') do %>
-        <%= check_box_tag 'show_closed', 'true', @show_closed, :onchange => "change_option($('#show_closed').is(':checked'));"%> <%=h l(:label_show_closed_reviews) %>
+        <%= check_box_tag 'show_closed', 'true', @show_closed, :onchange => "change_option($('#show_closed').is(':checked'));"%> <%= l(:label_show_closed_reviews) %>
       <% end %>
       <%# observe_field 'show_closed', :with => 'show_closed', :update => 'content' %>
     </p>
@@ -50,7 +50,7 @@ function change_option(flag) {
           <%= sort_header_tag "#{Issue.table_name}.subject", :caption => l(:field_subject)%>
           <%= sort_header_tag 'path', :caption => l(:label_code_path)%>
           <th>
-            <%=h l(:label_code_line)%>
+            <%= l(:label_code_line)%>
           </th>
           <%= sort_header_tag "#{Changeset.table_name}.revision", :caption => l(:label_revision)%>
           <%= sort_header_tag "#{Changeset.table_name}.committer", :caption => l(:label_code_author)%>
@@ -67,10 +67,10 @@ function change_option(flag) {
             </td>
 
             <td class="status">
-              <%=h  review.issue.status %>
+              <%=  review.issue.status %>
             </td>
             <td class="subject">
-              <%=h  review.issue.subject %>
+              <%=  review.issue.subject %>
             </td>
             <td class="path">
               <%

@@ -91,10 +91,10 @@
       <%= f.hidden_field :lock_version %>
       <p><%= f.check_box :tracker_in_review_dialog %></p>
 
-      <b><%=h l(:select_tracker_for_code_reviews)%>:</b>
+      <b><%= l(:select_tracker_for_code_reviews)%>:</b>
       <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
 
-      <b><%=h l(:select_tracker_for_code_review_assignment)%>:</b>
+      <b><%= l(:select_tracker_for_code_review_assignment)%>:</b>
       <p><%= f.select :assignment_tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
 
       <p>
@@ -102,15 +102,15 @@
       </p>
 
       <p>
-        <label><%=h l(:label_if_revision_has_issues)%>:</label>
+        <label><%= l(:label_if_revision_has_issues)%>:</label>
         <%= f.radio_button(:auto_relation, CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES) %>
-        <%=h l(:label_review_issue_relates) %>
+        <%= l(:label_review_issue_relates) %>
 
         <%= f.radio_button(:auto_relation, CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS) %>
-        <%=h l(:label_review_issue_blocks) %>
+        <%= l(:label_review_issue_blocks) %>
 
         <%= f.radio_button(:auto_relation, CodeReviewProjectSetting::AUTORELATION_TYPE_NONE) %>
-        <%=h l(:label_review_issue_do_nothing) %>
+        <%= l(:label_review_issue_do_nothing) %>
 
       </p>
       <hr/>
@@ -120,29 +120,29 @@
         @auto_assign = @code_review_setting.auto_assign_settings
         @auto_assign.subject = l(:code_review_requrest) if @auto_assign.subject.blank?
       -%>
-        <label><%=h l(:label_auto_assign_settings)%></label>
-        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :onchange => 'setAutoAssignSettingFormEnable();'%><%=h l(:button_activate)%>
+        <label><%= l(:label_auto_assign_settings)%></label>
+        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :onchange => 'setAutoAssignSettingFormEnable();'%><%= l(:button_activate)%>
       </p>
       <div id="cr_auto_assign_settings" style="display: <%=  @auto_assign.enabled? ? 'true' : 'none'%>;">
         <p>
-          <label><%=h l(:field_author)%></label>
+          <label><%= l(:field_author)%></label>
           <%= select :auto_assign, :author_id,
             (@project.users.collect {|user|
               [user.name, user.id]
             }), :selected => @auto_assign.author_id, :required => true %>
         </p>
         <p>
-          <label><%=h l(:label_candidates_of_reviewer)%></label>
+          <label><%= l(:label_candidates_of_reviewer)%></label>
           <% @project.users.each do |user| %>
-            <label class="floating"><%= check_box_tag 'auto_assign[assignable_list][]', user.id, @auto_assign.assignable?(user) %> <%=h user %></label>
+            <label class="floating"><%= check_box_tag 'auto_assign[assignable_list][]', user.id, @auto_assign.assignable?(user) %> <%= user %></label>
           <% end %>
         </p>
         <p>
-          <label><%=h l(:field_subject)%></label>
+          <label><%= l(:field_subject)%></label>
           <%= text_field(:auto_assign, :subject, :size => 70) %>
         </p>
         <p>
-          <label><%=h l(:field_description) %></label>
+          <label><%= l(:field_description) %></label>
           <%= text_area :auto_assign, :description,
                    :cols => 30,
                    :rows => 12,
