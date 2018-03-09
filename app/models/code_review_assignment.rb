@@ -44,7 +44,7 @@ class CodeReviewAssignment < ActiveRecord::Base
   
   def repository_identifier
     return nil unless repository
-    @repository_identifier ||= repository.identifier_param if repository.respond_to?("identifier_param")
+    @repository_identifier ||= repository.identifier_param
   end
 
   def self.create_with_changeset(changeset)

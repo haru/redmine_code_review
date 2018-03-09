@@ -362,12 +362,12 @@ class CodeReviewController < ApplicationController
 
   private
   def find_repository
-    if params[:repository_id].present? and @project.repositories
+    if params[:repository_id].present?
       @repository = @project.repositories.find_by_identifier_param(params[:repository_id])
     else
       @repository = @project.repository
     end
-    @repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+    @repository_id = @repository.identifier_param
   end
 
   def find_project
