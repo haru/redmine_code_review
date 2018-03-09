@@ -17,8 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <%
-parameters = request.parameters
-id = parameters[:id].to_i
+id = params[:id].to_i
 attachment = Attachment.find(id)
 return '' unless attachment.is_text? or attachment.is_diff?
 review_id = parameters[:review_id] unless parameters[:review_id].blank?

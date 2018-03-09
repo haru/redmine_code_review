@@ -17,11 +17,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <%
-parameters = request.parameters
-path = parameters['path']
-rev = parameters['rev']
+path = params[:path]
+rev = params[:rev]
 repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
-unless path.blank? or path.empty?
+unless path.blank?
   changesets = @repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
   change = changesets[0]
 
