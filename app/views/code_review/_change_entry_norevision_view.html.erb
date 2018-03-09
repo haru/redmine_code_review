@@ -21,10 +21,7 @@ path = params[:path]
 rev = params[:rev]
 repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
 unless path.blank?
-  changesets = @repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
-  change = changesets[0]
-
-  if change
+  if change = @repository.latest_changesets(path, rev, 1).first
     link = link_to(l(:label_add_review), {:controller => 'code_review',
         :action => 'forward_to_revision', :id => project, :path => path, :rev => rev, :repository_id => repository_id}, 
       :class => 'icon icon-edit')
