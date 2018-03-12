@@ -401,6 +401,6 @@ class CodeReviewController < ApplicationController
     relation.relation_type = type
     relation.issue_from_id = review.issue.id
     relation.issue_to_id = issue.id
-    relation.save!
+    relation.save
   end
 end
