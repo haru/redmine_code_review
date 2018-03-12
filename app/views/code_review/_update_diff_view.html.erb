@@ -67,7 +67,7 @@
   <% end %>
 
   <% if @show_review_id -%>
-    popupReview(<%= @show_review_id.to_i %>);
+    popupReview(<%= @show_review_id.to_i %>, showReviewUrl);
   <% end -%>
   $('#content table.filecontent:first').before($('#code-review-assign-link'));
 </script>
