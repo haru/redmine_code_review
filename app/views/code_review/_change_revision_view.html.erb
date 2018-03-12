@@ -40,7 +40,7 @@ if @changeset
 
   <script type="text/javascript">
     $('#changes-legend').after($('#code_review_assignments'));
-    urlprefix = '<%=urlprefix%>';
+    urlprefix = '<%= j urlprefix%>';
   <% @changeset.changes.each{|change| %>
     var reviewlist = [];
     <%
@@ -51,7 +51,7 @@ if @changeset
         :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => repository_id)
     %>
       var review = new CodeReview(<%=review.id%>);
-      review.url = '<%=url%>';
+      review.url = '<%= j url%>';
       <% if review.is_closed? %>
         review.is_closed = true;
       <% end %>
@@ -60,13 +60,10 @@ if @changeset
       cnt += 1
 
     }
-    relative_path = change.path || ""
-    if relative_path[0] != ?/
-      relative_path = '/' + relative_path
-    end
-    escaped_relative_path = relative_path.gsub("'"){"\\'"}
+    path = change.path || ""
+    abs_path = path.start_with?(?/) ? path : "/#{path}"
   %>
-    code_reviews_map['<%=escaped_relative_path-%>'] = reviewlist;
+    code_reviews_map['<%= j abs_path -%>'] = reviewlist;
   <%
   }
 %>
