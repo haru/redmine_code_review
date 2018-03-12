@@ -36,44 +36,38 @@
   assignments = @change.code_review_assignments if @change
   attachment_id = @attachment.id if @attachment
   assignments = @attachment.code_review_assignments if @attachment
-  escaped_path = @path.gsub("'"){"\\'"} if @path
   -%>
 
-  <%- if User.current.allowed_to?(:assign_code_review, @project) -%>
-  <%= raw show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
-  <%- end -%>
+  <% if User.current.allowed_to?(:assign_code_review, @project) %>
+    <%= l :review_assignments %>:
+    <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} %>
+  <% end %>
 </div>
 
 <script type="text/javascript">
-  repository_id = "<%= @repository_id %>";
-  add_form_title = "<%= l(:label_add_review) %>";
-  review_dialog_title = "<%= l(:code_review) %>";
-  var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id => @project %>';
-  var is_readonly = true;
-  <% if authorize_for('code_review', 'new') -%>
-    is_readonly = false;
-  <% end %>
-  var is_diff = false;
-  <% if @action_type == 'diff' or (@attachment and @attachment.is_diff?) -%>
-    is_diff = true;
-  <% end %>
-  action_type = '<%= @action_type %>';
-  rev = '<%= @rev %>';
-  rev_to = '<%= @rev_to %>';
-  path = '<%= escaped_path -%>';
+  var repository_id = "<%= j @repository_id %>";
+  var add_form_title = "<%= l(:label_add_review) %>";
+  var review_dialog_title = "<%= l(:code_review) %>";
+  var addReviewUrl = '<%= j url_for :controller => 'code_review', :action => 'new', :id => @project %>';
+  var is_readonly = <%= !authorize_for('code_review', 'new') %>;
+  var is_diff = <%= @action_type == 'diff' or (@attachment and @attachment.is_diff?) %>;
+  var action_type = '<%= j @action_type %>';
+  var rev = '<%= j @rev %>';
+  var rev_to = '<%= j @rev_to %>';
+  var path = '<%= j @path -%>';
 
-  setAddReviewButton(addReviewUrl, '<%= @change.id if @change %>', '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= @attachment_id%>' );
+  setAddReviewButton(addReviewUrl, '<%= change_id %>', '<%= j image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= j @attachment_id %>' );
 
-  showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
-  showReviewImageTag = '<%= image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
-  showClosedReviewImageTag = '<%= image_tag('closed_review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
+  var showReviewUrl = '<%= j url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
+  var showReviewImageTag = '<%= j image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
+  var showClosedReviewImageTag = '<%= j image_tag('closed_review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
 
   <% for review in @reviews do %>
     setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed? %>, <%= review.file_count %> );
   <% end %>
 
   <% if @show_review_id -%>
-    popupReview(<%= @show_review_id %>);
+    popupReview(<%= @show_review_id.to_i %>);
   <% end -%>
   $('#content table.filecontent:first').before($('#code-review-assign-link'));
 </script>

@@ -17,22 +17,28 @@
 module CodeReviewHelper
   unloadable
   def show_assignments(assignments, project, options = {})
-    html = "#{l(:review_assignments)}:"
-    assignments.each do |assignment|
-      issue = assignment.issue
-      html << link_to("##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
-        :class => issue.css_classes, :title => "#{issue}(#{issue.status})")
-    end if assignments
 
-    link = link_to(l(:button_add), {:controller => 'code_review',
+    links = if assignments
+      assignments.map do |assignment|
+        issue = assignment.issue
+        link_to("##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
+          :class => issue.css_classes, :title => "#{issue}(#{issue.status})")
+      end
+    else
+      []
+    end
+
+    links << link_to(
+      l(:button_add),
+      { :controller => 'code_review',
         :action => 'assign', :id=>project, :action_type => options[:action_type],
         :rev => options[:rev], :rev_to => options[:rev_to], :path => options[:path],
         :change_id => options[:change_id], :attachment_id => options[:attachment_id],
-        :changeset_id => options[:changeset_id]}, :class => 'icon icon-add')
+        :changeset_id => options[:changeset_id]},
+      :class => 'icon icon-add'
+    )
 
-    html << link if link
-
-    html
+    safe_join links
   end
 
   def progress_for_changeset(changeset)
