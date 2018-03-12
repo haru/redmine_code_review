@@ -15,22 +15,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require_dependency 'changeset'
-
 module CodeReviewChangesetPatch
-  def self.included(base) # :nodoc:
-    base.send(:include, ChangesetInstanceMethodsCodeReview)
-
-    base.class_eval do
-      unloadable # Send unloadable so it will not be unloaded in development
-      has_many :code_review_assignments, :dependent => :destroy
-      alias_method_chain :scan_comment_for_issue_ids, :code_review
+  def self.apply
+    unless Changeset < self
+      Changeset.prepend self
+      Changeset.class_eval do
+        has_many :code_review_assignments, dependent: :destroy
+      end
     end
-
   end
-end
 
-module ChangesetInstanceMethodsCodeReview
   #
   # for review issues
   #
@@ -172,18 +166,26 @@ module ChangesetInstanceMethodsCodeReview
   #
   # changeset作成時にレビューの自動アサインを行う
   #
-  def scan_comment_for_issue_ids_with_code_review
-    ret = scan_comment_for_issue_ids_without_code_review
-    project = repository.project if repository
-    return ret unless project
-    return ret unless project.module_enabled?('code_review')
-    setting = CodeReviewProjectSetting.find_or_create(project)
-    auto_assign = setting.auto_assign_settings
-    return ret unless auto_assign.enabled?
-    return unless auto_assign.match_with_changeset?(self)
-    CodeReviewAssignment.create_with_changeset(self)
-    ret
+  def scan_comment_for_issue_ids
+    super.tap do
+      create_review_assignment_if_necessary
+    end
   end
+
+  def create_review_assignment_if_necessary
+    if repository and
+      project = repository.project and
+      project.module_enabled?('code_review')
+
+      setting = CodeReviewProjectSetting.find_or_create(project)
+      auto_assign = setting.auto_assign_settings
+
+      if auto_assign.enabled? and auto_assign.match_with_changeset?(self)
+        CodeReviewAssignment.create_with_changeset(self)
+      end
+    end
+  end
+  private :create_review_assignment_if_necessary
 end
 
 

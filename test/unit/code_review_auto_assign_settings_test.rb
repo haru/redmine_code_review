@@ -97,12 +97,12 @@ EOF
 
       should "return nil if author_id is nil" do
         @settings.author_id = nil
-        assert_equal(nil, @settings.author_id)
+        assert_nil @settings.author_id
       end
 
       should "return nil if author_id is empty string" do
         @settings.author_id = ''
-        assert_equal(nil, @settings.author_id)
+        assert_nil @settings.author_id
       end
     end
 

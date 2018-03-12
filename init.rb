@@ -15,35 +15,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require 'redmine'
-begin
-  require 'config/initializers/session_store.rb'
-rescue LoadError
-end
-require 'gravatar'
+
 require 'code_review_application_hooks'
-require 'code_review_change_patch'
-require 'code_review_changeset_patch'
-require 'code_review_issue_patch'
 require 'code_review_issue_hooks'
-require 'code_review_projects_helper_patch'
-require 'code_review_attachment_patch'
 
 Rails.configuration.to_prepare do
   unless Change.included_modules.include? CodeReviewChangePatch
     Change.send(:include, CodeReviewChangePatch)
   end
 
-  unless Changeset.included_modules.include? CodeReviewChangesetPatch
-    Changeset.send(:include, CodeReviewChangesetPatch)
-  end
+  CodeReviewChangesetPatch.apply
 
   unless Issue.included_modules.include? CodeReviewIssuePatch
     Issue.send(:include, CodeReviewIssuePatch)
   end
 
-  unless ProjectsHelper.included_modules.include? CodeReviewProjectsHelperPatch
-    ProjectsHelper.send(:include, CodeReviewProjectsHelperPatch)
-  end
+  ProjectsController.send :helper, CodeReviewProjectSettingsTab
 
   unless Attachment.included_modules.include? CodeReviewAttachmentPatch
     Attachment.send(:include, CodeReviewAttachmentPatch)
