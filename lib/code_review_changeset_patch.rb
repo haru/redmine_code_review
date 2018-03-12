@@ -167,7 +167,7 @@ module CodeReviewChangesetPatch
   # changeset作成時にレビューの自動アサインを行う
   #
   def scan_comment_for_issue_ids
-    super.tap do |ret|
+    super.tap do
       create_review_assignment_if_necessary
     end
   end
