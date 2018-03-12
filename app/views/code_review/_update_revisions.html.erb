@@ -23,7 +23,7 @@
       progress = progress_for_changeset changeset
 %>
 
-    var count = new ReviewCount(<%=  changeset.review_count %>, <%=  changeset.open_review_count %>, '<%= raw progress %>');
+    var count = new ReviewCount(<%=  changeset.review_count %>, <%=  changeset.open_review_count %>, '<%= j progress %>');
 
     review_counts['revision_<%=changeset.identifier %>'] = count;
 <% end %>
