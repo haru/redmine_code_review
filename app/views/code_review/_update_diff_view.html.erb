@@ -31,16 +31,16 @@
 
 <div id="code-review-assign-link" style="text-align: right;">
   <%
-  change_id = ''
-  change_id = @change.id if @change
-  assignments = @change.code_review_assignments if @change
-  attachment_id = @attachment.id if @attachment
-  assignments = @attachment.code_review_assignments if @attachment
+   assignments = if @change
+     @change.code_review_assignments
+   elsif @attachment
+     @attachment.code_review_assignments
+   end
   -%>
 
   <% if User.current.allowed_to?(:assign_code_review, @project) %>
     <%= l :review_assignments %>:
-    <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} %>
+    <%= show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => @change.try(:id), :attachment_id => @attachment.try(:id)} %>
   <% end %>
 </div>
 
@@ -56,7 +56,7 @@
   var rev_to = '<%= j @rev_to %>';
   var path = '<%= j @path -%>';
 
-  setAddReviewButton(addReviewUrl, '<%= change_id %>', '<%= j image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= attachment_id %>' );
+  setAddReviewButton(addReviewUrl, '<%= change.try :id %>', '<%= j image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= @attachment.try :id %>' );
 
   var showReviewUrl = '<%= j url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
   var showReviewImageTag = '<%= j image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
