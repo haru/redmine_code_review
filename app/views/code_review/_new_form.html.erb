@@ -62,7 +62,7 @@
       <label><b><%= l(:field_parent_issue)%>:</b></label>
       <%= f.text_field :parent_id, :size => 10 %>
       <% if @parent_candidate %>
-        <%= raw l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
+        <%= sanitize l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
         <input type="button" value="<%= l(:general_text_Yes)%>" onclick="$('#review_parent_id').val(<%= @parent_candidate.id %>)"/>
       <% end %>
     </p>

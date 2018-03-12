@@ -58,7 +58,7 @@ en:
   auto_assign_filter_assign: Assign
   auto_assign_filter_drop: Drop
 
-  label_parent_suggestion: Maybe "%{issue_id}" ?
+  label_parent_suggestion: "Maybe %{issue_id} ?"
   
    
   label_assign_review: "Assign"
