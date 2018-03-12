@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewAssignment < ActiveRecord::Base
-  unloadable
   belongs_to :issue
   belongs_to :change
   belongs_to :changeset
@@ -44,7 +43,7 @@ class CodeReviewAssignment < ActiveRecord::Base
   
   def repository_identifier
     return nil unless repository
-    @repository_identifier ||= repository.identifier_param if repository.respond_to?("identifier_param")
+    @repository_identifier ||= repository.identifier_param
   end
 
   def self.create_with_changeset(changeset)

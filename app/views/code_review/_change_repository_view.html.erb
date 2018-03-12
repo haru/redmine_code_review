@@ -25,7 +25,7 @@ if @changesets
     changeset_ids << ','
   }
 
-  repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+  repository_id = @repository.identifier_param
   url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project, :repository_id => repository_id
 %>
 

@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class CodeReview < ActiveRecord::Base
   include Redmine::SafeAttributes
-  unloadable
   belongs_to :project
   belongs_to :change
   belongs_to :issue
@@ -158,18 +157,13 @@ class CodeReview < ActiveRecord::Base
   end
 
   def open_assignment_issues(user_id)
-    issues = []
     assignments = []
-    assignments = change.code_review_assignments if change
-    assignments = assignments + changeset.code_review_assignments if changeset
-    assignments = assignments + attachment.code_review_assignments if attachment
+    assignments += change.code_review_assignments if change
+    assignments += changeset.code_review_assignments if changeset
+    assignments += attachment.code_review_assignments if attachment
 
-    assignments.each {|assignment|
-      unless assignment.is_closed?
-        issues << assignment.issue if user_id == assignment.issue.assigned_to_id
-      end
+    assignments.reject(&:is_closed?).map(&:issue).select{ |issue|
+      user_id == issue.assigned_to_id
     }
-
-    issues
   end
 end

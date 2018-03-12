@@ -15,14 +15,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require_dependency 'change'
-
 module CodeReviewChangePatch
   def self.included(base) # :nodoc:
     base.send(:include, ChangeInstanceMethodsCodeReview)
 
     base.class_eval do
-      unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_reviews, :dependent => :destroy
       has_many :code_review_assignments, :dependent => :destroy
       after_save :review_auto_assign

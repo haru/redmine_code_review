@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewController < ApplicationController
-  unloadable
   before_filter :find_project, :authorize, :find_user, :find_setting, :find_repository
 
   helper :sort
@@ -348,29 +347,26 @@ class CodeReviewController < ApplicationController
 
   def preview
     @text = params[:review][:comment]
-    @text = params[:reply][:comment] unless @text
-    render :partial => 'common/preview'
+    @text ||= params[:reply][:comment]
+    render partial: 'common/preview'
   end
 
   def update_revisions_view
-    changeset_ids = []
-    #changeset_ids = CGI.unescape(params[:changeset_ids]).split(',') unless params[:changeset_ids].blank?
-    changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
-    @changesets = []
-    changeset_ids.each {|id|
-      @changesets << @repository.find_changeset_by_name(id) unless id.blank?
-    }
-    render :partial => 'update_revisions'
+    changeset_ids = params[:changeset_ids].to_s.split(',')
+    @changesets = changeset_ids.map do |id|
+      @repository.find_changeset_by_name(id) unless id.blank?
+    end
+    render partial: 'update_revisions'
   end
 
   private
   def find_repository
-    if params[:repository_id].present? and @project.repositories
+    if params[:repository_id].present?
       @repository = @project.repositories.find_by_identifier_param(params[:repository_id])
     else
       @repository = @project.repository
     end
-    @repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+    @repository_id = @repository.identifier_param
   end
 
   def find_project

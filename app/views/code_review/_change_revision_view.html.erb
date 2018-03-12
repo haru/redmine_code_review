@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <%
-repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+repository_id = @repository.identifier_param
 if @changeset
   urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project, :repository_id => repository_id) +
     '/' + @changeset.identifier + '/entry'

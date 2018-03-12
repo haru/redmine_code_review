@@ -20,7 +20,7 @@
 parameters = request.parameters
 path = parameters['path']
 rev = parameters['rev']
-repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+repository_id = @repository.identifier_param
 unless path.blank? or path.empty?
   changesets = @repository.latest_changesets(path, rev, Setting.repository_log_display_limit.to_i)
   change = changesets[0]

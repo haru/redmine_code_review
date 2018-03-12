@@ -54,7 +54,7 @@ if project and controller and project.module_enabled?(:code_review)
           path = parameters['path'].blank? ? '.' : parameters['path']
 
 
-            repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+            repository_id = @repository.identifier_param
             url = url_for :controller => 'code_review', :action => 'update_diff_view', :id => project, :repository_id => repository_id
           %>
             <div id="code_review">
