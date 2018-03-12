@@ -35,9 +35,12 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   AUTORELATION_TYPE_RELATES = 1
   AUTORELATION_TYPE_BLOCKS = 2
 
+  def self.find_for(project)
+    where(project_id: project.id).first
+  end
+
   def self.find_or_create(project)
-    setting = CodeReviewProjectSetting.find_by_project_id(project.id)
-    unless setting
+    unless setting = find_for(project)
       setting = CodeReviewProjectSetting.new
       setting.project_id = project.id
       return setting if project.trackers.length == 0

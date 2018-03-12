@@ -61,7 +61,7 @@
         <%= link_to h(@issue.tracker.name) + ' #' +@issue.id.to_s + ' (' + h(@review.issue.status) + ')',
           :controller => 'issues', :action => 'show', :id => @review.issue.id %>:
         <br />
-        <%=h @review.subject %>
+        <%= @review.subject %>
       </h2>
 
       <!-- author and creation time -->
@@ -94,12 +94,12 @@
           <%= hidden_field :issue, :lock_version%>
           <%= hidden_field_tag :review_id, @review.id %>
           <p>
-            <label><b><%=h l(:field_subject)%>:</b></label>
+            <label><b><%= l(:field_subject)%>:</b></label>
             <%= f.text_field :subject, :size => 70, :value => @review.subject%>
           </p>
           <% if @allowed_statuses and @allowed_statuses.any? %>
             <p>
-              <label><b><%=h l(:field_status)%>:</b></label>
+              <label><b><%= l(:field_status)%>:</b></label>
               <%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
             </p>
           <% end %>
@@ -116,7 +116,7 @@
             submit_url = url_for(:controller => 'code_review', :action => 'update', :id => @project)
             -%>
             <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
-            <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
+            <input type="button" value="<%= l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
             <%= link_to_function l(:label_preview), "$('#preview_#{@review.id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{review_form_id}').serialize())" %>
           </p>
           <div id="preview_<%= @review.id%>" class="wiki"></div>
@@ -158,7 +158,7 @@
           <%= hidden_field :issue,  :lock_version%>
           <% if @allowed_statuses and @allowed_statuses.any? %>
             <p>
-              <label><%=h l(:field_status) %>:</label>
+              <label><%= l(:field_status) %>:</label>
               <%  # select :review, :status, {l(:label_review_closed) => CodeReview::STATUS_CLOSED, l(:label_review_open) => CodeReview::STATUS_OPEN} %>
               <%= select :review, :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %>
             </p>

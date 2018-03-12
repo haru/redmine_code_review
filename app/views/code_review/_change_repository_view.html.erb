@@ -19,11 +19,7 @@
 <%
 
 if @changesets
-  changeset_ids = ''
-  @changesets.each { |changeset|
-    changeset_ids << changeset.revision
-    changeset_ids << ','
-  }
+  changeset_ids = safe_join @changesets.map(&:revision), ','
 
   repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
   url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project, :repository_id => repository_id
@@ -34,7 +30,7 @@ if @changesets
 
   <script type="text/javascript">
     $(document).ready(function(){
-      $('#code_review_revisions').load('<%=url%>', {changeset_ids: '<%=raw changeset_ids%>'});
+      $('#code_review_revisions').load('<%=url%>', {changeset_ids: '<%= j changeset_ids%>'});
     });
   </script>
 

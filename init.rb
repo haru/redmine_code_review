@@ -49,6 +49,7 @@ Rails.configuration.to_prepare do
     Attachment.send(:include, CodeReviewAttachmentPatch)
   end
 
+  RepositoriesController.send :helper, :code_review
 end
 
 Redmine::Plugin.register :redmine_code_review do

@@ -38,13 +38,13 @@
     <%= hidden_field_tag(:repository_id, @repository_id) %>
     <%= hidden_field_tag(:diff_all, @review.diff_all) %>
     <p>
-      <label><b><%=h l(:field_subject)%>:</b></label>
+      <label><b><%= l(:field_subject)%>:</b></label>
       <%= f.text_field :subject, :size => 70, :required => true %>
     </p>
 
     <% if @setting.tracker_in_review_dialog %>
       <p>
-        <label><b><%=h l(:label_tracker) %>:</b></label>
+        <label><b><%= l(:label_tracker) %>:</b></label>
         <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
         <script type="text/javascript">
 
@@ -59,11 +59,11 @@
       </p>
     <% end %>
     <p>
-      <label><b><%=h l(:field_parent_issue)%>:</b></label>
+      <label><b><%= l(:field_parent_issue)%>:</b></label>
       <%= f.text_field :parent_id, :size => 10 %>
       <% if @parent_candidate %>
-        <%= raw l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
-        <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('#review_parent_id').val(<%= @parent_candidate.id %>)"/>
+        <%= sanitize l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
+        <input type="button" value="<%= l(:general_text_Yes)%>" onclick="$('#review_parent_id').val(<%= @parent_candidate.id %>)"/>
       <% end %>
     </p>
     <% @issue.custom_field_values.each do |value| %>
@@ -79,18 +79,18 @@
 
     </p>
     <p>
-      <label><b><%=h l(:field_assigned_to) %>:</b></label>
+      <label><b><%= l(:field_assigned_to) %>:</b></label>
       <%= select :issue, :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %>
     </p>
     <% unless @project.issue_categories.empty? %>
       <p>
-        <label><b><%=h l(:field_category) %>:</b></label>
+        <label><b><%= l(:field_category) %>:</b></label>
         <%= select :issue, :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
       </p>
     <% end %>
     <% unless @issue.assignable_versions.empty? %>
       <p>
-        <label><b><%=h l(:field_fixed_version) %>:</b></label>
+        <label><b><%= l(:field_fixed_version) %>:</b></label>
         <%= select :issue, :fixed_version_id, (@issue.assignable_versions.collect {|v| [v.name, v.id]}), :include_blank => true, :selected => @default_version_id %>
       </p>
     <% end %>
@@ -109,7 +109,7 @@
       %>
       <%= button_tag l(:button_apply), type: 'button', onclick: "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
 
-      <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
+      <input type="button" value="<%= l(:button_cancel) %> " onclick="javascript:hideForm();"/>
       <%= preview_link({ :controller => 'code_review', :action => 'preview', :id => @project}, 'review_form') %>
     </p>
     <div id="preview" class="wiki"></div>

@@ -206,16 +206,12 @@ function setShowReviewButton(line, review_id, is_closed, file_count) {
     });
 }
 
-function popupReview(review_id) {
+function popupReview(review_id, url) {
     var span   = $('#review_' + review_id); // span element of view review button
     var pos = span.offset();
     $('html,body').animate({ scrollTop: pos.top },
         {duration: 'fast',
-        complete: function(){showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top)}});
-    // position and show popup dialog
-    // create popup dialog
-    //var win = showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top);
-//    win.toFront();
+        complete: function(){showReview(url, review_id, pos.left + 10 + 5, pos.top)}});
 }
 
 function showReview(url, review_id, x, y) {

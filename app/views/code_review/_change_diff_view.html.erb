@@ -1,0 +1,27 @@
+<% if @repository.find_changeset_by_name(params[:rev]) %>
+
+<%
+  rev_to = params['rev_to']
+  review_id = params['review_id']
+  rev = params['rev']
+  path = params['path'].blank? ? '.' : Array(params['path']).join('/')
+
+  url = url_for controller: 'code_review', action: 'update_diff_view', id: project, repository_id: @repository.identifier_param
+%>
+
+<div id="code_review"></div>
+
+<%= javascript_tag do %>
+  $(document).ready(function(){
+    $('#code_review').load('<%= j url %>', {
+      rev: '<%= j rev %>',
+      path:'<%= j path %>',
+      review_id: '<%= j review_id %>',
+      action_type:'<%= j action_name %>',
+      rev_to: '<%= j rev_to %>'});
+  });
+<% end %>
+
+<% else %>
+  <%= render partial: 'code_review/change_entry_norevision_view', locals: { project: project } %>
+<% end %>

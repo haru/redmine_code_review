@@ -17,19 +17,20 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <%
-parameters = request.parameters
-id = parameters[:id].to_i
-attachment = Attachment.find(id)
-return '' unless attachment.is_text? or attachment.is_diff?
-review_id = parameters[:review_id] unless parameters[:review_id].blank?
+attachment = Attachment.find(params[:id])
 url = url_for :controller => 'code_review', :action => 'update_attachment_view', :id => project
--%>
+%>
+
+<% if attachment.is_text? or attachment.is_diff? %>
+
 <div id="code_review">
   <div id="review_comment"/>
 </div>
 
 <script type="text/javascript">
   $(document).ready(function(){
-    $('#code_review').load('<%=url%>', {'attachment_id': '<%=id%>', 'review_id': '<%=review_id%>'});
+    $('#code_review').load('<%= j url %>', {'attachment_id': '<%= attachment.id %>', 'review_id': '<%= j params[:review_id].to_s %>'});
   });
 </script>
+
+<% end %>

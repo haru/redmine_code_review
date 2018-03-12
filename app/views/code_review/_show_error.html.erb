@@ -3,14 +3,14 @@
 
   <p>change not found.</p>
   
-  @path = '<%=h @path %>'<br/>
-  @changeset = <%=h @changeset %><br/>
-  @rev = <%=h @rev %><br/>
+  @path = '<%= @path %>'<br/>
+  @changeset = <%= @changeset %><br/>
+  @rev = <%= @rev %><br/>
   <% if @changeset %>
     <ul>
     <% for change in @changeset.changes do%>
       <li>
-      '<%=h change.path%>'
+      '<%= change.path%>'
       </li>
     <% end %>
     </ul>

@@ -24,8 +24,8 @@
 </script>
 
 <p>
-  <label><%=h l(:label_auto_assignment_filters)%></label>
-  <%= check_box_tag 'auto_assign[filter_enabled]', true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable();' %><%=h l(:button_activate)%>
+  <label><%= l(:label_auto_assignment_filters)%></label>
+  <%= check_box_tag 'auto_assign[filter_enabled]', true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable();' %><%= l(:button_activate)%>
 
 </p>
 <div id="auto_assignment_filter_form" style="display: <%=  @auto_assign.filter_enabled? ? 'true' : 'none'%>;">
@@ -37,9 +37,9 @@
       <thead>
         <tr>
           <th style="width: 1em; text-align: right;">#</th>
-          <th style="width: 8em;"><%=h l(:auto_assign_filter_assign)%>/<%=h l(:auto_assign_filter_drop) %></th>
-          <th><%=h l(:auto_assign_filter_expression)%> </th>
-          <th><%=h l(:button_sort) %> </th>
+          <th style="width: 8em;"><%= l(:auto_assign_filter_assign)%>/<%= l(:auto_assign_filter_drop) %></th>
+          <th><%= l(:auto_assign_filter_expression)%> </th>
+          <th><%= l(:button_sort) %> </th>
           <th></th>
         </tr>
       </thead>
@@ -119,7 +119,7 @@
 
   </div>
   <p>
-    <label><%=h l(:label_default)%></label>
+    <label><%= l(:label_default)%></label>
     <%= select(:auto_assign, :accept_for_default,  [[l(:auto_assign_filter_assign), true], [l(:auto_assign_filter_drop), false]]) %>
   </p>
 
