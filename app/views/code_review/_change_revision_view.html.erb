@@ -18,25 +18,19 @@
 -%>
 <%
 repository_id = @repository.identifier_param if @repository.respond_to?("identifier_param")
+
 if @changeset
   urlprefix = url_for(:controller => 'repositories', :action => 'revisions', :id => project, :repository_id => repository_id) +
     '/' + @changeset.identifier + '/entry'
 %>
-<%- if User.current.allowed_to?(:assign_code_review, @project) -%>
-  <div id="code_review_assignments">
-    <%= l(:review_assignments)%>
-    <% @changeset.code_review_assignments.each do |assignment|
-      issue = assignment.issue %>
-      <%= link_to("##{issue.id} ", {:controller => 'issues', :action => 'show', :id => issue.id},
-        :class => issue.css_classes, :title => "#{issue}(#{issue.status})") %>
-    <% end if @changeset.code_review_assignments %>
-
-    <%= link_to(l(:button_add), {:controller => 'code_review',
-        :action => 'assign', :id=>project, 
-        :rev => @changeset.revision, 
-        :changeset_id => @changeset.id, :repository_id => repository_id}, :class => 'icon icon-add') %>
-  </div>
-<%- end -%>
+  <% if User.current.allowed_to?(:assign_code_review, @project) %>
+    <div id="code_review_assignments">
+      <%= l :review_assignments %>:
+      <%= show_assignments @changeset.code_review_assignments, @project,
+      { rev: @changeset.revision, changeset_id: @changeset.id,
+        repository_id: repository_id } %>
+    </div>
+  <% end %>
 
   <script type="text/javascript">
     $('#changes-legend').after($('#code_review_assignments'));
