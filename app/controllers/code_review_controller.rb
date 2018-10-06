@@ -41,13 +41,12 @@ class CodeReviewController < ApplicationController
     @review_pages = Paginator.new @review_count, limit, params['page']
     @show_closed = (params['show_closed'] == 'true')
     show_closed_option = " and #{IssueStatus.table_name}.is_closed = ? "
-    if (@show_closed)
-      show_closed_option = ''
-    end
+
+    show_closed_option = '' if (@show_closed)
+
     conditions = ["#{CodeReview.table_name}.project_id = ? and issue_id is NOT NULL" + show_closed_option, @project.id]
-    unless (@show_closed)
-      conditions << false
-    end
+
+    conditions << false unless (@show_closed)
 
     @reviews = CodeReview.order(sort_clause).limit(limit).where(conditions).joins(
       "left join #{Change.table_name} on change_id = #{Change.table_name}.id  left join #{Changeset.table_name} on #{Change.table_name}.changeset_id = #{Changeset.table_name}.id " +
@@ -114,13 +113,13 @@ class CodeReviewController < ApplicationController
           }
           @review.save!
 
-          render :partial => 'add_success', :status => 200
+          render partial: 'add_success', status: 200
           return
         else
           change_id = params[:change_id].to_i unless params[:change_id].blank?
           @review.change = Change.find(change_id) if change_id
           @review.line = params[:line].to_i unless params[:line].blank?
-          if (@review.changeset and @review.changeset.user_id)
+          if @review.changeset and @review.changeset.user_id
             @review.issue.assigned_to_id = @review.changeset.user_id
           end
           @default_version_id = @review.issue.fixed_version.id if @review.issue.fixed_version
@@ -139,11 +138,11 @@ class CodeReviewController < ApplicationController
             end
           } unless @default_version_id
         end
-        render :partial => 'new_form', :status => 200
+        render partial: 'new_form', status: 200
       }
     rescue ActiveRecord::RecordInvalid => e
       logger.error e
-      render :partial => 'new_form', :status => 200
+      render partial: 'new_form', status: 200
     end
   end
 
@@ -159,7 +158,7 @@ class CodeReviewController < ApplicationController
     code[:repository_id] = @repository_id if @repository_id
 
     changeset = Changeset.find(code[:changeset_id]) if code[:changeset_id]
-    if (changeset == nil and code[:change_id] != nil)
+    if changeset == nil and code[:change_id] != nil
       change = Change.find(code[:change_id])
       changeset = change.changeset if change
     end
@@ -173,8 +172,8 @@ class CodeReviewController < ApplicationController
     end
     issue[:tracker_id] = @setting.assignment_tracker_id if @setting.assignment_tracker_id
 
-    redirect_to :controller => 'issues', :action => "new", :project_id => @project,
-      :issue => issue, :code => code
+    redirect_to controller: 'issues', action: "new", project_id: @project,
+      issue: issue, code: code
   end
 
   def update_diff_view
@@ -189,13 +188,12 @@ class CodeReviewController < ApplicationController
 
     @action_type = params[:action_type]
     changeset = @repository.find_changeset_by_name(@rev)
-    if @paths.empty?
-      changeset.filechanges.each { |chg| }
-    end
+
+    changeset.filechanges.each { |chg| } if @paths.empty?
 
     url = @repository.url
     root_url = @repository.root_url
-    if (url == nil || root_url == nil)
+    if url.nil? || root_url.nil?
       fullpath = @path
     else
       rootpath = url[root_url.length, url.length - root_url.length]
@@ -207,7 +205,7 @@ class CodeReviewController < ApplicationController
     end
     @change = nil
     changeset.filechanges.each { |chg|
-      @change = chg if ((chg.path == fullpath) or ("/#{chg.path}" == fullpath)) or (chg.path == "/#{@path}")
+      @change = chg if ((chg.path == fullpath) || ("/#{chg.path}" == fullpath)) || (chg.path == "/#{@path}")
     } unless @path.blank?
 
     @changeset = changeset
@@ -218,10 +216,7 @@ class CodeReviewController < ApplicationController
     end
     @review.change_id = @change.id if @change
 
-    #render :partial => 'show_error'
-    #return
-
-    render :partial => 'update_diff_view'
+    render partial: 'update_diff_view'
   end
 
   def update_attachment_view
@@ -234,7 +229,7 @@ class CodeReviewController < ApplicationController
 
     @reviews = CodeReview.where(['attachment_id = (?) and issue_id is NOT NULL', @attachment_id]).all
 
-    render :partial => 'update_diff_view'
+    render partial: 'update_diff_view'
   end
 
   def show
@@ -247,29 +242,27 @@ class CodeReviewController < ApplicationController
     target = @review if @review
     target = @assignment if @assignment
     @repository_id = target.repository_identifier
-    if request.xhr? or !params[:update].blank?
-      render :partial => 'show'
+    if request.xhr? || !params[:update].blank?
+      render partial: 'show'
     elsif target.path
-      #@review = @review.root
-      path = URI.decode(target.path)
-      #path = '/' + path unless path.match(/^\//)
+      path = URI.decode_www_form(target.path)
       action_name = target.action_type
       rev_to = ''
       rev_to = '&rev_to=' + target.rev_to if target.rev_to
       if action_name == 'attachment'
         attachment = target.attachment
-        url = url_for(:controller => 'attachments', :action => 'show', :id => attachment.id) + '/' + URI.escape(attachment.filename)
+        url = url_for(controller: 'attachments', action: 'show',
+                      id: attachment.id) + '/' + URI.escape_www_form(attachment.filename)
         url << '?review_id=' + @review.id.to_s if @review
-        redirect_to(url)
       else
         path = nil if target.diff_all
-        url = url_for(:controller => 'repositories', :action => action_name, :id => @project,
-                      :repository_id => @repository_id, :rev => target.revision, :path => path)
-        #url = url_for(:controller => 'repositories', :action => action_name, :id => @project, :repository_id => @repository_id) + path + '?rev=' + target.revision
+        url = url_for(controller: 'repositories', action: action_name,
+                      id: @project, repository_id: @repository_id,
+                      rev: target.revision, path: path)
         url << '?review_id=' + @review.id.to_s + rev_to if @review
         url << '?r=' + rev_to unless @review
-        redirect_to url
       end
+      redirect_to url
     end
   end
 
@@ -289,11 +282,11 @@ class CodeReviewController < ApplicationController
         flash[:notice] = l(:notice_successful_update)
       end
 
-      render :partial => 'show'
+      render partial: 'show'
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception
       @error = l(:notice_locking_conflict)
-      render :partial => 'show'
+      render partial: 'show'
     end
   end
 
@@ -313,12 +306,12 @@ class CodeReviewController < ApplicationController
         lang = current_language
         Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
         set_language lang if respond_to? 'set_language'
-        render :partial => 'show'
+        render partial: 'show'
       }
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception
       @error = l(:notice_locking_conflict)
-      render :partial => 'show'
+      render partial: 'show'
       #rescue => e
       #throw e
       #render :partial => 'show'
@@ -328,7 +321,7 @@ class CodeReviewController < ApplicationController
   def destroy
     @review = CodeReview.find(params[:review_id].to_i)
     @review.issue.destroy if @review
-    render :plain => 'delete success.'
+    render plain: 'delete success.'
   end
 
   def forward_to_revision
@@ -338,24 +331,24 @@ class CodeReviewController < ApplicationController
     change = changesets[0]
 
     identifier = change.identifier
-    redirect_to url_for(:controller => 'repositories', :action => 'entry', :id => @project, :repository_id => @repository_id) + '/' + path + '?rev=' + identifier.to_s
+    redirect_to url_for(controller: 'repositories', action: 'entry',
+                        id: @project, repository_id: @repository_id) + '/' + path + '?rev=' + identifier.to_s
   end
 
   def preview
     @text = params[:review][:comment]
-    @text = params[:reply][:comment] unless @text
-    render :partial => 'common/preview'
+    @text ||= params[:reply][:comment]
+    render partial: 'common/preview'
   end
 
   def update_revisions_view
     changeset_ids = []
-    #changeset_ids = CGI.unescape(params[:changeset_ids]).split(',') unless params[:changeset_ids].blank?
     changeset_ids = params[:changeset_ids].split(',') unless params[:changeset_ids].blank?
     @changesets = []
     changeset_ids.each { |id|
       @changesets << @repository.find_changeset_by_name(id) unless id.blank?
     }
-    render :partial => 'update_revisions'
+    render partial: 'update_revisions'
   end
 
   private
