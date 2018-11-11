@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2017  Haruyuki Iida
+# Copyright (C) 2010-2018  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +18,8 @@
 require 'simplecov'
 require 'simplecov-rcov'
 require 'coveralls'
+require 'factory_bot'
+require 'shoulda'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::RcovFormatter,
@@ -55,7 +57,7 @@ def uploaded_test_file(name, mime)
   fixture_file_upload(Rails.root.to_s + "/test/fixtures/files/#{name}", mime, true)
 end
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :attachment do
     container {
       Issue.find(1)
@@ -107,7 +109,7 @@ FactoryGirl.define do
       "test/dir/aaa#{n}"
     }
     changeset {
-      FactoryGirl.create(:changeset)
+      FactoryBot.create(:changeset)
     }
   end
 

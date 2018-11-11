@@ -55,13 +55,13 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   def test_revision
     @request.session[:user_id] = 1
-    change = FactoryGirl.create(:change)
+    change = FactoryBot.create(:change)
     changeset = change.changeset
     project = Project.find(1)
     project.repository.destroy
     project.repository = changeset.repository
     issue = Issue.generate!({:project_id => project.id, :description => 'test', :tracker => Tracker.find(1), :status_id => 1})
-    review = FactoryGirl.create(:code_review, change: change, project: project, issue: issue)
+    review = FactoryBot.create(:code_review, change: change, project: project, issue: issue)
     get :revision, :params => {:id => project.id, :rev => changeset.revision, :path => change.path.split('/')}
     #assert_response :success
   end

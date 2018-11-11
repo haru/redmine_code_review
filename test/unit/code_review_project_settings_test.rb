@@ -44,7 +44,7 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
 
     should "be saved if auto_assign is setted." do
       project = Project.find(1)
-      setting = FactoryGirl.create(:code_review_project_setting, project: project)
+      setting = FactoryBot.create(:code_review_project_setting, project: project)
       id = setting.id
       assert !setting.auto_assign_settings.enabled?
       setting.auto_assign_settings.enabled = true

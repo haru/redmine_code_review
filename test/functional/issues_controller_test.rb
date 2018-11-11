@@ -72,14 +72,14 @@ class IssuesControllerTest < ActionController::TestCase
     issue = Issue.generate!(:project => project)
     get :show, params: {id: issue.id}
 
-    assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: nil)
+    assignment = FactoryBot.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: nil)
     get :show, :params => {:id => assignment.issue.id}
 
     issue = Issue.generate!(:project => Project.find(1))
-    assignment = FactoryGirl.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: '/aaa/bbb')
+    assignment = FactoryBot.create(:code_review_assignment, issue: issue, rev: 'aaa', file_path: '/aaa/bbb')
     get :show, :params => {:id => assignment.issue.id}
 
-    review = FactoryGirl.create(:code_review, project: project)
+    review = FactoryBot.create(:code_review, project: project)
     get :show, :params => {:id => review.issue.id}
   end
 

@@ -137,7 +137,7 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
       project = Project.find(1)
       issue = Issue.generate!(:project => project)
-      attachment = FactoryGirl.create(:attachment, container: issue)
+      attachment = FactoryBot.create(:attachment, container: issue)
       count = CodeReview.all.length
       post :new, :params => {:id => 1, :review => {:line => 1, :comment => 'aaa',
                                                 :subject => 'bbb', :attachment_id => attachment.id}, :action_type => 'diff'}
@@ -172,7 +172,7 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_destroy
     project = Project.find(1)
     issue = Issue.generate!(:project => project)
-    review = FactoryGirl.create(:code_review, project: project)
+    review = FactoryBot.create(:code_review, project: project)
     count = CodeReview.all.length
     @request.session[:user_id] = 1
     get :destroy, :params => {:id => 1, :review_id => review.id}
