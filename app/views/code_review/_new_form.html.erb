@@ -71,11 +71,14 @@
       <p><%= custom_field_tag_with_label :issue, value %></p>
     <% end %>
     <p>
+    <span>
       <%= f.text_area :comment,
         :cols => 30,
         :rows => 12,
         :accesskey => accesskey(:edit),
         :class => 'wiki-edit' %>
+      <%= wikitoolbar_for 'review_comment' %>
+    </span>
 
     </p>
     <p>
@@ -110,10 +113,9 @@
       <%= button_tag l(:button_apply), type: 'button', onclick: "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
-      <%= preview_link({ :controller => 'code_review', :action => 'preview', :id => @project}, 'review_form') %>
+
     </p>
-    <div id="preview" class="wiki"></div>
-    <%= wikitoolbar_for 'review_comment' %>
+
   <% end %>
 
 </div>
