@@ -5,7 +5,7 @@
 
 This is a plugin for Redmine which lets you annotate source code within the repository browser.
 
-http://www.r-labs.org/wiki/r-labs/Code_Review
+https://www.r-labs.org/projects/r-labs/wiki/Code_Review_en
 
 === Plugin installation
 
