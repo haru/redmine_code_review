@@ -62,13 +62,13 @@ class RepositoriesControllerTest < ActionController::TestCase
     project.repository = changeset.repository
     issue = Issue.generate!({:project_id => project.id, :description => 'test', :tracker => Tracker.find(1), :status_id => 1})
     review = FactoryBot.create(:code_review, change: change, project: project, issue: issue)
-    get :revision, :params => {:id => project.id, :rev => changeset.revision, :path => change.path.split('/')}
+    get :revision, :params => {:id => project.id, :rev => changeset.revision, :path => change.path.split('/'), repository_id: 1}
     #assert_response :success
   end
 
   def test_revisions
     @request.session[:user_id] = 1
-    get :revisions, :params => {:id => 1}
+    get :revisions, :params => {:id => 1, repository_id: 10}
     assert_response :success
   end
 
@@ -79,14 +79,14 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   def test_diff
-    @request.session[:user_id] = 1
-    get :diff, :params => {:id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8}
+    @request.session[:user_id] = 10
+    get :diff, :params => {:id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8, repository_id: 10}
     #assert_response :success
   end
 
   def test_entry
-    @request.session[:user_id] = 1
-    get :entry, :params => {:id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8}
+    @request.session[:user_id] = 10
+    get :entry, :params => {:id => 1, :path => '/subversion_test/helloworld.c'.split('/'), :rev => 8, repository_id: 10}
     assert_response :success
   end
 end

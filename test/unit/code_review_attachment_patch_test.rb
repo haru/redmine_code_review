@@ -24,7 +24,7 @@ class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
   def setup
     @project = Project.find(1)
     @issue = Issue.where(:project_id => 1).first
-    @attachment = FactoryGirl.create(:attachment, container: @issue)
+    @attachment = FactoryBot.create(:attachment, container: @issue)
   end
 
   context "code_review_assginments" do
