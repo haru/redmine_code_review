@@ -47,6 +47,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   end
 
   def test_assignment_count
+    CodeReviewAssignment.destroy_all
     changeset = Changeset.find(100)
     assert_equal(0, changeset.assignment_count)
     change = changeset.filechanges[0]
@@ -114,6 +115,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     end
 
     should "returns 100 if changeset has no closed assignments." do
+      CodeReviewAssignment.destroy_all
       change = FactoryBot.create(:change)
       changeset = change.changeset
       @project = Project.find(1)
