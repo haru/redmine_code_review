@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2017  Haruyuki Iida
+# Copyright (C) 2009-2018  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -150,12 +150,16 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       changeset = change.changeset
       @project = Project.generate!
       issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue1.status = IssueStatus.find(5)
       issue1.save!
       issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(1)})
+      issue2.status = IssueStatus.find(1)
       issue2.save!
       issue3 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue3.status = IssueStatus.find(5)
       issue3.save!
       issue4 = Issue.generate!({:project => @project, :status => IssueStatus.find(1)})
+      issue4.status = IssueStatus.find(1)
       issue4.save!
       change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: Issue.find(issue1.id))
       change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: Issue.find(issue2.id))
