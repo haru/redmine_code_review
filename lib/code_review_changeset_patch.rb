@@ -19,12 +19,9 @@ require_dependency 'changeset'
 
 module CodeReviewChangesetPatch
   def self.included(base) # :nodoc:
-    base.send(:include, ChangesetInstanceMethodsCodeReview)
-
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_review_assignments, :dependent => :destroy
-      alias_method_chain :scan_comment_for_issue_ids, :code_review
     end
   end
 end
@@ -169,8 +166,8 @@ module ChangesetInstanceMethodsCodeReview
   #
   # changeset作成時にレビューの自動アサインを行う
   #
-  def scan_comment_for_issue_ids_with_code_review
-    ret = scan_comment_for_issue_ids_without_code_review
+  def scan_comment_for_issue_ids
+    ret = super
     project = repository.project if repository
     return ret unless project
     return ret unless project.module_enabled?('code_review')
@@ -182,3 +179,5 @@ module ChangesetInstanceMethodsCodeReview
     ret
   end
 end
+
+Changeset.prepend(ChangesetInstanceMethodsCodeReview)

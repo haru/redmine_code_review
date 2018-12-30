@@ -1,17 +1,15 @@
 language: ruby
 rvm:
-- 2.2
 - 2.3
 - 2.4
+- 2.5
 env:
-- REDMINE_VER=3.4-stable
+- REDMINE_VER=master
+- REDMINE_VER=4.0-stable
+install:
+- bash -x ./travis/travis_install.sh
 script:
-- export TESTSPACE=`pwd`/testspace
-- export NAME_OF_PLUGIN=redmine_code_review
-- export PATH_TO_PLUGIN=`pwd`
-- export PATH_TO_REDMINE=$TESTSPACE/redmine
-- mkdir $TESTSPACE
-- bash -x ./travis.sh
+- bash -x ./travis/travis.sh
 notifications:
   slack:
     secure: XhtN5XeJKyYhGYRFGfxGpGaVcUnUsZoxX3ZL3RgHikcBhD0hY6Ogn09BSiygP381lbIlV7+2nlRvNoSUKYmx2uX5w8AUYCE4yo9yJGlY+70rD2kjWsuG9OK4L/QPCXIUf8NFX24PdY9CRITK5CfR1/hEZCx9ygT6GLAqpjqNDtfMpSRx7S3olVjX58ucB9azDcvaT75vPY1nEnnn/IuOwGF27KBk9lLZtMaG1ohI6+9jW9xCxz8cLfUUPIu+PH4/AvJ8GMNJtlc3Yvgbg57lCtulvHyrXqXHMvMDL2aTdIj2XsjVSvXV4jRrNuhJga6gDAtl/3Lzm+UZZAeHpR4qHDZN06za25HypX/GbX5pZtpr30t+HHs3cd+ecHb4uP/Tnxko0KzNywg6Ayn/8TC548eu0JRITzPS5C9/NKzA+XnAjVgKMzqy0zU1VVk83hBXshgpfqplfZzdIrn75kcV/3qsiaD4qEFM2MqNYD15Epq8a7W/9IKdhd95LsQjp1Fb0g7XiQcM3ahIgMLIjP5tZfQ8b7tVlmDx1GCP4uRFOBeDeoz9i++UaT/FdPHOFGirWfDZMJoVq3MXixaTudEPFomO2HktErAMIEjQQyVe4FylglGnE52RCqEJ0qiD/kh1HV1VnVqyTJ9o3DXgLTIMdFiw+jHtTuorYPG0Qn1Dqbg=

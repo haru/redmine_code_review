@@ -17,21 +17,9 @@
 
 require_dependency 'projects_helper'
 
-module CodeReviewProjectsHelperPatch
-  def self.included(base) # :nodoc:
-    base.send(:include, ProjectsHelperMethodsCodeReview)
-
-    base.class_eval do
-      #unloadable
-
-      alias_method_chain :project_settings_tabs, :code_review
-    end
-  end
-end
-
 module ProjectsHelperMethodsCodeReview
-  def project_settings_tabs_with_code_review
-    tabs = project_settings_tabs_without_code_review
+  def project_settings_tabs
+    tabs = super
     action = {:name => 'code_review', :controller => 'code_review_settings', :action => :show, :partial => 'code_review_settings/show', :label => :code_review}
 
     tabs << action if User.current.allowed_to?(action, @project)
@@ -39,3 +27,5 @@ module ProjectsHelperMethodsCodeReview
     tabs
   end
 end
+
+ProjectsHelper.prepend(ProjectsHelperMethodsCodeReview)

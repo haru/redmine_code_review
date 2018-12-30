@@ -19,12 +19,20 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
-           :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
-           :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
-           :code_review_project_settings, :attachments, :code_review_assignments,
-           :code_review_user_settings
+    :changesets, :changes, :members, :member_roles, :roles, :issues, :issue_statuses,
+    :enumerations, :issue_categories, :trackers, :projects, :projects_trackers,
+    :code_review_project_settings, :attachments, :code_review_assignments,
+    :code_review_user_settings
 
   include CodeReviewAutoAssignSettings
+
+  def startup
+    #DatabaseRewinder.clean_all
+  end
+
+  def teardown
+    #DatabaseRewinder.clean
+  end
 
   context "AutoAssignSettings" do
     context "to_s" do
@@ -96,12 +104,12 @@ EOF
 
       should "return nil if author_id is nil" do
         @settings.author_id = nil
-        assert_equal(nil, @settings.author_id)
+        assert_nil @settings.author_id
       end
 
       should "return nil if author_id is empty string" do
         @settings.author_id = ''
-        assert_equal(nil, @settings.author_id)
+        assert_nil @settings.author_id
       end
     end
 
@@ -140,6 +148,11 @@ EOF
       setup do
         @settings = AutoAssignSettings.new
         @project = Project.find(1)
+        members = []
+        2.upto(5) { |i|
+          members << Member.new(:project => @project, :user_id => i)
+        }
+        @project.members << members
       end
 
       should "return nil if assignable_list is nil" do
@@ -246,37 +259,37 @@ EOF
       #project.repository.destroy if project.repository
       #repository = Repository.new
       #repository.project = project
-      @changeset = FactoryGirl.create(:changeset, repository: project.repository)
+      @changeset = FactoryBot.create(:changeset, repository: project.repository)
       #@changeset.repository = repository
     end
 
     should "return true if filters.length is 0 and accept_for_default is true." do
       @settings.filters = []
-      change = FactoryGirl.create(:change, changeset: @changeset)
+      change = FactoryBot.create(:change, changeset: @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return true if filter matches and accept? is true" do
       @settings.accept_for_default = false
-      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
+      change = FactoryBot.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
       assert @settings.match_with_change?(change)
-      change = FactoryGirl.create(:change, path: '/trunk/plugins/redmine_code_review/lib/ccc.rb', changeset: @changeset)
+      change = FactoryBot.create(:change, path: '/trunk/plugins/redmine_code_review/lib/ccc.rb', changeset: @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return false if filter matches and accept? is false" do
-      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccctest.rb', changeset: @changeset)
+      change = FactoryBot.create(:change, path: '/aaa/bbb/ccctest.rb', changeset: @changeset)
       assert !@settings.match_with_change?(change)
     end
 
     should "return false if filter doesn't matches and accept_for_default is false" do
-      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
+      change = FactoryBot.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
       @settings.accept_for_default = false
       assert !@settings.match_with_change?(change)
     end
 
     should "return true if filter doesn't matches and accept_for_default is true" do
-      change = FactoryGirl.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
+      change = FactoryBot.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
       @settings.accept_for_default = true
       assert @settings.match_with_change?(change)
     end
@@ -284,7 +297,7 @@ EOF
     should "return false if filters.length is 0 and accept_for_default is false." do
       @settings.filters = []
       @settings.accept_for_default = false
-      change = FactoryGirl.create(:change, changeset: @changeset)
+      change = FactoryBot.create(:change, changeset: @changeset)
       assert !@settings.match_with_change?(change)
     end
   end

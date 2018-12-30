@@ -17,7 +17,7 @@
 
 class CodeReviewController < ApplicationController
   unloadable
-  before_filter :find_project, :authorize, :find_user, :find_setting, :find_repository
+  before_action :find_project, :authorize, :find_user, :find_setting, :find_repository
 
   helper :sort
   include SortHelper
@@ -68,7 +68,7 @@ class CodeReviewController < ApplicationController
         else
           @review.issue.tracker_id = @setting.tracker_id
         end
-        @review.assign_attributes(params[:review])
+        @review.attributes = params.require(:review).permit(:change_id, :subject, :line, :parent_id, :comment, :status_id, :issue) if params[:review]
         @review.project_id = @project.id
         @review.issue.project_id = @project.id
 
@@ -113,7 +113,7 @@ class CodeReviewController < ApplicationController
           }
           @review.save!
 
-          render :partial => 'add_success', :status => 200
+          render partial: 'add_success', status: 200
           return
         else
           change_id = params[:change_id].to_i unless params[:change_id].blank?
@@ -267,56 +267,61 @@ class CodeReviewController < ApplicationController
   end
 
   def reply
-    @review = CodeReview.find(params[:review_id].to_i)
-    @issue = @review.issue
-    @issue.lock_version = params[:issue][:lock_version]
-    comment = params[:reply][:comment]
-    journal = @issue.init_journal(User.current, comment)
-    @review.assign_attributes(params[:review])
-    @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    begin
+      @review = CodeReview.find(params[:review_id].to_i)
+      @issue = @review.issue
+      @issue.lock_version = params[:issue][:lock_version]
+      comment = params[:reply][:comment]
+      journal = @issue.init_journal(User.current, comment)
+      @review.attributes = params.require(:review).permit(:change_id, :subject, :line, :parent_id, :comment, :status_id, :issue) if params[:review]
+      @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
 
-    @issue.save!
-    unless journal.new_record?
-      # Only send notification if something was actually changed
-      flash[:notice] = l(:notice_successful_update)
+      @issue.save!
+      if !journal.new_record?
+        # Only send notification if something was actually changed
+        flash[:notice] = l(:notice_successful_update)
+      end
+
+      render partial: 'show'
+    rescue ActiveRecord::StaleObjectError
+      # Optimistic locking exception
+      @error = l(:notice_locking_conflict)
+      render partial: 'show'
     end
-
-    render partial: 'show'
-  rescue ActiveRecord::StaleObjectError
-    # Optimistic locking exception
-    @error = l(:notice_locking_conflict)
-    render partial: 'show'
   end
 
   def update
-    CodeReview.transaction {
-      @review = CodeReview.find(params[:review_id].to_i)
-      journal = @review.issue.init_journal(User.current, nil)
-      @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
-      @issue = @review.issue
-      @issue.lock_version = params[:issue][:lock_version]
-      @review.assign_attributes(params[:review])
-      @review.updated_by_id = @user.id
-      @review.save!
-      @review.issue.save!
-      @notice = l(:notice_review_updated)
-      lang = current_language
-      Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
-      set_language lang if respond_to? 'set_language'
+    begin
+      CodeReview.transaction {
+        @review = CodeReview.find(params[:review_id].to_i)
+        journal = @review.issue.init_journal(User.current, nil)
+        @allowed_statuses = @review.issue.new_statuses_allowed_to(User.current)
+        @issue = @review.issue
+        @issue.lock_version = params[:issue][:lock_version]
+        @review.attributes = params.require(:review).permit(:change_id, :subject, :lock_version, :parent_id, :comment, :status_id, :issue)
+        @review.updated_by_id = @user.id
+        @review.save!
+        @review.issue.save!
+        @notice = l(:notice_review_updated)
+        lang = current_language
+        Mailer.deliver_issue_edit(journal) if Setting.notified_events.include?('issue_updated')
+        set_language lang if respond_to? 'set_language'
+        render partial: 'show'
+      }
+    rescue ActiveRecord::StaleObjectError
+      # Optimistic locking exception
+      @error = l(:notice_locking_conflict)
       render partial: 'show'
-    }
-  rescue ActiveRecord::StaleObjectError
-    # Optimistic locking exception
-    @error = l(:notice_locking_conflict)
-    render partial: 'show'
-  rescue
-    render partial: 'show'
+      #rescue => e
+      #throw e
+      #render :partial => 'show'
+    end
   end
 
   def destroy
     @review = CodeReview.find(params[:review_id].to_i)
     @review.issue.destroy if @review
-    render text: 'delete success.'
+    render plain: 'delete success.'
   end
 
   def forward_to_revision

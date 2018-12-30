@@ -24,8 +24,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
   def setup
     @controller = ProjectsController.new
-    @request = ActionController::TestRequest.new
-    @response = ActionController::TestResponse.new
+    @request = ActionController::TestRequest.create(self.class.controller_class)
   end
 
   context "#settings" do
@@ -35,12 +34,12 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "302 get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 302
       end
 
       should "302 post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 302
       end
 
@@ -50,48 +49,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         context "and module" do
           setup do
-            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
+            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "not exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_no_tag :div, :attributes => {:class => 'tabs'},
-                                :descendant => {:tag => 'ul',
-                                                :descendant => {:tag => 'li',
-                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
 
           should "not exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_no_tag :div, :attributes => {:class => 'tabs'},
-                                :descendant => {:tag => 'ul',
-                                                :descendant => {:tag => 'li',
-                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
         end
       end
@@ -103,12 +90,12 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "403 get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 403
       end
 
       should "403 post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response 403
       end
 
@@ -118,48 +105,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         context "and module" do
           setup do
-            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
+            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "not exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_no_tag :div, :attributes => {:class => 'tabs'},
-                                :descendant => {:tag => 'ul',
-                                                :descendant => {:tag => 'li',
-                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
 
           should "not exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_no_tag :div, :attributes => {:class => 'tabs'},
-                                :descendant => {:tag => 'ul',
-                                                :descendant => {:tag => 'li',
-                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
         end
       end
@@ -172,23 +147,17 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_no_tag :div, :attributes => {:class => 'tabs'},
-                            :descendant => {:tag => 'ul',
-                                            :descendant => {:tag => 'li',
-                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+        assert_select 'div.tabs ul li a#tab-code_review', false
       end
 
       should "not exist tag id post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_no_tag :div, :attributes => {:class => 'tabs'},
-                            :descendant => {:tag => 'ul',
-                                            :descendant => {:tag => 'li',
-                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+        assert_select 'div.tabs ul li a#tab-code_review', false
       end
 
       context "with permission" do
@@ -197,48 +166,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         context "and module" do
           setup do
-            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
+            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "not exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_no_tag :div, :attributes => {:class => 'tabs'},
-                                :descendant => {:tag => 'ul',
-                                                :descendant => {:tag => 'li',
-                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
 
           should "not exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_no_tag :div, :attributes => {:class => 'tabs'},
-                                :descendant => {:tag => 'ul',
-                                                :descendant => {:tag => 'li',
-                                                                :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review', false
           end
         end
       end
@@ -251,23 +208,17 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id get" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_no_tag :div, :attributes => {:class => 'tabs'},
-                            :descendant => {:tag => 'ul',
-                                            :descendant => {:tag => 'li',
-                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+        assert_select 'div.tabs ul li a#tab-code_review', false
       end
 
       should "not exist tag id post" do
-        get :settings, :id => 1
+        get :settings, :params => {:id => 1}
         assert_response :success
         assert_template 'settings'
-        assert_no_tag :div, :attributes => {:class => 'tabs'},
-                            :descendant => {:tag => 'ul',
-                                            :descendant => {:tag => 'li',
-                                                            :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+        assert_select 'div.tabs ul li a#tab-code_review', false
       end
 
       context "with permission" do
@@ -276,48 +227,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :id => 1
+          get :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         should "not exist tag id post" do
-          post :settings, :id => 1
+          post :settings, :params => {:id => 1}
           assert_response :success
           assert_template 'settings'
-          assert_no_tag :div, :attributes => {:class => 'tabs'},
-                              :descendant => {:tag => 'ul',
-                                              :descendant => {:tag => 'li',
-                                                              :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+          assert_select 'div.tabs ul li a#tab-code_review', false
         end
 
         context "and module" do
           setup do
-            FactoryGirl.create(:enabled_module, project_id: 1, name: 'code_review')
+            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
           end
 
           should "exist tag id get" do
-            get :settings, :id => 1
+            get :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_tag :div, :attributes => {:class => 'tabs'},
-                             :descendant => {:tag => 'ul',
-                                             :descendant => {:tag => 'li',
-                                                             :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
 
           should "exist tag id post" do
-            post :settings, :id => 1
+            post :settings, :params => {:id => 1}
             assert_response :success
             assert_template 'settings'
-            assert_tag :div, :attributes => {:class => 'tabs'},
-                             :descendant => {:tag => 'ul',
-                                             :descendant => {:tag => 'li',
-                                                             :descendant => {:tag => 'a', :attributes => {:id => 'tab-code_review'}}}}
+            assert_select 'div.tabs ul li a#tab-code_review'
           end
         end
       end

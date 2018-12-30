@@ -1,29 +1,37 @@
 #!/bin/bash
 
-#/bin/bash
-
 set -e
+
+cd `dirname $0`
+. env.sh
+cd ..
 
 if [[ ! "$TESTSPACE" = /* ]] ||
    [[ ! "$PATH_TO_REDMINE" = /* ]] ||
-   [[ ! "$REDMINE_VER" = * ]] ||
-   [[ ! "$NAME_OF_PLUGIN" = * ]] ||
    [[ ! "$PATH_TO_PLUGIN" = /* ]];
 then
   echo "You should set"\
-       " TESTSPACE, PATH_TO_REDMINE, REDMINE_VER"\
-       " NAME_OF_PLUGIN, PATH_TO_PLUGIN"\
+       " TESTSPACE, PATH_TO_REDMINE,"\
+       " PATH_TO_PLUGIN"\
        " environment variables"
   echo "You set:"\
        "$TESTSPACE"\
        "$PATH_TO_REDMINE"\
-       "$REDMINE_VER"\
-       "$NAME_OF_PLUGIN"\
        "$PATH_TO_PLUGIN"
   exit 1;
 fi
 
-export RAILS_ENV=test
+if [ "$REDMINE_VER" = "" ]
+then
+  export REDMINE_VER=master
+fi
+
+if [ "$NAME_OF_PLUGIN" == "" ]
+then
+  export NAME_OF_PLUGIN=`basename $PATH_TO_PLUGIN`
+fi
+
+mkdir -p $TESTSPACE
 
 export REDMINE_GIT_REPO=git://github.com/redmine/redmine.git
 export REDMINE_GIT_TAG=$REDMINE_VER
@@ -36,7 +44,7 @@ fi
 
 # checkout redmine
 git clone $REDMINE_GIT_REPO $PATH_TO_REDMINE
-cp test/fixtures/* ${PATH_TO_REDMINE}/test/fixtures/
+
 cd $PATH_TO_REDMINE
 if [ ! "$REDMINE_GIT_TAG" = "master" ];
 then
@@ -63,16 +71,4 @@ bundle exec rake db:migrate
 # run plugin database migrations
 bundle exec rake redmine:plugins:migrate
 
-# install redmine database
-#bundle exec rake redmine:load_default_data REDMINE_LANG=en
-
-bundle exec rake db:structure:dump
-
-# create scms for test
-
-bundle exec rake test:scm:setup:all
-
-# run tests
-# bundle exec rake TEST=test/unit/role_test.rb
-bundle exec rake redmine:plugins:test NAME=$NAME_OF_PLUGIN
 
