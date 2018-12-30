@@ -5,7 +5,7 @@
 
 <%
 unless User.current.allowed_to?({:controller => 'code_review', :action => 'show'}, project)
-  return 
+  return
 end
 
 %>
@@ -18,7 +18,11 @@ review = issue.code_review
     <td><b><%= l(:code_review) %>:</b></td>
     <td colspan="3">
       <%
-      label = URI.decode("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}")
+      if review.attachment
+        label = URI.decode("#{review.attachment.filename}#{'@' + review.revision if review.revision}:line #{review.line}")
+      else
+        label = URI.decode("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}")
+      end
       -%>
       <%= link_to(label,
         :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => review.repository_identifier) %>
@@ -26,7 +30,7 @@ review = issue.code_review
   </tr>
 <% end %>
 <% if issue.code_review_assignment %>
-  <%    
+  <%
   assignment = issue.code_review_assignment
   repository_id = assignment.repository_identifier
 %>
