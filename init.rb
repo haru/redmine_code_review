@@ -50,7 +50,7 @@ Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
   author_url 'http://twitter.com/haru_iida'
-  url "http://www.r-labs.org/projects/show/codereview" if respond_to?(:url)
+  url "http://www.redmine.org/plugins/redmine_code_review" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
   version '1.0.0'
   requires_redmine :version_or_higher => '4.0.0'
