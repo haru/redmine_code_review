@@ -25,7 +25,7 @@ class CodeReviewAssignmentTest < ActiveSupport::TestCase
   def setup
     @assignment = CodeReviewAssignment.new
   end
-  
+
   context "is_closed?" do
     should "return false if assignment issue is not closed." do
       @assignment.issue = Issue.new
@@ -100,5 +100,4 @@ class CodeReviewAssignmentTest < ActiveSupport::TestCase
       assert_equal('123 5001 foo 456', assignment.issue.subject)
     end
   end
-
 end

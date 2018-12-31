@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2017  Haruyuki Iida
+# Copyright (C) 2010-2018  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,10 +15,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-
 require 'simplecov'
 require 'simplecov-rcov'
 require 'coveralls'
+require 'factory_bot'
+require 'shoulda'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::RcovFormatter,
@@ -31,6 +32,13 @@ SimpleCov.start do
 end
 
 require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
+include ActionDispatch::TestProcess
+
+fixtures = []
+Dir.chdir(File.dirname(__FILE__) + '/fixtures/') do
+  fixtures = Dir.glob('*.yml').map { |s| s.gsub(/.yml$/, '') }
+end
+ActiveRecord::FixtureSet.create_fixtures(File.dirname(__FILE__) + '/fixtures/', fixtures)
 
 # Ensure that we are using the temporary fixture path
 #ngines::Testing.set_fixture_path
@@ -45,15 +53,17 @@ def mock_file
   file
 end
 
-FactoryGirl.define do
+def uploaded_test_file(name, mime)
+  fixture_file_upload(Rails.root.to_s + "/test/fixtures/files/#{name}", mime, true)
+end
 
+FactoryBot.define do
   factory :attachment do
-
-    container{
-      Project.find(1)
+    container {
+      Issue.find(1)
     }
     file {
-      mock_file
+      uploaded_test_file("hg-export.diff", "text/plain")
     }
     author {
       User.find(1)
@@ -78,7 +88,7 @@ FactoryGirl.define do
 
   factory :changeset do
     sequence(:revision, 1000)
-    committed_on{
+    committed_on {
       Date.today
     }
     #association :repository
@@ -95,11 +105,11 @@ FactoryGirl.define do
     action {
       "A"
     }
-    sequence(:path){ |n|
+    sequence(:path) { |n|
       "test/dir/aaa#{n}"
     }
     changeset {
-      FactoryGirl.create(:changeset)
+      FactoryBot.create(:changeset)
     }
   end
 
@@ -109,7 +119,7 @@ FactoryGirl.define do
 
   factory :issue do
     subject 'hoge'
-    author{
+    author {
       User.find(1)
     }
   end
@@ -128,7 +138,5 @@ FactoryGirl.define do
   end
 
   factory :enabled_module do
-
   end
-
 end

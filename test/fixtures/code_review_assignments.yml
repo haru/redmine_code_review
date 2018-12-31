@@ -2,13 +2,13 @@
 one:
   id: 1
 
-  issue_id: 
+  issue_id: 1
 
-  change_id: 
+  change_id: 1
 
-  attachment_id: 
+  attachment_id:
 
-  file_path: MyString
+  file_path: /aaa/bbb
 
   rev: 1
 
@@ -19,17 +19,17 @@ one:
 two:
   id: 2
 
-  issue_id: 
+  issue_id: 1
 
-  change_id: 
+  change_id: 2
 
-  attachment_id: 
+  attachment_id: 1
 
-  file_path: MyString
+  file_path: /aaa/bbb
 
-  rev: MyString
+  rev: 2
 
-  rev_to: MyString
+  rev_to: 3
 
-  action_type: MyString
+  action_type: diff
 

@@ -29,7 +29,7 @@ class CodeReviewProjectSetting < ActiveRecord::Base
 
   before_save :set_assignment_settings
 
-  attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign
+  #attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign
 
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1
@@ -55,18 +55,19 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   def auto_assign_settings=(settings)
     @auto_assign_settings = settings
   end
-  
+
   def issue_relation_type
     return IssueRelation::TYPE_RELATES if auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
     return IssueRelation::TYPE_BLOCKS if auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
     return nil
   end
-  
+
   def auto_relation?
     issue_relation_type != nil
   end
 
   private
+
   def set_assignment_settings
     if auto_assign_settings
       self.auto_assign = auto_assign_settings.to_s

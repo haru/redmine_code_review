@@ -21,10 +21,10 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     :code_review_project_settings, :issues, :issue_statuses, :enumerations
 
   include CodeReviewAutoAssignSettings
+
   def setup
     @controller = CodeReviewSettingsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+    @request = ActionController::TestRequest.create(self.class.controller_class)
     @request.env["HTTP_REFERER"] = '/'
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
@@ -38,12 +38,11 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
 
     User.current = nil
     roles = Role.all
-    roles.each {|role|
+    roles.each { |role|
       role.permissions << :view_code_review
       role.save
     }
   end
-
 
   context "update" do
     setup do
@@ -52,18 +51,17 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
 
     should "return 302 if user is anonymous" do
       @request.session[:user_id] = User.anonymous.id
-      get :update, :id => 1
+      get :update, :params => {:id => 1}
       assert_response 302
     end
 
     should "save settings" do
-
       @request.session[:user_id] = 1
       setting = CodeReviewProjectSetting.find(1)
 
-      post :update, :id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3, 
-        :hide_code_review_tab => true, :auto_relation => CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS},
-        :auto_assign => {:filters => {:a => 1}}
+      post :update, :params => {:id => 1, :setting => {:tracker_id => 2, :assignment_tracker_id => 3,
+                                                    :hide_code_review_tab => true, :auto_relation => CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS},
+                             :auto_assign => {:filters => {:a => 1}}}
       assert_response :redirect
       project = Project.find(1)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
@@ -76,13 +74,13 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_equal(true, setting.hide_code_review_tab)
       assert_equal(CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS, setting.auto_relation)
 
-      get :update, :id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true',
-        :auto_assign => {}
+      get :update, :params => {:id => 1, :setting => {:tracker_id => 1, :id => setting.id}, :convert => 'true',
+                             :auto_assign => {}}
       assert_response :redirect
       project = Project.find(1)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
 
-      post :update, :id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}, :auto_assign => {}
+      post :update, :params => {:id => 2, :setting => {:tracker_id => 1, :assignment_tracker_id => 1}, :auto_assign => {}}
       assert_response :redirect
       project = Project.find(2)
       assert_redirected_to :controller => 'projects', :action => 'settings', :id => project, :tab => 'code_review'
@@ -103,7 +101,7 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       filter.expression = 'aaa'
       filter.order = 10
       filter.accept = true
-      post :add_filter, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge({:add_filter => filter.attributes})
+      post :add_filter, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge({:add_filter => filter.attributes})}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_equal(count + 1, @auto_assign.filters.length)
@@ -120,19 +118,18 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
     end
 
     should "update filter" do
-
       filter = AssignmentFilter.new
       filter.expression = 'aaa'
       filter.order = 10
       filter.accept = true
-      
+
       filter2 = AssignmentFilter.new
       filter2.expression = 'bbb'
       filter2.order = 10
       filter2.accept = false
 
-      post :edit_filter, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => {'0' => filter.attributes}), :num => 0,
-        :auto_assign_edit_filter => {'0' => filter2.attributes}
+      post :edit_filter, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => {'0' => filter.attributes}), :num => 0,
+                                  :auto_assign_edit_filter => {'0' => filter2.attributes}}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_equal(1, @auto_assign.filters.length)
@@ -166,30 +163,29 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       @filters['1'] = filter.attributes
       @filters['2'] = filter2.attributes
       @filters['3'] = filter2.attributes
-
     end
 
-    should "sort filters" do    
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => 'highest'}
+    should "sort filters" do
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
+                           :auto_assign_filter => {:num => 2, :move_to => 'highest'}}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => 'higher'}
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
+                           :auto_assign_filter => {:num => 2, :move_to => 'higher'}}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => 'lowest'}
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
+                           :auto_assign_filter => {:num => 2, :move_to => 'lowest'}}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
 
-      post :sort, :id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
-        :auto_assign_filter => {:num => 2, :move_to => 'lower'}
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters), :num => 0,
+                           :auto_assign_filter => {:num => 2, :move_to => 'lower'}}
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success

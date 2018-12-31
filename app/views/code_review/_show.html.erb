@@ -117,9 +117,7 @@
             -%>
             <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
             <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
-            <%= link_to_function l(:label_preview), "$('#preview_#{@review.id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{review_form_id}').serialize())" %>
           </p>
-          <div id="preview_<%= @review.id%>" class="wiki"></div>
           <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
         <% end %>
       </div>
@@ -179,9 +177,7 @@
             <%
             reply_preview_id = "reply_preview_#{@review.id}"
             -%>
-            <%= link_to_function l(:label_preview), "$('##{reply_preview_id}').load('#{url_for(:controller => 'code_review', :action => 'preview', :id => @project)}', $('##{message_form_id}').serialize())" %>
           </p>
-          <div id="<%= reply_preview_id %>" class="wiki"></div>
           <%= wikitoolbar_for 'reply_comment_' + @review.id.to_s %>
         <% end %>
       </div>

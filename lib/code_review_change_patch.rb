@@ -26,9 +26,7 @@ module CodeReviewChangePatch
       has_many :code_reviews, :dependent => :destroy
       has_many :code_review_assignments, :dependent => :destroy
       after_save :review_auto_assign
-      
     end
-
   end
 end
 
@@ -37,7 +35,7 @@ module ChangeInstanceMethodsCodeReview
   # for review_issues
   #
   def review_count
-    code_reviews.select{|o|
+    code_reviews.select { |o|
       o.issue_id != nil
     }.length
   end
@@ -55,7 +53,7 @@ module ChangeInstanceMethodsCodeReview
   def closed_review_count
     closed_reviews.length
   end
-  
+
   def closed_reviews
     @closed_reviews ||= code_reviews.select do |o|
       o.issue_id != nil and o.is_closed?
@@ -94,4 +92,3 @@ module ChangeInstanceMethodsCodeReview
     CodeReviewAssignment.create_with_changeset(changeset)
   end
 end
-

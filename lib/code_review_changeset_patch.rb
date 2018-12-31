@@ -19,14 +19,10 @@ require_dependency 'changeset'
 
 module CodeReviewChangesetPatch
   def self.included(base) # :nodoc:
-    base.send(:include, ChangesetInstanceMethodsCodeReview)
-
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_review_assignments, :dependent => :destroy
-      alias_method_chain :scan_comment_for_issue_ids, :code_review
     end
-
   end
 end
 
@@ -37,7 +33,7 @@ module ChangesetInstanceMethodsCodeReview
   def review_count
     return @review_count if @review_count
     @review_count = 0
-    filechanges.each{|change|
+    filechanges.each { |change|
       @review_count += change.review_count
     }
     return @review_count
@@ -46,7 +42,7 @@ module ChangesetInstanceMethodsCodeReview
   def open_review_count
     return @open_review_count if @open_review_count
     @open_review_count = 0
-    filechanges.each{|change|
+    filechanges.each { |change|
       @open_review_count += change.open_review_count
     }
     return @open_review_count
@@ -63,11 +59,11 @@ module ChangesetInstanceMethodsCodeReview
 
   def review_issues
     return @review_issues if @review_issues
-    filechanges.each{|change|
+    filechanges.each { |change|
       unless @review_issues
-        @review_issues = change.code_reviews.collect{|issue| issue}
+        @review_issues = change.code_reviews.collect { |issue| issue }
       else
-        @review_issues =  @review_issues + change.code_reviews.collect{|issue| issue}
+        @review_issues = @review_issues + change.code_reviews.collect { |issue| issue }
       end
       @review_issues
     }
@@ -91,9 +87,9 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_review_count == 0
       100
     else
-      @completed_review_pourcent ||= (closed_review_count * 100 + open_reviews.collect{|o|
+      @completed_review_pourcent ||= (closed_review_count * 100 + open_reviews.collect { |o|
         o.issue.done_ratio
-      }.inject(:+))/review_count
+      }.inject(:+)) / review_count
     end
   end
 
@@ -104,7 +100,7 @@ module ChangesetInstanceMethodsCodeReview
   def assignment_count
     #return @assignment_count if @assignment_count
     @assignment_count = code_review_assignments.length
-    filechanges.each{|change|
+    filechanges.each { |change|
       @assignment_count += change.assignment_count
     }
     return @assignment_count
@@ -112,10 +108,10 @@ module ChangesetInstanceMethodsCodeReview
 
   def open_assignment_count
     return @open_assignment_count if @open_assignment_count
-    @open_assignment_count = code_review_assignments.select {|assignment|
+    @open_assignment_count = code_review_assignments.select { |assignment|
       !assignment.is_closed?
     }.length
-    filechanges.each{|change|
+    filechanges.each { |change|
       @open_assignment_count += change.open_assignment_count
     }
     return @open_assignment_count
@@ -124,20 +120,19 @@ module ChangesetInstanceMethodsCodeReview
   def assignment_issues
     return @assignment_issues if @assignment_issues
     @assignment_issues = code_review_assignments
-    filechanges.each{|change|
-        @assignment_issues =  @assignment_issues + change.code_review_assignments.collect{|issue| issue}
+    filechanges.each { |change|
+      @assignment_issues = @assignment_issues + change.code_review_assignments.collect { |issue| issue }
     }
     @assignment_issues
-
   end
 
   def open_assignments
     return @open_assignments if @open_assignments
-    @open_assignments = code_review_assignments.select {|assignment|
+    @open_assignments = code_review_assignments.select { |assignment|
       !assignment.is_closed?
     }
-    filechanges.each{|change|
-      @open_assignments = @open_assignments + change.code_review_assignments.select {|assignment|
+    filechanges.each { |change|
+      @open_assignments = @open_assignments + change.code_review_assignments.select { |assignment|
         !assignment.is_closed?
       }
     }
@@ -162,18 +157,17 @@ module ChangesetInstanceMethodsCodeReview
       100
     else
       opens = open_assignments
-      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect{|o|
+      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect { |o|
         o.issue.done_ratio
-      }.sum)/assignment_count
-
+      }.sum) / assignment_count
     end
   end
 
   #
   # changeset作成時にレビューの自動アサインを行う
   #
-  def scan_comment_for_issue_ids_with_code_review
-    ret = scan_comment_for_issue_ids_without_code_review
+  def scan_comment_for_issue_ids
+    ret = super
     project = repository.project if repository
     return ret unless project
     return ret unless project.module_enabled?('code_review')
@@ -186,4 +180,4 @@ module ChangesetInstanceMethodsCodeReview
   end
 end
 
-
+Changeset.prepend(ChangesetInstanceMethodsCodeReview)

@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2017  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,13 +15,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-class RenameUser < ActiveRecord::Migration
- 
+class RenameUser < ActiveRecord::Migration[4.2]
   def self.up
     rename_column(:code_reviews, "user_id", "old_user_id")
   end
 
   def self.down
-       rename_column(:code_reviews, "old_user_id", "user_id")
+    rename_column(:code_reviews, "old_user_id", "user_id")
   end
 end

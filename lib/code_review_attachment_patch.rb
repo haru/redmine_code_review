@@ -25,14 +25,9 @@ module CodeReviewAttachmentPatch
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_reviews
       has_many :code_review_assignments
-      
     end
-
   end
 end
 
 module AttachmentInstanceMethodsCodeReview
-  
 end
-
-

@@ -21,26 +21,25 @@ class CodeReviewSettingsController < ApplicationController
   menu_item :code_review
   include CodeReviewAutoAssignSettings
 
-  before_filter :find_project, :authorize, :find_user
+  before_action :find_project, :authorize, :find_user
 
   def update
     begin
       @setting = CodeReviewProjectSetting.find_or_create(@project)
 
-      @setting.assign_attributes params[:setting]
+      @setting.attributes = params.require(:setting).permit(:tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign)
       @setting.updated_by = @user.id
-      params[:auto_assign][:filters] = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
+      params[:auto_assign][:filters] = params[:auto_assign][:filters].values if !params[:auto_assign].blank? && !params[:auto_assign][:filters].blank?
       @setting.auto_assign_settings = params[:auto_assign].to_yaml
 
       @setting.save!
-      
+
       flash[:notice] = l(:notice_successful_update)
     rescue ActiveRecord::StaleObjectError
       # Optimistic locking exception
       flash[:error] = l(:notice_locking_conflict)
     end
     redirect_to :controller => 'projects', :action => "settings", :id => @project, :tab => 'code_review'
-
   end
 
   def add_filter
@@ -50,7 +49,7 @@ class CodeReviewSettingsController < ApplicationController
     filters = [] unless filters
     filters << params[:auto_assign_add_filter]
 
-    @auto_assign.filters = filters.collect{|f|
+    @auto_assign.filters = filters.collect { |f|
       filter = AssignmentFilter.new
       filter.attributes = f
       filter
@@ -66,7 +65,7 @@ class CodeReviewSettingsController < ApplicationController
     filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
     filters = [] unless filters
     i = 0
-    @auto_assign.filters = filters.collect{|f|
+    @auto_assign.filters = filters.collect { |f|
       filter = AssignmentFilter.new
       if i == num
         filter.attributes = params[:auto_assign_edit_filter][num.to_s]
@@ -97,16 +96,17 @@ class CodeReviewSettingsController < ApplicationController
       filters[num][:order] = 999999999
     end
 
-    @auto_assign.filters = filters.collect{|f|
+    @auto_assign.filters = filters.collect { |f|
       filter = AssignmentFilter.new
       filter.attributes = f
       filter
     }
-    
 
     render :partial => "code_review_settings/filters"
   end
+
   private
+
   def find_project
     # @project variable must be set before calling the authorize filter
     @project = Project.find(params[:id])
@@ -115,5 +115,4 @@ class CodeReviewSettingsController < ApplicationController
   def find_user
     @user = User.current
   end
-
 end

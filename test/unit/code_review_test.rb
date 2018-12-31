@@ -18,7 +18,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class CodeReviewTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets,
-    :changes, :issues, :issue_statuses , :enumerations, :issue_categories,
+    :changes, :issues, :issue_statuses, :enumerations, :issue_categories,
     :trackers, :projects_trackers, :attachments
 
   # Create new object.
@@ -29,15 +29,15 @@ class CodeReviewTest < ActiveSupport::TestCase
     code_review.project_id = 1
     code_review.issue.project_id = 1
     code_review.comment = "aaa"
-    code_review.user_id = 1;
-    code_review.change_id = 1;
-    code_review.updated_by_id = 1;
+    code_review.user_id = 1
+    code_review.change_id = 1
+    code_review.updated_by_id = 1
     code_review.subject = "aaa"
     code_review.action_type = 'diff'
     code_review.line = 20
 
     assert code_review.save
-    
+
     code_review.destroy
   end
 
@@ -81,8 +81,6 @@ class CodeReviewTest < ActiveSupport::TestCase
     assert_equal(10, code_review.repository.id)
   end
 
-  
-
   def test_is_closed?
     review = CodeReview.find(9)
     assert !review.is_closed?
@@ -105,7 +103,6 @@ class CodeReviewTest < ActiveSupport::TestCase
     assert_equal(review.status_id, review.issue.status_id)
     review.status_id = 5
     assert_equal(5, review.issue.status_id)
-
   end
 
   def test_user
@@ -115,15 +112,17 @@ class CodeReviewTest < ActiveSupport::TestCase
     issue = review.issue
     assert_equal(issue.author_id, 2)
   end
+
   private
+
   def newreview
     code_review = CodeReview.new
     code_review.issue = Issue.new
-    code_review.project_id = 1;
+    code_review.project_id = 1
     code_review.comment = "aaa"
-    code_review.user_id = 1;
-    code_review.change_id = 1;
-    code_review.updated_by_id = 1;
+    code_review.user_id = 1
+    code_review.change_id = 1
+    code_review.updated_by_id = 1
     return code_review
   end
 end

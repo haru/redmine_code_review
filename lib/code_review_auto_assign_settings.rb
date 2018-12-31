@@ -21,7 +21,7 @@ module CodeReviewAutoAssignSettings
       yml_string = {:enabled => false}.to_yaml if yml_string.blank?
       load_yml(yml_string)
     end
-      
+
     def self.load(yml_string)
       AutoAssignSettings.new(yml_string)
     end
@@ -49,7 +49,7 @@ module CodeReviewAutoAssignSettings
 
     def assignable_list
       return nil unless yml[:assignable_list]
-      yml[:assignable_list].collect { |id| id.to_i  }
+      yml[:assignable_list].collect { |id| id.to_i }
     end
 
     def assignable?(user)
@@ -86,7 +86,6 @@ module CodeReviewAutoAssignSettings
       yml[:filter_enabled] == true or yml[:filter_enabled] == 'true'
     end
 
-    
     def to_s
       return YAML.dump(yml)
       nil
@@ -94,7 +93,7 @@ module CodeReviewAutoAssignSettings
 
     def filters=(list)
       unless list
-        return yml[:filters] = nil 
+        return yml[:filters] = nil
       end
       yml[:filters] = list.collect do |filter|
         filter.attributes
@@ -105,10 +104,10 @@ module CodeReviewAutoAssignSettings
       return [] unless yml[:filters]
       list = yml[:filters].collect do |hash|
         filter = AssignmentFilter.new
-        filter.attributes=(hash)
+        filter.attributes = (hash)
         filter
       end
-      list.sort {|a, b| a.order <=> b.order}
+      list.sort { |a, b| a.order <=> b.order }
     end
 
     def add_filter(filter)
@@ -126,8 +125,8 @@ module CodeReviewAutoAssignSettings
 
     def match_with_changeset?(changeset)
       return true unless filter_enabled?
-      changeset.filechanges.each{|change|
-        return if match_with_change?(change)  
+      changeset.filechanges.each { |change|
+        return if match_with_change?(change)
       }
       return false
     end
@@ -143,7 +142,7 @@ module CodeReviewAutoAssignSettings
     def attributes
       yml
     end
-    
+
     private
 
     def yml
@@ -161,7 +160,7 @@ module CodeReviewAutoAssignSettings
     def select_assign_to_with_list(project, list, commiter_id = nil)
       return nil unless list
       return nil if list.empty?
-      list.collect!{|item| item.to_i}
+      list.collect! { |item| item.to_i }
       list.delete(commiter_id)
       return nil if list.empty?
       assign_to = list.at(rand(list.size))

@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2013  Haruyuki Iida
+# Copyright (C) 2013-2017  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-class AddDiffAll < ActiveRecord::Migration
+class AddDiffAll < ActiveRecord::Migration[4.2]
   def self.up
     add_column(:code_reviews, "diff_all", :boolean)
   end

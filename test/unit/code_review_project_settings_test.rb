@@ -25,7 +25,7 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
       @setting = CodeReviewProjectSetting.new
     end
 
-    should "return false if project_id is nil." do      
+    should "return false if project_id is nil." do
       assert !@setting.save
     end
 
@@ -44,7 +44,7 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
 
     should "be saved if auto_assign is setted." do
       project = Project.find(1)
-      setting = FactoryGirl.create(:code_review_project_setting, project: project)
+      setting = FactoryBot.create(:code_review_project_setting, project: project)
       id = setting.id
       assert !setting.auto_assign_settings.enabled?
       setting.auto_assign_settings.enabled = true
@@ -53,55 +53,55 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
       assert setting.auto_assign_settings.enabled?
     end
   end
-  
+
   context "issue_relation_type" do
     setup do
       @setting = CodeReviewProjectSetting.new
     end
-    
+
     should "return IssueRelation::TYPE_RELATES if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
       assert_equal(IssueRelation::TYPE_RELATES, @setting.issue_relation_type)
     end
-    
+
     should "return IssueRelation::TYPE_BLOCKS if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
       assert_equal(IssueRelation::TYPE_BLOCKS, @setting.issue_relation_type)
     end
-    
+
     should "return nil if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_NONE" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
       assert_nil(@setting.issue_relation_type)
     end
-    
+
     should "return nil if auto_relation is nil" do
-      @setting.auto_relation =nil
+      @setting.auto_relation = nil
       assert_nil(@setting.issue_relation_type)
     end
   end
-  
+
   context "auto_relation?" do
     setup do
       @setting = CodeReviewProjectSetting.new
     end
-    
+
     should "return true if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
       assert(@setting.issue_relation_type)
     end
-    
+
     should "return true if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
       assert(@setting.issue_relation_type)
     end
-    
+
     should "return false if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_NONE" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
       assert !(@setting.issue_relation_type)
     end
-    
+
     should "return false if auto_relation is nil" do
-      @setting.auto_relation =nil
+      @setting.auto_relation = nil
       assert !(@setting.issue_relation_type)
     end
   end
