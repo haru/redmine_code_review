@@ -146,7 +146,7 @@
       <p>
         <%= toggle_link l(:button_reply), "reply_#{@review.id}", :focus => 'reply_comment_' + @review.id.to_s %>
       </p>
-      <%  
+      <%
       message_form_id = "message-form-#{@review.id}"
       -%>
       <div id="reply_<%= @review.id  %>" style="display:none;" class="box">
