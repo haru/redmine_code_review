@@ -66,6 +66,10 @@
         <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('#review_parent_id').val(<%= @parent_candidate.id %>)"/>
       <% end %>
     </p>
+    <p>
+      <label><b><%=h l(:field_priority)%>:</b></label>
+      <%= select :issue, :priority_id, (@priorities.collect {|p| [p.name, p.id]}), :required => true %>
+    </p>
     <% @issue.custom_field_values.each do |value| %>
       <% next unless value.required? -%>
       <p><%= custom_field_tag_with_label :issue, value %></p>
