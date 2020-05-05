@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2015  Haruyuki Iida
+# Copyright (C) 2009-2020  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,10 +38,6 @@ class RepositoriesControllerTest < ActionController::TestCase
     enabled_module.project_id = 1
     enabled_module.name = 'repository'
     enabled_module.save
-    project = Project.find(1)
-    repo = Repository.find(10)
-    project.repository = repo
-    project.save
 
     User.current = nil
     roles = Role.all

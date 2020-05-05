@@ -71,11 +71,11 @@ FactoryBot.define do
   end
 
   factory :repository do
-    project_id 1
-    url "file:///#{Rails.root}/tmp/test/subversion_repository"
-    root_url "file:///#{Rails.root}/tmp/test/subversion_repository"
-    password ""
-    login ""
+    project_id {1}
+    url {"file:///#{Rails.root}/tmp/test/subversion_repository"}
+    root_url {"file:///#{Rails.root}/tmp/test/subversion_repository"}
+    password {""}
+    login {""}
     type {
       scm = 'Subversion'
       unless Setting.enabled_scm.include?(scm)
@@ -83,7 +83,7 @@ FactoryBot.define do
       end
       scm
     }
-    is_default true
+    is_default {true}
   end
 
   factory :changeset do
@@ -114,27 +114,27 @@ FactoryBot.define do
   end
 
   factory :code_review_assignment do
-    issue_id 1
+    issue_id {1}
   end
 
   factory :issue do
-    subject 'hoge'
+    subject {'hoge'}
     author {
       User.find(1)
     }
   end
 
   factory :code_review do
-    issue_id 1
-    updated_by_id 1
-    line 10
-    action_type 'diff'
+    issue_id {1}
+    updated_by_id {1}
+    line {10}
+    action_type {'diff'}
   end
 
   factory :code_review_project_setting do
-    project_id 1
-    tracker_id 1
-    assignment_tracker_id 1
+    project_id {1}
+    tracker_id {1}
+    assignment_tracker_id {1}
   end
 
   factory :enabled_module do
