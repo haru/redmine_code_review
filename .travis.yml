@@ -1,13 +1,24 @@
 language: ruby
 rvm:
-- 2.3
 - 2.4
 - 2.5
 - 2.6
+- 2.7
+- 3.0
 env:
-- REDMINE_VER=master
-- REDMINE_VER=4.0-stable
 - REDMINE_VER=4.1-stable
+- REDMINE_VER=4.2-stable
+- REDMINE_VER=master
+matrix:
+  exclude:
+    - rvm: 2.4
+      env: REDMINE_VER=master
+    - rvm: 2.7
+      env: REDMINE_VER=4.1-stable
+    - rvm: 3.0
+      env: REDMINE_VER=4.1-stable
+    - rvm: 3.0
+      env: REDMINE_VER=4.2-stable
 install:
 - bash -x ./travis/travis_install.sh
 script:
