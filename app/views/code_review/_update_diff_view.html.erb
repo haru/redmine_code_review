@@ -33,6 +33,7 @@
   <%
   change_id = ''
   change_id = @change.id if @change
+  changeset_id = @changeset.id if @changeset
   assignments = @change.code_review_assignments if @change
   attachment_id = @attachment.id if @attachment
   assignments = @attachment.code_review_assignments if @attachment
@@ -40,7 +41,7 @@
   -%>
 
   <%- if User.current.allowed_to?(:assign_code_review, @project) -%>
-  <%= raw show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id} -%>
+  <%= raw show_assignments assignments, @project, {:action_type => @action_type, :rev => @rev, :rev_to => @rev_to, :path => @path, :change_id => change_id, :attachment_id => attachment_id, :changeset_id => changeset_id} -%>
   <%- end -%>
 </div>
 
