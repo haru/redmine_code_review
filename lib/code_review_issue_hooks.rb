@@ -17,7 +17,7 @@
 
 class CodeReviewIssueHooks < Redmine::Hook::ViewListener
   include RepositoriesHelper
-  render_on :view_issues_show_details_bottom, :partial => 'code_review/issues_show_details_bottom'
+  render_on :view_issues_show_details_bottom, partial: 'code_review/issues_show_details_bottom'
 
   def view_issues_show_details_bottom_org(context = {})
     project = context[:project]
