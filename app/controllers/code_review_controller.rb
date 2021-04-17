@@ -17,7 +17,7 @@
 
 class CodeReviewController < ApplicationController
   unloadable
-  before_action :find_project, :authorize, :find_user, :find_setting, :find_repository
+  before_action :find_project, :authorize, :find_user, :find_setting, :find_repository, :find_priorities
 
   helper :sort
   include SortHelper
@@ -373,6 +373,10 @@ class CodeReviewController < ApplicationController
 
   def find_setting
     @setting = CodeReviewProjectSetting.find_or_create(@project)
+  end
+
+  def find_priorities
+    @priorities = IssuePriority.active
   end
 
   def get_parent_candidate(revision)
