@@ -1,3 +1,4 @@
+[![build](https://github.com/haru/redmine_code_review/actions/workflows/build.yml/badge.svg)](https://github.com/haru/redmine_code_review/actions/workflows/build.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/adc7bcbf7bfd8e80a97b/maintainability)](https://codeclimate.com/github/haru/redmine_code_review/maintainability)
 [![codecov](https://codecov.io/gh/haru/redmine_code_review/branch/develop/graph/badge.svg?token=37CJ55KBUU)](https://codecov.io/gh/haru/redmine_code_review)
 
