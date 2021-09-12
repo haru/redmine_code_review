@@ -1,5 +1,5 @@
 name: build
-on: [push]
+on: [push, pull_request]
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 jobs:
