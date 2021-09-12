@@ -1,0 +1,62 @@
+name: build
+on: [push, pull_request]
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        db: [sqlite3, mysql, postgres]
+        ruby_version: [2.4, 2.5, 2.6, 2.7, 3.0]
+        redmine_version: [4.1-stable, 4.2-stable, master]
+        exclude:
+          - ruby_version: 2.4
+            redmine_version: master
+          - ruby_version: 2.7
+            redmine_version: 4.1-stable
+          - ruby_version: 3.0
+            redmine_version: 4.1-stable
+          - ruby_version: 3.0
+            redmine_version: 4.2-stable
+    services:
+      mysql:
+        image: mysql:5.7
+        options: --health-cmd "mysqladmin ping -h localhost" --health-interval 20s --health-timeout 10s --health-retries 10
+        env:
+          MYSQL_ROOT_PASSWORD: dbpassword
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: dbpassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    container:
+      image: ruby:${{ matrix.ruby_version }}
+      env:
+        DB: ${{ matrix.db }}
+        DB_USERNAME: root
+        DB_PASSWORD: dbpassword
+        DB_HOST: ${{ matrix.db }}
+        REDMINE_VER: ${{ matrix.redmine_version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        run: bash -x ./build-scripts/install.sh
+      - name: Build
+        run: bash -x ./build-scripts/build.sh
+      - name: Clean
+        run: bash -x ./build-scripts/cleanup.sh
+      - uses: codecov/codecov-action@v2
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure()
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: Test Failure
+          SLACK_COLOR: danger
+
