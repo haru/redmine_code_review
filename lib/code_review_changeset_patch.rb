@@ -181,3 +181,4 @@ module ChangesetInstanceMethodsCodeReview
 end
 
 Changeset.prepend(ChangesetInstanceMethodsCodeReview)
+Changeset.send(:include, CodeReviewChangesetPatch)

@@ -31,3 +31,5 @@ end
 
 module AttachmentInstanceMethodsCodeReview
 end
+
+Attachment.send(:include, CodeReviewAttachmentPatch)

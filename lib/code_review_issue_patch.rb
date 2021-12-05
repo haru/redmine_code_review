@@ -31,3 +31,5 @@ end
 
 module IssueInstanceMethodsCodeReview
 end
+
+Issue.send(:include, CodeReviewIssuePatch)

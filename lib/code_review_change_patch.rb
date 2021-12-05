@@ -92,3 +92,5 @@ module ChangeInstanceMethodsCodeReview
     CodeReviewAssignment.create_with_changeset(changeset)
   end
 end
+
+Change.send(:include, CodeReviewChangePatch)
