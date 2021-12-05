@@ -1,0 +1,84 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+
+        {
+            "name": "Rails server",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/rails",
+            "useBundler": true,
+            "args": [
+                "server"
+            ]
+        },
+        {
+            "name": "Rails server(postgres)",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/rails",
+            "useBundler": true,
+            "args": [
+                "server"
+            ],
+            "env":{
+                "DB": "postgres"
+            }
+        },
+        {
+            "name": "Rails server(mysql)",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/rails",
+            "useBundler": true,
+            "args": [
+                "server"
+            ],
+            "env":{
+                "DB": "mysql"
+            }
+        },
+        {
+            "name": "Plugin Test",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/rake",
+            "useBundler": true,
+            "args": [
+                "redmine:plugins:test"
+            ],
+            "env":{
+                "RAILS_ENV": "test"
+            }
+        },
+        {
+            "name": "Plugin Test(postgres)",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/rake",
+            "useBundler": true,
+            "args": [
+                "redmine:plugins:test"
+            ],
+            "env":{
+                "RAILS_ENV": "test",
+                "DB": "postgres"
+            }
+        },
+        {
+            "name": "Plugin Test(mysql)",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/rake",
+            "useBundler": true,
+            "args": [
+                "redmine:plugins:test"
+            ],
+            "env":{
+                "RAILS_ENV": "test",
+                "DB": "mysql"
+            }
+        }
+    ]
+}
