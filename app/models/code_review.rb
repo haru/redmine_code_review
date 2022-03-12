@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2017  Haruyuki Iida
+# Copyright (C) 2009-2022  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -92,6 +92,7 @@ class CodeReview < ActiveRecord::Base
   end
 
   def repository_identifier
+    return repository_id if repository_id
     return nil unless repository
     @repository_identifier ||= repository.identifier_param
   end

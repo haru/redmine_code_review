@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009  Haruyuki Iida
+# Copyright (C) 2009-2022  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -111,6 +111,14 @@ class CodeReviewTest < ActiveSupport::TestCase
     review.user = user
     issue = review.issue
     assert_equal(issue.author_id, 2)
+  end
+
+  def test_repository_identifier
+    review = newreview
+    review.change.changeset.repository_id = 10
+    assert_equal("10", review.repository_identifier)
+    review.repository_id = "testparam"
+    assert_equal("testparam", review.repository_id)
   end
 
   private

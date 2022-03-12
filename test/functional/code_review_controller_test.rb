@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2012  Haruyuki Iida
+# Copyright (C) 2009-2022  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -84,6 +84,19 @@ class CodeReviewControllerTest < ActionController::TestCase
       get :new, :params => {:id => 1, :action_type => 'diff', :rev => 5}
       assert_response :success
       assert_template '_new_form'
+    end
+
+    should "new review has repository_id when action_type is diff and repository_id param is specified." do
+      @request.session[:user_id] = 1
+      count = CodeReview.all.length
+      post :new, :params => {:id => 1, :review => {:line => 1,
+                                                :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff', :repository_id => 1}
+      assert_response :success
+      assert_template '_add_success'
+      assert_equal(count + 1, CodeReview.all.length)
+      review = assigns(:review)
+      assert_equal("1", review.repository_identifier)
+
     end
 
     should "create new review when changeset has related issue" do
