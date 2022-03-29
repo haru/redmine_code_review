@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2018  Haruyuki Iida
+# Copyright (C) 2009-2022  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,7 +19,9 @@ begin
   require 'config/initializers/session_store.rb'
 rescue LoadError
 end
-require 'gravatar'
+
+$LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib"
+
 require 'code_review_application_hooks'
 require 'code_review_change_patch'
 require 'code_review_changeset_patch'
@@ -28,31 +30,13 @@ require 'code_review_issue_hooks'
 require 'code_review_projects_helper_patch'
 require 'code_review_attachment_patch'
 
-Rails.configuration.to_prepare do
-  unless Change.included_modules.include? CodeReviewChangePatch
-    Change.send(:include, CodeReviewChangePatch)
-  end
-
-  unless Changeset.included_modules.include? CodeReviewChangesetPatch
-    Changeset.send(:include, CodeReviewChangesetPatch)
-  end
-
-  unless Issue.included_modules.include? CodeReviewIssuePatch
-    Issue.send(:include, CodeReviewIssuePatch)
-  end
-
-  unless Attachment.included_modules.include? CodeReviewAttachmentPatch
-    Attachment.send(:include, CodeReviewAttachmentPatch)
-  end
-end
-
 Redmine::Plugin.register :redmine_code_review do
   name 'Redmine Code Review plugin'
   author 'Haruyuki Iida'
   author_url 'http://twitter.com/haru_iida'
   url "http://www.redmine.org/plugins/redmine_code_review" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '1.0.0'
+  version '1.1.0'
   requires_redmine :version_or_higher => '4.0.0'
 
   project_module :code_review do

@@ -19,9 +19,9 @@ review = issue.code_review
     <td colspan="3">
       <%
       if review.attachment
-        label = URI.decode("#{review.attachment.filename}#{'@' + review.revision if review.revision}:line #{review.line}")
+        label = URI.decode_www_form_component("#{review.attachment.filename}#{'@' + review.revision if review.revision}:line #{review.line}")
       else
-        label = URI.decode("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}")
+        label = URI.decode_www_form_component("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}")
       end
       -%>
       <%= link_to(label,
@@ -39,7 +39,7 @@ review = issue.code_review
     <td colspan="3">
       <% if assignment.path %>
         <%
-        label = URI.decode("#{repository_id + ':' if repository_id}#{assignment.path}#{'@' + assignment.revision if assignment.revision}")
+        label = URI.decode_www_form_component("#{repository_id + ':' if repository_id}#{assignment.path}#{'@' + assignment.revision if assignment.revision}")
         -%>
         <%= link_to(label,
           :controller => 'code_review', :action => 'show', :id => project, :assignment_id => assignment.id, :repository_id => repository_id) %>

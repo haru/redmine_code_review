@@ -81,7 +81,7 @@ function UpdateRevisionView() {
     if (li.hasClass('folder')) return;
 
     var a = li.down('a');
-    if (a.size() == 0) return;
+    if (a.length == 0) return;
     var path = a.attr('href').replace(urlprefix, '').replace(/\?.*$/, '');
 
     var reviewlist = code_reviews_map[path];
@@ -186,7 +186,7 @@ var showClosedReviewImageTag = null;
 function setShowReviewButton(line, review_id, is_closed, file_count) {
   //alert('file_count = ' + file_count);
   var span = $('#review_span_' + line + '_' + file_count);
-  if (span.size() == 0) {
+  if (span.length == 0) {
     return;
   }
   var innerSpan = $('<span></span>', {
@@ -249,7 +249,6 @@ function showReview(url, review_id, x, y) {
   topZindex++;
   code_reviews_dialog_map[review_id] = win;
   $('.ui-dialog').appendTo('#content');
-  $('.ui-effects-wrapper').zIndex(0);
   return win
 }
 
@@ -285,7 +284,6 @@ function formPopup(x, y) {
   review_form_dialog = win;
   topZindex += 10;
   $('.ui-dialog').appendTo('#content');
-  $('.ui-effects-wrapper').zIndex(0);
   return false;
 }
 

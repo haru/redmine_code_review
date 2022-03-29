@@ -12,10 +12,12 @@ one:
 
   updated_by: 1
 
+  assignment_tracker_id: 3
+
 two:
   id: 2
 
-  project_id: 1
+  project_id: 2
 
   tracker_id: 1
 
@@ -24,4 +26,6 @@ two:
   updated_at: 2009-07-14 22:41:54
 
   updated_by: 1
+
+  assignment_tracker_id: 3
 

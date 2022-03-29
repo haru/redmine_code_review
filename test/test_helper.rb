@@ -17,18 +17,30 @@
 
 require 'simplecov'
 require 'simplecov-rcov'
-require 'coveralls'
+require 'simplecov-lcov'
 require 'factory_bot'
 require 'shoulda'
 
+SimpleCov::Formatter::LcovFormatter.config do |config|
+  config.report_with_single_file = true
+  config.single_report_path = File.expand_path(File.dirname(__FILE__) + '/../coverage/lcov.info')
+end
+
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::RcovFormatter,
-  Coveralls::SimpleCov::Formatter
+  SimpleCov::Formatter::LcovFormatter,
+  SimpleCov::Formatter::HTMLFormatter
+  # Coveralls::SimpleCov::Formatter
 ]
 
 SimpleCov.start do
   root File.expand_path(File.dirname(__FILE__) + '/..')
   add_filter "/test/"
+end
+
+FactoryBot::SyntaxRunner.class_eval do
+  include ActionDispatch::TestProcess
+  include ActiveSupport::Testing::FileFixtures
 end
 
 require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
@@ -39,6 +51,8 @@ Dir.chdir(File.dirname(__FILE__) + '/fixtures/') do
   fixtures = Dir.glob('*.yml').map { |s| s.gsub(/.yml$/, '') }
 end
 ActiveRecord::FixtureSet.create_fixtures(File.dirname(__FILE__) + '/fixtures/', fixtures)
+
+include ActiveSupport::Testing::FileFixtures
 
 # Ensure that we are using the temporary fixture path
 #ngines::Testing.set_fixture_path
@@ -71,11 +85,11 @@ FactoryBot.define do
   end
 
   factory :repository do
-    project_id 1
-    url "file:///#{Rails.root}/tmp/test/subversion_repository"
-    root_url "file:///#{Rails.root}/tmp/test/subversion_repository"
-    password ""
-    login ""
+    project_id {1}
+    url {"file:///#{Rails.root}/tmp/test/subversion_repository"}
+    root_url {"file:///#{Rails.root}/tmp/test/subversion_repository"}
+    password {""}
+    login {""}
     type {
       scm = 'Subversion'
       unless Setting.enabled_scm.include?(scm)
@@ -83,7 +97,7 @@ FactoryBot.define do
       end
       scm
     }
-    is_default true
+    is_default {true}
   end
 
   factory :changeset do
@@ -114,27 +128,27 @@ FactoryBot.define do
   end
 
   factory :code_review_assignment do
-    issue_id 1
+    issue_id {1}
   end
 
   factory :issue do
-    subject 'hoge'
+    subject {'hoge'}
     author {
       User.find(1)
     }
   end
 
   factory :code_review do
-    issue_id 1
-    updated_by_id 1
-    line 10
-    action_type 'diff'
+    issue_id {1}
+    updated_by_id {1}
+    line {10}
+    action_type {'diff'}
   end
 
   factory :code_review_project_setting do
-    project_id 1
-    tracker_id 1
-    assignment_tracker_id 1
+    project_id {1}
+    tracker_id {1}
+    assignment_tracker_id {1}
   end
 
   factory :enabled_module do

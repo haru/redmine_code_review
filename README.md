@@ -1,13 +1,14 @@
-{<img src="https://travis-ci.org/haru/redmine_code_review.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/haru/redmine_code_review]
-{<img src="https://coveralls.io/repos/github/haru/redmine_code_review/badge.svg?branch=master" alt="Coverage Status" />}[https://coveralls.io/github/haru/redmine_code_review?branch=master]
+[![build](https://github.com/haru/redmine_code_review/actions/workflows/build.yml/badge.svg)](https://github.com/haru/redmine_code_review/actions/workflows/build.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/adc7bcbf7bfd8e80a97b/maintainability)](https://codeclimate.com/github/haru/redmine_code_review/maintainability)
+[![codecov](https://codecov.io/gh/haru/redmine_code_review/branch/develop/graph/badge.svg?token=37CJ55KBUU)](https://codecov.io/gh/haru/redmine_code_review)
 
-= Redmine Code Review Plugin
+# Redmine Code Review Plugin
 
 This is a plugin for Redmine which lets you annotate source code within the repository browser.
 
 http://www.r-labs.org/wiki/r-labs/Code_Review
 
-=== Plugin installation
+## Plugin installation
 
 1. Copy the plugin directory into the plugins directory
 
@@ -22,7 +23,7 @@ http://www.r-labs.org/wiki/r-labs/Code_Review
 
 6. Go to "Roles and permissions" and add "Code Review" permissions to the roles you want to see/edit/manage code reviews.
 
-=== Language contributors
+## Language contributors
 
 * de.yml - Michael Diederich, Sebastian Bernhard
 * fr.yml - Thomas M, fcrespel

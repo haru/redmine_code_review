@@ -74,7 +74,7 @@ function change_option(flag) {
             </td>
             <td class="path">
               <%
-              review_path = URI.decode(review.path)
+              review_path = URI.decode_www_form_component(review.path)
               codepath = review_path
               if (review_path.length > 55)
                 codepath = review_path[0, 15] + '...' + review_path[review_path.length - 35, 35]
