@@ -140,7 +140,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
 
       var th_html = th.innerHTML;
 
-      var line = th_html.match(/[0-9]+/);
+      var line = th_html.match(/[0-9]+/) ?? th.getAttribute('data-txt');
       if (line == null) {
         continue;
       }
