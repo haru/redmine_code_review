@@ -132,10 +132,13 @@ FactoryBot.define do
   end
 
   factory :issue do
+    project_id {1}
+    tracker_id {1}
     subject {'hoge'}
     author {
       User.find(1)
     }
+    due_date {nil}
   end
 
   factory :code_review do
