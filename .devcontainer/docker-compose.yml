@@ -14,9 +14,6 @@ services:
         NODE_VERSION: "lts/*"
         REDMINE_VERSION: "5.0-stable"
 
-    volumes:
-      - ..:/usr/local/redmine/plugins/redmine_code_review:cached
-
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 

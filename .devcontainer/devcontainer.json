@@ -6,7 +6,11 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	
-	"workspaceFolder": "/usr/local/redmine",
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind"
+	],
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	// "workspaceFolder": "/workspaces/dev.code-workspace",
     
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
@@ -45,7 +49,11 @@
 		"hridoy.rails-snippets",
 		"misogi.ruby-rubocop",
 		"jnbt.vscode-rufo",
-		"donjayamanne.git-extension-pack"
+		"donjayamanne.git-extension-pack",
+		"ms-azuretools.vscode-docker",
+		"KoichiSasada.vscode-rdbg",
+		"Serhioromano.vscode-gitflow",
+		"github.vscode-github-actions"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -58,7 +66,11 @@
 	"remoteUser": "vscode",
 	"features": {
 		// "git": "latest"
-	}
+	},
 
-	
+	"containerEnv": {
+		"PLUGIN_NAME": "${localWorkspaceFolderBasename}"
+	},
+
+	"forwardPorts": [3000]
 }
