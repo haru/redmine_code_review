@@ -154,7 +154,11 @@ module CodeReviewAutoAssignSettings
     end
 
     def load_yml(yml_string)
-      @yml = YAML.load(yml_string)
+      if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
+        @yml = YAML.unsafe_load(yml_string)
+      else
+        @yml = YAML.load(yml_string)
+      end
     end
 
     def select_assign_to_with_list(project, list, commiter_id = nil)
