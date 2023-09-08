@@ -154,7 +154,7 @@ module CodeReviewAutoAssignSettings
     end
 
     def load_yml(yml_string)
-      @yml = YAML.load(yml_string)
+      @yml = YAML.unsafe_load(yml_string)
     end
 
     def select_assign_to_with_list(project, list, commiter_id = nil)
