@@ -1,6 +1,6 @@
 /*
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2017  Haruyuki Iida
+# Copyright (C) 2009-2023  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -138,10 +138,8 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
         continue;
       }
 
-      var th_html = th.innerHTML;
-
-      var line = th_html.match(/[0-9]+/);
-      if (line == null) {
+      var line = $(th).data('txt');
+      if (line == null || line == "") {
         continue;
       }
 
@@ -151,7 +149,7 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
         span_html += image_tag;
       }
       span_html += '</span>';
-      th.innerHTML = th_html + span_html;
+      th.innerHTML = span_html;
 
       var img = th.getElementsByTagName('img')[0];
       if (img != null) {
