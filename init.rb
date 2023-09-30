@@ -36,7 +36,7 @@ Redmine::Plugin.register :redmine_code_review do
   author_url 'http://twitter.com/haru_iida'
   url "http://www.redmine.org/plugins/redmine_code_review" if respond_to?(:url)
   description 'This is a Code Review plugin for Redmine'
-  version '1.1.0'
+  version '1.1.1'
   requires_redmine :version_or_higher => '5.0.0'
 
   project_module :code_review do
