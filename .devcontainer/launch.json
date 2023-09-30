@@ -5,22 +5,26 @@
 
         {
             "name": "Rails server",
-            "type": "Ruby",
+            "type": "rdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/rails",
+            "command": "${workspaceRoot}/bin/rails",
+            "script": "server",
             "useBundler": true,
             "args": [
-                "server"
+                "-b",
+                "0.0.0.0"
             ]
         },
         {
             "name": "Rails server(postgres)",
-            "type": "Ruby",
+            "type": "rdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/rails",
+            "command": "${workspaceRoot}/bin/rails",
+            "script": "server",
             "useBundler": true,
             "args": [
-                "server"
+                "-b",
+                "0.0.0.0"
             ],
             "env":{
                 "DB": "postgres"
@@ -28,12 +32,14 @@
         },
         {
             "name": "Rails server(mysql)",
-            "type": "Ruby",
+            "type": "rdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/rails",
+            "command": "${workspaceRoot}/bin/rails",
+            "script": "server",
             "useBundler": true,
             "args": [
-                "server"
+                "-b",
+                "0.0.0.0"
             ],
             "env":{
                 "DB": "mysql"
@@ -41,10 +47,12 @@
         },
         {
             "name": "Plugin Test",
-            "type": "Ruby",
+            "type": "rdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/rake",
+            "command": "${workspaceRoot}/bin/rake",
+            "script": "redmine:plugins:test",
             "useBundler": true,
+            "cwd": "${workspaceRoot}",
             "args": [
                 "redmine:plugins:test"
             ],
@@ -54,10 +62,12 @@
         },
         {
             "name": "Plugin Test(postgres)",
-            "type": "Ruby",
+            "type": "rdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/rake",
+            "command": "${workspaceRoot}/bin/rake",
+            "script": "redmine:plugins:test",
             "useBundler": true,
+            "cwd": "${workspaceRoot}",
             "args": [
                 "redmine:plugins:test"
             ],
@@ -68,10 +78,12 @@
         },
         {
             "name": "Plugin Test(mysql)",
-            "type": "Ruby",
+            "type": "rdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/rake",
+            "command": "${workspaceRoot}/bin/rake",
+            "script": "redmine:plugins:test",
             "useBundler": true,
+            "cwd": "${workspaceRoot}",
             "args": [
                 "redmine:plugins:test"
             ],

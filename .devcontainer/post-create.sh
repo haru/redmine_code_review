@@ -1,8 +1,16 @@
 #!/bin/sh
 cd /usr/local/redmine
 
-cp plugins/redmine_code_review/Gemfile_for_test plugins/redmine_code_review/Gemfile 
+ln -s /workspaces/${PLUGIN_NAME} plugins/${PLUGIN_NAME}
+if [ -f plugins/${PLUGIN_NAME}/Gemfile_for_test ]
+then
+    cp plugins/${PLUGIN_NAME}/Gemfile_for_test plugins/${PLUGIN_NAME}/Gemfile 
+fi
+cp plugins/${PLUGIN_NAME}/test/fixtures/*.yml test/fixtures
+
 bundle install 
+bundle exec rake redmine:plugins:migrate
+bundle exec rake redmine:plugins:migrate RAILS_ENV=test
 
 initdb() {
     bundle exec rake db:create
@@ -14,8 +22,6 @@ initdb() {
     bundle exec rake db:migrate RAILS_ENV=test
     bundle exec rake redmine:plugins:migrate RAILS_ENV=test
 }
-
-export DB=sqlite3
 
 initdb
 

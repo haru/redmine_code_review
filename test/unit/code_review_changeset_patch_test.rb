@@ -64,21 +64,20 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     FactoryBot.create(:change, changeset: changeset)
     FactoryBot.create(:change, changeset: changeset)
 
+    issues = []
+    4.times{
+      issue = FactoryBot.create(:issue, status_id: 1, done_ratio: 0)
+      issues << Issue.find(issue.id)
+    }
+
     changeset = Changeset.find(changeset.id)
     change = changeset.filechanges[0]
-    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 1)
-    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 2)
+    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: issues[0].id)
+    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: issues[1].id)
     change = changeset.filechanges[1]
-    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 3)
-    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 4)
-    issues = []
-    1.upto(4) { |i|
-      issues[i - 1] = Issue.find(i)
-      issues[i - 1].status_id = 1
-      issues[i - 1].due_date = nil
-      issues[i - 1].done_ratio = 0
-      issues[i - 1].save!
-    }
+    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: issues[2].id)
+    change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: issues[3].id)
+
     changeset.save!
     changeset = Changeset.find(changeset.id)
     assert_equal(0, changeset.completed_assignment_pourcent)
