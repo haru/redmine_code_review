@@ -26,10 +26,20 @@ initdb() {
 
 initdb
 
-export DB=postgres
+export DB=mysql2
+export DB_NAME=redmine
+export DB_USERNAME=root
+export DB_PASSWORD=root
+export DB_HOST=mysql
+export DB_PORT=3306
 
 initdb
 
-export DB=mysql
+export DB=postgresql
+export DB_NAME=redmine
+export DB_USERNAME=postgres
+export DB_PASSWORD=postgres
+export DB_HOST=postgres
+export DB_PORT=5432
 
 initdb
