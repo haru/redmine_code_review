@@ -38,14 +38,14 @@ jobs:
         DB_HOST: ${{ matrix.db }}
         REDMINE_VER: ${{ matrix.redmine_version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install
         run: bash -x ./build-scripts/install.sh
       - name: Build
         run: bash -x ./build-scripts/build.sh
       - name: Clean
         run: bash -x ./build-scripts/cleanup.sh
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
       - name: Slack Notification on Failure
         uses: rtCamp/action-slack-notify@v2.0.2
         if: failure()
