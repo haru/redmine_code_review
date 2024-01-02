@@ -114,7 +114,6 @@ class CodeReviewController < ApplicationController
           @review.save!
 
           render partial: 'add_success', status: 200
-          return
         else
           change_id = params[:change_id].to_i unless params[:change_id].blank?
           @review.change = Change.find(change_id) if change_id
@@ -137,8 +136,8 @@ class CodeReviewController < ApplicationController
               break
             end
           } unless @default_version_id
+          render partial: 'new_form', status: 200
         end
-        render partial: 'new_form', status: 200
       }
     rescue ActiveRecord::RecordInvalid => e
       logger.error e
