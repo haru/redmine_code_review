@@ -53,7 +53,7 @@ class CodeReviewAssignment < ActiveRecord::Base
     assignment = CodeReviewAssignment.new
     issue = Issue.new
     issue.subject = auto_assign.subject
-    issue.subject = l(:code_review_requrest) if issue.subject.blank?
+    issue.subject = I18n.t(:code_review_requrest) if issue.subject.blank?
     issue.subject = issue.subject.sub("$REV", changeset.revision)
     issue.subject = issue.subject.sub("$COMMENTS", changeset.comments.split(//u)[0..60].join) unless changeset.comments.blank?
     issue.tracker_id = setting.assignment_tracker_id
