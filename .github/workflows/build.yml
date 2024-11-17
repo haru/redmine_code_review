@@ -5,14 +5,27 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Supported Matrix:
+    # Redmine 5.0-stable: Ruby 2.7, 3.0, 3.1
+    # Redmine 5.1-stable: Ruby 2.7, 3.0, 3.1, 3.2
+    # Redmine 6.0-stable: Ruby 3.1, 3.2, 3.3
+    # Redmine master: Ruby 3.1, 3.2, 3.3
     strategy:
       matrix:
         db: [sqlite3, mysql, postgres]
-        ruby_version: ["2.7", "3.0", "3.1", "3.2"]
-        redmine_version: [5.0-stable, 5.1-stable, master]
+        ruby_version: ["3.0", "3.1", "3.2", "3.3"]
+        redmine_version: [5.0-stable, 5.1-stable, 6.0-stable, master]
         exclude:
           - ruby_version: "3.2"
             redmine_version: 5.0-stable
+          - ruby_version: "3.3"
+            redmine_version: 5.0-stable
+          - ruby_version: "3.3"
+            redmine_version: 5.1-stable
+          - ruby_version: "3.0"
+            redmine_version: 6.0-stable
+          - ruby_version: "3.0"
+            redmine_version: master
     services:
       mysql:
         image: mysql:5.7

@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-class CodeReviewController < ApplicationController  
+class CodeReviewController < ApplicationController
   before_action :find_project, :authorize, :find_user, :find_setting, :find_repository, :find_priorities
 
   helper :sort
@@ -251,7 +251,7 @@ class CodeReviewController < ApplicationController
       if action_name == 'attachment'
         attachment = target.attachment
         url = url_for(controller: 'attachments', action: 'show',
-                      id: attachment.id) + '/' + URI.encode(attachment.filename)
+                      id: attachment.id) + '/' + URI.encode_www_form_component(attachment.filename)
         url << '?review_id=' + @review.id.to_s if @review
       else
         path = nil if target.diff_all
