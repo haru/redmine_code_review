@@ -1,6 +1,6 @@
 <%
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2012  Haruyuki Iida
+# Copyright (C) 2010-  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -89,16 +89,16 @@
     <%= error_messages_for 'code_review_setting' %>
     <div class="box">
       <%= f.hidden_field :lock_version %>
-      <p><%= f.check_box :tracker_in_review_dialog %></p>
+      <p><%= f.check_box :tracker_in_review_dialog, label: t(:field_tracker_in_review_dialog) %></p>
 
       <b><%=h l(:select_tracker_for_code_reviews)%>:</b>
-      <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
+      <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true, label: t(:field_tracker) %></p>
 
       <b><%=h l(:select_tracker_for_code_review_assignment)%>:</b>
-      <p><%= f.select :assignment_tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %></p>
+      <p><%= f.select :assignment_tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true, label: t(:field_assignment_tracker) %></p>
 
       <p>
-        <%= f.check_box :hide_code_review_tab %>
+        <%= f.check_box :hide_code_review_tab, label: t(:field_hide_code_review_tab) %>
       </p>
 
       <p>
