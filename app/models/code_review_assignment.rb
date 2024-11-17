@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2010-2011  Haruyuki Iida
+# Copyright (C) 2010-2023  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewAssignment < ActiveRecord::Base
-  unloadable
   belongs_to :issue
   belongs_to :change
   belongs_to :changeset
@@ -54,7 +53,7 @@ class CodeReviewAssignment < ActiveRecord::Base
     assignment = CodeReviewAssignment.new
     issue = Issue.new
     issue.subject = auto_assign.subject
-    issue.subject = l(:code_review_requrest) if issue.subject.blank?
+    issue.subject = I18n.t(:code_review_requrest) if issue.subject.blank?
     issue.subject = issue.subject.sub("$REV", changeset.revision)
     issue.subject = issue.subject.sub("$COMMENTS", changeset.comments.split(//u)[0..60].join) unless changeset.comments.blank?
     issue.tracker_id = setting.assignment_tracker_id

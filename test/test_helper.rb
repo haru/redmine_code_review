@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 require 'simplecov'
 require 'simplecov-rcov'
 require 'simplecov-lcov'
@@ -43,7 +44,7 @@ FactoryBot::SyntaxRunner.class_eval do
   include ActiveSupport::Testing::FileFixtures
 end
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
+
 include ActionDispatch::TestProcess
 
 fixtures = []

@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2015  Haruyuki Iida
+# Copyright (C) 2009-2023  Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@ require_dependency 'changeset'
 module CodeReviewChangesetPatch
   def self.included(base) # :nodoc:
     base.class_eval do
-      unloadable # Send unloadable so it will not be unloaded in development
       has_many :code_review_assignments, :dependent => :destroy
     end
   end

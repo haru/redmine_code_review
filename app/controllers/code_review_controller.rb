@@ -1,5 +1,5 @@
 # Code Review plugin for Redmine
-# Copyright (C) 2009-2022 Haruyuki Iida
+# Copyright (C) 2009-2023 Haruyuki Iida
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewController < ApplicationController
-  unloadable
   before_action :find_project, :authorize, :find_user, :find_setting, :find_repository, :find_priorities
 
   helper :sort
@@ -115,7 +114,6 @@ class CodeReviewController < ApplicationController
           @review.save!
 
           render partial: 'add_success', status: 200
-          return
         else
           change_id = params[:change_id].to_i unless params[:change_id].blank?
           @review.change = Change.find(change_id) if change_id
@@ -138,8 +136,8 @@ class CodeReviewController < ApplicationController
               break
             end
           } unless @default_version_id
+          render partial: 'new_form', status: 200
         end
-        render partial: 'new_form', status: 200
       }
     rescue ActiveRecord::RecordInvalid => e
       logger.error e
@@ -253,7 +251,7 @@ class CodeReviewController < ApplicationController
       if action_name == 'attachment'
         attachment = target.attachment
         url = url_for(controller: 'attachments', action: 'show',
-                      id: attachment.id) + '/' + URI.encode(attachment.filename)
+                      id: attachment.id) + '/' + URI.encode_www_form_component(attachment.filename)
         url << '?review_id=' + @review.id.to_s if @review
       else
         path = nil if target.diff_all

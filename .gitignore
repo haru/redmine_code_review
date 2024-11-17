@@ -1,3 +1,4 @@
 coverage
 Gemfile
 Gemfile.lock
+test/tmp/*
