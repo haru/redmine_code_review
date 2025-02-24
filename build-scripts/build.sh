@@ -20,3 +20,4 @@ bundle exec rake test:scm:setup:all
 # bundle exec rake TEST=test/unit/role_test.rb
 bundle exec rake redmine:plugins:test NAME=$NAME_OF_PLUGIN
 
+cp -pr plugins/$NAME_OF_PLUGIN/coverage $PATH_TO_PLUGIN

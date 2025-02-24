@@ -58,7 +58,10 @@ jobs:
         run: bash -x ./build-scripts/build.sh
       - name: Clean
         run: bash -x ./build-scripts/cleanup.sh
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
       - name: Slack Notification on Failure
         uses: rtCamp/action-slack-notify@v2.0.2
         if: failure()
@@ -66,4 +69,3 @@ jobs:
           SLACK_CHANNEL: plugin-code_review
           SLACK_TITLE: Test Failure
           SLACK_COLOR: danger
-
