@@ -244,7 +244,7 @@ class CodeReviewController < ApplicationController
     if request.xhr? || !params[:update].blank?
       render partial: 'show'
     elsif target.path
-      path = URI.decode_www_form(target.path)
+      path = URI.decode_www_form(URI.encode(target.path))
       action_name = target.action_type
       rev_to = ''
       rev_to = '&rev_to=' + target.rev_to if target.rev_to
