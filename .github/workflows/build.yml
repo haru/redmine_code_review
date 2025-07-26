@@ -2,7 +2,9 @@ name: build
 on:
   push:
     tags-ignore:
-      - '*'
+      - '**'
+    branches:
+      - '**'
   pull_request:
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
