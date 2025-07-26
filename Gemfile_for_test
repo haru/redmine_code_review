@@ -1,9 +1,6 @@
-
-
 group :test do
-  gem "simplecov-rcov"
-  gem "simplecov-lcov"
-  gem 'factory_bot_rails'
-  gem 'shoulda'
-  gem 'rails-controller-testing'
+  gem "simplecov-cobertura"
+  gem "factory_bot_rails"
+  gem "shoulda"
+  gem "rails-controller-testing"
 end

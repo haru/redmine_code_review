@@ -1,0 +1,60 @@
+name: Bug Report
+description: Create a bug report
+title: "[Bug]: "
+labels: ["bug"]
+assignees:
+  - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 🐛What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: input
+    id: CodeReview-version
+    attributes:
+      label: Code Review Version
+      description: What version of Code Review plugin are you running?
+    validations:
+      required: true
+  - type: input
+    id: Redmine-version
+    attributes:
+      label: Redmine Version
+      description: What version of Redmine are you running?
+    validations:
+      required: true
+  - type: input
+    id: Ruby-version
+    attributes:
+      label: Ruby Version
+      description: What version of Ruby are you running?
+    validations:
+      required: false
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Other
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
