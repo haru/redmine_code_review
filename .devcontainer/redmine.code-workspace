@@ -1,0 +1,37 @@
+{
+        "folders": [
+                {
+                        "path": "/usr/local/redmine/plugins/redmine_code_review"
+                },
+                {
+                        "path": "/usr/local/redmine"
+                }
+        ],
+        "settings": {
+                "editor.formatOnSave": true,
+                "editor.wordWrap": "on",
+                "files.trimFinalNewlines": true,
+                "files.insertFinalNewline": true,
+                "files.trimTrailingWhitespace": true,
+                "git.ignoredRepositories": [
+                        "/usr/local/redmine"
+                ],
+                "liveServer.settings.multiRootWorkspaceName": "redmine_code_review",
+                "[ruby]": {
+                        "editor.defaultFormatter": "jnbt.vscode-rufo",
+                        "editor.formatOnSave": true
+                },
+                "files.associations": {
+                        "*.html.erb": "erb"
+                },
+                "[erb]": {
+                        "editor.defaultFormatter": "aliariff.vscode-erb-beautify"
+                },
+                "vscode-erb-beautify.useBundler": true,
+                "github.copilot.nextEditSuggestions.enabled": false,
+                "rubyLsp.formatter": "auto",
+                "chat.tools.terminal.autoApprove": {
+                        "bundle": true
+                }
+        }
+}

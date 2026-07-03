@@ -2,4 +2,4 @@ coverage
 Gemfile
 Gemfile.lock
 test/tmp/*
-CLAUDE.md
+tmp/*
