@@ -1,4 +1,18 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(gh pr *)",
+      "Bash(gh repo *)",
+      "Bash(gh label *)",
+      "Bash(find /usr/local/redmine/plugins/redmine_code_review/.claude -maxdepth 3 2>&1; echo \"---\"; find /workspaces/.claude -maxdepth 2 -iname \"*skill*\" 2>&1)",
+      "Read(//workspaces/.claude/**)",
+      "Bash(mkdir -p /usr/local/redmine/plugins/redmine_code_review/.claude/skills/create-pr && ls /usr/local/redmine/plugins/redmine_code_review/.claude/skills)",
+      "Edit(/.claude/skills/create-pr/**)"
+    ],
+    "additionalDirectories": [
+      "/usr/local/redmine/plugins/redmine_code_review/.claude/skills"
+    ]
+  },
   "enabledPlugins": {
     "skill-creator@claude-plugins-official": true
   }
