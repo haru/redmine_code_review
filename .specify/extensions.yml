@@ -1,0 +1,14 @@
+installed:
+- review
+settings:
+  auto_execute_hooks: true
+hooks:
+  after_implement:
+  - extension: review
+    command: speckit.review.run
+    enabled: true
+    optional: true
+    priority: 10
+    prompt: Run PR review on implemented changes?
+    description: Comprehensive review after implementation
+    condition: null
