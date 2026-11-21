@@ -7,6 +7,9 @@ COPY .devcontainer/post-create.sh /post-create.sh
 # Install MySQL client
 RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
 
+# Install Chromium (headless browser for Playwright MCP) and CJK fonts.
+RUN apt-get update && apt-get install -y chromium fonts-noto-cjk && rm -rf /var/lib/apt/lists/*
+
 # Install uv (includes uvx) for Serena MCP server
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
