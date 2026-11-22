@@ -14,6 +14,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 require 'projects_controller'
 
+# Lets a test pretend that one file is missing (minitest 6 no longer bundles minitest/mock).
+module HideFileFromExist
+  class << self
+    attr_accessor :hidden
+  end
+
+  def exist?(path)
+    path.to_s == HideFileFromExist.hidden ? false : super
+  end
+end
+
 # Re-raise errors caught by the controller.
 class ProjectsController; def rescue_action(e) raise e end; end
 
@@ -216,6 +227,20 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
         shipped = File.exist?(Rails.root.join('app/assets/javascripts/jstoolbar/jstoolbar.js'))
         assert_equal shipped ? 1 : 0, response.body.scan(%r{jstoolbar/jstoolbar[-.0-9a-f]*\.js}).size
+      end
+
+      # The project overview has no wiki toolbar of its own, so the plugin header is the only
+      # candidate to emit the tag; without the shipped file it must not emit a broken one.
+      should "not emit legacy toolbar tags when Redmine does not ship jstoolbar.js" do
+        File.singleton_class.prepend(HideFileFromExist)
+        HideFileFromExist.hidden = Rails.root.join('app/assets/javascripts/jstoolbar/jstoolbar.js').to_s
+        begin
+          get :show, :params => {:id => 1}
+        ensure
+          HideFileFromExist.hidden = nil
+        end
+        assert_response :success
+        assert_no_match %r{jstoolbar/(lang/)?jstoolbar}, response.body
       end
     end
 

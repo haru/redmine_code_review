@@ -81,10 +81,11 @@ class CodeReviewSettingsController < ApplicationController
     @auto_assign = setting.auto_assign_settings
     filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
     filters = [] unless filters
-    num = params[:auto_assign_filter][:num].to_i
+    # The row number comes from the request; refuse one that is not a valid index into the
+    # submitted list. to_i would map "abc" to 0 and filters[-1] would select the last row.
+    num = Integer(params[:auto_assign_filter][:num].to_s, 10, exception: false)
     move_to = params[:auto_assign_filter][:move_to]
-    # The row number comes from the request; refuse one that is not in the submitted list.
-    return head :bad_request unless filters[num]
+    return head :bad_request unless num && num >= 0 && filters[num]
 
     if move_to == 'highest'
       filters[num][:order] = 0

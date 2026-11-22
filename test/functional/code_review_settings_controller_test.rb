@@ -222,6 +222,16 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_response :bad_request
     end
 
+    # to_i would turn "abc" into 0 and Ruby's filters[-1] picks the last row, so both
+    # would silently reorder a real filter instead of being rejected.
+    ['abc', '-1', '', '1.5'].each do |num|
+      should "reject the malformed row number #{num.inspect}" do
+        post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters),
+                             :auto_assign_filter => {:num => num, :move_to => 'highest'}}
+        assert_response :bad_request
+      end
+    end
+
     should "keep the filter block enabled" do
       post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters),
                            :auto_assign_filter => {:num => 1, :move_to => 'highest'}}
