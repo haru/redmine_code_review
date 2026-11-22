@@ -12,9 +12,12 @@ const filterExpressions = (page) => filterRows(page).locator('td:nth-child(3)');
 async function openSettings(page) {
   await login(page);
   await resetCodeReviewSettings(page);
-  // The reset request leaves a flash notice that the first page view shows; load the page
-  // again so that the only notice a later save can produce is its own.
+  // The reset request leaves a flash that the first page view shows. A 302 alone cannot
+  // tell a saved reset from a caught locking conflict, so check the notice, then load the
+  // page again so that the only notice a later save can produce is its own.
   await page.goto(settingsUrl);
+  await expect(page.locator('#flash_notice')).toContainText('Successful update');
+  await expect(page.locator('#flash_error')).toHaveCount(0);
   await page.goto(settingsUrl);
   await expect(page.locator('#code_review_form')).toBeVisible();
   await expect(page.locator('#flash_notice')).toHaveCount(0);

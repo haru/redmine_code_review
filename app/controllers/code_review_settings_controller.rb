@@ -83,6 +83,8 @@ class CodeReviewSettingsController < ApplicationController
     filters = [] unless filters
     num = params[:auto_assign_filter][:num].to_i
     move_to = params[:auto_assign_filter][:move_to]
+    # The row number comes from the request; refuse one that is not in the submitted list.
+    return head :bad_request unless filters[num]
 
     if move_to == 'highest'
       filters[num][:order] = 0

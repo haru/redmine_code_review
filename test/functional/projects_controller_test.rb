@@ -231,6 +231,16 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_select 'select#auto_assign_author_id'
         assert_select 'select#auto_assign_author_id[required]', false
       end
+
+      should "require the auto-assign author while auto-assign is enabled" do
+        settings = CodeReviewAutoAssignSettings::AutoAssignSettings.new
+        settings.enabled = true
+        setting = CodeReviewProjectSetting.find_or_create(Project.find(1))
+        setting.update!(auto_assign: settings.to_s)
+        get :settings, :params => {:id => 1, :tab => 'code_review'}
+        assert_response :success
+        assert_select 'select#auto_assign_author_id[required]'
+      end
     end
 
     context "by admin user" do

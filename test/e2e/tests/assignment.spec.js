@@ -60,6 +60,8 @@ test('marks the revision as assigned on the revision page and the revisions list
   await page.goto(revisionUrl);
   await expect(page.locator('#code_review_assignments').getByRole('link', { name: `#${id}` })).toBeVisible();
 
+  // The revisions list only shows the state of the whole revision, so this cell cannot
+  // tell which assignment produced it; the link to #id above is the check tied to this test.
   await page.goto(revisionsUrl);
   const row = page.locator('tr.changeset', { has: page.locator(`td.id a[href$="/revisions/${revision}"]`) });
   await expect(row.locator('td.progress')).toContainText('Assigned');

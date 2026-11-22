@@ -216,6 +216,12 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_response :success
     end
 
+    should "reject a row number that does not exist" do
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters),
+                           :auto_assign_filter => {:num => 9, :move_to => 'highest'}}
+      assert_response :bad_request
+    end
+
     should "keep the filter block enabled" do
       post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters),
                            :auto_assign_filter => {:num => 1, :move_to => 'highest'}}
