@@ -328,8 +328,8 @@ class CodeReviewController < ApplicationController
     change = changesets[0]
 
     identifier = change.identifier
-    redirect_to url_for(controller: "repositories", action: "entry",
-                        id: @project, repository_id: @repository_id) + "/" + path + "?rev=" + identifier.to_s
+    redirect_to controller: "repositories", action: "entry", id: @project,
+                repository_id: @repository_id, path: path, rev: identifier.to_s
   end
 
   def preview

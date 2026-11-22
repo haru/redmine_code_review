@@ -321,6 +321,8 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_forward_to_revision
     @request.session[:user_id] = 1
     post :forward_to_revision, params: { id: 1, path: "/subversion_test/folder/helloworld.rb" }
+    assert_response :redirect
+    assert_match(%r{\Ahttp://test\.host/projects/[^/]+/repository/\d+/revisions/\d+/entry/+subversion_test/folder/helloworld\.rb\z}, response.location)
   end
 
   def test_update_attachment_view
