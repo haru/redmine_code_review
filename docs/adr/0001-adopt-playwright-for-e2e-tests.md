@@ -17,15 +17,17 @@ Add a self-contained Node sub-project under `test/e2e/` using `@playwright/test`
 - `test/e2e/run.sh` is the single entry point. It builds an isolated workspace in
   `<redmine>/tmp/e2e/` (sqlite3 DB, throwaway Git repository, seed data), lets
   Playwright's `webServer` start Redmine in the `test` environment on port 4500, and
-  removes the workspace on exit (success, failure or interruption).
-- No Redmine core files and no Gems are changed. Existing Minitest discovery
-  (`*test.rb`) does not pick up the E2E files.
+  removes the workspace after a successful run (it is kept after a failure so the DB,
+  repository and seed can be inspected).
+- No Redmine core files and no Gems are changed. Neither `redmine:plugins:test`
+  (`test/{unit,functional,integration,system}/**/*_test.rb`) nor `test_runner.rb`
+  (`test/**/*test.rb`) picks up the `*.spec.js` files.
 
 ## Alternatives considered
 
 - Redmine system tests (Capybara + Selenium): tied to the core test DB and fixtures,
   which conflicts with the "dedicated throwaway DB" requirement.
-- TypeScript tests: extra configuration for little benefit with three small specs.
+- TypeScript tests: extra configuration for little benefit with a small suite.
 
 ## Consequences
 
