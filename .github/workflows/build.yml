@@ -5,7 +5,31 @@ on:
       - '**'
     branches:
       - '**'
+    paths-ignore:
+      - 'wiki/**'
+      - 'docs/**'
+      - 'specs/**'
+      - '.claude/**'
+      - '.specify/**'
+      - '.devcontainer/**'
+      - 'travis/**'
+      - '.github/copilot-instructions.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '**.md'
+      - 'GPL.txt'
   pull_request:
+    paths-ignore:
+      - 'wiki/**'
+      - 'docs/**'
+      - 'specs/**'
+      - '.claude/**'
+      - '.specify/**'
+      - '.devcontainer/**'
+      - 'travis/**'
+      - '.github/copilot-instructions.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '**.md'
+      - 'GPL.txt'
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 jobs:
