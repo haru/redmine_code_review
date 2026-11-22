@@ -77,7 +77,7 @@ test('moves from a file view without a revision to the revision that last change
   await login(page);
   await page.goto(`/projects/${seed.project}/repository/${seed.repository}/entry/${seed.path}`);
   await page.getByRole('link', { name: 'Add review' }).click();
-  await expect(page).toHaveURL(new RegExp(`/entry/${seed.path}\\?rev=${seed.revision}$`));
+  await expect(page).toHaveURL(new RegExp(`/revisions/${seed.revision}/entry/${seed.path}$`));
 });
 
 test('expands the review macro in an issue description into a link to the review', async ({ page }) => {
