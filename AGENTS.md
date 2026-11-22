@@ -26,6 +26,9 @@ bundle exec rake redmine:plugins:test NAME=redmine_code_review
 # run a single test file
 bundle exec rake redmine:plugins:test NAME=redmine_code_review TEST=plugins/redmine_code_review/test/unit/code_review_test.rb
 
+# run the Playwright E2E tests in an isolated Redmine on port 4500 (first time: cd plugins/redmine_code_review/test/e2e && npm ci && npx playwright install --with-deps chromium)
+plugins/redmine_code_review/test/e2e/run.sh
+
 # alternative: SimpleCov-instrumented runner (from the plugin directory; auto-copies fixtures, chdir's, requires every *test.rb)
 ruby plugins/redmine_code_review/test/test_runner.rb
 ```
