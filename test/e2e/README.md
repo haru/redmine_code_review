@@ -42,7 +42,7 @@ read; running `npx playwright test` directly raises a clear error.
 1. Checks `git`, `node`, `node_modules`, and that `127.0.0.1:4500` is free.
 2. Recreates `<redmine>/tmp/e2e/` and builds a Git repository (two commits), a
    sqlite3 DB (`db.sqlite3_test`: the test environment's `config/database.yml` appends
-   `_test`), default Redmine data and the seed data (`support/seed.rb`, which writes
+   `_test`) built from the core and plugin migrations alone (`SCHEMA` points into the workspace, so a local `db/schema.rb` is neither loaded nor overwritten), default Redmine data and the seed data (`support/seed.rb`, which writes
    `tmp/e2e/seed.json`). The seed refuses to run if the connected DB is not under
    `tmp/e2e/`, and fails if git did not produce the two expected changesets.
 3. Runs `npx playwright test`; Playwright's `webServer` starts Redmine on port 4500

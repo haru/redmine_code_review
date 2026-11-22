@@ -53,9 +53,16 @@ git_e2e commit --quiet -am "Update hello.rb"
 
 echo "==> Preparing E2E database"
 cd "$E2E_REDMINE_ROOT"
-# The test environment's config/database.yml appends "_test" to DB_NAME (db.sqlite3_test).
+# config/database.yml must honor DB_NAME (the test environment may append "_test");
+# support/seed.rb refuses to run if the connected DB is outside the workspace.
+# SCHEMA points db:migrate's schema load/dump into the workspace: a developer's local
+# db/schema.rb (which may already contain plugin tables) is neither loaded nor overwritten,
+# so the DB is built from the migrations alone.
 export RAILS_ENV=test DB=sqlite3 DB_NAME="$E2E_WORK_DIR/db.sqlite3" REDMINE_LANG=en
-bin/rake db:create db:migrate redmine:load_default_data
+export SCHEMA="$E2E_WORK_DIR/schema.rb"
+bin/rake db:create db:migrate redmine:plugins:migrate
+# Separate process: models loaded during the migrations would have stale column info.
+bin/rake redmine:load_default_data
 bin/rails runner plugins/redmine_code_review/test/e2e/support/seed.rb
 
 echo "==> Running Playwright"

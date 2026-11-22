@@ -10,7 +10,7 @@ updated: 2026-11-22
 How the E2E tests get a Redmine that never touches the development database. This is the design as planned (S034, S035); the later implementation changed some details, see the note at the end. Why Playwright: [Why Playwright for E2E tests](./e2e-playwright-adoption.md).
 
 ## Rails environment (S034)
-- Redmine runs with `RAILS_ENV=test`, `DB=sqlite3` and `DB_NAME=<redmine root>/tmp/e2e/db.sqlite3`. `config/database.yml` reads these, and its test environment appends `_test`, so the real file is `db.sqlite3_test`. No Redmine core file is changed.
+- Redmine runs with `RAILS_ENV=test`, `DB=sqlite3` and `DB_NAME=<redmine root>/tmp/e2e/db.sqlite3`. `config/database.yml` reads these, and its test environment appends `_test`, so the real file is `db.sqlite3_test`. The DB is built from `db:migrate` plus `redmine:plugins:migrate`; `SCHEMA` points into the workspace so the local `db/schema.rb` is not loaded or rewritten. No Redmine core file is changed. `config/database.yml` must honor `DB_NAME` (`build-scripts/database.yml` does for sqlite3 too).
 - The test environment sends no real mail, runs jobs inline, serves assets dynamically and already has a `secret_key_base`.
 - Rejected: development (writes `log/development.log`, reloads code, slower and less stable); production (needs precompiled assets in `public/assets`, changing core directories); a dedicated `e2e` environment (needs a new file under core `config/environments/`).
 - Known side effect: appends to `log/test.log`, shared with the other tests; accepted because nothing is deleted from it (S034, S035).
