@@ -6,4 +6,4 @@ File naming: `NNNN-short-title.md`, numbered sequentially (e.g. `0001-example-de
 
 ## Index
 
-_No ADRs yet._
+- [0001 Adopt Playwright for end-to-end tests](0001-adopt-playwright-for-e2e-tests.md) — Accepted, 2026-11-22
