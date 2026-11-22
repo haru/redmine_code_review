@@ -209,10 +209,13 @@ class ProjectsControllerTest < ActionController::TestCase
 
       # The page's own wiki toolbar already loads jstoolbar.js; loading it a second time
       # raises "Identifier 'lastJstPreviewed' has already been declared" in the browser.
+      # Newer Redmine versions replaced it with a Stimulus toolbar and no longer ship the
+      # file, so there it must not be loaded at all.
       should "load jstoolbar.js only once" do
         get :settings, :params => {:id => 1}
         assert_response :success
-        assert_equal 1, response.body.scan(%r{jstoolbar/jstoolbar[-.0-9a-f]*\.js}).size
+        shipped = File.exist?(Rails.root.join('app/assets/javascripts/jstoolbar/jstoolbar.js'))
+        assert_equal shipped ? 1 : 0, response.body.scan(%r{jstoolbar/jstoolbar[-.0-9a-f]*\.js}).size
       end
     end
 
