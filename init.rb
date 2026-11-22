@@ -15,11 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require "redmine"
-begin
-  require "config/initializers/session_store.rb"
-rescue LoadError
-end
-
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib"
 
 require "code_review_application_hooks"
@@ -37,32 +32,32 @@ Redmine::Plugin.register :redmine_code_review do
   url "http://www.redmine.org/plugins/redmine_code_review" if respond_to?(:url)
   description "This is a Code Review plugin for Redmine"
   version "1.2.2"
-  requires_redmine :version_or_higher => "6.0.0"
+  requires_redmine version_or_higher: "6.0.0"
 
   project_module :code_review do
-    permission :view_code_review, { :code_review => [:update_diff_view, :update_attachment_view, :update_revisions_view, :index, :show] }, { :read => true }
-    permission :add_code_review, { :code_review => [:new, :reply, :forward_to_revision, :preview] }, :require => :member
-    permission :edit_code_review, { :code_review => [:update] }, :require => :member
-    permission :delete_code_review, { :code_review => [:destroy] }, :require => :member
-    permission :assign_code_review, { :code_review => [:assign] }, :require => :member
-    permission :code_review_setting, { :code_review_settings => [:show, :update, :add_filter, :edit_filter, :sort] }, :require => :member
+    permission :view_code_review, { code_review: [ :update_diff_view, :update_attachment_view, :update_revisions_view, :index, :show ] }, { read: true }
+    permission :add_code_review, { code_review: [ :new, :reply, :forward_to_revision, :preview ] }, require: :member
+    permission :edit_code_review, { code_review: [ :update ] }, require: :member
+    permission :delete_code_review, { code_review: [ :destroy ] }, require: :member
+    permission :assign_code_review, { code_review: [ :assign ] }, require: :member
+    permission :code_review_setting, { code_review_settings: [ :show, :update, :add_filter, :edit_filter, :sort ] }, require: :member
   end
 
-  menu :project_menu, :code_review, { :controller => "code_review", :action => "index" }, :caption => :code_reviews,
-                                                                                          :if => Proc.new { |project|
+  menu :project_menu, :code_review, { controller: "code_review", action: "index" }, caption: :code_reviews,
+                                                                                          if: Proc.new { |project|
                                                                                             setting = CodeReviewProjectSetting.find_or_create(project)
                                                                                             project.repository != nil and setting and !setting.hide_code_review_tab
-                                                                                          }, :after => :repository
+                                                                                          }, after: :repository
 
   Redmine::WikiFormatting::Macros.register do
     desc "This is my macro link to code review"
-    macro :review do |obj, args|
+    macro :review do |_obj, args|
       return nil if args.length == 0
       review_id = args[0].to_i
       return nil if review_id == 0
       review = CodeReview.find(review_id)
       return nil unless review
-      link_to(l(:label_review) + "#" + review.id.to_s, :controller => "code_review", :action => "show", :id => review.project, :review_id => review.id)
+      link_to(l(:label_review) + "#" + review.id.to_s, controller: "code_review", action: "show", id: review.project, review_id: review.id)
     end
   end
 end

@@ -11,6 +11,9 @@ page files, not here.
 - [Why Playwright for E2E tests](./pages/e2e-playwright-adoption.md) — Node sub-project, Chromium only, rejected alternatives
 - [E2E isolated environment](./pages/e2e-isolated-environment.md) — test env, own sqlite DB, port 4500, run.sh orchestration
 
+- [Pin RuboCop with a dedicated Gemfile and Renovate](./pages/rubocop-pinned-gemfile-and-renovate.md) — independent CI job, tools/rubocop lockfile, Renovate, rejected options
+- [RuboCop adoption and offense cleanup](./pages/rubocop-adoption-cleanup.md) — 1,623 baseline offenses, three-step fix, no todo file
+
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue
 - [CodeReviewController actions](./pages/code-review-controller-actions.md) — actions, filters, AJAX views
@@ -40,3 +43,4 @@ page files, not here.
 ## howto
 - [Run the E2E tests](./pages/run-e2e-tests.md) — run.sh, seed data, driving the review UI
 - [Install and enable the plugin](./pages/install-and-enable-plugin.md) — install, migrate, enable module, verify
+- [Run RuboCop](./pages/run-rubocop.md) — build-scripts/rubocop.sh, 0-target guard, parent-exclusion gotcha

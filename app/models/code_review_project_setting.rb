@@ -14,28 +14,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-class CodeReviewProjectSetting < ActiveRecord::Base
+class CodeReviewProjectSetting < ApplicationRecord
   include Redmine::SafeAttributes
   include CodeReviewAutoAssignSettings
 
   belongs_to :project
   belongs_to :tracker
-  belongs_to :assignment_tracker, :class_name => 'Tracker'
+  belongs_to :assignment_tracker, class_name: "Tracker"
 
-  validates_presence_of :project_id
-  validates_presence_of :tracker_id
-  validates_presence_of :assignment_tracker_id
+  validates :project_id, presence: true
+  validates :tracker_id, presence: true
+  validates :assignment_tracker_id, presence: true
 
   before_save :set_assignment_settings
 
-  #attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign
+  # attr_accessible :tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign
 
   AUTORELATION_TYPE_NONE = 0
   AUTORELATION_TYPE_RELATES = 1
   AUTORELATION_TYPE_BLOCKS = 2
 
   def self.find_or_create(project)
-    setting = CodeReviewProjectSetting.find_by_project_id(project.id)
+    setting = CodeReviewProjectSetting.find_by(project_id: project.id)
     unless setting
       setting = CodeReviewProjectSetting.new
       setting.project_id = project.id
@@ -58,7 +58,7 @@ class CodeReviewProjectSetting < ActiveRecord::Base
   def issue_relation_type
     return IssueRelation::TYPE_RELATES if auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_RELATES
     return IssueRelation::TYPE_BLOCKS if auto_relation == CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS
-    return nil
+    nil
   end
 
   def auto_relation?

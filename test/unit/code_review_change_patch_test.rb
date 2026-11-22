@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 
 class CodeReviewChangePatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :issues, :issue_statuses, :enumerations, :issue_categories, :trackers
@@ -83,14 +83,14 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
 
   context "open_assignments" do
     should "return empty array if change has no assignments." do
-      change = FactoryBot.create(:change)
+      change = create(:change)
       assert_equal(0, change.open_assignments.length)
     end
 
     should "return empty array if change has no open assignments" do
-      change = FactoryBot.create(:change)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
+      change = create(:change)
+      change.code_review_assignments << create(:code_review_assignment)
+      change.code_review_assignments << create(:code_review_assignment)
       close_status = IssueStatus.find(5)
       change.code_review_assignments.each { |assignments|
         assignments.issue.status = close_status
@@ -99,10 +99,10 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     end
 
     should "return 2 assignments if change has 2 open assignments" do
-      change = FactoryBot.create(:change)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
+      change = create(:change)
+      change.code_review_assignments << create(:code_review_assignment)
+      change.code_review_assignments << create(:code_review_assignment)
+      change.code_review_assignments << create(:code_review_assignment)
       close_status = IssueStatus.find(5)
       change.code_review_assignments[0].issue.status = close_status
 
@@ -110,11 +110,11 @@ class CodeReviewChangePatchTest < ActiveSupport::TestCase
     end
 
     should "return 2 assignments if change has 2 open assignments which are assigned to user_id 1" do
-      change = FactoryBot.create(:change)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment)
+      change = create(:change)
+      change.code_review_assignments << create(:code_review_assignment)
+      change.code_review_assignments << create(:code_review_assignment)
+      change.code_review_assignments << create(:code_review_assignment)
+      change.code_review_assignments << create(:code_review_assignment)
       close_status = IssueStatus.find(5)
       change.code_review_assignments[0].issue.status = close_status
       change.code_review_assignments[0].issue.assigned_to_id = 1

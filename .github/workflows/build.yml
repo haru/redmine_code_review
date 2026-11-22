@@ -33,6 +33,21 @@ on:
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    container: ruby:4.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: RuboCop
+        run: ./build-scripts/rubocop.sh
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure() && env.SLACK_WEBHOOK != ''
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: RuboCop Failure
+          SLACK_COLOR: danger
+
   build:
     runs-on: ubuntu-latest
     # Supported Matrix:

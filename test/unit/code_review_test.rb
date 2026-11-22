@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 
 class CodeReviewTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets,
@@ -25,7 +25,7 @@ class CodeReviewTest < ActiveSupport::TestCase
   def test_create
     code_review = CodeReview.new
     code_review.issue = Issue.new
-    assert !code_review.save
+    assert_not code_review.save
     code_review.project_id = 1
     code_review.issue.project_id = 1
     code_review.comment = "aaa"
@@ -33,7 +33,7 @@ class CodeReviewTest < ActiveSupport::TestCase
     code_review.change_id = 1
     code_review.updated_by_id = 1
     code_review.subject = "aaa"
-    code_review.action_type = 'diff'
+    code_review.action_type = "diff"
     code_review.line = 20
 
     assert code_review.save
@@ -43,7 +43,7 @@ class CodeReviewTest < ActiveSupport::TestCase
 
   def test_close
     code_review = newreview
-    assert !code_review.is_closed?
+    assert_not code_review.is_closed?
     code_review.close
     assert code_review.is_closed?
   end
@@ -53,7 +53,7 @@ class CodeReviewTest < ActiveSupport::TestCase
     code_review.close
     assert code_review.is_closed?
     code_review.reopen
-    assert !code_review.is_closed?
+    assert_not code_review.is_closed?
   end
 
   def test_committer
@@ -83,7 +83,7 @@ class CodeReviewTest < ActiveSupport::TestCase
 
   def test_is_closed?
     review = CodeReview.find(9)
-    assert !review.is_closed?
+    assert_not review.is_closed?
     review.status_id = 5
     review.save!
     review.issue.save!
@@ -131,6 +131,6 @@ class CodeReviewTest < ActiveSupport::TestCase
     code_review.user_id = 1
     code_review.change_id = 1
     code_review.updated_by_id = 1
-    return code_review
+    code_review
   end
 end

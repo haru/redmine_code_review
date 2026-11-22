@@ -15,8 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
-require 'attachments_controller'
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
+require "attachments_controller"
 
 # Re-raise errors caught by the controller.
 class AttachmentsController; def rescue_action(e) raise e end; end
@@ -28,12 +28,12 @@ class AttachmentsControllerTest < ActionController::TestCase
   def setup
     @controller = AttachmentsController.new
     @request = ActionController::TestRequest.create(self.class.controller_class)
-    #@response   = ActionController::TestResponse.new
-    Attachment.storage_path = "#{Rails.root}/test/fixtures/files"
+    # @response   = ActionController::TestResponse.new
+    Attachment.storage_path = "#{Rails.root.join("test/fixtures/files")}"
 
-    [1, 2].each { |num|
+    [ 1, 2 ].each { |num|
       project = Project.find(num)
-      project.enable_module!('code_review')
+      project.enable_module!("code_review")
       project.save!
     }
 
@@ -48,18 +48,18 @@ class AttachmentsControllerTest < ActionController::TestCase
   def test_show_diff
     @request.session[:user_id] = 1
     attachment = FactoryBot.create(:attachment, filename: "test.diff")
-    get :show, :params => {:id => attachment.id, :type => 'inline'}
+    get :show, params: { id: attachment.id, type: "inline" }
     assert_response :success
-    assert_template 'diff'
-    #assert_equal 'text/html', @response.content_type
+    assert_template "diff"
+    # assert_equal 'text/html', @response.content_type
   end
 
   def test_show_text_file
     @request.session[:user_id] = 1
     attachment = FactoryBot.create(:attachment, filename: "test.rb")
-    get :show, :params => {:id => attachment.id, :type => 'inline'}
+    get :show, params: { id: attachment.id, type: "inline" }
     assert_response :success
-    assert_template 'file'
-    #assert_equal 'text/html', @response.content_type
+    assert_template "file"
+    # assert_equal 'text/html', @response.content_type
   end
 end

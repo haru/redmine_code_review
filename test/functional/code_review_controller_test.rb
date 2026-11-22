@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 
 class CodeReviewControllerTest < ActionController::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
@@ -26,14 +26,14 @@ class CodeReviewControllerTest < ActionController::TestCase
   def setup
     @controller = CodeReviewController.new
     @request = ActionController::TestRequest.create(self.class.controller_class)
-    @request.env["HTTP_REFERER"] = '/'
+    @request.env["HTTP_REFERER"] = "/"
     enabled_module = EnabledModule.new
     enabled_module.project_id = 1
-    enabled_module.name = 'code_review'
+    enabled_module.name = "code_review"
     enabled_module.save
     enabled_module = EnabledModule.new
     enabled_module.project_id = 2
-    enabled_module.name = 'code_review'
+    enabled_module.name = "code_review"
     enabled_module.save
 
     User.current = nil
@@ -47,19 +47,19 @@ class CodeReviewControllerTest < ActionController::TestCase
   context "index" do
     should "show review list" do
       @request.session[:user_id] = 1
-      get :index, :params => {:id => 1}
+      get :index, params: { id: 1 }
       assert_response :success
     end
 
     should "not show review list if module was not enabled." do
       @request.session[:user_id] = 1
-      get :index, :params => {:id => 3}
-      assert_response 403
+      get :index, params: { id: 3 }
+      assert_response :forbidden
     end
 
     should "show all review list if show_closed is true" do
       @request.session[:user_id] = 1
-      get :index, :params => {:id => 1, :show_closed => true}
+      get :index, params: { id: 1, show_closed: true }
       assert_response :success
     end
   end
@@ -67,14 +67,14 @@ class CodeReviewControllerTest < ActionController::TestCase
   context "new" do
     should "create form when get mthod" do
       @request.session[:user_id] = 1
-      get :new, :params => {:id => 1, :action_type => 'diff', :rev => 5}
+      get :new, params: { id: 1, action_type: "diff", rev: 5 }
       assert_response :success
-      assert_template '_new_form'
+      assert_template "_new_form"
     end
 
     should "use the tracker given in the dialog" do
       @request.session[:user_id] = 1
-      get :new, :params => {:id => 1, :action_type => 'diff', :rev => 5, :issue => {:tracker_id => 2}}
+      get :new, params: { id: 1, action_type: "diff", rev: 5, issue: { tracker_id: 2 } }
       assert_response :success
       assert_equal(2, assigns(:review).issue.tracker_id)
     end
@@ -82,28 +82,27 @@ class CodeReviewControllerTest < ActionController::TestCase
     should "create new review" do
       @request.session[:user_id] = 1
       count = CodeReview.all.length
-      post :new, :params => {:id => 1, :review => {:line => 1, :change_id => 1,
-                                                :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'}
+      post :new, params: { id: 1, review: { line: 1, change_id: 1,
+                                                comment: "aaa", subject: "bbb" }, action_type: "diff" }
       assert_response :success
-      assert_template '_add_success'
+      assert_template "_add_success"
       assert_equal(count + 1, CodeReview.all.length)
 
-      get :new, :params => {:id => 1, :action_type => 'diff', :rev => 5}
+      get :new, params: { id: 1, action_type: "diff", rev: 5 }
       assert_response :success
-      assert_template '_new_form'
+      assert_template "_new_form"
     end
 
     should "new review has repository_id when action_type is diff and repository_id param is specified." do
       @request.session[:user_id] = 1
       count = CodeReview.all.length
-      post :new, :params => {:id => 1, :review => {:line => 1,
-                                                :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff', :repository_id => 1}
+      post :new, params: { id: 1, review: { line: 1,
+                                                comment: "aaa", subject: "bbb" }, action_type: "diff", repository_id: 1 }
       assert_response :success
-      assert_template '_add_success'
+      assert_template "_add_success"
       assert_equal(count + 1, CodeReview.all.length)
       review = assigns(:review)
       assert_equal("1", review.repository_identifier)
-
     end
 
     should "create new review when changeset has related issue" do
@@ -111,23 +110,23 @@ class CodeReviewControllerTest < ActionController::TestCase
       project = Project.find(1)
       change = Change.find(3)
       changeset = change.changeset
-      issue = Issue.generate!(:project => project)
+      issue = Issue.generate!(project: project)
       changeset.issues << issue
       changeset.save
       count = CodeReview.all.length
-      post :new, :params => {:id => 1, :review => {:line => 1, :change_id => 3,
-                                                :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'}
+      post :new, params: { id: 1, review: { line: 1, change_id: 3,
+                                                comment: "aaa", subject: "bbb" }, action_type: "diff" }
       assert_response :success
-      assert_template '_add_success'
+      assert_template "_add_success"
       assert_equal(count + 1, CodeReview.all.length)
 
       settings = CodeReviewProjectSetting.all
       settings.each { |setting|
         setting.destroy
       }
-      post :new, :params => {:id => 1, :review => {:line => 1, :change_id => 1,
-                                                :comment => 'aaa', :subject => 'bbb'}, :action_type => 'diff'}
-      assert_response 200
+      post :new, params: { id: 1, review: { line: 1, change_id: 1,
+                                                comment: "aaa", subject: "bbb" }, action_type: "diff" }
+      assert_response :ok
     end
 
     should "save safe_attributes" do
@@ -135,14 +134,13 @@ class CodeReviewControllerTest < ActionController::TestCase
       project = Project.find(1)
       change = Change.find(3)
       changeset = change.changeset
-      issue = Issue.generate!(:project => project)
+      issue = Issue.generate!(project: project)
       changeset.issues << issue
       changeset.save
-      count = CodeReview.all.length
-      post :new, :params => {:id => 1, :review => {:line => 10, :change_id => 3,
-                                                :comment => 'aaa', :subject => 'bbb', :parent_id => 1, :status_id => 1}, :action_type => 'diff'}
+      post :new, params: { id: 1, review: { line: 10, change_id: 3,
+                                                comment: "aaa", subject: "bbb", parent_id: 1, status_id: 1 }, action_type: "diff" }
       assert_response :success
-      assert_template '_add_success'
+      assert_template "_add_success"
 
       review = assigns :review
       assert_equal(1, review.project_id)
@@ -156,46 +154,46 @@ class CodeReviewControllerTest < ActionController::TestCase
     should "create review for attachment" do
       @request.session[:user_id] = 1
       project = Project.find(1)
-      issue = Issue.generate!(:project => project)
-      attachment = FactoryBot.create(:attachment, container: issue)
+      issue = Issue.generate!(project: project)
+      attachment = create(:attachment, container: issue)
       count = CodeReview.all.length
-      post :new, :params => {:id => 1, :review => {:line => 1, :comment => 'aaa',
-                                                :subject => 'bbb', :attachment_id => attachment.id}, :action_type => 'diff'}
+      post :new, params: { id: 1, review: { line: 1, comment: "aaa",
+                                                subject: "bbb", attachment_id: attachment.id }, action_type: "diff" }
       assert_response :success
-      assert_template '_add_success'
+      assert_template "_add_success"
       assert_equal(count + 1, CodeReview.all.length)
     end
   end
 
   def test_show
     @request.session[:user_id] = 1
-    get :show, :params => {:id => 1, :review_id => 9}
-    assert_response 302
-    #assert_template '_show'
+    get :show, params: { id: 1, review_id: 9 }
+    assert_response :found
+    # assert_template '_show'
   end
 
   context "show" do
     should "be success with review_id" do
       @request.session[:user_id] = 1
-      get :show, :params => {:id => 1, :review_id => 9}
-      assert_response 302
-      #assert_template '_show'
+      get :show, params: { id: 1, review_id: 9 }
+      assert_response :found
+      # assert_template '_show'
     end
     should "be success with assignment_id" do
       @request.session[:user_id] = 1
-      get :show, :params => {:id => 1, :assignment_id => 1}
-      assert_response 302
-      #assert_template '_show'
+      get :show, params: { id: 1, assignment_id: 1 }
+      assert_response :found
+      # assert_template '_show'
     end
   end
 
   def test_destroy
     project = Project.find(1)
-    issue = Issue.generate!(:project => project)
+    Issue.generate!(project: project)
     review = FactoryBot.create(:code_review, project: project)
     count = CodeReview.all.length
     @request.session[:user_id] = 1
-    get :destroy, :params => {:id => 1, :review_id => review.id}
+    get :destroy, params: { id: 1, review_id: review.id }
     assert_response :success
     assert_equal(count - 1, CodeReview.all.length)
   end
@@ -203,7 +201,7 @@ class CodeReviewControllerTest < ActionController::TestCase
   context "assign" do
     should "build the request issue from the change" do
       @request.session[:user_id] = 1
-      get :assign, :params => {:id => 1, :change_id => 1}
+      get :assign, params: { id: 1, change_id: 1 }
       assert_response :redirect
       assert_match(/issues\/new/, @response.location)
       assert_includes(CGI.unescape(@response.location), "code[change_id]=1")
@@ -215,10 +213,10 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
 
       review = CodeReview.find(9)
-      get :reply, :params => {:id => 1, :review_id => 9,
-                            :reply => {:comment => 'aaa'}, :issue => {:lock_version => review.issue.lock_version}}
+      get :reply, params: { id: 1, review_id: 9,
+                            reply: { comment: "aaa" }, issue: { lock_version: review.issue.lock_version } }
       assert_response :success
-      assert_template '_show'
+      assert_template "_show"
       assert_nil assigns(:error)
     end
 
@@ -226,10 +224,10 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
 
       review = CodeReview.find(9)
-      get :reply, :params => {:id => 1, :review_id => 9,
-                            :reply => {:comment => 'aaa'}, :issue => {:lock_version => review.issue.lock_version + 1}}
+      get :reply, params: { id: 1, review_id: 9,
+                            reply: { comment: "aaa" }, issue: { lock_version: review.issue.lock_version + 1 } }
       assert_response :success
-      assert_template '_show'
+      assert_template "_show"
       assert_not_nil assigns(:error)
     end
   end
@@ -237,22 +235,22 @@ class CodeReviewControllerTest < ActionController::TestCase
   def test_edit_form_cancel_hides_the_whole_edit_box
     @request.session[:user_id] = 1
     review = CodeReview.find(9)
-    get :reply, :params => {:id => 1, :review_id => 9,
-                          :reply => {:comment => 'aaa'}, :issue => {:lock_version => review.issue.lock_version}}
+    get :reply, params: { id: 1, review_id: 9,
+                          reply: { comment: "aaa" }, issue: { lock_version: review.issue.lock_version } }
     assert_response :success
     # The box shown by the Update link is #update-form-<id>; hiding only the form inside it
     # would leave an empty frame behind.
     assert_select "div#update-form-9 input[type=button][value=Cancel]" do |buttons|
-      assert_includes buttons.first['onclick'], '$("#update-form-9").hide()'
+      assert_includes buttons.first["onclick"], '$("#update-form-9").hide()'
     end
   end
 
   def test_reply_lock_error
     @request.session[:user_id] = 1
-    get :reply, :params => {:id => 1, :review_id => 9,
-                          :reply => {:comment => 'aaa'}, :issue => {:lock_version => 1}}
+    get :reply, params: { id: 1, review_id: 9,
+                          reply: { comment: "aaa" }, issue: { lock_version: 1 } }
     assert_response :success
-    assert_template '_show'
+    assert_template "_show"
     assert assigns(:error)
   end
 
@@ -287,13 +285,13 @@ class CodeReviewControllerTest < ActionController::TestCase
     @request.session[:user_id] = 1
     review_id = 9
     review = CodeReview.find(review_id)
-    assert_equal('Unable to print recipes', review.comment)
-    post :update, :params => {:id => 1, :review_id => review_id,
-                           :review => {:comment => 'bbb', :lock_version => review.lock_version},
-                           :issue => {:lock_version => review.issue.lock_version}}
+    assert_equal("Unable to print recipes", review.comment)
+    post :update, params: { id: 1, review_id: review_id,
+                           review: { comment: "bbb", lock_version: review.lock_version },
+                           issue: { lock_version: review.issue.lock_version } }
     assert_response :success
     review = CodeReview.find(review_id)
-    assert_equal('bbb', review.comment)
+    assert_equal("bbb", review.comment)
   end
 
   def test_update_lock_error
@@ -301,52 +299,52 @@ class CodeReviewControllerTest < ActionController::TestCase
     review_id = 9
     review = CodeReview.find(review_id)
     review.save!
-    assert_equal('Unable to print recipes', review.comment)
-    post :update, :params => {:id => 1, :review_id => review_id,
-                           :review => {:comment => 'bbb', :lock_version => review.lock_version},
-                           :issue => {:lock_version => 1}}
+    assert_equal("Unable to print recipes", review.comment)
+    post :update, params: { id: 1, review_id: review_id,
+                           review: { comment: "bbb", lock_version: review.lock_version },
+                           issue: { lock_version: 1 } }
     assert_not_nil assigns(:error)
     assert_response :success
     review = CodeReview.find(review_id)
-    assert_equal('Unable to print recipes', review.comment)
+    assert_equal("Unable to print recipes", review.comment)
   end
 
   def test_update_diff_view
     @request.session[:user_id] = 1
     review_id = 9
     review = CodeReview.find(review_id)
-    assert_equal('Unable to print recipes', review.comment)
-    post :update_diff_view, :params => {:id => 1, :review_id => review_id, :rev => 1, :path => '/test/some/path/in/the/repo'}
+    assert_equal("Unable to print recipes", review.comment)
+    post :update_diff_view, params: { id: 1, review_id: review_id, rev: 1, path: "/test/some/path/in/the/repo" }
     assert_response :success
-    review = CodeReview.find(review_id)
   end
 
   def test_forward_to_revision
     @request.session[:user_id] = 1
-    post :forward_to_revision, :params => {:id => 1, :path => '/subversion_test/folder/helloworld.rb'}
+    post :forward_to_revision, params: { id: 1, path: "/subversion_test/folder/helloworld.rb" }
+    assert_response :redirect
+    assert_match(%r{\Ahttp://test\.host/projects/[^/]+/repository/\d+/revisions/\d+/entry/+subversion_test/folder/helloworld\.rb\z}, response.location)
   end
 
   def test_update_attachment_view
     @request.session[:user_id] = 1
     review_id = 9
     review = CodeReview.find(review_id)
-    assert_equal('Unable to print recipes', review.comment)
-    post :update_attachment_view, :params => {:id => 1, :attachment_id => 1}
+    assert_equal("Unable to print recipes", review.comment)
+    post :update_attachment_view, params: { id: 1, attachment_id: 1 }
     assert_response :success
-    review = CodeReview.find(review_id)
   end
 
   def test_preview
     @request.session[:user_id] = 1
     review = {}
-    review[:comment] = 'aaa'
-    post :preview, :params => {:id => 1, :review => review}
+    review[:comment] = "aaa"
+    post :preview, params: { id: 1, review: review }
     assert_response :success
   end
 
   def test_assign
     @request.session[:user_id] = 1
-    post :assign, :params => {:id => 1}
+    post :assign, params: { id: 1 }
     assert_response :redirect
   end
 
@@ -356,13 +354,13 @@ class CodeReviewControllerTest < ActionController::TestCase
     end
 
     should "succeed if changeset_ids is nil" do
-      get :update_revisions_view, :params => {:id => 1}
+      get :update_revisions_view, params: { id: 1 }
       assert_response :success
       assert_equal(0, assigns(:changesets).length)
     end
 
     should "succeed if changeset_ids is not nil" do
-      get :update_revisions_view, :params => {:id => 1, :changeset_ids => '1,2,3'}
+      get :update_revisions_view, params: { id: 1, changeset_ids: "1,2,3" }
       assert_response :success
       assert_equal(3, assigns(:changesets).length)
     end

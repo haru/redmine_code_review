@@ -15,12 +15,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-class CodeReviewAssignment < ActiveRecord::Base
+class CodeReviewAssignment < ApplicationRecord
   belongs_to :issue
   belongs_to :change
   belongs_to :changeset
   belongs_to :attachment
-  validates_presence_of :issue_id
+  validates :issue_id, presence: true
 
   def is_closed?
     issue.closed?
@@ -46,7 +46,7 @@ class CodeReviewAssignment < ActiveRecord::Base
     @repository_identifier ||= repository.identifier_param if repository.respond_to?("identifier_param")
   end
 
-  def self.create_with_changeset(changeset)
+  def self.create_with_changeset(changeset) # rubocop:disable Metrics/AbcSize -- legacy method, refactor separately
     project = changeset.project
     setting = CodeReviewProjectSetting.find_or_create(project)
     auto_assign = setting.auto_assign_settings
@@ -55,14 +55,14 @@ class CodeReviewAssignment < ActiveRecord::Base
     issue.subject = auto_assign.subject
     issue.subject = I18n.t(:code_review_requrest) if issue.subject.blank?
     issue.subject = issue.subject.sub("$REV", changeset.revision)
-    issue.subject = issue.subject.sub("$COMMENTS", changeset.comments.split(//u)[0..60].join) unless changeset.comments.blank?
+    issue.subject = issue.subject.sub("$COMMENTS", changeset.comments.split(//u)[0..60].join) if changeset.comments.present?
     issue.tracker_id = setting.assignment_tracker_id
     issue.project = project
     issue.author = User.find(auto_assign.author_id)
     issue.assigned_to_id = auto_assign.select_assign_to(project, changeset.user)
     issue.description = auto_assign.description
-    issue.description = issue.description.sub("$REV", changeset.revision) unless issue.description.blank?
-    issue.description = issue.description.sub("$COMMENTS", changeset.comments) unless changeset.comments.blank?
+    issue.description = issue.description.sub("$REV", changeset.revision) if issue.description.present?
+    issue.description = issue.description.sub("$COMMENTS", changeset.comments) if changeset.comments.present?
 
     issue.save!
 

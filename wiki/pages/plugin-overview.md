@@ -1,7 +1,7 @@
 ---
 title: Plugin overview
 type: concept
-sources: [S001, S002, S003, S004, S005, S006, S007, S011, S013, S014, S015, S016, S017, S019, S020, S024, S025, S034, S035]
+sources: [S001, S002, S003, S004, S005, S006, S007, S011, S013, S014, S015, S016, S017, S019, S020, S024, S025, S034, S035, S036]
 updated: 2026-11-22
 ---
 
@@ -37,3 +37,6 @@ Full list of project settings: [Project settings](./project-settings.md). Setup 
 The review UI is covered by Playwright E2E tests in `test/e2e/`, separate from the Minitest suite (S035). See [Why Playwright for E2E tests](./e2e-playwright-adoption.md), [E2E isolated environment](./e2e-isolated-environment.md) and [Run the E2E tests](./run-e2e-tests.md).
 
 See [Review ↔ Issue delegation](./code-review-issue-delegation.md), [Controller actions](./code-review-controller-actions.md), [Auto-assignment](./auto-assignment-system.md).
+
+## Static analysis
+RuboCop runs in CI and locally through one script with pinned versions. See [Run RuboCop](./run-rubocop.md) and [Pin RuboCop with a dedicated Gemfile and Renovate](./rubocop-pinned-gemfile-and-renovate.md) (S036).

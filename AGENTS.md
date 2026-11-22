@@ -34,6 +34,13 @@ plugins/redmine_code_review/test/e2e/run.sh tests/review.spec.js  # one spec (ar
 ruby plugins/redmine_code_review/test/test_runner.rb
 ```
 
+RuboCop runs through one script shared by CI and local runs. It works from any directory (needs bash) and uses the versions pinned in `tools/rubocop/Gemfile.lock` (Renovate updates them). Do not run a bare `rubocop`: inside Redmine it inspects 0 files.
+
+```bash
+plugins/redmine_code_review/build-scripts/rubocop.sh      # check; fails on any offense or 0 target files
+plugins/redmine_code_review/build-scripts/rubocop.sh -a   # also apply safe autocorrections
+```
+
 The devcontainer (`.devcontainer/`) provisions MySQL and Postgres test databases and runs `post-create.sh`, which copies `Gemfile_for_test` over `Gemfile`, copies plugin fixtures into the host `test/fixtures`, and migrates both dev and test DBs for each adapter.
 
 `build-scripts/` and `travis/` are CI-oriented helpers (clone a fresh Redmine, symlink/copy this plugin in, migrate, run tests with coverage) — not needed for local iteration inside this devcontainer, where Redmine is already checked out.
@@ -95,6 +102,7 @@ A separate Node sub-project; Minitest never picks up `*.spec.js`. Rationale: `do
 - Follow Ruby/Rails conventions already used in the file you're editing (the codebase mixes older Redmine-plugin idioms with newer Rails style — match the surrounding code rather than introducing a new pattern).
 - Keep designs KISS / DRY / YAGNI: the simplest thing that works, no duplicated logic, no speculative abstractions for hypothetical future needs.
 - Practice TDD: write the failing test first, then the implementation.
+- `build-scripts/rubocop.sh` must report no offenses before work is considered done. Record unavoidable exceptions individually with a reason (inline `# rubocop:disable Cop -- reason` or a per-cop entry in `.rubocop.yml`); never add a `.rubocop_todo.yml` or blanket-disable a department.
 - Maintain C0 (statement) test coverage of at least 90%. Check `coverage/` (SimpleCov) after running the suite before considering work done.
 - No easy fallbacks: don't swallow or silently default around errors (rescuing broadly, `rescue nil`, silent empty-array/false returns). Let unexpected conditions raise and be handled explicitly; only validate at true system boundaries.
 

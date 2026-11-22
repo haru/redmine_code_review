@@ -40,3 +40,5 @@ Sources are immutable inputs — the wiki never edits them.
 | S033 | app/helpers/code_review_helper.rb | file | 2026-11-21 | 2026-11-21 | manual-assignment-flow.md, update-diff-view-partial.md |
 | S034 | specs/001-playwright-e2e-tests/research.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md |
 | S035 | specs/001-playwright-e2e-tests/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md, plugin-overview.md |
+| S036 | specs/004-rubocop-ci/research.md | feature-artifact | 2026-11-22 | 2026-11-22 | rubocop-pinned-gemfile-and-renovate.md, run-rubocop.md, rubocop-adoption-cleanup.md, plugin-overview.md |
+| S037 | specs/004-rubocop-ci/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | rubocop-pinned-gemfile-and-renovate.md, rubocop-adoption-cleanup.md |

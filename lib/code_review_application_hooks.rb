@@ -1,6 +1,6 @@
 # Code Review plugin for Redmine
 # Copyright (C) 2009-2010  Haruyuki Iida
-#rev
+# rev
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -15,9 +15,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require 'redmine/utils'
+require "redmine/utils"
 
 class CodeReviewApplicationHooks < Redmine::Hook::ViewListener
-  render_on :view_layouts_base_html_head, :partial => 'code_review/html_header'
-  render_on :view_layouts_base_body_bottom, :partial => 'code_review/body_bottom'
+  render_on :view_layouts_base_html_head, partial: "code_review/html_header"
+  render_on :view_layouts_base_body_bottom, partial: "code_review/body_bottom"
 end

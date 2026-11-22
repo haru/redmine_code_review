@@ -14,8 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
-require 'code_review_attachment_patch'
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
+require "code_review_attachment_patch"
 
 class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories, :changesets, :changes, :attachments,
@@ -23,7 +23,7 @@ class CodeReviewAttachmentPatchTest < ActiveSupport::TestCase
 
   def setup
     @project = Project.find(1)
-    @issue = Issue.where(:project_id => 1).first
+    @issue = Issue.where(project_id: 1).first
     @attachment = FactoryBot.create(:attachment, container: @issue)
   end
 

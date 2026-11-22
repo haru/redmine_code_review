@@ -17,60 +17,60 @@
 
 class ReviewMailer < Mailer
   def review_add(project, review)
-    redmine_headers 'Project' => review.project.identifier,
-                    'Review-Id' => review.id,
-                    'Review-Author' => review.user.login
+    redmine_headers "Project" => review.project.identifier,
+                    "Review-Id" => review.id,
+                    "Review-Author" => review.user.login
 
     recipients get_mail_addresses(review)
 
     subject "[#{review.project.name} - #{l(:label_review_new)} - #{l(:label_review)}##{review.id}] "
-    review_url = url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.id)
+    review_url = url_for(controller: "code_review", action: "show", id: project, review_id: review.id)
 
-    body :review => review, :review_url => review_url
+    body review: review, review_url: review_url
 
-    return if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+    return if l(:this_is_checking_for_before_rails_2_2_2) == "this_is_checking_for_before_rails_2_2_2"
     # 何故かrails 2.2 以後は以下の処理が必要
 
     content_type "multipart/alternative"
 
     part "text/plain" do |p|
-      p.body = render_message("review_add.text.plain.erb", :body => body, :review => review, :review_url => review_url)
+      p.body = render_message("review_add.text.plain.erb", body: body, review: review, review_url: review_url)
     end
 
     part "text/html" do |p|
-      p.body = render_message("review_add.text.html.erb", :body => body, :review => review, :review_url => review_url)
+      p.body = render_message("review_add.text.html.erb", body: body, review: review, review_url: review_url)
     end
   end
 
   def review_reply(project, review)
-    redmine_headers 'Project' => review.project.identifier,
-      'Review-Id' => review.id,
-      'Review-Author' => review.user.login
+    redmine_headers "Project" => review.project.identifier,
+      "Review-Id" => review.id,
+      "Review-Author" => review.user.login
 
     recipients recipients get_mail_addresses(review)
 
     subject "[#{review.project.name} - Updated - #{l(:label_review)}##{review.root.id}] "
-    review_url = url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
-    body :review => review, :review_url => review_url
+    review_url = url_for(controller: "code_review", action: "show", id: project, review_id: review.root.id)
+    body review: review, review_url: review_url
 
-    return if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+    return if l(:this_is_checking_for_before_rails_2_2_2) == "this_is_checking_for_before_rails_2_2_2"
     # 何故かrails 2.2 以後は以下の処理が必要
 
     content_type "multipart/alternative"
 
     part "text/plain" do |p|
-      p.body = render_message("review_reply.text.plain.erb", :body => body, :review => review, :review_url => review_url)
+      p.body = render_message("review_reply.text.plain.erb", body: body, review: review, review_url: review_url)
     end
 
     part "text/html" do |p|
-      p.body = render_message("review_reply.text.html.erb", :body => body, :review => review, :review_url => review_url)
+      p.body = render_message("review_reply.text.html.erb", body: body, review: review, review_url: review_url)
     end
   end
 
   def review_status_changed(project, review)
-    redmine_headers 'Project' => review.project.identifier,
-      'Review-Id' => review.id,
-      'Review-Author' => review.user.login
+    redmine_headers "Project" => review.project.identifier,
+      "Review-Id" => review.id,
+      "Review-Author" => review.user.login
 
     recipients recipients get_mail_addresses(review)
 
@@ -78,21 +78,21 @@ class ReviewMailer < Mailer
     new_status = l(:label_review_closed) if review.status_changed_to == CodeReview::STATUS_CLOSED
 
     subject "[#{review.project.name} - Updated - #{l(:label_review)}##{review.root.id}] Status changed to #{new_status}."
-    review_url = url_for(:controller => 'code_review', :action => 'show', :id => project, :review_id => review.root.id)
+    review_url = url_for(controller: "code_review", action: "show", id: project, review_id: review.root.id)
 
-    body :review => review, :review_url => review_url
+    body review: review, review_url: review_url
 
-    return if (l(:this_is_checking_for_before_rails_2_2_2) == 'this_is_checking_for_before_rails_2_2_2')
+    return if l(:this_is_checking_for_before_rails_2_2_2) == "this_is_checking_for_before_rails_2_2_2"
     # 何故かrails 2.2 以後は以下の処理が必要
 
     content_type "multipart/alternative"
 
     part "text/plain" do |p|
-      p.body = render_message("review_status_changed.text.plain.erb", :body => body, :review => review, :review_url => review_url)
+      p.body = render_message("review_status_changed.text.plain.erb", body: body, review: review, review_url: review_url)
     end
 
     part "text/html" do |p|
-      p.body = render_message("review_status_changed.text.html.erb", :body => body, :review => review, :review_url => review_url)
+      p.body = render_message("review_status_changed.text.html.erb", body: body, review: review, review_url: review_url)
     end
   end
 

@@ -15,12 +15,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require_dependency 'changeset'
+require_dependency "changeset"
 
 module CodeReviewChangesetPatch
   def self.included(base) # :nodoc:
     base.class_eval do
-      has_many :code_review_assignments, :dependent => :destroy
+      has_many :code_review_assignments, dependent: :destroy
     end
   end
 end
@@ -35,7 +35,7 @@ module ChangesetInstanceMethodsCodeReview
     filechanges.each { |change|
       @review_count += change.review_count
     }
-    return @review_count
+    @review_count
   end
 
   def open_review_count
@@ -44,7 +44,7 @@ module ChangesetInstanceMethodsCodeReview
     filechanges.each { |change|
       @open_review_count += change.open_review_count
     }
-    return @open_review_count
+    @open_review_count
   end
 
   def open_reviews
@@ -86,7 +86,7 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_review_count == 0
       100
     else
-      @completed_review_pourcent ||= (closed_review_count * 100 + open_reviews.collect { |o|
+      @completed_review_pourcent ||= ((closed_review_count * 100) + open_reviews.collect { |o|
         o.issue.done_ratio
       }.inject(:+)) / review_count
     end
@@ -97,12 +97,12 @@ module ChangesetInstanceMethodsCodeReview
   #
 
   def assignment_count
-    #return @assignment_count if @assignment_count
+    # return @assignment_count if @assignment_count
     @assignment_count = code_review_assignments.length
     filechanges.each { |change|
       @assignment_count += change.assignment_count
     }
-    return @assignment_count
+    @assignment_count
   end
 
   def open_assignment_count
@@ -113,7 +113,7 @@ module ChangesetInstanceMethodsCodeReview
     filechanges.each { |change|
       @open_assignment_count += change.open_assignment_count
     }
-    return @open_assignment_count
+    @open_assignment_count
   end
 
   def assignment_issues
@@ -135,6 +135,7 @@ module ChangesetInstanceMethodsCodeReview
         !assignment.is_closed?
       }
     }
+    @open_assignments
   end
 
   def closed_assignment_count
@@ -155,8 +156,7 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_assignment_count == 0
       100
     else
-      opens = open_assignments
-      @completed_assignment_pourcent ||= (closed_assignment_count * 100 + open_assignments.collect { |o|
+      @completed_assignment_pourcent ||= ((closed_assignment_count * 100) + open_assignments.collect { |o|
         o.issue.done_ratio
       }.sum) / assignment_count
     end
@@ -169,7 +169,7 @@ module ChangesetInstanceMethodsCodeReview
     ret = super
     project = repository.project if repository
     return ret unless project
-    return ret unless project.module_enabled?('code_review')
+    return ret unless project.module_enabled?("code_review")
     setting = CodeReviewProjectSetting.find_or_create(project)
     auto_assign = setting.auto_assign_settings
     return ret unless auto_assign.enabled?
@@ -180,4 +180,4 @@ module ChangesetInstanceMethodsCodeReview
 end
 
 Changeset.prepend(ChangesetInstanceMethodsCodeReview)
-Changeset.send(:include, CodeReviewChangesetPatch)
+Changeset.include CodeReviewChangesetPatch
