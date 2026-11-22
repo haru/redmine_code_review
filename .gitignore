@@ -4,3 +4,6 @@ Gemfile.lock
 test/tmp/*
 tmp/*
 .specify/extensions/.cache/
+
+# Nested spec-kit repository
+/specs/
