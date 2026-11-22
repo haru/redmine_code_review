@@ -41,6 +41,7 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
       @filter.expression = 'src/.*'
       @filter.accept = true
       @filter.order = 10
+      @changeset = Struct.new(:filechanges)
     end
 
     should "add_filter appends the filter attributes" do
@@ -50,19 +51,23 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
     end
 
     should "match_with_changeset? accept every changeset while filters are disabled" do
-      assert @settings.match_with_changeset?(Struct.new(:filechanges).new([]))
+      assert @settings.match_with_changeset?(@changeset.new([]))
     end
 
     context "with filters enabled" do
       setup do
         @settings.filter_enabled = true
         @settings.add_filter(@filter)
-        @changeset = Struct.new(:filechanges)
       end
 
       should "match_with_changeset? be false when no change path is accepted" do
         change = Struct.new(:path).new('doc/a.md')
         assert_equal false, @settings.match_with_changeset?(@changeset.new([change]))
+      end
+
+      should "match_with_changeset? be true when a change path is accepted" do
+        change = Struct.new(:path).new('src/a.rb')
+        assert_equal true, @settings.match_with_changeset?(@changeset.new([change]))
       end
     end
   end

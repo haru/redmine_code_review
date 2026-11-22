@@ -126,7 +126,7 @@ module CodeReviewAutoAssignSettings
     def match_with_changeset?(changeset)
       return true unless filter_enabled?
       changeset.filechanges.each { |change|
-        return if match_with_change?(change)
+        return true if match_with_change?(change)
       }
       return false
     end

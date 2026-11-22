@@ -1,6 +1,6 @@
 const { test, expect } = require('../support/fixtures');
 const {
-  seed, login, resetCodeReviewSettings, commitFile, fetchChangesets, openReviewForm, applyReview, openReview,
+  seed, login, resetCodeReviewSettings, commitFile, fetchChangesets, openReviewForm, applyReview, openReview, waitForAnimations, reviewIdFrom,
 } = require('../support/helpers');
 
 const settingsUrl = `/projects/${seed.settingsProject}/settings/code_review`;
@@ -169,13 +169,10 @@ const settingsDiffUrl = () => `/projects/${seed.settingsProject}/repository/${se
 // `filter` is { expression, accept } or null for no filters; `defaultAccept` is the
 // "default" select of the filter block ('true' = assign, 'false' = drop).
 async function configureAutoAssign(page, { filter, defaultAccept }) {
-  await page.locator('#auto_assign_enabled').check();
-  await expect(page.locator('#cr_auto_assign_settings')).toBeVisible();
+  await enableFilters(page);
   await page.locator('#auto_assign_author_id').selectOption({ label: `E2E ${seed.user.login}` });
   await page.getByRole('checkbox', { name: `E2E ${seed.user.login}` }).check();
   await page.fill('#auto_assign_subject', 'E2E auto $COMMENTS');
-  await page.locator('#auto_assign_filter_enabled').check();
-  await expect(page.locator('#auto_assignment_filter_form')).toBeVisible();
   if (filter) {
     await addFilter(page, filter.expression, filter.accept);
   }
@@ -202,19 +199,15 @@ test('creates a review assignment when a matching commit is imported', async ({ 
   await expect(assignments).toHaveCount(1);
 });
 
-test('creates no assignment when the commit is dropped by the filter', async ({ page }) => {
-  await openSettings(page);
-  await configureAutoAssign(page, { filter: { expression: 'auto/e2e-.*', accept: 'false' }, defaultAccept: 'true' });
-
-  const { assignments } = await importCommit(page);
-  await expect(page.locator('#code_review_assignments')).toBeVisible();
-  await expect(assignments).toHaveCount(0);
-});
-
-for (const [defaultAccept, expected] of [['true', 1], ['false', 0]]) {
-  test(`follows the default action (${defaultAccept === 'true' ? 'assign' : 'drop'}) when there are no filters`, async ({ page }) => {
+const dropCases = [
+  { name: 'creates no assignment when the commit is dropped by the filter', filter: { expression: 'auto/e2e-.*', accept: 'false' }, defaultAccept: 'true', expected: 0 },
+  { name: 'follows the default action (assign) when there are no filters', filter: null, defaultAccept: 'true', expected: 1 },
+  { name: 'follows the default action (drop) when there are no filters', filter: null, defaultAccept: 'false', expected: 0 },
+];
+for (const { name, filter, defaultAccept, expected } of dropCases) {
+  test(name, async ({ page }) => {
     await openSettings(page);
-    await configureAutoAssign(page, { filter: null, defaultAccept });
+    await configureAutoAssign(page, { filter, defaultAccept });
 
     const { assignments } = await importCommit(page);
     await expect(page.locator('#code_review_assignments')).toBeVisible();
@@ -240,10 +233,9 @@ test('lets the reviewer pick the tracker in the review dialog when enabled', asy
   // The dialog is redrawn with the chosen tracker and the typed subject kept.
   await expect(page.locator('#issue_tracker_id option:checked')).toHaveText(chosen);
   await expect(page.locator('#review_subject')).toHaveValue('E2E tracker switch');
-  await page.waitForFunction(() => window.jQuery(':animated').length === 0);
+  await waitForAnimations(page);
 
-  const body = await (await applyReview(page)).text();
-  const id = body.match(/var review_id = (\d+);/)[1];
-  await page.locator(`#review_${id} img`).click();
+  const id = reviewIdFrom(await (await applyReview(page)).text(), 'E2E tracker switch');
+  await openReview(page, id);
   await expect(page.locator(`#show_review_${id} h2`)).toContainText(chosen);
 });

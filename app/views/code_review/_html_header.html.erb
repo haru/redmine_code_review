@@ -23,7 +23,7 @@
   -%>
   <%= javascript_include_tag("code_review.js", plugin: "redmine_code_review") %>
   <%# A page with its own wiki toolbar already loads jstoolbar.js and its language file; loading jstoolbar.js twice is a SyntaxError. -%>
-  <% unless content_for(:header_tags).to_s.include?('jstoolbar/jstoolbar') %>
+  <% unless @heads_for_wiki_formatter_included %>
     <%= javascript_include_tag('jstoolbar/jstoolbar') %>
     <%= javascript_include_tag("jstoolbar/lang/jstoolbar-#{@project.current_language.to_s.downcase}.js") %>
   <% end %>

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { expect } = require('./fixtures');
@@ -42,7 +43,8 @@ function reviewShowUrl(id, project = seed.project) {
   return `/projects/${project}/code_review/show?review_id=${id}`;
 }
 
-// `who` is 'user' (reviewer with all review permissions) or 'viewer' (view only).
+// `who` is 'user' (reviewer with all review permissions), 'viewer' (view only) or
+// 'outsider' (not a member of the project).
 async function login(page, who = 'user') {
   const account = seed[who];
   await page.goto('/login');
@@ -58,6 +60,22 @@ async function login(page, who = 'user') {
   await expect(page.locator('#content h2')).toContainText('My page');
 }
 
+// The dialogs open with a jQuery UI effect that rebuilds their content; text typed
+// before the animation ends is lost. Wait until no effect is running.
+async function waitForAnimations(page) {
+  await page.waitForFunction(() => window.jQuery(':animated').length === 0);
+}
+
+// Extracts the id of a freshly created review from the response of the create POST.
+// Raises with the body if the server re-rendered the form instead (it answers 200 then).
+function reviewIdFrom(body, subject) {
+  const match = body.match(/var review_id = (\d+);/);
+  if (!match) {
+    throw new Error(`review "${subject}" was not created; the server re-rendered the form:\n${body.slice(0, 500)}`);
+  }
+  return match[1];
+}
+
 // Opens a diff and the add-review dialog of its first pencil icon.
 async function openReviewForm(page, diffUrl = fileDiffUrl()) {
   await page.goto(diffUrl);
@@ -67,9 +85,7 @@ async function openReviewForm(page, diffUrl = fileDiffUrl()) {
   // The pencil icon id is spelled "add_revew_img_" in the plugin's JavaScript.
   await page.locator('img[id^="add_revew_img_"]').first().click();
   await expect(page.locator('#review_subject')).toBeVisible();
-  // The dialog opens with a jQuery UI effect that rebuilds its content; text typed
-  // before the animation ends is lost.
-  await page.waitForFunction(() => window.jQuery(':animated').length === 0);
+  await waitForAnimations(page);
 }
 
 // Clicks Apply and returns the response of the POST that saves the review.
@@ -89,11 +105,7 @@ async function createReview(page, subject, diffUrl = fileDiffUrl()) {
   await page.fill('#review_subject', subject);
   await expect(page.locator('#review_subject')).toHaveValue(subject);
   const body = await (await applyReview(page)).text();
-  const match = body.match(/var review_id = (\d+);/);
-  if (!match) {
-    throw new Error(`review "${subject}" was not created; the server re-rendered the form:\n${body.slice(0, 500)}`);
-  }
-  const id = match[1];
+  const id = reviewIdFrom(body, subject);
   await expect(page.locator(`#review_${id} img`)).toBeVisible();
   return { id };
 }
@@ -102,8 +114,7 @@ async function createReview(page, subject, diffUrl = fileDiffUrl()) {
 async function openReview(page, id) {
   await page.locator(`#review_${id} img`).click();
   await expect(page.locator(`#show_review_${id}`)).toBeVisible();
-  // The popup opens with a jQuery UI effect; wait until it has finished.
-  await page.waitForFunction(() => window.jQuery(':animated').length === 0);
+  await waitForAnimations(page);
 }
 
 // Commits one file under auto/ to the shared test repository and returns the new revision.
@@ -112,7 +123,6 @@ function commitFile(relativePath, content, message) {
   if (!relativePath.startsWith('auto/')) {
     throw new Error(`commitFile only writes under auto/, got: ${relativePath}`);
   }
-  const fs = require('fs');
   const target = path.join(repoDir, relativePath);
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, content);
@@ -135,10 +145,11 @@ async function fetchChangesets(page, project) {
 // environment disables CSRF protection, so no token is needed. Must be called logged in
 // as a user with code_review_setting.
 async function resetCodeReviewSettings(page, project = seed.settingsProject) {
+  const trackerId = await firstTrackerId(page, project);
   const response = await page.request.post(`/projects/${project}/code_review_settings/update`, {
     form: {
-      'setting[tracker_id]': await firstTrackerId(page, project),
-      'setting[assignment_tracker_id]': await firstTrackerId(page, project),
+      'setting[tracker_id]': trackerId,
+      'setting[assignment_tracker_id]': trackerId,
       'setting[auto_relation]': '0',
       'setting[hide_code_review_tab]': '0',
       'setting[tracker_in_review_dialog]': '0',
@@ -152,7 +163,9 @@ async function resetCodeReviewSettings(page, project = seed.settingsProject) {
 
 // The id of the first tracker option on the project's settings form.
 async function firstTrackerId(page, project) {
-  const html = await (await page.request.get(`/projects/${project}/settings/code_review`)).text();
+  const response = await page.request.get(`/projects/${project}/settings/code_review`);
+  expect(response.status(), `settings page of ${project}`).toBe(200);
+  const html = await response.text();
   const match = html.match(/<select[^>]*id="setting_tracker_id"[^>]*>\s*<option[^>]*value="(\d+)"/);
   if (!match) throw new Error(`could not read the tracker id from the settings of ${project}`);
   return match[1];
@@ -160,6 +173,6 @@ async function firstTrackerId(page, project) {
 
 module.exports = {
   seed, fileDiffUrl, changesetDiffUrl, attachmentUrl, reviewShowUrl, login,
-  openReviewForm, applyReview, createReview, openReview, commitFile, fetchChangesets,
+  openReviewForm, applyReview, createReview, openReview, waitForAnimations, reviewIdFrom, commitFile, fetchChangesets,
   resetCodeReviewSettings,
 };

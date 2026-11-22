@@ -84,7 +84,7 @@ end
 # An issue with a unified-diff attachment, for reviewing patch files.
 tracker = project.trackers.first
 patch_issue = Issue.create!(project: project, tracker: tracker, author: user, subject: 'E2E patch issue',
-                            priority: IssuePriority.default || IssuePriority.first, status: IssueStatus.first)
+                            priority: IssuePriority.first, status: IssueStatus.first)
 patch_content = <<~PATCH
   --- a/src/hello.rb
   +++ b/src/hello.rb

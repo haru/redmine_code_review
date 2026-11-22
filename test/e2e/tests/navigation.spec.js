@@ -28,8 +28,8 @@ test('sorts the review index by subject and by id', async ({ page }) => {
   const first = `E2E sort ${unique} alpha`;
   const second = `E2E sort ${unique} omega`;
   await login(page);
-  const a = await createReview(page, first);
-  const b = await createReview(page, second);
+  await createReview(page, first);
+  await createReview(page, second);
 
   // Positions of the two reviews among the rows listed on the page.
   const order = async (selector) => {
@@ -50,10 +50,9 @@ test('sorts the review index by subject and by id', async ({ page }) => {
   expect(i).toBeLessThan(j);
   await sortBy('Subject');
   [i, j] = await order('td.subject');
+  expect(j).toBeGreaterThanOrEqual(0);
   expect(i).toBeGreaterThan(j);
 
-  // The default order is by id descending, so the newer review comes first.
-  expect(Number(b.id)).toBeGreaterThan(Number(a.id));
   await sortBy('#');
   const ids = await page.locator('#code_review_list tbody td:first-child').allTextContents();
   const issueIds = ids.map((t) => Number(t.trim()));

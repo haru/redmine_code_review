@@ -205,6 +205,8 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
       get :assign, :params => {:id => 1, :change_id => 1}
       assert_response :redirect
+      assert_match(/issues\/new/, @response.location)
+      assert_includes(CGI.unescape(@response.location), "code[change_id]=1")
     end
   end
 

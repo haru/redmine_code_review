@@ -53,8 +53,7 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
-    @auto_assign.filter_enabled = true
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   def edit_filter
@@ -74,8 +73,7 @@ class CodeReviewSettingsController < ApplicationController
       i = i + 1
       filter
     }
-    @auto_assign.filter_enabled = true
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   def sort
@@ -101,12 +99,17 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
-    @auto_assign.filter_enabled = true
-
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   private
+
+  # The filter partials are only requested from the visible filter block, so the
+  # block must stay enabled even when the saved setting still has it disabled.
+  def render_filters
+    @auto_assign.filter_enabled = true
+    render :partial => "code_review_settings/filters"
+  end
 
   def find_project
     # @project variable must be set before calling the authorize filter

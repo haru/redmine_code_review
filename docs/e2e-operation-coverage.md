@@ -5,7 +5,7 @@ The 38 rows are fixed: 17 `server` rows map one-to-one to the actions registered
 `init.rb` (`project_module :code_review`), 21 `ui` rows are operations that are completed
 on the screen or that are linked displays without a server action of their own.
 
-Baseline (before 002): 6 / 38 (16%)
+Baseline (before the coverage expansion): 6 / 38 (16%)
 Current: 38 / 38 (100%) (known failures: 0)
 
 Status: `verified` (a passing scenario), `known failure` (a `test.fail` scenario that
@@ -32,7 +32,7 @@ references a GitHub Issue), `not verified`. Coverage = (verified + known failure
 | 17 | server | `code_review_settings#sort` | code_review_setting | verified | settings.spec.js › reorders filters and keeps the order after saving | Fixed: sort arrows always acted on the last row (_filters.html.erb) |
 | 18 | ui | Open / close the add-review dialog | - | verified | review.spec.js › keeps the dialog open with an error when the subject is empty | |
 | 19 | ui | Pop up an existing review from its icon | - | verified | review.spec.js › opens an existing review from its icon | |
-| 20 | ui | Show / cancel the review edit form | - | verified | lifecycle.spec.js › edits the subject and comment of a review and keeps them after reloading | Cancel bug fixed in app/views/code_review/_show.html.erb (research R4) |
+| 20 | ui | Show / cancel the review edit form | - | verified | lifecycle.spec.js › edits the subject and comment of a review and keeps them after reloading | Cancel bug fixed in app/views/code_review/_show.html.erb (the Cancel button hid `#review_form_<id>` instead of `#update-form-<id>`) |
 | 21 | ui | Show the reply form | - | verified | lifecycle.spec.js › replies to a review and shows the reply after reloading |  |
 | 22 | ui | Cancel the delete confirmation | - | verified | lifecycle.spec.js › keeps the review when the delete confirmation is cancelled |  |
 | 23 | ui | Preview formatted text (wiki toolbar) | - | verified | lifecycle.spec.js › previews formatted text from the wiki toolbar of the reply form |  |
