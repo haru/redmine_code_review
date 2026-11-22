@@ -103,7 +103,7 @@ A separate Node sub-project; Minitest never picks up `*.spec.js`. Rationale: `do
 - Keep designs KISS / DRY / YAGNI: the simplest thing that works, no duplicated logic, no speculative abstractions for hypothetical future needs.
 - Practice TDD: write the failing test first, then the implementation.
 - `build-scripts/rubocop.sh` must report no offenses before work is considered done. Record unavoidable exceptions individually with a reason (inline `# rubocop:disable Cop -- reason` or a per-cop entry in `.rubocop.yml`); never add a `.rubocop_todo.yml` or blanket-disable a department.
-- Maintain C0 (statement) test coverage of at least 90%. Check `coverage/` (SimpleCov) after running the suite before considering work done.
+- Maintain C0 (statement) test coverage of at least 95%. Check `coverage/` (SimpleCov) after running the suite before considering work done.
 - No easy fallbacks: don't swallow or silently default around errors (rescuing broadly, `rescue nil`, silent empty-array/false returns). Let unexpected conditions raise and be handled explicitly; only validate at true system boundaries.
 
 ### Wiki and specs
