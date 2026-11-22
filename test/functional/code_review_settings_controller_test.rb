@@ -135,6 +135,17 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_equal(1, @auto_assign.filters.length)
       assert_response :success
     end
+
+    should "keep the filter block enabled" do
+      filter = AssignmentFilter.new
+      filter.expression = 'aaa'
+      filter.order = 10
+      filter.accept = true
+      post :edit_filter, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => {'0' => filter.attributes}), :num => 0,
+                                  :auto_assign_edit_filter => {'0' => filter.attributes}}
+      assert assigns(:auto_assign).filter_enabled?
+      assert_select 'input#auto_assign_filter_enabled[checked]'
+    end
   end
 
   context "sort" do
@@ -189,6 +200,25 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       @auto_assign = assigns(:auto_assign)
       assert_not_nil @auto_assign
       assert_response :success
+    end
+
+    should "keep the filter block enabled" do
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters),
+                           :auto_assign_filter => {:num => 1, :move_to => 'highest'}}
+      assert assigns(:auto_assign).filter_enabled?
+      assert_select 'input#auto_assign_filter_enabled[checked]'
+    end
+
+    # The form is serialized as a whole, so repeated hidden fields would all be sent and
+    # only the last one would win: the arrows would always move the last filter.
+    should "render one pair of sort fields and let each arrow pass its own row number" do
+      post :sort, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => @filters),
+                           :auto_assign_filter => {:num => 0, :move_to => 'highest'}}
+      assert_select 'input[name=?]', 'auto_assign_filter[num]', 1
+      assert_select 'input[name=?]', 'auto_assign_filter[move_to]', 1
+      assert_select '#auto_assign_tr_1 a[onclick*=cr_sort_filter]', 4 do |links|
+        links.each { |link| assert_match(/, 1\)\z/, link['onclick']) }
+      end
     end
   end
 end

@@ -74,6 +74,7 @@ class CodeReviewSettingsController < ApplicationController
       i = i + 1
       filter
     }
+    @auto_assign.filter_enabled = true
     render :partial => "code_review_settings/filters"
   end
 
@@ -100,6 +101,7 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
+    @auto_assign.filter_enabled = true
 
     render :partial => "code_review_settings/filters"
   end

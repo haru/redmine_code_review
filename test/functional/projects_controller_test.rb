@@ -201,6 +201,38 @@ class ProjectsControllerTest < ActionController::TestCase
       end
     end
 
+    context "by admin user with the code_review module" do
+      setup do
+        @request.session[:user_id] = 1
+        FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+      end
+
+      # The page's own wiki toolbar already loads jstoolbar.js; loading it a second time
+      # raises "Identifier 'lastJstPreviewed' has already been declared" in the browser.
+      should "load jstoolbar.js only once" do
+        get :settings, :params => {:id => 1}
+        assert_response :success
+        assert_equal 1, response.body.scan(%r{jstoolbar/jstoolbar[-.0-9a-f]*\.js}).size
+      end
+    end
+
+    context "by admin user with the code_review module and a repository" do
+      setup do
+        @request.session[:user_id] = 1
+        FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+        CodeReviewProjectSetting.find_or_create(Project.find(1))
+      end
+
+      # A required select inside the hidden auto-assign block blocks the browser's form
+      # submission without any message, so the settings could not be saved at all.
+      should "not require the auto-assign author while auto-assign is disabled" do
+        get :settings, :params => {:id => 1, :tab => 'code_review'}
+        assert_response :success
+        assert_select 'select#auto_assign_author_id'
+        assert_select 'select#auto_assign_author_id[required]', false
+      end
+    end
+
     context "by admin user" do
       setup do
         @request.session[:user_id] = 1

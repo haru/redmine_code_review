@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../support/fixtures');
 const { seed, login, createReview } = require('../support/helpers');
 
 test('lists a registered review on the review index', async ({ page }) => {

@@ -217,6 +217,19 @@ class CodeReviewControllerTest < ActionController::TestCase
     end
   end
 
+  def test_edit_form_cancel_hides_the_whole_edit_box
+    @request.session[:user_id] = 1
+    review = CodeReview.find(9)
+    get :reply, :params => {:id => 1, :review_id => 9,
+                          :reply => {:comment => 'aaa'}, :issue => {:lock_version => review.issue.lock_version}}
+    assert_response :success
+    # The box shown by the Update link is #update-form-<id>; hiding only the form inside it
+    # would leave an empty frame behind.
+    assert_select "div#update-form-9 input[type=button][value=Cancel]" do |buttons|
+      assert_includes buttons.first['onclick'], '$("#update-form-9").hide()'
+    end
+  end
+
   def test_reply_lock_error
     @request.session[:user_id] = 1
     get :reply, :params => {:id => 1, :review_id => 9,

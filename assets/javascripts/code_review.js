@@ -82,7 +82,10 @@ function UpdateRevisionView() {
 
     var a = li.down('a');
     if (a.length == 0) return;
-    var path = a.attr('href').replace(urlprefix, '').replace(/\?.*$/, '');
+    // The legend items (li.change without a link) have no href.
+    var href = a.attr('href');
+    if (!href) return;
+    var path = href.replace(urlprefix, '').replace(/\?.*$/, '');
 
     var reviewlist = code_reviews_map[path];
     if (reviewlist == null) return;

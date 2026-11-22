@@ -1,13 +1,20 @@
 const path = require('path');
-const { expect } = require('@playwright/test');
+const { execFileSync } = require('child_process');
+const { expect } = require('./fixtures');
 const { workDir } = require('./env');
+
+const repoDir = path.join(workDir, 'repo');
 
 // Seed data written by support/seed.rb. Required once per worker; a missing file or
 // invalid JSON raises with the path, and missing keys raise below.
 const seed = require(path.join(workDir, 'seed.json'));
 for (const keys of [
   ['user', 'login'], ['user', 'password'], ['viewer', 'login'], ['viewer', 'password'],
+  ['outsider', 'login'], ['outsider', 'password'],
   ['project'], ['repository'], ['revision'], ['path'],
+  ['privateProject'], ['settingsProject'], ['settingsRepository'],
+  ['patchAttachment', 'id'], ['patchAttachment', 'filename'], ['patchIssue'],
+  ['parentSuggestion', 'revision'], ['parentSuggestion', 'parentIssue'],
 ]) {
   const value = keys.reduce((obj, key) => (obj == null ? undefined : obj[key]), seed);
   if (value === undefined || value === null || value === '') {
@@ -23,6 +30,16 @@ function fileDiffUrl(query = '') {
 
 function changesetDiffUrl(query = '') {
   return `/projects/${seed.project}/repository/${seed.repository}/revisions/${seed.revision}/diff?${query}`;
+}
+
+// URL of the seeded patch attachment's diff view.
+function attachmentUrl() {
+  return `/attachments/${seed.patchAttachment.id}`;
+}
+
+// URL of the plugin's show action for one review.
+function reviewShowUrl(id, project = seed.project) {
+  return `/projects/${project}/code_review/show?review_id=${id}`;
 }
 
 // `who` is 'user' (reviewer with all review permissions) or 'viewer' (view only).
@@ -81,4 +98,68 @@ async function createReview(page, subject, diffUrl = fileDiffUrl()) {
   return { id };
 }
 
-module.exports = { seed, fileDiffUrl, changesetDiffUrl, login, openReviewForm, applyReview, createReview };
+// Opens the popup of review `id` by clicking its icon on the current diff page.
+async function openReview(page, id) {
+  await page.locator(`#review_${id} img`).click();
+  await expect(page.locator(`#show_review_${id}`)).toBeVisible();
+  // The popup opens with a jQuery UI effect; wait until it has finished.
+  await page.waitForFunction(() => window.jQuery(':animated').length === 0);
+}
+
+// Commits one file under auto/ to the shared test repository and returns the new revision.
+// Restricting the path keeps src/hello.rb's history (and seed.json) unchanged.
+function commitFile(relativePath, content, message) {
+  if (!relativePath.startsWith('auto/')) {
+    throw new Error(`commitFile only writes under auto/, got: ${relativePath}`);
+  }
+  const fs = require('fs');
+  const target = path.join(repoDir, relativePath);
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, content);
+  const git = (...args) => execFileSync('git', ['-C', repoDir, '-c', 'user.name=E2E', '-c', 'user.email=e2e@example.invalid', ...args], { encoding: 'utf8' });
+  git('add', relativePath);
+  git('commit', '--quiet', '-m', message);
+  return git('rev-parse', 'HEAD').trim();
+}
+
+// Opens the repository page of `project`, which makes Redmine import new commits
+// (autofetch_changesets), and waits for the page to load.
+async function fetchChangesets(page, project) {
+  const response = await page.goto(`/projects/${project}/repository`);
+  expect(response.status(), `repository page of ${project}`).toBe(200);
+  await page.waitForLoadState('networkidle');
+}
+
+// Posts the default code review settings to `project` (auto-assign off, no filters, first
+// tracker, no auto relation, tab shown, no tracker choice in the dialog). The test
+// environment disables CSRF protection, so no token is needed. Must be called logged in
+// as a user with code_review_setting.
+async function resetCodeReviewSettings(page, project = seed.settingsProject) {
+  const response = await page.request.post(`/projects/${project}/code_review_settings/update`, {
+    form: {
+      'setting[tracker_id]': await firstTrackerId(page, project),
+      'setting[assignment_tracker_id]': await firstTrackerId(page, project),
+      'setting[auto_relation]': '0',
+      'setting[hide_code_review_tab]': '0',
+      'setting[tracker_in_review_dialog]': '0',
+      // Same shape as the real form with the auto-assign checkbox unchecked.
+      'auto_assign[subject]': 'Code review request',
+    },
+    maxRedirects: 0,
+  });
+  expect(response.status(), `resetting settings of ${project}`).toBe(302);
+}
+
+// The id of the first tracker option on the project's settings form.
+async function firstTrackerId(page, project) {
+  const html = await (await page.request.get(`/projects/${project}/settings/code_review`)).text();
+  const match = html.match(/<select[^>]*id="setting_tracker_id"[^>]*>\s*<option[^>]*value="(\d+)"/);
+  if (!match) throw new Error(`could not read the tracker id from the settings of ${project}`);
+  return match[1];
+}
+
+module.exports = {
+  seed, fileDiffUrl, changesetDiffUrl, attachmentUrl, reviewShowUrl, login,
+  openReviewForm, applyReview, createReview, openReview, commitFile, fetchChangesets,
+  resetCodeReviewSettings,
+};
