@@ -135,6 +135,7 @@ module ChangesetInstanceMethodsCodeReview
         !assignment.is_closed?
       }
     }
+    @open_assignments
   end
 
   def closed_assignment_count
