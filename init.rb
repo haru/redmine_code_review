@@ -17,6 +17,7 @@
 require "redmine"
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib"
 
+require_relative "version"
 require "code_review_application_hooks"
 require "code_review_change_patch"
 require "code_review_changeset_patch"
@@ -31,7 +32,7 @@ Redmine::Plugin.register :redmine_code_review do
   author_url "http://twitter.com/haru_iida"
   url "http://www.redmine.org/plugins/redmine_code_review" if respond_to?(:url)
   description "This is a Code Review plugin for Redmine"
-  version "1.2.2"
+  version RedmineCodeReview::VERSION
   requires_redmine version_or_higher: "6.0.0"
 
   project_module :code_review do
