@@ -240,9 +240,9 @@ class CodeReviewController < ApplicationController
 
     @changeset = changeset
     if @path
-      @reviews = CodeReview.where([ "file_path = ? and rev = ? and issue_id is NOT NULL", @path, @rev ]).where(project_id: @project.id).all
+      @reviews = CodeReview.where(file_path: @path, rev: @rev, project_id: @project.id).where.not(issue_id: nil).all
     else
-      @reviews = CodeReview.where([ "rev = ? and issue_id is NOT NULL", @rev ]).where(project_id: @project.id).all
+      @reviews = CodeReview.where(rev: @rev, project_id: @project.id).where.not(issue_id: nil).all
     end
     @review.change_id = @change.id if @change
 
