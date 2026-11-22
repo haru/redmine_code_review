@@ -7,6 +7,10 @@ page files, not here.
 ## concept
 - [Plugin overview](./pages/plugin-overview.md) — purpose, integration points, data model, Redmine version conflict
 
+## decision
+- [Why Playwright for E2E tests](./pages/e2e-playwright-adoption.md) — Node sub-project, Chromium only, rejected alternatives
+- [E2E isolated environment](./pages/e2e-isolated-environment.md) — test env, own sqlite DB, port 4500, run.sh orchestration
+
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue
 - [CodeReviewController actions](./pages/code-review-controller-actions.md) — actions, filters, AJAX views
@@ -34,4 +38,5 @@ page files, not here.
 - [Review statistics helpers](./pages/review-statistics-helpers.md) — counts and percentages on Change and Changeset
 
 ## howto
+- [Run the E2E tests](./pages/run-e2e-tests.md) — run.sh, seed data, driving the review UI
 - [Install and enable the plugin](./pages/install-and-enable-plugin.md) — install, migrate, enable module, verify

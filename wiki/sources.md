@@ -38,3 +38,5 @@ Sources are immutable inputs — the wiki never edits them.
 | S031 | app/views/code_review/index.html.erb | file | 2026-11-21 | 2026-11-21 | review-index-page.md, code-review-controller-actions.md, install-and-enable-plugin.md |
 | S032 | app/views/code_review/_change_attachement_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-attachment-page-view.md, review-ui-activation.md, review-javascript-internals.md |
 | S033 | app/helpers/code_review_helper.rb | file | 2026-11-21 | 2026-11-21 | manual-assignment-flow.md, update-diff-view-partial.md |
+| S034 | specs/001-playwright-e2e-tests/research.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md |
+| S035 | specs/001-playwright-e2e-tests/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md, plugin-overview.md |
