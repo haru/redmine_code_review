@@ -59,9 +59,11 @@ class CodeReviewSettingsController < ApplicationController
   def edit_filter
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    num = params[:num].to_i
     filters = params[:auto_assign][:filters].values if params[:auto_assign][:filters].present?
     filters = [] unless filters
+    num = filter_row_number(params[:num], filters)
+    return head :bad_request unless num
+
     i = 0
     @auto_assign.filters = filters.collect { |f|
       filter = AssignmentFilter.new
@@ -76,16 +78,14 @@ class CodeReviewSettingsController < ApplicationController
     render_filters
   end
 
-  def sort # rubocop:disable Metrics/AbcSize -- legacy method, refactor separately
+  def sort
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
     filters = params[:auto_assign][:filters].values if params[:auto_assign][:filters].present?
     filters = [] unless filters
-    # The row number comes from the request; refuse one that is not a valid index into the
-    # submitted list. to_i would map "abc" to 0 and filters[-1] would select the last row.
-    num = Integer(params[:auto_assign_filter][:num].to_s, 10, exception: false)
+    num = filter_row_number(params[:auto_assign_filter][:num], filters)
     move_to = params[:auto_assign_filter][:move_to]
-    return head :bad_request unless num && num >= 0 && filters[num]
+    return head :bad_request unless num
 
     if move_to == "highest"
       filters[num][:order] = 0
@@ -106,6 +106,14 @@ class CodeReviewSettingsController < ApplicationController
   end
 
   private
+
+  # The row number comes from the request; return it only when it is a valid index into the
+  # submitted list, otherwise nil. to_i would map "abc" to 0 and filters[-1] would select the
+  # last row.
+  def filter_row_number(raw, filters)
+    num = Integer(raw.to_s, 10, exception: false)
+    num if num && num >= 0 && filters[num]
+  end
 
   # The filter partials are only requested from the visible filter block, so the
   # block must stay enabled even when the saved setting still has it disabled.

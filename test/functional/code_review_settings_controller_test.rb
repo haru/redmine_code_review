@@ -159,6 +159,29 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert assigns(:auto_assign).filter_enabled?
       assert_select "input#auto_assign_filter_enabled[checked]"
     end
+
+    should "reject a row number that is outside the submitted filters" do
+      filter = AssignmentFilter.new
+      filter.expression = "aaa"
+      filter.order = 10
+      filter.accept = true
+      post :edit_filter, params: { id: @project.id, auto_assign: @setting.auto_assign_settings.attributes.merge(filters: { "0" => filter.attributes }), num: 1,
+                                  auto_assign_edit_filter: { "1" => filter.attributes } }
+      assert_response :bad_request
+    end
+
+    # to_i would turn "abc" into 0 and overwrite the first row with the submitted edit.
+    [ "abc", "-1", "", "1.5" ].each do |num|
+      should "reject the malformed row number #{num.inspect}" do
+        filter = AssignmentFilter.new
+        filter.expression = "aaa"
+        filter.order = 10
+        filter.accept = true
+        post :edit_filter, params: { id: @project.id, auto_assign: @setting.auto_assign_settings.attributes.merge(filters: { "0" => filter.attributes }), num: num,
+                                    auto_assign_edit_filter: { "0" => filter.attributes } }
+        assert_response :bad_request
+      end
+    end
   end
 
   context "sort" do
