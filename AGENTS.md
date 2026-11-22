@@ -82,6 +82,11 @@ Because these are monkey patches on core Redmine classes, changes here can affec
 - Maintain C0 (statement) test coverage of at least 90%. Check `coverage/` (SimpleCov) after running the suite before considering work done.
 - No easy fallbacks: don't swallow or silently default around errors (rescuing broadly, `rescue nil`, silent empty-array/false returns). Let unexpected conditions raise and be handled explicitly; only validate at true system boundaries.
 
+### Wiki and specs
+
+- `wiki/` is an LLM-maintained knowledge base (spec-kit wiki extension): `wiki/INDEX.md` is the entry point, `wiki/pages/*.md` hold per-component pages (models, controller actions, permissions, auto-assignment, JS internals). Check it before re-deriving behavior from code. Update it only through the `speckit-wiki-*` skills (ingest/query/lint); rules are in `wiki/SCHEMA.md`.
+- `specs/` is a separate nested repository (git-ignored here); documents under it must be written in Japanese (see `specs/AGENTS.md`).
+
 ### Docs and ADRs
 
 - Reference material lives under `docs/` — check there for existing documentation before assuming behavior; filenames are the index, so look for a filename matching the topic. When adding a new doc, give it a clear, descriptive filename.

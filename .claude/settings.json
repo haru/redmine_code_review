@@ -1,20 +1,25 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(gh pr *)",
-      "Bash(gh repo *)",
-      "Bash(gh label *)",
-      "Bash(find /usr/local/redmine/plugins/redmine_code_review/.claude -maxdepth 3 2>&1; echo \"---\"; find /workspaces/.claude -maxdepth 2 -iname \"*skill*\" 2>&1)",
-      "Read(//workspaces/.claude/**)",
-      "Bash(mkdir -p /usr/local/redmine/plugins/redmine_code_review/.claude/skills/create-pr && ls /usr/local/redmine/plugins/redmine_code_review/.claude/skills)",
-      "Edit(/.claude/skills/create-pr/**)",
-      "Bash(xargs -I{} echo {})"
-    ],
-    "additionalDirectories": [
-      "/usr/local/redmine/plugins/redmine_code_review/.claude/skills"
-    ]
+    "allow": [],
+    "additionalDirectories": []
   },
+  "enabledMcpjsonServers": [
+    "context7",
+    "deepwiki",
+    "playwright",
+    "github"
+  ],
   "enabledPlugins": {
+    "ruby-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat | tr -d '\\n'); model=$(printf '%s' \"$input\" | sed -n 's/.*\"display_name\"[[:space:]]*:[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p' | head -n1); used=$(printf '%s' \"$input\" | sed 's/.*\"context_window\"//' | grep -o '\"used_percentage\"[[:space:]]*:[[:space:]]*[^,}]*' | head -n1 | sed 's/.*:[[:space:]]*//'); branch=$(git --no-optional-locks symbolic-ref --short HEAD 2>/dev/null); printf '\\033[36m%s\\033[0m' \"$model\"; [ -n \"$branch\" ] && printf ' \\033[32m%s\\033[0m' \"$branch\"; case \"$used\" in ''|null) ;; *) pct=${used%.*}; c=32; [ \"$pct\" -ge 50 ] && c=33; [ \"$pct\" -ge 80 ] && c=31; printf ' \\033[%sm ctx %s%%\\033[0m' \"$c\" \"$pct\";; esac"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
   }
 }
