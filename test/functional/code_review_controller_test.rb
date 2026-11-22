@@ -72,6 +72,13 @@ class CodeReviewControllerTest < ActionController::TestCase
       assert_template '_new_form'
     end
 
+    should "use the tracker given in the dialog" do
+      @request.session[:user_id] = 1
+      get :new, :params => {:id => 1, :action_type => 'diff', :rev => 5, :issue => {:tracker_id => 2}}
+      assert_response :success
+      assert_equal(2, assigns(:review).issue.tracker_id)
+    end
+
     should "create new review" do
       @request.session[:user_id] = 1
       count = CodeReview.all.length
@@ -191,6 +198,14 @@ class CodeReviewControllerTest < ActionController::TestCase
     get :destroy, :params => {:id => 1, :review_id => review.id}
     assert_response :success
     assert_equal(count - 1, CodeReview.all.length)
+  end
+
+  context "assign" do
+    should "build the request issue from the change" do
+      @request.session[:user_id] = 1
+      get :assign, :params => {:id => 1, :change_id => 1}
+      assert_response :redirect
+    end
   end
 
   context "reply" do

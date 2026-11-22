@@ -136,6 +136,20 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_response :success
     end
 
+    should "keep the other filters unchanged" do
+      first = AssignmentFilter.new
+      first.expression = 'aaa'
+      first.order = 10
+      first.accept = true
+      second = AssignmentFilter.new
+      second.expression = 'bbb'
+      second.order = 20
+      second.accept = false
+      post :edit_filter, :params => {:id => @project.id, :auto_assign => @setting.auto_assign_settings.attributes.merge(:filters => {'0' => first.attributes, '1' => second.attributes}), :num => 1,
+                                  :auto_assign_edit_filter => {'1' => {:expression => 'ccc', :order => 20, :accept => true}}}
+      assert_equal(['aaa', 'ccc'], assigns(:auto_assign).filters.map(&:expression))
+    end
+
     should "keep the filter block enabled" do
       filter = AssignmentFilter.new
       filter.expression = 'aaa'
