@@ -31,7 +31,7 @@ class CodeReviewUserSetting < ApplicationRecord
     setting = CodeReviewUserSetting.new
     setting.user_id = uid
     setting.mail_notification = NOTIFICATION_INVOLVED_IN
-    setting.save
+    setting.save!
     setting
   end
 

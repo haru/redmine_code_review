@@ -28,10 +28,6 @@ class CodeReview < ApplicationRecord
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
 
-  def before_create
-    Issue.new unless issue
-  end
-
   def is_closed?
     issue.closed?
     # self.root.status == STATUS_CLOSED
@@ -52,28 +48,27 @@ class CodeReview < ApplicationRecord
   end
 
   def path
-    begin
-      return file_path if file_path
-      return @path if @path
-      if attachment_id
-        @path = attachment.filename
-        return @path
-      end
-      repository = changeset.repository
-      url = repository.url
-      root_url = repository.root_url
-      if url == nil || root_url == nil
-        @path = change.path
-        return @path
-      end
-      rootpath = url[root_url.length, url.length - root_url.length]
-      if rootpath == "/" || rootpath.blank?
-        @path = change.path
-      else
-        @path = change.path[rootpath.length, change.path.length - rootpath.length]
-      end
-    rescue => ex
-      ex.to_s
+    return file_path if file_path
+    return @path if @path
+    if attachment_id
+      @path = attachment.filename
+      return @path
+    end
+    # A review that is not saved yet has no change to resolve a path from
+    return unless changeset
+
+    repository = changeset.repository
+    url = repository.url
+    root_url = repository.root_url
+    if url == nil || root_url == nil
+      @path = change.path
+      return @path
+    end
+    rootpath = url[root_url.length, url.length - root_url.length]
+    if rootpath == "/" || rootpath.blank?
+      @path = change.path
+    else
+      @path = change.path[rootpath.length, change.path.length - rootpath.length]
     end
   end
 

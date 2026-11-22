@@ -27,7 +27,6 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
     end
     controller = context[:controller]
     return "" unless controller
-    context[:request]
     issue = context[:issue]
 
     o = ""
@@ -38,12 +37,10 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
   end
 
   def view_issues_form_details_bottom(context = {}) # rubocop:disable Metrics/AbcSize -- legacy method, refactor separately
-    context[:project]
     request = context[:request]
     parameters = request.parameters
     code = parameters[:code]
     return unless code
-    context[:issue]
     o = ""
     o << hidden_field_tag("code[rev]", code[:rev]) if code[:rev].present?
     o << "\n"
@@ -64,7 +61,6 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
 
   def controller_issues_new_after_save(context = {}) # rubocop:disable Metrics/AbcSize -- legacy method, refactor separately
     if context[:request] && context[:project] && context[:issue]
-      context[:project]
       request = context[:request]
       parameters = request.parameters
       code = parameters[:code]

@@ -137,7 +137,6 @@ class CodeReviewControllerTest < ActionController::TestCase
       issue = Issue.generate!(project: project)
       changeset.issues << issue
       changeset.save
-      CodeReview.all.length
       post :new, params: { id: 1, review: { line: 10, change_id: 3,
                                                 comment: "aaa", subject: "bbb", parent_id: 1, status_id: 1 }, action_type: "diff" }
       assert_response :success
@@ -317,7 +316,6 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_equal("Unable to print recipes", review.comment)
     post :update_diff_view, params: { id: 1, review_id: review_id, rev: 1, path: "/test/some/path/in/the/repo" }
     assert_response :success
-    CodeReview.find(review_id)
   end
 
   def test_forward_to_revision
@@ -332,7 +330,6 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_equal("Unable to print recipes", review.comment)
     post :update_attachment_view, params: { id: 1, attachment_id: 1 }
     assert_response :success
-    CodeReview.find(review_id)
   end
 
   def test_preview

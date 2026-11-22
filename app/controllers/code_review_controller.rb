@@ -275,8 +275,8 @@ class CodeReviewController < ApplicationController
 
       @issue.save!
       if !journal.new_record?
-        # Only send notification if something was actually changed
-        flash[:notice] = l(:notice_successful_update) # rubocop:disable Rails/ActionControllerFlashBeforeRender -- flash persists past the partial render by design
+        # Notify the user only if something was actually changed
+        flash[:notice] = l(:notice_successful_update) # rubocop:disable Rails/ActionControllerFlashBeforeRender -- pre-existing behavior: the flash is shown on the next full page, changing it needs its own test
       end
 
       render partial: "show"

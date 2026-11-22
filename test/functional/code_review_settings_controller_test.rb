@@ -57,7 +57,6 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
 
     should "save settings" do
       @request.session[:user_id] = 1
-      CodeReviewProjectSetting.find(1)
 
       post :update, params: { id: 1, setting: { tracker_id: 2, assignment_tracker_id: 3,
                                                     hide_code_review_tab: true, auto_relation: CodeReviewProjectSetting::AUTORELATION_TYPE_BLOCKS },

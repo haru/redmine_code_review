@@ -155,7 +155,6 @@ module ChangesetInstanceMethodsCodeReview
     elsif open_assignment_count == 0
       100
     else
-      open_assignments
       @completed_assignment_pourcent ||= ((closed_assignment_count * 100) + open_assignments.collect { |o|
         o.issue.done_ratio
       }.sum) / assignment_count

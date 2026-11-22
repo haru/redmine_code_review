@@ -103,7 +103,6 @@ class IssuesControllerTest < ActionController::TestCase
   context "create" do
     should "create code_review_assignment." do
       @request.session[:user_id] = 1
-      Project.find(1)
       post :create, params: { project_id: 1, issue: { subject: "test" }, code: { change_id: 1, changeset_id: 1 } }
       assert_response :redirect
     end
