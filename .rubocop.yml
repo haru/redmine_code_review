@@ -5,6 +5,8 @@ plugins:
 
 AllCops:
   NewCops: enable
+  # Lowest supported Ruby, so autocorrect never emits newer syntax.
+  TargetRubyVersion: 3.1
   Exclude:
     - 'db/**/*'
 
@@ -240,6 +242,10 @@ Rails/UniqueValidationWithoutIndex:
 
 # Rails/Pluck mis-fires on plain Ruby arrays (not ActiveRecord relations).
 Rails/Pluck:
+  Enabled: false
+
+# params.expect requires Rails 8.0; Redmine 6.0 (a supported version) runs on Rails 7.2.
+Rails/StrongParametersExpect:
   Enabled: false
 
 # Test setup intentionally bypasses validations to set specific state

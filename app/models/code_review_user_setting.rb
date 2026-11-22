@@ -14,12 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-class CodeReviewUserSetting < ActiveRecord::Base
+class CodeReviewUserSetting < ApplicationRecord
   belongs_to :user
 
-  validates_presence_of :user_id
-  validates_presence_of :mail_notification
-  validates_uniqueness_of :user_id
+  validates :user_id, presence: true
+  validates :mail_notification, presence: true
+  validates :user_id, uniqueness: true
 
   NOTIFCIATION_NONE = 0
   NOTIFICATION_INVOLVED_IN = 1
@@ -32,7 +32,7 @@ class CodeReviewUserSetting < ActiveRecord::Base
     setting.user_id = uid
     setting.mail_notification = NOTIFICATION_INVOLVED_IN
     setting.save
-    return setting
+    setting
   end
 
   def mail_notification_none?

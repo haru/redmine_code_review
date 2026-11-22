@@ -11,8 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
-require 'projects_controller'
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
+require "projects_controller"
 
 # Lets a test pretend that one file is missing (minitest 6 no longer bundles minitest/mock).
 module HideFileFromExist
@@ -45,13 +45,13 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "302 get" do
-        get :settings, :params => {:id => 1}
-        assert_response 302
+        get :settings, params: { id: 1 }
+        assert_response :found
       end
 
       should "302 post" do
-        get :settings, :params => {:id => 1}
-        assert_response 302
+        get :settings, params: { id: 1 }
+        assert_response :found
       end
 
       context "with permission" do
@@ -60,36 +60,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :params => {:id => 1}
+          get :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         should "not exist tag id post" do
-          post :settings, :params => {:id => 1}
+          post :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         context "and module" do
           setup do
-            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+            create(:enabled_module, project_id: 1, name: "code_review")
           end
 
           should "not exist tag id get" do
-            get :settings, :params => {:id => 1}
+            get :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review', false
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review", false
           end
 
           should "not exist tag id post" do
-            post :settings, :params => {:id => 1}
+            post :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review', false
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review", false
           end
         end
       end
@@ -101,13 +101,13 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "403 get" do
-        get :settings, :params => {:id => 1}
-        assert_response 403
+        get :settings, params: { id: 1 }
+        assert_response :forbidden
       end
 
       should "403 post" do
-        get :settings, :params => {:id => 1}
-        assert_response 403
+        get :settings, params: { id: 1 }
+        assert_response :forbidden
       end
 
       context "with permission" do
@@ -116,36 +116,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :params => {:id => 1}
+          get :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         should "not exist tag id post" do
-          post :settings, :params => {:id => 1}
+          post :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         context "and module" do
           setup do
-            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+            create(:enabled_module, project_id: 1, name: "code_review")
           end
 
           should "not exist tag id get" do
-            get :settings, :params => {:id => 1}
+            get :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review', false
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review", false
           end
 
           should "not exist tag id post" do
-            post :settings, :params => {:id => 1}
+            post :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review', false
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review", false
           end
         end
       end
@@ -158,17 +158,17 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id get" do
-        get :settings, :params => {:id => 1}
+        get :settings, params: { id: 1 }
         assert_response :success
-        assert_template 'settings'
-        assert_select 'div.tabs ul li a#tab-code_review', false
+        assert_template "settings"
+        assert_select "div.tabs ul li a#tab-code_review", false
       end
 
       should "not exist tag id post" do
-        get :settings, :params => {:id => 1}
+        get :settings, params: { id: 1 }
         assert_response :success
-        assert_template 'settings'
-        assert_select 'div.tabs ul li a#tab-code_review', false
+        assert_template "settings"
+        assert_select "div.tabs ul li a#tab-code_review", false
       end
 
       context "with permission" do
@@ -177,36 +177,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :params => {:id => 1}
+          get :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         should "not exist tag id post" do
-          post :settings, :params => {:id => 1}
+          post :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         context "and module" do
           setup do
-            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+            create(:enabled_module, project_id: 1, name: "code_review")
           end
 
           should "not exist tag id get" do
-            get :settings, :params => {:id => 1}
+            get :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review', false
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review", false
           end
 
           should "not exist tag id post" do
-            post :settings, :params => {:id => 1}
+            post :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review', false
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review", false
           end
         end
       end
@@ -215,7 +215,7 @@ class ProjectsControllerTest < ActionController::TestCase
     context "by admin user with the code_review module" do
       setup do
         @request.session[:user_id] = 1
-        FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+        create(:enabled_module, project_id: 1, name: "code_review")
       end
 
       # The page's own wiki toolbar already loads jstoolbar.js; loading it a second time
@@ -223,9 +223,9 @@ class ProjectsControllerTest < ActionController::TestCase
       # Newer Redmine versions replaced it with a Stimulus toolbar and no longer ship the
       # file, so there it must not be loaded at all.
       should "load jstoolbar.js only once" do
-        get :settings, :params => {:id => 1}
+        get :settings, params: { id: 1 }
         assert_response :success
-        shipped = File.exist?(Rails.root.join('app/assets/javascripts/jstoolbar/jstoolbar.js'))
+        shipped = Rails.root.join("app/assets/javascripts/jstoolbar/jstoolbar.js").exist?
         assert_equal shipped ? 1 : 0, response.body.scan(%r{jstoolbar/jstoolbar[-.0-9a-f]*\.js}).size
       end
 
@@ -233,9 +233,9 @@ class ProjectsControllerTest < ActionController::TestCase
       # candidate to emit the tag; without the shipped file it must not emit a broken one.
       should "not emit legacy toolbar tags when Redmine does not ship jstoolbar.js" do
         File.singleton_class.prepend(HideFileFromExist)
-        HideFileFromExist.hidden = Rails.root.join('app/assets/javascripts/jstoolbar/jstoolbar.js').to_s
+        HideFileFromExist.hidden = Rails.root.join("app/assets/javascripts/jstoolbar/jstoolbar.js").to_s
         begin
-          get :show, :params => {:id => 1}
+          get :show, params: { id: 1 }
         ensure
           HideFileFromExist.hidden = nil
         end
@@ -247,17 +247,17 @@ class ProjectsControllerTest < ActionController::TestCase
     context "by admin user with the code_review module and a repository" do
       setup do
         @request.session[:user_id] = 1
-        FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+        create(:enabled_module, project_id: 1, name: "code_review")
         CodeReviewProjectSetting.find_or_create(Project.find(1))
       end
 
       # A required select inside the hidden auto-assign block blocks the browser's form
       # submission without any message, so the settings could not be saved at all.
       should "not require the auto-assign author while auto-assign is disabled" do
-        get :settings, :params => {:id => 1, :tab => 'code_review'}
+        get :settings, params: { id: 1, tab: "code_review" }
         assert_response :success
-        assert_select 'select#auto_assign_author_id'
-        assert_select 'select#auto_assign_author_id[required]', false
+        assert_select "select#auto_assign_author_id"
+        assert_select "select#auto_assign_author_id[required]", false
       end
 
       should "require the auto-assign author while auto-assign is enabled" do
@@ -265,9 +265,9 @@ class ProjectsControllerTest < ActionController::TestCase
         settings.enabled = true
         setting = CodeReviewProjectSetting.find_or_create(Project.find(1))
         setting.update!(auto_assign: settings.to_s)
-        get :settings, :params => {:id => 1, :tab => 'code_review'}
+        get :settings, params: { id: 1, tab: "code_review" }
         assert_response :success
-        assert_select 'select#auto_assign_author_id[required]'
+        assert_select "select#auto_assign_author_id[required]"
       end
     end
 
@@ -278,17 +278,17 @@ class ProjectsControllerTest < ActionController::TestCase
       end
 
       should "not exist tag id get" do
-        get :settings, :params => {:id => 1}
+        get :settings, params: { id: 1 }
         assert_response :success
-        assert_template 'settings'
-        assert_select 'div.tabs ul li a#tab-code_review', false
+        assert_template "settings"
+        assert_select "div.tabs ul li a#tab-code_review", false
       end
 
       should "not exist tag id post" do
-        get :settings, :params => {:id => 1}
+        get :settings, params: { id: 1 }
         assert_response :success
-        assert_template 'settings'
-        assert_select 'div.tabs ul li a#tab-code_review', false
+        assert_template "settings"
+        assert_select "div.tabs ul li a#tab-code_review", false
       end
 
       context "with permission" do
@@ -297,36 +297,36 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should "not exist tag id get" do
-          get :settings, :params => {:id => 1}
+          get :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         should "not exist tag id post" do
-          post :settings, :params => {:id => 1}
+          post :settings, params: { id: 1 }
           assert_response :success
-          assert_template 'settings'
-          assert_select 'div.tabs ul li a#tab-code_review', false
+          assert_template "settings"
+          assert_select "div.tabs ul li a#tab-code_review", false
         end
 
         context "and module" do
           setup do
-            FactoryBot.create(:enabled_module, project_id: 1, name: 'code_review')
+            create(:enabled_module, project_id: 1, name: "code_review")
           end
 
           should "exist tag id get" do
-            get :settings, :params => {:id => 1}
+            get :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review'
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review"
           end
 
           should "exist tag id post" do
-            post :settings, :params => {:id => 1}
+            post :settings, params: { id: 1 }
             assert_response :success
-            assert_template 'settings'
-            assert_select 'div.tabs ul li a#tab-code_review'
+            assert_template "settings"
+            assert_select "div.tabs ul li a#tab-code_review"
           end
         end
       end

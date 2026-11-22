@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 
 class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
@@ -65,7 +65,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     FactoryBot.create(:change, changeset: changeset)
 
     issues = []
-    4.times{
+    4.times {
       issue = FactoryBot.create(:issue, status_id: 1, done_ratio: 0)
       issues << Issue.find(issue.id)
     }
@@ -96,19 +96,19 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
 
   context "closed_assignment_pourcent" do
     should "returns 0 if changeset has no assignments." do
-      change = FactoryBot.create(:change)
+      change = create(:change)
       changeset = change.changeset
       assert_equal(0, changeset.closed_assignment_pourcent)
     end
 
     should "returns 0 if changeset has no closed assignments." do
-      change = FactoryBot.create(:change)
+      change = create(:change)
       changeset = change.changeset
       @project = Project.generate!
-      issue1 = Issue.generate!({:project => @project, :status_id => 1})
-      issue2 = Issue.generate!({:project => @project, :status_id => 1})
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: issue1)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: issue2)
+      issue1 = Issue.generate!({ project: @project, status_id: 1 })
+      issue2 = Issue.generate!({ project: @project, status_id: 1 })
+      change.code_review_assignments << create(:code_review_assignment, issue: issue1)
+      change.code_review_assignments << create(:code_review_assignment, issue: issue2)
       change.save!
       assert_equal(0, changeset.closed_assignment_pourcent)
     end
@@ -116,19 +116,19 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
     should "returns 100 if changeset has no closed assignments." do
       CodeReviewAssignment.destroy_all
       Issue.destroy_all
-      change = FactoryBot.create(:change)
+      change = create(:change)
       changeset = change.changeset
       @project = Project.find(1)
-      issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue1 = Issue.generate!({ project: @project, status: IssueStatus.find(5) })
       issue1.status = IssueStatus.find(5)
       issue1.save!
       issue1 = Issue.find(issue1.id)
-      issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue2 = Issue.generate!({ project: @project, status: IssueStatus.find(5) })
       issue2.status = IssueStatus.find(5)
       issue2.save!
       issue2 = Issue.find(issue2.id)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: issue1)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: issue2)
+      change.code_review_assignments << create(:code_review_assignment, issue: issue1)
+      change.code_review_assignments << create(:code_review_assignment, issue: issue2)
       change.save!
       changeset = Changeset.find(changeset.id)
       assert issue1.closed?
@@ -145,28 +145,28 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       Issue.destroy_all
       Change.destroy_all
       Changeset.destroy_all
-      change = FactoryBot.create(:change)
+      change = create(:change)
       changeset = change.changeset
       @project = Project.generate!
-      issue1 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue1 = Issue.generate!({ project: @project, status: IssueStatus.find(5) })
       issue1.status = IssueStatus.find(5)
       issue1.save!
-      issue2 = Issue.generate!({:project => @project, :status => IssueStatus.find(1)})
+      issue2 = Issue.generate!({ project: @project, status: IssueStatus.find(1) })
       issue2.status = IssueStatus.find(1)
       issue2.save!
-      issue3 = Issue.generate!({:project => @project, :status => IssueStatus.find(5)})
+      issue3 = Issue.generate!({ project: @project, status: IssueStatus.find(5) })
       issue3.status = IssueStatus.find(5)
       issue3.save!
-      issue4 = Issue.generate!({:project => @project, :status => IssueStatus.find(1)})
+      issue4 = Issue.generate!({ project: @project, status: IssueStatus.find(1) })
       issue4.status = IssueStatus.find(1)
       issue4.save!
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: Issue.find(issue1.id))
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: Issue.find(issue2.id))
+      change.code_review_assignments << create(:code_review_assignment, issue: Issue.find(issue1.id))
+      change.code_review_assignments << create(:code_review_assignment, issue: Issue.find(issue2.id))
       change.save!
       assert_equal(1, change.open_assignment_count)
-      change = FactoryBot.create(:change, changeset: changeset)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: Issue.find(issue3.id))
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue: Issue.find(issue4.id))
+      change = create(:change, changeset: changeset)
+      change.code_review_assignments << create(:code_review_assignment, issue: Issue.find(issue3.id))
+      change.code_review_assignments << create(:code_review_assignment, issue: Issue.find(issue4.id))
       change.save!
       changeset.save!
       changeset = Changeset.find(changeset.id)
@@ -177,27 +177,27 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
 
   context "assignment_issues" do
     should "returns empty array if changeset has no assignments." do
-      change = FactoryBot.create(:change)
+      change = create(:change)
       changeset = change.changeset
       assert_not_nil(changeset.assignment_issues)
     end
 
     should "returns assignments if changeset has assignments." do
-      change = FactoryBot.create(:change)
+      change = create(:change)
       changeset = change.changeset
 
       assert_not_nil change
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 1)
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 2)
+      change.code_review_assignments << create(:code_review_assignment, issue_id: 1)
+      change.code_review_assignments << create(:code_review_assignment, issue_id: 2)
       change.save!
 
       changeset = Changeset.find(changeset.id)
       assert_not_nil(changeset.assignment_issues)
       assert_equal(2, changeset.assignment_issues.length)
 
-      change = FactoryBot.create(:change, changeset: changeset)
+      change = create(:change, changeset: changeset)
 
-      change.code_review_assignments << FactoryBot.create(:code_review_assignment, issue_id: 3)
+      change.code_review_assignments << create(:code_review_assignment, issue_id: 3)
       change.save!
 
       changeset = Changeset.find(changeset.id)
@@ -214,7 +214,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
 
       repository = project.repository
 
-      @changeset = FactoryBot.create(:changeset, repository: repository)
+      @changeset = create(:changeset, repository: repository)
 
       auto_assign = AutoAssignSettings.new
       auto_assign.enabled = true
@@ -229,7 +229,7 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
       filters << filter
       filter = AssignmentFilter.new
       filter.accept = true
-      filter.expression = '.*/redmine_code_review/.*'
+      filter.expression = ".*/redmine_code_review/.*"
       filters << filter
       auto_assign.filters = filters
       auto_assign.accept_for_default = true
@@ -242,9 +242,9 @@ class CodeReviewChangesetPatchTest < ActiveSupport::TestCase
 
     should "create assignments" do
       count = CodeReviewAssignment.all.length
-      change1 = FactoryBot.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
+      create(:change, path: "/aaa/bbb/ccc.rb", changeset: @changeset)
       assert_equal(count + 1, CodeReviewAssignment.all.length)
-      change2 = FactoryBot.create(:change, path: '/aaa/bbb/ccc2.rb', changeset: @changeset)
+      create(:change, path: "/aaa/bbb/ccc2.rb", changeset: @changeset)
       assert_equal(count + 1, CodeReviewAssignment.all.length)
     end
   end

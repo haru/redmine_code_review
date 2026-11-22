@@ -40,6 +40,8 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../test/test_helper")
 require "factory_bot"
 require "shoulda"
 
+ActiveSupport.on_load(:active_support_test_case) { include FactoryBot::Syntax::Methods }
+
 FactoryBot::SyntaxRunner.class_eval do
   include ActionDispatch::TestProcess
   include ActiveSupport::Testing::FileFixtures
@@ -56,7 +58,7 @@ ActiveRecord::FixtureSet.create_fixtures(File.dirname(__FILE__) + "/fixtures/", 
 include ActiveSupport::Testing::FileFixtures
 
 # Ensure that we are using the temporary fixture path
-#ngines::Testing.set_fixture_path
+# ngines::Testing.set_fixture_path
 
 # Mock out a file
 def mock_file
@@ -87,8 +89,8 @@ FactoryBot.define do
 
   factory :repository do
     project_id { 1 }
-    url { "file:///#{Rails.root}/tmp/test/subversion_repository" }
-    root_url { "file:///#{Rails.root}/tmp/test/subversion_repository" }
+    url { "file:///#{Rails.root.join("tmp/test/subversion_repository")}" }
+    root_url { "file:///#{Rails.root.join("tmp/test/subversion_repository")}" }
     password { "" }
     login { "" }
     type {
@@ -104,9 +106,9 @@ FactoryBot.define do
   factory :changeset do
     sequence(:revision, 1000)
     committed_on {
-      Date.today
+      Time.zone.today
     }
-    #association :repository
+    # association :repository
     repository {
       scm = "Subversion"
       unless Setting.enabled_scm.include?(scm)
@@ -155,6 +157,5 @@ FactoryBot.define do
     assignment_tracker_id { 1 }
   end
 
-  factory :enabled_module do
-  end
+  factory :enabled_module
 end

@@ -1,6 +1,8 @@
 coverage
 Gemfile
 Gemfile.lock
+!/tools/rubocop/Gemfile
+!/tools/rubocop/Gemfile.lock
 test/tmp/*
 tmp/*
 .specify/extensions/.cache/

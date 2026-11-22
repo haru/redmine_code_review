@@ -7,3 +7,4 @@ File naming: `NNNN-short-title.md`, numbered sequentially (e.g. `0001-example-de
 ## Index
 
 - [0001 Adopt Playwright for end-to-end tests](0001-adopt-playwright-for-e2e-tests.md) — Accepted, 2026-11-22
+- [0002 Pin RuboCop with a dedicated Gemfile and update it with Renovate](0002-pin-rubocop-with-dedicated-gemfile-and-renovate.md) — Accepted, 2026-11-22
