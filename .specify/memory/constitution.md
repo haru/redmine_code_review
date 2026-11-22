@@ -42,6 +42,16 @@ contract. A new controller action MUST have a matching permission entry in `init
 route.
 Rationale: the patches run inside every Redmine request, not only the plugin's own pages.
 
+### VI. RuboCop Clean (NON-NEGOTIABLE)
+All Ruby code MUST pass RuboCop with no offenses. RuboCop MUST be run only through
+`build-scripts/rubocop.sh` (the same script CI uses), never as a bare `rubocop`, which inspects
+0 files inside Redmine. Unavoidable exceptions MUST be recorded individually with a reason:
+inline `# rubocop:disable Cop -- reason` or a per-cop entry in `.rubocop.yml`. A
+`.rubocop_todo.yml` and blanket disabling of a whole department MUST NOT be added. Tool versions
+MUST stay pinned in `tools/rubocop/Gemfile.lock`.
+Rationale: one script and one pinned version make local and CI results identical, and
+per-cop reasons keep exceptions reviewable instead of silently accumulating.
+
 ## Additional Constraints
 - The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
 - Code, code comments and git commit messages MUST be written in English. Documents under
@@ -55,7 +65,8 @@ Rationale: the patches run inside every Redmine request, not only the plugin's o
 - Architecturally significant decisions MUST be recorded as an ADR under `docs/adr/` and listed in
   `docs/adr/README.md`. ADRs are append-only: a changed decision gets a new, superseding ADR.
 - The wiki under `wiki/` MUST be changed only through the `speckit-wiki-*` skills.
-- Before merge, the Minitest suite and the E2E suite MUST pass and the change SHOULD be reviewed
+- Before merge, `build-scripts/rubocop.sh` MUST report no offenses, the Minitest suite and the
+  E2E suite MUST pass, and the change SHOULD be reviewed
   with `/speckit-review-run`.
 
 ## Governance
@@ -66,4 +77,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-22
+**Version**: 1.1.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-22
