@@ -3,6 +3,8 @@
 # Usage: run.sh [playwright test args...]
 # This script is the single source of the workspace path, port and Rails env:
 # playwright.config.js, support/helpers.js and support/seed.rb read them from here.
+# Must run before any bash-only syntax: `sh run.sh` (dash) cannot parse it.
+[ -n "${BASH_VERSION:-}" ] || { echo "error: run this script with bash (./run.sh or 'bash run.sh'), not sh" >&2; exit 1; }
 set -euo pipefail
 
 E2E_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -27,7 +27,8 @@ bundle exec rake redmine:plugins:test NAME=redmine_code_review
 bundle exec rake redmine:plugins:test NAME=redmine_code_review TEST=plugins/redmine_code_review/test/unit/code_review_test.rb
 
 # run the Playwright E2E tests in an isolated Redmine on port 4500 (first time: cd plugins/redmine_code_review/test/e2e && npm ci && npx playwright install --with-deps chromium)
-plugins/redmine_code_review/test/e2e/run.sh
+plugins/redmine_code_review/test/e2e/run.sh                       # all specs; needs bash (not `sh`), works from any directory
+plugins/redmine_code_review/test/e2e/run.sh tests/review.spec.js  # one spec (args go to `npx playwright test`)
 
 # alternative: SimpleCov-instrumented runner (from the plugin directory; auto-copies fixtures, chdir's, requires every *test.rb)
 ruby plugins/redmine_code_review/test/test_runner.rb
@@ -75,6 +76,16 @@ Because these are monkey patches on core Redmine classes, changes here can affec
 - `test/test_helper.rb` requires the host Redmine's `test/test_helper`, then defines FactoryBot factories (`code_review`, `code_review_assignment`, `changeset`, `change`, `attachment`, `repository`, `issue`, `code_review_project_setting`) used across unit/functional tests — check here before adding ad hoc fixtures.
 - `test/exemplars/` + `test/code_review_object_daddy_helpers.rb` provide Object Daddy exemplars, an older fixture-generation style still used alongside FactoryBot.
 - `test/fixtures/*.yml` get copied into the host Redmine's `test/fixtures/` (by `post-create.sh` or `test_runner.rb`) — they must not collide with core Redmine fixture IDs.
+
+### E2E tests (`test/e2e/`, Playwright)
+
+A separate Node sub-project; Minitest never picks up `*.spec.js`. Rationale: `docs/adr/0001-adopt-playwright-for-e2e-tests.md`; usage: `test/e2e/README.md`.
+
+- `run.sh` is the only entry point and the single source of the workspace path, port and Rails env (`E2E_*`, `RAILS_ENV=test`, `DB`, `DB_NAME`). `playwright.config.js`, `support/helpers.js` and `support/seed.rb` read them, so `npx playwright test` run directly fails by design.
+- It builds `<redmine>/tmp/e2e/` (throwaway git repo, sqlite DB `db.sqlite3_test`, seed data), lets Playwright's `webServer` boot Redmine on 4500, and deletes the workspace only after a successful run; after a failure it is kept for inspection.
+- All specs share one DB that is never reset (`workers: 1`). Specs must create their own data and assert on the ids they get back (`createReview` returns `{ id }`), never on "any review icon".
+- Gotchas in the plugin's UI that the helpers work around: the pencil id is spelled `add_revew_img_`; after `goto` wait for `networkidle` (the `update_diff_view` request redraws icons); after opening the dialog wait until `jQuery(':animated')` is empty, otherwise typed text is wiped and the server answers 200 with "Subject cannot be blank" (the form is re-rendered, so check the response body, not the status).
+- Server-side exceptions go to `log/test.log` (shared with Minitest), not to Playwright's output.
 
 ## Project conventions
 

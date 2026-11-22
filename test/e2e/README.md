@@ -25,6 +25,9 @@ cd plugins/redmine_code_review/test/e2e && npm test              # all tests
 cd plugins/redmine_code_review/test/e2e && npm test -- tests/review.spec.js
 ```
 
+The script can be started from any directory, but it needs bash: use `./run.sh` or
+`bash run.sh`, not `sh run.sh`.
+
 Arguments are passed through to `npx playwright test` and are resolved relative to
 `test/e2e`. The exit code is Playwright's (0 = all passed). The tests only work when
 started through `run.sh`, which exports the workspace path, port and Rails environment
