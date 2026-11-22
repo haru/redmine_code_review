@@ -72,6 +72,13 @@ class CodeReviewControllerTest < ActionController::TestCase
       assert_template '_new_form'
     end
 
+    should "use the tracker given in the dialog" do
+      @request.session[:user_id] = 1
+      get :new, :params => {:id => 1, :action_type => 'diff', :rev => 5, :issue => {:tracker_id => 2}}
+      assert_response :success
+      assert_equal(2, assigns(:review).issue.tracker_id)
+    end
+
     should "create new review" do
       @request.session[:user_id] = 1
       count = CodeReview.all.length
@@ -193,6 +200,16 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_equal(count - 1, CodeReview.all.length)
   end
 
+  context "assign" do
+    should "build the request issue from the change" do
+      @request.session[:user_id] = 1
+      get :assign, :params => {:id => 1, :change_id => 1}
+      assert_response :redirect
+      assert_match(/issues\/new/, @response.location)
+      assert_includes(CGI.unescape(@response.location), "code[change_id]=1")
+    end
+  end
+
   context "reply" do
     should "create reply for review" do
       @request.session[:user_id] = 1
@@ -214,6 +231,19 @@ class CodeReviewControllerTest < ActionController::TestCase
       assert_response :success
       assert_template '_show'
       assert_not_nil assigns(:error)
+    end
+  end
+
+  def test_edit_form_cancel_hides_the_whole_edit_box
+    @request.session[:user_id] = 1
+    review = CodeReview.find(9)
+    get :reply, :params => {:id => 1, :review_id => 9,
+                          :reply => {:comment => 'aaa'}, :issue => {:lock_version => review.issue.lock_version}}
+    assert_response :success
+    # The box shown by the Update link is #update-form-<id>; hiding only the form inside it
+    # would leave an empty frame behind.
+    assert_select "div#update-form-9 input[type=button][value=Cancel]" do |buttons|
+      assert_includes buttons.first['onclick'], '$("#update-form-9").hide()'
     end
   end
 

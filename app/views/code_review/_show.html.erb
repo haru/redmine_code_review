@@ -116,7 +116,7 @@
             submit_url = url_for(:controller => 'code_review', :action => 'update', :id => @project)
             -%>
             <%= button_tag l(:button_apply), type: 'button', onclick: "$('#show_review_#{@review.id}').load('#{submit_url}', $('##{review_form_id}').serialize())" %>
-            <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#review_form_<%= @review.id %>").hide();' />
+            <input type="button" value="<%=h l(:button_cancel) %>" onclick='$("#update-form-<%= @review.id %>").hide();' />
           </p>
           <%= wikitoolbar_for 'review_comment_' + @review.id.to_s %>
         <% end %>

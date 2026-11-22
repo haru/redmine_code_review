@@ -1,5 +1,5 @@
-const { test, expect } = require('@playwright/test');
-const { changesetDiffUrl, fileDiffUrl, login, openReviewForm, applyReview, createReview } = require('../support/helpers');
+const { test, expect } = require('../support/fixtures');
+const { seed, changesetDiffUrl, fileDiffUrl, login, openReviewForm, applyReview, createReview } = require('../support/helpers');
 
 test('shows a created review again after reloading the diff', async ({ page }) => {
   await login(page);
@@ -36,4 +36,17 @@ test('creates a review from the side-by-side diff', async ({ page }) => {
 test('creates a review from the whole-changeset diff', async ({ page }) => {
   await login(page);
   await createReview(page, 'E2E review changeset', changesetDiffUrl());
+});
+
+test('fills in the suggested parent issue when the suggestion is accepted', async ({ page }) => {
+  const { revision, parentIssue } = seed.parentSuggestion;
+  await login(page);
+  // The seeded first commit is linked to a child issue whose parent is suggested.
+  await openReviewForm(page, `/projects/${seed.project}/repository/${seed.repository}/revisions/${revision}/diff`);
+
+  await expect(page.locator('#review_parent_id')).toHaveValue('');
+  const suggestion = page.locator('#review-form p', { has: page.locator('#review_parent_id') });
+  await expect(suggestion.getByRole('link', { name: new RegExp(`#${parentIssue}\\b`) })).toBeVisible();
+  await suggestion.getByRole('button', { name: 'Yes' }).click();
+  await expect(page.locator('#review_parent_id')).toHaveValue(String(parentIssue));
 });

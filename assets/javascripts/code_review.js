@@ -80,9 +80,12 @@ function UpdateRevisionView() {
     var li = $(this);
     if (li.hasClass('folder')) return;
 
-    var a = li.down('a');
+    // Entries without a link (the legend, deleted files) start with a bare icon;
+    // down() ignores its selector, so look for the link among the children instead.
+    var a = li.children('a').first();
     if (a.length == 0) return;
-    var path = a.attr('href').replace(urlprefix, '').replace(/\?.*$/, '');
+    var href = a.attr('href');
+    var path = href.replace(urlprefix, '').replace(/\?.*$/, '');
 
     var reviewlist = code_reviews_map[path];
     if (reviewlist == null) return;

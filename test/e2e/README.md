@@ -71,17 +71,25 @@ preparing the DB or seed (before Playwright starts), the console output and the 
 ## Adding a test
 
 1. Create `tests/<name>.spec.js`; it is picked up automatically.
-2. Reuse `support/helpers.js`: `seed` (project, repository, revision, path, `user` and
-   view-only `viewer` accounts from `seed.json`), `login(page, who)`,
-   `openReviewForm(page, diffUrl)`, `applyReview(page)`, `createReview(page, subject,
-   diffUrl)` and the `fileDiffUrl()` / `changesetDiffUrl()` helpers.
-3. Use web-first assertions (`await expect(locator)...`); do not add fixed sleeps.
-4. Tests share one database that is not reset between tests, so they must not depend
+2. Import `test` and `expect` from `../support/fixtures`, never from `@playwright/test`:
+   the fixture fails any test during which a page throws an uncaught JavaScript
+   exception (`console.error` output is ignored).
+3. Reuse `support/helpers.js`: `seed` (projects, repositories, revision, path, patch
+   attachment, `user`, view-only `viewer` and non-member `outsider` accounts from
+   `seed.json`), `login(page, who)`, `openReviewForm(page, diffUrl)`, `applyReview(page)`,
+   `createReview(page, subject, diffUrl)`, `openReview(page, id)`, the
+   `fileDiffUrl()` / `changesetDiffUrl()` / `attachmentUrl()` / `reviewShowUrl(id)`
+   URL helpers, and, for settings and auto-assign scenarios, `commitFile()`,
+   `fetchChangesets()` and `resetCodeReviewSettings()`. Settings scenarios run on the
+   separate `e2e-settings` project and reset its settings first, so the main project's
+   settings never change.
+4. Use web-first assertions (`await expect(locator)...`); do not add fixed sleeps.
+5. Tests share one database that is not reset between tests, so they must not depend
    on each other or on reviews left by other tests: create the data you need inside the
    test and assert on the ids it returns.
 
 ```js
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../support/fixtures');
 const { seed, login } = require('../support/helpers');
 
 test('shows the review list', async ({ page }) => {
@@ -90,6 +98,20 @@ test('shows the review list', async ({ page }) => {
   await expect(page.locator('#code_review_list')).toBeVisible();
 });
 ```
+
+## Operation coverage and known failures
+
+[`docs/e2e-operation-coverage.md`](../../docs/e2e-operation-coverage.md) lists the 38
+user-facing operations (the permission-mapped actions of `init.rb` and the on-screen
+operations) and the scenarios that verify each. Update it when you add a scenario or an
+action.
+
+If a scenario exposes a plugin bug that cannot be fixed locally, file a GitHub Issue and
+mark the scenario `test.fail(true, '<Issue URL>: <reason>')`. Do not loosen the assertion
+and do not use `skip`/`fixme`: `test.fail` makes the suite fail as soon as the bug is
+fixed, which is the cue to remove the marker. The row in the coverage table then reads
+`known failure` with the same Issue URL. A bug that a small local change fixes is fixed
+test-first instead (a failing Minitest in `test/functional/`, then the change).
 
 ## Troubleshooting
 

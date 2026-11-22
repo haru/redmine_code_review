@@ -17,8 +17,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 <script>
-  function cr_sort_filter(url, action) {
-      $('#auto_assign_filter_move_to').val(action);
+  function cr_sort_filter(url, action, num) {
+    $('#auto_assign_filter_num').val(num);
+    $('#auto_assign_filter_move_to').val(action);
     $('#auto_assignment_filters').load(url, $('#code_review_form').serialize());
   }
 </script>
@@ -55,18 +56,16 @@
             <td style="text-align: center"><%= filter.accept? ? l(:auto_assign_filter_assign) : l(:auto_assign_filter_drop)%> </td>
             <td style="text-align: center"><%= filter.expression %></td>
             <td align="center" style="width:15%;">
-              <%= hidden_field_tag "auto_assign_filter[num]", i %>
-              <%= hidden_field_tag "auto_assign_filter[move_to]", 'highest', :id => 'auto_assign_filter_move_to' %>
               <%
               name = 'auto_assign_filter'
               sorturl = url_for({:controller => 'code_review_settings', :action => 'sort', :id => @project})
 
               -%>
               <%=
-              link_to(image_tag('2uparrow.png',  :plugin => 'redmine_code_review', :alt => l(:label_sort_highest)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'highest')", :title => l(:label_sort_highest)) +
-                link_to(image_tag('1uparrow.png',   :plugin => 'redmine_code_review', :alt => l(:label_sort_higher)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'higher')", :title => l(:label_sort_higher)) +
-                link_to(image_tag('1downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lower)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'lower')", :title => l(:label_sort_lower)) +
-                link_to(image_tag('2downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lowest)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'lowest')", :title => l(:label_sort_lowest))
+              link_to(image_tag('2uparrow.png',  :plugin => 'redmine_code_review', :alt => l(:label_sort_highest)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'highest', #{i})", :title => l(:label_sort_highest)) +
+                link_to(image_tag('1uparrow.png',   :plugin => 'redmine_code_review', :alt => l(:label_sort_higher)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'higher', #{i})", :title => l(:label_sort_higher)) +
+                link_to(image_tag('1downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lower)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'lower', #{i})", :title => l(:label_sort_lower)) +
+                link_to(image_tag('2downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lowest)), '#', :onclick => "cr_sort_filter('#{sorturl}', 'lowest', #{i})", :title => l(:label_sort_lowest))
               -%>
 
             </td>
@@ -116,6 +115,8 @@
         </tr>
       </tbody>
     </table>
+    <%= hidden_field_tag "auto_assign_filter[num]", 0, :id => 'auto_assign_filter_num' %>
+    <%= hidden_field_tag "auto_assign_filter[move_to]", 'highest', :id => 'auto_assign_filter_move_to' %>
 
   </div>
   <p>

@@ -34,6 +34,44 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
     #DatabaseRewinder.clean
   end
 
+  context "AutoAssignSettings filters" do
+    setup do
+      @settings = AutoAssignSettings.new
+      @filter = AssignmentFilter.new
+      @filter.expression = 'src/.*'
+      @filter.accept = true
+      @filter.order = 10
+      @changeset = Struct.new(:filechanges)
+    end
+
+    should "add_filter appends the filter attributes" do
+      @settings.add_filter(@filter)
+      assert_equal(['src/.*'], @settings.filters.map(&:expression))
+      assert @settings.filters.first.accept?
+    end
+
+    should "match_with_changeset? accept every changeset while filters are disabled" do
+      assert @settings.match_with_changeset?(@changeset.new([]))
+    end
+
+    context "with filters enabled" do
+      setup do
+        @settings.filter_enabled = true
+        @settings.add_filter(@filter)
+      end
+
+      should "match_with_changeset? be false when no change path is accepted" do
+        change = Struct.new(:path).new('doc/a.md')
+        assert_equal false, @settings.match_with_changeset?(@changeset.new([change]))
+      end
+
+      should "match_with_changeset? be true when a change path is accepted" do
+        change = Struct.new(:path).new('src/a.rb')
+        assert_equal true, @settings.match_with_changeset?(@changeset.new([change]))
+      end
+    end
+  end
+
   context "AutoAssignSettings" do
     context "to_s" do
       should "return string if @yml is not nil." do

@@ -21,6 +21,8 @@
   function setAutoAssignSettingFormEnable() {
     var form = $('#cr_auto_assign_settings');
     var flag = $('#auto_assign_enabled').is(':checked');
+    // A required field inside the hidden block would silently block the form submission.
+    $('#auto_assign_author_id').prop('required', flag);
     if (flag) {
       form.show('blind');
     }
@@ -129,7 +131,7 @@
           <%= select :auto_assign, :author_id,
             (@project.users.collect {|user|
               [user.name, user.id]
-            }), :selected => @auto_assign.author_id, :required => true %>
+            }), {:selected => @auto_assign.author_id}, {:required => @auto_assign.enabled?} %>
         </p>
         <p>
           <label><%=h l(:label_candidates_of_reviewer)%></label>

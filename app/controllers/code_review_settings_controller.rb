@@ -53,8 +53,7 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
-    @auto_assign.filter_enabled = true
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   def edit_filter
@@ -74,7 +73,7 @@ class CodeReviewSettingsController < ApplicationController
       i = i + 1
       filter
     }
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   def sort
@@ -82,8 +81,11 @@ class CodeReviewSettingsController < ApplicationController
     @auto_assign = setting.auto_assign_settings
     filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
     filters = [] unless filters
-    num = params[:auto_assign_filter][:num].to_i
+    # The row number comes from the request; refuse one that is not a valid index into the
+    # submitted list. to_i would map "abc" to 0 and filters[-1] would select the last row.
+    num = Integer(params[:auto_assign_filter][:num].to_s, 10, exception: false)
     move_to = params[:auto_assign_filter][:move_to]
+    return head :bad_request unless num && num >= 0 && filters[num]
 
     if move_to == 'highest'
       filters[num][:order] = 0
@@ -100,11 +102,17 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
-
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   private
+
+  # The filter partials are only requested from the visible filter block, so the
+  # block must stay enabled even when the saved setting still has it disabled.
+  def render_filters
+    @auto_assign.filter_enabled = true
+    render :partial => "code_review_settings/filters"
+  end
 
   def find_project
     # @project variable must be set before calling the authorize filter
