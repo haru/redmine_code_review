@@ -1,4 +1,5 @@
 installed:
+- branch-convention
 - review
 - wiki
 settings:
@@ -29,4 +30,14 @@ hooks:
     priority: 10
     prompt: Ingest this feature's research and plan decisions into the project wiki?
     description: Compound the feature's verified research into the wiki after planning
+    condition: null
+  before_specify:
+  - extension: branch-convention
+    command: speckit.branch-convention.validate
+    enabled: true
+    optional: true
+    priority: 10
+    prompt: Validate branch naming convention before creating new feature?
+    description: Check naming convention compliance before /specify creates a new
+      branch
     condition: null
