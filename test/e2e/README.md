@@ -101,7 +101,7 @@ test('shows the review list', async ({ page }) => {
 
 ## Operation coverage and known failures
 
-[`docs/e2e-operation-coverage.md`](../../docs/e2e-operation-coverage.md) lists the 38
+[`docs/e2e-operation-coverage.md`](../../docs/e2e-operation-coverage.md) lists the 39
 user-facing operations (the permission-mapped actions of `init.rb` and the on-screen
 operations) and the scenarios that verify each. Update it when you add a scenario or an
 action.

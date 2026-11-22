@@ -1,15 +1,15 @@
 # E2E operation coverage
 
 Which user-facing operations of the plugin the Playwright suite (`test/e2e`) exercises.
-The 38 rows are fixed: 17 `server` rows map one-to-one to the actions registered in
-`init.rb` (`project_module :code_review`), 21 `ui` rows are operations that are completed
+The 39 rows are fixed: 17 `server` rows map one-to-one to the actions registered in
+`init.rb` (`project_module :code_review`), 22 `ui` rows are operations that are completed
 on the screen or that are linked displays without a server action of their own.
 
 Baseline (before the coverage expansion): 6 / 38 (16%)
-Current: 38 / 38 (100%) (known failures: 0)
+Current: 39 / 39 (100%) (known failures: 0)
 
 Status: `verified` (a passing scenario), `known failure` (a `test.fail` scenario that
-references a GitHub Issue), `not verified`. Coverage = (verified + known failure) / 38.
+references a GitHub Issue), `not verified`. Coverage = (verified + known failure) / 39.
 
 | # | Kind | Operation | Permission | Status | Scenarios | Issue / Note |
 |---|------|-----------|------------|--------|-----------|--------------|
@@ -51,3 +51,4 @@ references a GitHub Issue), `not verified`. Coverage = (verified + known failure
 | 36 | ui | `{{review(id)}}` macro | - | verified | navigation.spec.js › expands the review macro in an issue description into a link to the review |  |
 | 37 | ui | Create an assignment when the pre-filled issue is saved (issue hook) | - | verified | assignment.spec.js › shows the reviewed revision on the issue page after saving an assignment |  |
 | 38 | ui | Auto-assign a review on changeset import | - | verified | settings.spec.js › creates a review assignment when a matching commit is imported<br>settings.spec.js › creates no assignment when the commit is dropped by the filter<br>settings.spec.js › follows the default action (assign) when there are no filters<br>settings.spec.js › follows the default action (drop) when there are no filters |  |
+| 39 | ui | Arrow keys in the review dialog fields (no previous/next file navigation) | - | verified | arrow-keys.spec.js › keeps the arrow keys in the review subject field on a repository file with siblings<br>arrow-keys.spec.js › keeps the arrow keys in the comment textarea of the add dialog on an attachment with siblings<br>arrow-keys.spec.js › keeps the arrow keys in the reply field of an existing review<br>arrow-keys.spec.js › keeps the arrow keys in the subject and comment fields of the edit form<br>arrow-keys.spec.js › still moves to the next attachment with the arrow key when no dialog is open<br>arrow-keys.spec.js › moves to the previous attachment again after the review dialog was closed |  |

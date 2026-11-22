@@ -87,7 +87,7 @@ A separate Node sub-project; Minitest never picks up `*.spec.js`. Rationale: `do
 - Gotchas in the plugin's UI that the helpers work around: the pencil id is spelled `add_revew_img_`; after `goto` wait for `networkidle` (the `update_diff_view` request redraws icons); after opening the dialog wait until `jQuery(':animated')` is empty, otherwise typed text is wiped and the server answers 200 with "Subject cannot be blank" (the form is re-rendered, so check the response body, not the status).
 - Server-side exceptions go to `log/test.log` (shared with Minitest), not to Playwright's output.
 - Specs import `test`/`expect` from `support/fixtures.js`, never from `@playwright/test`: an auto fixture fails any test whose page throws an uncaught JavaScript exception.
-- The 38 covered operations and the scenario for each are tracked in `docs/e2e-operation-coverage.md`; update it with every new scenario or `init.rb` action. Settings/auto-assign scenarios run on the separate `e2e-settings` project and reset its settings first.
+- The 39 covered operations and the scenario for each are tracked in `docs/e2e-operation-coverage.md`; update it with every new scenario or `init.rb` action. Settings/auto-assign scenarios run on the separate `e2e-settings` project and reset its settings first.
 
 ## Project conventions
 

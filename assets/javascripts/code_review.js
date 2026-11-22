@@ -372,3 +372,14 @@ $.fn.serialize2json = function () {
   });
   return o;
 };
+// Redmine core binds ← / → on `document` to the previous/next file link and does not skip
+// input fields, so typing in a review dialog would navigate away. Dialogs are moved into
+// #content, so stop the event there, before it reaches `document`; without preventDefault
+// the caret still moves.
+$(function () {
+  $('#content').on('keydown', '.ui-dialog :input', function (e) {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.stopPropagation();
+    }
+  });
+});
