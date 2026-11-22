@@ -1,50 +1,69 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# redmine_code_review Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Simplicity (KISS / DRY / YAGNI)
+The simplest design that works MUST be chosen. Duplicated logic MUST be removed, and
+speculative abstractions for hypothetical future needs MUST NOT be added. New code MUST follow
+the idioms of the file it edits instead of introducing a new pattern.
+Rationale: the codebase mixes older Redmine-plugin idioms with newer Rails style, and
+monkey patches on core classes make every extra layer costly.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Test-First with Coverage (NON-NEGOTIABLE)
+The failing test MUST be written before the implementation. Statement (C0) coverage of the
+Minitest suite MUST stay at or above 90%, checked in `coverage/` after a run.
+Rationale: a plugin that patches `Change`, `Changeset`, `Issue` and `Attachment` can break
+Redmine itself; tests are the only safety net.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. End-to-End Verification of the Review UI
+The review UI is driven by JavaScript that Minitest cannot exercise, so it MUST be verified
+with the Playwright E2E suite in `test/e2e/`, run through `test/e2e/run.sh`. The suite MUST pass
+before a branch is proposed for merge (CI is out of scope; see ADR 0001). A change to review
+UI behavior (`assets/javascripts/`, the partials injected into repository pages) MUST add or
+update an E2E spec for the changed flow. E2E specs MUST:
+- run only against the isolated workspace (`tmp/e2e/`, its own DB), never the development DB;
+- create the data they need and assert on what they created, not on leftovers of other specs;
+- use web-first assertions instead of fixed sleeps.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Rationale: unit tests passing while the UI is broken is exactly the failure this suite exists to
+catch.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### IV. Explicit Failure (No Easy Fallbacks)
+Errors MUST NOT be swallowed or silently defaulted (broad `rescue`, `rescue nil`, silent
+empty-array/false returns). Unexpected conditions MUST raise and be handled explicitly;
+validation belongs only at true system boundaries. Scripts and tests MUST fail loudly with a
+message that names the cause (for example, missing tools or a busy port).
+Rationale: a silent failure hides the real defect and shows up later as a misleading one.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### V. Core Redmine Safety
+Changes to the monkey patches in `lib/` MUST consider their effect on non-plugin Redmine
+behavior and on other plugins patching the same classes. Load order in `init.rb` is part of the
+contract. A new controller action MUST have a matching permission entry in `init.rb`, not only a
+route.
+Rationale: the patches run inside every Redmine request, not only the plugin's own pages.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Additional Constraints
+- The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
+- Code, code comments and git commit messages MUST be written in English. Documents under
+  `specs/` MUST be written in Japanese.
+- New migrations MUST use the Rails timestamp format.
+- `specs/` is a separate, git-ignored repository and MUST NOT be committed here.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow
+- Branching follows git-flow: `feature/*` and `bugfix/*` branch from and merge into `develop`;
+  `release/*` merges into `main` and `develop`; `hotfix/*` branches from `main`.
+- Architecturally significant decisions MUST be recorded as an ADR under `docs/adr/` and listed in
+  `docs/adr/README.md`. ADRs are append-only: a changed decision gets a new, superseding ADR.
+- The wiki under `wiki/` MUST be changed only through the `speckit-wiki-*` skills.
+- Before merge, the Minitest suite and the E2E suite MUST pass and the change SHOULD be reviewed
+  with `/speckit-review-run`.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This constitution supersedes other practices. Amendments MUST be made through
+`/speckit-constitution`, with the version bumped by semantic versioning (MAJOR: a principle is
+removed or redefined incompatibly; MINOR: a principle or section is added or materially
+expanded; PATCH: clarification only). Every plan MUST be checked against these principles, and
+any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
+day-to-day commands and architecture and MUST stay consistent with this document.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-22

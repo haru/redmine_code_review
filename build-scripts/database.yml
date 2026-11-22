@@ -8,7 +8,7 @@ sqlite3: &sqlite3
   adapter: sqlite3
   pool: 5
   timeout: 5000
-  database: db/redmine.sqlite3
+  database: <%= ENV['DB_NAME'] || 'db/redmine.sqlite3' %>
 
 mysql: &mysql
   adapter: mysql2

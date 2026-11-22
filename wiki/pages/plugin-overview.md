@@ -1,8 +1,8 @@
 ---
 title: Plugin overview
 type: concept
-sources: [S001, S002, S003, S004, S005, S006, S007, S011, S013, S014, S015, S016, S017, S019, S020, S024, S025]
-updated: 2026-11-21
+sources: [S001, S002, S003, S004, S005, S006, S007, S011, S013, S014, S015, S016, S017, S019, S020, S024, S025, S034, S035]
+updated: 2026-11-22
 ---
 
 # Plugin overview
@@ -32,5 +32,8 @@ The plugin adds collaborative code review to Redmine projects. Reviews cover rep
 The plugin is version 1.2.2 and requires Redmine >= 6.0.0 (`requires_redmine :version_or_higher => "6.0.0"`) (S005). The DeepWiki pages S001 and S002 say 5.0.0+; they are outdated on this point, and S005 is authoritative.
 
 Full list of project settings: [Project settings](./project-settings.md). Setup steps: [Install and enable the plugin](./install-and-enable-plugin.md).
+
+## Browser tests
+The review UI is covered by Playwright E2E tests in `test/e2e/`, separate from the Minitest suite (S035). See [Why Playwright for E2E tests](./e2e-playwright-adoption.md), [E2E isolated environment](./e2e-isolated-environment.md) and [Run the E2E tests](./run-e2e-tests.md).
 
 See [Review ↔ Issue delegation](./code-review-issue-delegation.md), [Controller actions](./code-review-controller-actions.md), [Auto-assignment](./auto-assignment-system.md).
