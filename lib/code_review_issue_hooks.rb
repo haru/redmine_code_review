@@ -16,25 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewIssueHooks < Redmine::Hook::ViewListener
-  include RepositoriesHelper
   render_on :view_issues_show_details_bottom, partial: "code_review/issues_show_details_bottom"
-
-  def view_issues_show_details_bottom_org(context = {})
-    project = context[:project]
-    return "" unless project
-    unless User.current.allowed_to?({ controller: "code_review", action: "show" }, project)
-      return ""
-    end
-    controller = context[:controller]
-    return "" unless controller
-    issue = context[:issue]
-
-    o = ""
-    o << create_review_info(project, issue.code_review) if issue.code_review
-    o << create_assignment_info(project, issue.code_review_assignment) if issue.code_review_assignment
-
-    o
-  end
 
   def view_issues_form_details_bottom(context = {}) # rubocop:disable Metrics/AbcSize -- legacy method, refactor separately
     request = context[:request]
@@ -79,39 +61,5 @@ class CodeReviewIssueHooks < Redmine::Hook::ViewListener
       assignment.action_type = code[:action_type] if code[:action_type].present?
       assignment.save!
     end
-  end
-
-  private
-
-  def create_review_info(project, review)
-    o = "<tr>"
-    o << "<td><b>#{l(:code_review)}:</b></td>"
-    o << '<td colspan="3">'
-    o << link_to("#{review.repository_identifier + ':' if review.repository_identifier}#{review.path}#{'@' + review.revision if review.revision}:line #{review.line}",
-                 controller: "code_review", action: "show", id: project, review_id: review.id, repository_id: review.repository_identifier)
-    o << "</td>"
-    o << "</tr>"
-    o
-  end
-
-  def create_assignment_info(project, assignment)
-    repository_id = assignment.repository_identifier
-    o = "<tr>"
-    o << "<td><b>#{l(:review_assigned_for)}:</b></td>"
-    o << '<td colspan="3">'
-    if assignment.path
-      o << link_to("#{repository_id + ':' if repository_id}#{assignment.path}#{'@' + assignment.revision if assignment.revision}",
-                   controller: "code_review", action: "show", id: project, assignment_id: assignment.id, repository_id: repository_id)
-    elsif assignment.revision
-      repo = project unless repository_id
-      repo ||= assignment.repository
-      o << (l(:label_revision) + " " + link_to_revision(assignment.revision, repo))
-    elsif assignment.attachment
-      attachment = assignment.attachment
-      o << link_to(attachment.filename, controller: "attachments", action: "show", id: attachment.id)
-    end
-    o << "</td>"
-    o << "</tr>"
-    o
   end
 end

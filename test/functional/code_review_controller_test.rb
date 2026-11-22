@@ -365,4 +365,85 @@ class CodeReviewControllerTest < ActionController::TestCase
       assert_equal(3, assigns(:changesets).length)
     end
   end
+
+  context "show redirect targets" do
+    setup do
+      @request.session[:user_id] = 1
+    end
+
+    should "render the partial for xhr requests" do
+      get :show, params: { id: 1, review_id: 9 }, xhr: true
+      assert_response :success
+      assert_template "_show"
+    end
+
+    should "pass rev_to and drop the path when diff_all is set" do
+      review = create(:code_review, project: Project.find(1), rev: "5", rev_to: "6",
+                                 file_path: "/aaa/bbb", diff_all: true, repository_id: 1)
+      get :show, params: { id: 1, review_id: review.id }
+      assert_response :redirect
+      assert_match(/review_id=#{review.id}&rev_to=6\z/, response.location)
+    end
+
+    should "redirect to the attachment for an attachment review" do
+      review = create(:code_review, project: Project.find(1), action_type: "attachment",
+                                 attachment_id: 1, file_path: "/aaa/bbb")
+      get :show, params: { id: 1, review_id: review.id }
+      assert_response :redirect
+      assert_match(%r{/attachments/1/#{Attachment.find(1).filename}\?review_id=#{review.id}\z}, response.location)
+    end
+  end
+
+  context "new with related issues" do
+    setup do
+      @request.session[:user_id] = 1
+    end
+
+    should "relate the review to the assignment issues and add watchers" do
+      project = Project.find(1)
+      assignment_issue = Issue.generate!(project: project)
+      assignment_issue.update_column(:assigned_to_id, 1)
+      create(:code_review_assignment, issue: assignment_issue, change_id: 1, file_path: "/aaa/bbb")
+      post :new, params: { id: 1, review: { line: 1, change_id: 1, comment: "aaa", subject: "bbb" }, action_type: "diff" }
+      assert_response :success
+      assert_template "_add_success"
+      assert_includes assigns(:review).issue.relations.map { |r| r.other_issue(assigns(:review).issue).id }, assignment_issue.id
+      assert_includes Watcher.where(watchable_type: "Issue", watchable_id: assigns(:review).issue.id).pluck(:user_id), assignment_issue.author_id
+    end
+
+    should "relate the review to the issue holding the attached file" do
+      post :new, params: { id: 1, review: { line: 1, comment: "aaa", subject: "bbb" },
+                           action_type: "attachment", attachment_id: 1 }
+      assert_response :success
+      assert_template "_add_success"
+    end
+
+    should "preselect the version of the changeset issue in the form" do
+      version = Version.create!(project_id: 1, name: "cov-version", status: "open")
+      issue = Issue.generate!(project: Project.find(1), fixed_version: version)
+      change = Change.find(3)
+      change.changeset.issues << issue
+      get :new, params: { id: 1, change_id: 3, action_type: "diff", rev: 5 }
+      assert_response :success
+      assert_equal version.id, assigns(:default_version_id)
+    end
+
+    should "preselect the version of the assignment issue in the form" do
+      version = Version.create!(project_id: 1, name: "cov-version", status: "open")
+      issue = Issue.generate!(project: Project.find(1), fixed_version: version)
+      issue.update_column(:assigned_to_id, 1)
+      create(:code_review_assignment, issue: issue, change_id: 1, file_path: "/aaa/bbb")
+      get :new, params: { id: 1, change_id: 1, action_type: "diff", rev: 5 }
+      assert_response :success
+      assert_equal version.id, assigns(:default_version_id)
+    end
+  end
+
+  context "update_diff_view without path" do
+    should "list the reviews of the revision" do
+      @request.session[:user_id] = 1
+      post :update_diff_view, params: { id: 1, rev: 1 }
+      assert_response :success
+    end
+  end
 end

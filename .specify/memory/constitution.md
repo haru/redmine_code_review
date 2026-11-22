@@ -11,7 +11,7 @@ monkey patches on core classes make every extra layer costly.
 
 ### II. Test-First with Coverage (NON-NEGOTIABLE)
 The failing test MUST be written before the implementation. Statement (C0) coverage of the
-Minitest suite MUST stay at or above 90%, checked in `coverage/` after a run.
+Minitest suite MUST stay at or above 95%, checked in `coverage/` after a run.
 Rationale: a plugin that patches `Change`, `Changeset`, `Issue` and `Attachment` can break
 Redmine itself; tests are the only safety net.
 
@@ -77,4 +77,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.1.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-22
+**Version**: 1.2.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-22
