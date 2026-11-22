@@ -18,11 +18,10 @@
 require "simplecov"
 require "simplecov-cobertura"
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter,
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::CoberturaFormatter,
   SimpleCov::Formatter::HTMLFormatter
-# Coveralls::SimpleCov::Formatter
-]
+])
 
 SimpleCov.start do
   root File.expand_path(File.dirname(__FILE__) + "/..")
