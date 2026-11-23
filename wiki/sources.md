@@ -42,3 +42,5 @@ Sources are immutable inputs — the wiki never edits them.
 | S035 | specs/001-playwright-e2e-tests/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md, plugin-overview.md |
 | S036 | specs/004-rubocop-ci/research.md | feature-artifact | 2026-11-22 | 2026-11-22 | rubocop-pinned-gemfile-and-renovate.md, run-rubocop.md, rubocop-adoption-cleanup.md, plugin-overview.md |
 | S037 | specs/004-rubocop-ci/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | rubocop-pinned-gemfile-and-renovate.md, rubocop-adoption-cleanup.md |
+| S038 | specs/005-javascript-unit-tests-ci/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | vitest-javascript-unit-tests.md, run-javascript-unit-tests.md, review-javascript-internals.md, review-frontend-javascript.md, update-diff-view-partial.md |
+| S039 | specs/005-javascript-unit-tests-ci/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | vitest-javascript-unit-tests.md, run-javascript-unit-tests.md, review-frontend-javascript.md |

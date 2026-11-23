@@ -1,8 +1,8 @@
 ---
 title: Review frontend (JavaScript and partials)
 type: component
-sources: [S003, S016, S021, S022, S023, S024, S025]
-updated: 2026-11-21
+sources: [S003, S016, S021, S022, S023, S024, S025, S038, S039]
+updated: 2026-11-23
 ---
 
 # Review frontend (JavaScript and partials)
@@ -12,6 +12,9 @@ updated: 2026-11-21
 ## What it does
 - Diff views get pencil icons for adding a review on a line. Repository views show review status indicators, and attachment views allow reviews on uploaded files (S003).
 - State is held in `review_counts[]`, `code_reviews_map[]` and `code_reviews_dialog_map[]`, with dialogs for the review form and the review popup (S003).
+
+## Inline view scripts
+View templates keep only value hand-off and function calls; handlers and DOM logic live in `code_review.js` and are unit tested (S038, S039). Details: [Why Vitest](./vitest-javascript-unit-tests.md), [Run the JavaScript unit tests](./run-javascript-unit-tests.md).
 
 ## JS function → controller action (S021, S022)
 | Trigger | Action | Purpose |
