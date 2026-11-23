@@ -1,15 +1,13 @@
 # JavaScript in views
 
-This document records how the plugin's ERB templates hand values to JavaScript, and
-which inline scripts and handler attributes are still left while the jQuery -> plain
-JavaScript migration is in progress. The decision is recorded in
+This document records how the plugin's ERB templates hand values to JavaScript. The decision is recorded in
 [ADR 0005](adr/0005-replace-jquery-with-plain-javascript.md); it supersedes the
 "leave value hand-off scripts in the views" part of
 [ADR 0003](adr/0003-adopt-vitest-for-javascript-unit-tests.md).
 
-## How migrated views work
+## How the views work
 
-A migrated template contains no `<script>` block and no event handler attribute. It
+A template contains no `<script>` block and no event handler attribute. It
 only renders markers; `assets/javascripts/code_review_loader.js` finds them.
 
 - **`data-cr-init="<name>"`** marks an element to initialize. The values it needs are
@@ -39,18 +37,12 @@ suite covers the resulting UI.
 forms. It is not plugin code and cannot be avoided; `assert_no_inline_script` ignores
 exactly that script.
 
-## Still to migrate (feature 007, tasks T027-T038)
+## Checks
 
-These templates still contain jQuery-based scripts or handler attributes and keep
-working through the legacy code in `code_review.js` until their tasks are done:
+Both of these must report nothing (the first is also enforced by ESLint
+`no-restricted-globals`, the second by the functional tests):
 
-| Template | What is left |
-|---|---|
-| `code_review/_update_revisions.html.erb` | `<script>` filling `review_counts`, then `UpdateRepositoryView(title)` |
-| `code_review/_change_revision_view.html.erb` | `<script>` filling `code_reviews_map`, then `UpdateRevisionView()` |
-| `code_review/_change_entry_norevision_view.html.erb` | `<script>` calling `make_addreview_link(...)` |
-| `code_review/index.html.erb` | `onchange="change_option(...)"` on the show-closed checkbox |
-| `code_review_settings/_show.html.erb`, `_filters.html.erb` | `onchange` / `onclick` / `link_to_function` handlers for the auto-assign settings |
-
-When the last one is migrated, `grep -rnE '<script|javascript_tag|onclick|onchange|link_to_function|toggle_link' app/views`
-must report nothing but `wikitoolbar_for`, and this table is deleted.
+```bash
+grep -rnE '\$\(|\$\.|jQuery|eval\(' assets/javascripts app/views
+grep -rnE '<script|javascript_tag|onclick|onchange|link_to_function|toggle_link' app/views
+```

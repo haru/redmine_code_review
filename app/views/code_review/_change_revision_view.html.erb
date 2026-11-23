@@ -38,37 +38,20 @@ if @changeset
   </div>
 <%- end -%>
 
-  <script type="text/javascript">
-    urlprefix = '<%=urlprefix%>';
-  <% @changeset.changes.each{|change| %>
-    var reviewlist = [];
-    <%
-    cnt = 0
-    change.code_reviews.each {|review|
-      issue = review.issue
-      url = link_to('#' + "#{issue.id} #{review.subject}(#{issue.status})",
-        :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => repository_id)
-    %>
-      var review = new CodeReview(<%=review.id%>);
-      review.url = '<%=url%>';
-      <% if review.is_closed? %>
-        review.is_closed = true;
-      <% end %>
-      reviewlist[<%=cnt%>] = review;
-      <%
-      cnt += 1
-
-    }
+<%
+  reviews = {}
+  @changeset.changes.each do |change|
     relative_path = change.path || ""
-    if relative_path[0] != ?/
-      relative_path = '/' + relative_path
+    relative_path = '/' + relative_path if relative_path[0] != '/'
+    reviews[relative_path] = change.code_reviews.map do |review|
+      issue = review.issue
+      { id: review.id,
+        link: link_to('#' + "#{issue.id} #{review.subject}(#{issue.status})",
+          :controller => 'code_review', :action => 'show', :id => project, :review_id => review.id, :repository_id => repository_id),
+        closed: review.is_closed? }
     end
-    escaped_relative_path = relative_path.gsub("'"){"\\'"}
-  %>
-    code_reviews_map['<%=escaped_relative_path-%>'] = reviewlist;
-  <%
-  }
+  end
 %>
-  UpdateRevisionView();
-  </script>
+  <%= content_tag :div, nil, data: {
+        cr_init: 'revision-view', cr_urlprefix: urlprefix, cr_reviews: reviews.to_json } %>
 <% end %>

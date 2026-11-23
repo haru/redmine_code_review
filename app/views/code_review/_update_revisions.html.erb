@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 %>
 
-<script type="text/javascript">
+<% review_counts = {} %>
 <% @changesets.each do |changeset| %>
   <%
   if changeset.review_count > 0
@@ -39,11 +39,14 @@
   end
 %>
 
-    var count = new ReviewCount(<%=  changeset.review_count %>, <%=  changeset.open_review_count %>, '<%= raw  progress %>');
-
-    review_counts['revision_<%=changeset.identifier %>'] = count;
+<%
+  review_counts[changeset.identifier.to_s] = {
+    total: changeset.review_count, open: changeset.open_review_count, progress: progress.to_s
+  }
+%>
 <% end %>
-  UpdateRepositoryView('<%=l(:code_reviews)%>');
-</script>
+<%= content_tag :div, nil, data: {
+      cr_init: 'revisions-view', cr_column_title: l(:code_reviews),
+      cr_review_counts: review_counts.to_json } %>
 
 

@@ -17,128 +17,125 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-// Settings screen (auto-assign). Still jQuery based; rewritten in plain JavaScript by the settings task.
-
-/**
- * jQuery extension serializing the form fields into an object; repeated
- * names become arrays of values.
- * @returns {object} Field name/value pairs of the form.
- */
-$.fn.serialize2json = function () {
-  const o = {};
-  const a = this.serializeArray();
-  $.each(a, function () {
-    if (o[this.name]) {
-      if (!o[this.name].push) {
-        o[this.name] = [o[this.name]];
-      }
-      o[this.name].push(this.value || '');
-    } else {
-      o[this.name] = this.value || '';
-    }
-  });
-  return o;
-};
-
-/**
- * Shows or hides an element with the jQuery UI "blind" effect.
- * @param {jQuery} form - Element to show or hide.
- * @param {boolean} flag - True to show, false to hide.
- */
-function toggleBlind(form, flag) {
-  if (flag) {
-    form.show('blind');
-  }
-  else {
-    form.hide('blind');
-  }
-}
+// Settings screen (auto-assign). The elements are marked with `data-cr-action`
+// in code_review_settings/_show and _filters; the handlers are registered at the
+// end of this file.
 
 /**
  * Shows the auto-assign settings block only while it is enabled, and makes
  * the author select required only while the block is visible.
+ * @param {Element} checkbox - The `auto_assign[enabled]` checkbox.
  */
-function setAutoAssignSettingFormEnable() {
-  const form = $('#cr_auto_assign_settings');
-  const flag = $('#auto_assign_enabled').is(':checked');
+function crActionAutoAssignEnabled(checkbox) {
   // A required field inside the hidden block would silently block the form submission.
-  $('#auto_assign_author_id').prop('required', flag);
-  toggleBlind(form, flag);
+  crQuery('#auto_assign_author_id').required = checkbox.checked;
+  crQuery('#cr_auto_assign_settings').style.display = checkbox.checked ? '' : 'none';
 }
 
 /**
  * Shows the auto-assign filter block only while the filter is enabled.
+ * @param {Element} checkbox - The `auto_assign[filter_enabled]` checkbox.
  */
-function setAutoAssignSettingFiltersEnable() {
-  const form = $('#auto_assignment_filter_form');
-  toggleBlind(form, $('#auto_assign_filter_enabled').is(':checked'));
+function crActionAutoAssignFilterEnabled(checkbox) {
+  crQuery('#auto_assignment_filter_form').style.display = checkbox.checked ? '' : 'none';
 }
 
 /**
  * Validates that the filter expression field is non-empty and holds a
- * parseable regular expression.
- * @param {jQuery} field - Input field holding the expression.
+ * parseable regular expression. An empty field is marked and focused; an
+ * unparseable expression is reported with an alert.
+ * @param {HTMLInputElement} field - Input field holding the expression.
  * @returns {boolean} True when the expression is usable.
  */
-function is_valid_expression(field) {
-  const text = field[0].value;
-  if (text === '') {
-    field.addClass('error').focus();
+function crValidExpression(field) {
+  if (field.value === '') {
+    field.classList.add('error');
+    field.focus();
     return false;
   }
-
   try {
-    new RegExp(text);
+    new RegExp(field.value);
   }
   catch (e) {
     alert(e);
     return false;
   }
-
   return true;
 }
 
 /**
- * Reloads the filter list after adding the filter from the add form.
- * @param {string} url - URL that renders the filter list.
- * @returns {boolean} True when the reload was started, false when the new
- *   filter expression is invalid.
+ * Collects the fields of the settings form as request parameters; repeated
+ * names stay repeated.
+ * @returns {URLSearchParams} The form fields.
  */
-function add_assign_filter(url) {
-  if (!is_valid_expression($('#auto_assign_add_filter_expression'))) {
-    return false;
+function crSettingsParams() {
+  return new URLSearchParams(new FormData(crQuery('#code_review_form')));
+}
+
+/**
+ * Reloads the filter list with the settings form fields.
+ * @param {string} method - 'GET' or 'POST'.
+ * @param {string} url - URL that renders the filter list.
+ * @param {URLSearchParams} params - Request parameters.
+ * @returns {Promise<void>} Resolves after the list was displayed.
+ */
+function crReloadFilters(method, url, params) {
+  return crLoad(crQuery('#auto_assignment_filters'), url, { method, params });
+}
+
+/**
+ * Adds the filter from the add form: validates its expression, then reloads
+ * the filter list. An invalid expression sends nothing.
+ * @param {Element} el - The Apply button of the add form.
+ * @returns {Promise<void>|undefined} Resolves after the list was displayed.
+ */
+function crActionAddFilter(el) {
+  if (!crValidExpression(crQuery('#auto_assign_add_filter_expression'))) {
+    return undefined;
   }
-  const args = $('#code_review_form').serialize2json();
-  loadWithErrorDisplay($('#auto_assignment_filters'), url, args);
-  return true;
+  return crReloadFilters('POST', crAttr(el, 'data-cr-url'), crSettingsParams());
 }
 
 /**
- * Reloads the filter list after updating the filter at the given position.
- * @param {string} url - URL that renders the filter list.
- * @param {number} num - Position of the filter to update.
- * @returns {boolean} True when the reload was started, false when the new
- *   filter expression is invalid.
+ * Updates the filter at the position of the button: validates the edited
+ * expression, then reloads the filter list. An invalid expression sends nothing.
+ * @param {Element} el - The Apply button of the edit row.
+ * @returns {Promise<void>|undefined} Resolves after the list was displayed.
  */
-function update_assign_filter(url, num) {
-  if (!is_valid_expression($('#auto_assign_edit_filter_' + num + '_expression'))) {
-    return false;
+function crActionUpdateFilter(el) {
+  const num = crAttrInt(el, 'data-cr-num');
+  if (!crValidExpression(crQuery(`#auto_assign_edit_filter_${num}_expression`))) {
+    return undefined;
   }
-  const args = $('#code_review_form').serialize2json();
-  args['num'] = num;
-  loadWithErrorDisplay($('#auto_assignment_filters'), url, args);
-  return true;
+  const params = crSettingsParams();
+  params.set('num', num);
+  return crReloadFilters('POST', crAttr(el, 'data-cr-url'), params);
 }
 
 /**
- * Moves the filter at the given position by loading the filter list with the
- * serialized settings form and the move request.
- * @param {string} url - URL that renders the filter list.
- * @param {'highest'|'higher'|'lower'|'lowest'} action - Direction to move the filter.
- * @param {number} num - Position of the filter to move.
+ * Moves a filter: loads the filter list with the settings form fields and
+ * the move request.
+ * @param {Element} el - The sort arrow.
+ * @returns {Promise<void>} Resolves after the list was displayed.
  */
-function cr_sort_filter(url, action, num) {
-  $('#auto_assign_filter_num').val(num);
-  $('#auto_assign_filter_move_to').val(action);
-  loadWithErrorDisplay($('#auto_assignment_filters'), url, $('#code_review_form').serialize());
+function crActionSortFilter(el) {
+  const params = crSettingsParams();
+  params.set('auto_assign_filter[num]', crAttrInt(el, 'data-cr-num'));
+  params.set('auto_assign_filter[move_to]', crAttr(el, 'data-cr-direction'));
+  return crReloadFilters('GET', crAttr(el, 'data-cr-url'), params);
 }
+
+/**
+ * Removes the element named by `data-cr-target`.
+ * @param {Element} el - The action element.
+ */
+function crActionRemove(el) {
+  crTarget(el, 'data-cr-target').remove();
+}
+
+crRegisterAction('auto-assign-enabled', 'change', crActionAutoAssignEnabled);
+crRegisterAction('auto-assign-filter-enabled', 'change', crActionAutoAssignFilterEnabled);
+crRegisterAction('add-filter', 'click', crActionAddFilter);
+crRegisterAction('update-filter', 'click', crActionUpdateFilter);
+crRegisterAction('sort-filter', 'click', crActionSortFilter);
+crRegisterAction('remove', 'click', crActionRemove);

@@ -17,104 +17,58 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-var urlprefix = '';
+// ---- Repository screens: changeset list, revision view, entry tab, review index ----
 
 /**
- * Holds the review counters shown for a revision in the changeset list.
- * @class
- * @param {number} total - Total number of reviews for the revision.
- * @param {number} open - Number of still-open reviews.
- * @param {string} progress - HTML snippet of the progress bar.
+ * Adds the review progress column to the repository changeset table. The
+ * progress HTML is rendered by the server (progress bar and assign link).
+ * @param {Element} el - The `revisions-view` marker element.
  */
-var ReviewCount = function (total, open, progress) {
-  this.total = total;
-  this.open = open;
-  this.closed = total - open;
-  this.progress = progress
-};
-
-/**
- * A single code review shown next to a changed file.
- * @class
- * @param {number} id - Id of the review issue.
- */
-var CodeReview = function (id) {
-  this.id = id;
-  this.path = '';
-  this.line = 0;
-  this.url = '';
-  this.is_closed = false;
-};
-
-var review_counts = new Array();
-var code_reviews_map = new Array();
-
-/**
- * Adds the review progress column to the repository changeset table.
- * @param {string} title - Header text of the new column.
- */
-function UpdateRepositoryView(title) {
-  const header = $("table.changesets thead tr:first");
-  const th = $('<th></th>');
-  th.html(title);
+function crInitRevisionsView(el) {
+  const counts = crAttrJson(el, 'data-cr-review-counts');
+  const header = crQuery('table.changesets thead tr');
+  const th = document.createElement('th');
+  th.textContent = crData(el, 'column-title');
   header.append(th);
-  $('tr.changeset td.id a:first-child').each(function () {
-    let revision = this.getAttribute("href");
-    revision = revision.substr(revision.lastIndexOf("/") + 1);
-    const review = review_counts['revision_' + revision];
-    const td = $('<td/>', {
-      'class': 'progress'
-    });
-    td.html(review.progress);
-    $(this.parentNode.parentNode).append(td);
+  document.querySelectorAll('tr.changeset td.id a:first-child').forEach((link) => {
+    const href = link.getAttribute('href');
+    const revision = href.slice(href.lastIndexOf('/') + 1);
+    if (!(revision in counts)) {
+      throw new Error(`code_review: no review count for revision ${revision}`);
+    }
+    const td = document.createElement('td');
+    td.className = 'progress';
+    td.innerHTML = counts[revision].progress;
+    link.closest('tr').append(td);
   });
-}
-//add function $.down
-if (!$.fn.down) {
-  (function ($) {
-    /**
-     * jQuery extension returning the first element child as a jQuery object
-     * (the Prototype.js helper some templates still rely on). Any selector
-     * argument is ignored, unlike Prototype's down(selector).
-     * @returns {jQuery} The first element child of the matched element.
-     */
-    $.fn.down = function () {
-      let el = this[0] && this[0].firstChild;
-      while (el && el.nodeType !== 1) {
-        el = el.nextSibling;
-      }
-      return $(el);
-    };
-  })(jQuery);
 }
 
 /**
  * Lists the reviews of each changed file under the revision view entries.
+ * @param {Element} el - The `revision-view` marker element.
  */
-function UpdateRevisionView() {
-  $('#changes-legend').after($('#code_review_assignments'));
-  $('li.change').each(function () {
-    const li = $(this);
-    if (li.hasClass('folder')) { return; }
-
-    // Entries without a link (the legend, deleted files) start with a bare icon;
-    // down() ignores its selector, so look for the link among the children instead.
-    const a = li.children('a').first();
-    if (a.length === 0) { return; }
-    const href = a.attr('href');
-    const path = href.replace(urlprefix, '').replace(/\?.*$/, '');
-
-    const reviewlist = code_reviews_map[path];
-    if (reviewlist == null) { return; }
-
-    const ul = $('<ul></ul>');
-    for (let j = 0; j < reviewlist.length; j++) {
-      const review = reviewlist[j];
-      const icon = review.is_closed ? 'icon-closed-review' : 'icon-review';
-      const item = $('<li></li>', {
-        'class': 'icon ' + icon + ' code_review_summary'
-      });
-      item.html(review.url);
+function crInitRevisionView(el) {
+  const urlprefix = crData(el, 'urlprefix');
+  const reviews = crAttrJson(el, 'data-cr-reviews');
+  const assignments = document.getElementById('code_review_assignments');
+  if (assignments) {
+    crQuery('#changes-legend').after(assignments);
+  }
+  document.querySelectorAll('li.change').forEach((li) => {
+    // Entries without a link (the legend, deleted files) start with a bare icon.
+    const link = li.querySelector(':scope > a');
+    if (li.classList.contains('folder') || !link) {
+      return;
+    }
+    const path = link.getAttribute('href').replace(urlprefix, '').replace(/\?.*$/, '');
+    if (!(path in reviews)) {
+      return;
+    }
+    const ul = document.createElement('ul');
+    for (const review of reviews[path]) {
+      const item = document.createElement('li');
+      item.className = 'icon ' + (review.closed ? 'icon-closed-review' : 'icon-review') + ' code_review_summary';
+      item.innerHTML = review.link;
       ul.append(item);
     }
     li.append(ul);
@@ -122,50 +76,26 @@ function UpdateRevisionView() {
 }
 
 /**
- * Appends a link to the repository entry tab.
- * @param {string} project - Unused; kept so call sites keep their argument order.
- * @param {string} link - HTML of the link to append.
+ * Appends the "add review" link to the repository entry tab list.
+ * @param {Element} el - The `entry-link` marker element.
  */
-function make_addreview_link(project, link) {
-  const alist = $('div.tabs ul li a#tab-entry');
-  if (alist == null) {
-    return;
+function crInitEntryLink(el) {
+  const tab = document.querySelector('div.tabs ul li a#tab-entry');
+  if (!tab) {
+    throw new Error('code_review: entry tab (#tab-entry) not found');
   }
-  const a = alist[0];
-  const p = a.parentNode.parentNode;
-  p.innerHTML = p.innerHTML + link;
-}
-
-/**
- * Loads `url` into the target via jQuery.load, showing the HTTP status at
- * the top of the target when the request fails (plain .load() would leave
- * it unchanged and the error invisible).
- * @param {jQuery} target - Element to load the response into.
- * @param {string} url - URL to load.
- * @param {object | string} [params] - Request parameters passed to jQuery.load.
- */
-function loadWithErrorDisplay(target, url, params) {
-  target.load(url, params, function (_responseText, status, xhr) {
-    if (status !== 'error') {
-      return;
-    }
-    target.children('.cr-load-error').remove();
-    target.prepend($('<div class="flash error cr-load-error">').text(xhr.status + ' ' + xhr.statusText));
-  });
+  tab.parentNode.parentNode.insertAdjacentHTML('beforeend', crData(el, 'link'));
 }
 
 /**
  * Reloads the content with closed reviews shown or hidden.
- * @param {string} url - URL that renders the content.
- * @param {boolean} flag - True to show closed reviews.
+ * @param {Element} el - The `show_closed` checkbox.
+ * @returns {Promise<void>} Resolves after the content was displayed.
  */
-function change_option(url, flag) {
-  loadWithErrorDisplay($('#content'), url, {
-    show_closed: flag
-  });
+function crActionToggleClosed(el) {
+  return crLoad(crQuery('#content'), crAttr(el, 'data-cr-url'),
+    { method: 'POST', params: { show_closed: el.checked } });
 }
-
-
 
 // ---- Diff / revision / file view: reviews on the line number cells ----------
 
@@ -512,9 +442,13 @@ function crKeepArrowKeysInDialog(event) {
 }
 
 crRegisterInit('diff-view', crInitDiffView);
+crRegisterInit('revisions-view', crInitRevisionsView);
+crRegisterInit('revision-view', crInitRevisionView);
+crRegisterInit('entry-link', crInitEntryLink);
 crRegisterInit('review-added', crInitReviewAdded);
 crRegisterInit('load', crInitLoad);
 crRegisterAction('display', 'click', crActionDisplay);
+crRegisterAction('toggle-closed', 'change', crActionToggleClosed);
 crRegisterAction('toggle', 'click', crActionToggle);
 crRegisterAction('cancel-review-form', 'click', hideForm);
 crRegisterAction('set-value', 'click', crActionSetValue);

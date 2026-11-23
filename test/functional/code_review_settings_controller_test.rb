@@ -261,16 +261,44 @@ class CodeReviewSettingsControllerTest < ActionController::TestCase
       assert_select "input#auto_assign_filter_enabled[checked]"
     end
 
-    # The form is serialized as a whole, so repeated hidden fields would all be sent and
-    # only the last one would win: the arrows would always move the last filter.
-    should "render one pair of sort fields and let each arrow pass its own row number" do
+    # The script adds the move request to the form fields itself; hidden fields in the
+    # form would be sent by every save and, when repeated, only the last one would win.
+    should "render no sort fields and let each arrow carry its own row number and direction" do
       post :sort, params: { id: @project.id, auto_assign: @setting.auto_assign_settings.attributes.merge(filters: @filters),
                            auto_assign_filter: { num: 0, move_to: "highest" } }
-      assert_select "input[name=?]", "auto_assign_filter[num]", 1
-      assert_select "input[name=?]", "auto_assign_filter[move_to]", 1
-      assert_select "#auto_assign_tr_1 a[onclick*=cr_sort_filter]", 4 do |links|
-        links.each { |link| assert_match(/, 1\)\z/, link["onclick"]) }
+      assert_select "input[name=?]", "auto_assign_filter[num]", 0
+      assert_select "input[name=?]", "auto_assign_filter[move_to]", 0
+      assert_select "#auto_assign_tr_1 a[data-cr-action=?]", "sort-filter", 4 do |links|
+        links.each { |link| assert_equal "1", link["data-cr-num"] }
+        assert_equal(%w[highest higher lower lowest], links.map { |link| link["data-cr-direction"] })
       end
+    end
+  end
+
+  context "markup (no inline scripts, values in data-cr-* attributes)" do
+    setup do
+      @project = Project.find(1)
+      @request.session[:user_id] = 1
+      @setting = CodeReviewProjectSetting.find_or_create(@project)
+      filter = AssignmentFilter.new
+      filter.expression = "it's a path"
+      filter.order = 10
+      filter.accept = true
+      @filters = { "1" => filter.attributes }
+    end
+
+    should "render the filter list with actions and no handlers" do
+      post :sort, params: { id: @project.id, auto_assign: @setting.auto_assign_settings.attributes.merge(filters: @filters),
+                           auto_assign_filter: { num: 0, move_to: "highest" } }
+      assert_response :success
+      assert_no_inline_script(response.body)
+      actions = cr_actions(response.body)
+      %w[auto-assign-filter-enabled display remove update-filter add-filter sort-filter].each do |name|
+        assert_includes actions, name
+      end
+      assert_select "button[data-cr-action=?][data-cr-num=?][data-cr-url]", "update-filter", "0"
+      assert_select "button[data-cr-action=?][data-cr-url$=?]", "add-filter", "/add_filter"
+      assert_select "a[data-cr-action=?][data-cr-target=?]", "remove", "#auto_assign_tr_0"
     end
   end
 end

@@ -3,13 +3,8 @@ import { resolve } from 'node:path';
 import { runInThisContext } from 'node:vm';
 
 // The plugin's scripts in the order the browser loads them
-// (`_html_header.html.erb`). jQuery / jQuery UI are loaded by Redmine core in the
-// browser, never by the plugin; they stay in this list (and `$.fx.off` stays on)
-// only until the legacy `code_review.js` code and its tests are fully migrated,
-// and are removed together with the migration's final cleanup task.
+// (`_html_header.html.erb`). The plugin uses no jQuery (ADR 0005).
 const DEFAULT_SCRIPTS = [
-  'node_modules/jquery/dist/jquery.js',
-  'node_modules/jquery-ui/dist/jquery-ui.js',
   'assets/javascripts/code_review_dialog.js',
   'assets/javascripts/code_review_loader.js',
   'assets/javascripts/code_review.js',
@@ -31,5 +26,4 @@ export function loadClassicScripts(scripts = DEFAULT_SCRIPTS) {
     const source = readFileSync(file, 'utf8');
     runInThisContext(source, { filename: file });
   }
-  $.fx.off = true;
 }

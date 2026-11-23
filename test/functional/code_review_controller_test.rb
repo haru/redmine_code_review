@@ -450,6 +450,27 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
     end
 
+    should "render update_revisions_view as a revisions-view marker with the counts per revision" do
+      get :update_revisions_view, params: { id: 1, changeset_ids: "1,2,3" }
+      assert_response :success
+      assert_no_inline_script(response.body)
+      marker = cr_marker(response.body, "revisions-view")
+      assert_not_empty marker["data-cr-column-title"]
+      counts = JSON.parse(marker["data-cr-review-counts"])
+      assert_equal 3, counts.size
+      counts.each_value do |count|
+        assert_equal %w[open progress total], count.keys.sort
+      end
+    end
+
+    should "render the review index with the toggle action instead of an onchange handler" do
+      get :index, params: { id: 1 }
+      assert_response :success
+      assert_select "#code_review_list script", 0
+      assert_select "#code_review_list [onchange]", 0
+      assert_select "input#show_closed[data-cr-action=?][data-cr-url]", "toggle-closed"
+    end
+
     should "render update_diff_view as a diff-view marker" do
       post :update_diff_view, params: { id: 1, rev: 1, path: "/a b/it's \"q\" 日本語.rb", action_type: "diff" }
       assert_response :success

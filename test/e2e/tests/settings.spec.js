@@ -132,7 +132,7 @@ test('reorders filters and keeps the order after saving', async ({ page }) => {
   const sort = async (rowIndex, direction) => {
     const [response] = await Promise.all([
       page.waitForResponse((r) => new URL(r.url()).pathname.endsWith('/code_review_settings/sort')),
-      page.locator(`#auto_assign_tr_${rowIndex} a[onclick*="'${direction}'"]`).click(),
+      page.locator(`#auto_assign_tr_${rowIndex} a[data-cr-direction="${direction}"]`).click(),
     ]);
     expect(response.status()).toBe(200);
   };

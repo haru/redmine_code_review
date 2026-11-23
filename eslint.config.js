@@ -60,10 +60,10 @@ const globalsFromOtherScripts = (file) => asGlobals(
   Object.entries(namesByFile).filter(([name]) => name !== file).flatMap(([, names]) => names),
 );
 
-// Kept only while the jQuery -> plain JavaScript migration is in progress.
-// Once no script references `$` / `jQuery` anymore it is removed, and a
-// `no-restricted-globals` rule keeps them out for good (ADR 0005).
-const jqueryGlobals = { jQuery: 'readonly', $: 'readonly' };
+// The plugin uses no jQuery (ADR 0005): `$` / `jQuery` are not declared as
+// globals and are rejected outright, so a regression fails lint.
+const noJquery = ['error', { name: '$', message: 'jQuery is not used (ADR 0005)' },
+  { name: 'jQuery', message: 'jQuery is not used (ADR 0005)' }];
 
 // Rules shared by the assets and the tests.
 const sharedRules = {
@@ -105,6 +105,7 @@ const assetsRules = {
   // second run). Only `var` nested inside functions, blocks and for-loops is
   // banned by the selector below.
   'no-restricted-syntax': ['error', ":not(Program) > VariableDeclaration[kind='var']"],
+  'no-restricted-globals': noJquery,
   // Ratchets (see above): may only be lowered.
   'max-lines': ['error', { max: 351, skipBlankLines: true, skipComments: true }],
   'max-lines-per-function': ['error', { max: 49, skipBlankLines: true, skipComments: true }],
@@ -133,7 +134,7 @@ export default [
     files: [`assets/javascripts/${file}`],
     languageOptions: {
       sourceType: 'script',
-      globals: { ...globals.browser, ...jqueryGlobals, ...globalsFromOtherScripts(file) },
+      globals: { ...globals.browser, ...globalsFromOtherScripts(file) },
     },
     plugins: { jsdoc },
     rules: assetsRules,
@@ -142,7 +143,7 @@ export default [
     files: ['test/javascript/**/*.js'],
     languageOptions: {
       sourceType: 'module',
-      globals: { ...globals.browser, ...globals.node, ...jqueryGlobals, ...pluginGlobals },
+      globals: { ...globals.browser, ...globals.node, ...pluginGlobals },
     },
     rules: testRules,
   },

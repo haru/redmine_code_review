@@ -94,10 +94,10 @@ Because these are monkey patches on core Redmine classes, changes here can affec
 
 A Node project at the plugin root (its own `package.json`, separate from `test/e2e/`). Rationale: `docs/adr/0003-adopt-vitest-for-javascript-unit-tests.md`.
 
-- `test/javascript/support/load_classic_script.js` loads (in the browser's order) `assets/javascripts/code_review_dialog.js`, `code_review_loader.js`, `code_review.js` and `code_review_settings.js` — preceded, until the migration's final cleanup (T039/T040), by `node_modules/jquery/dist/jquery.js` and `node_modules/jquery-ui/dist/jquery-ui.js` for the legacy code that is not migrated yet — via `vm.runInThisContext` with a `filename`, so top-level declarations become globals exactly as in a browser and v8 coverage is attributed to the file. Paths resolve from `process.cwd()` (the plugin root), never via `import.meta.url` (Vite would rewrite it).
-- New code uses no jQuery (ADR 0005): tests stub `fetch` (`vi.stubGlobal('fetch', ...)`) instead of letting requests run, and re-load the scripts in `beforeEach` to reset global state. Only the legacy, not yet migrated tests (`legacy_jquery.test.js`) still use `$.fn.load` spies; `jquery@3.7.1` / `jquery-ui@1.13.3` stay pinned exact and excluded from Renovate until T040 removes them.
+- `test/javascript/support/load_classic_script.js` loads (in the browser's order) `assets/javascripts/code_review_dialog.js`, `code_review_loader.js`, `code_review.js` and `code_review_settings.js` via `vm.runInThisContext` with a `filename`, so top-level declarations become globals exactly as in a browser and v8 coverage is attributed to the file. Paths resolve from `process.cwd()` (the plugin root), never via `import.meta.url` (Vite would rewrite it).
+- The plugin uses no jQuery (ADR 0005); there is no jQuery in `package.json` and ESLint rejects `$` / `jQuery` (`no-restricted-globals`). Tests stub `fetch` (`vi.stubGlobal('fetch', ...)`) instead of letting requests run, and re-load the scripts in `beforeEach` to reset global state.
 - Coverage targets `assets/javascripts/**/*.js`, fails below 95% lines (`thresholds.lines`), and writes to `coverage-js/` (git-ignored, kept apart from SimpleCov's `coverage/`).
-- Migrated views carry no `<script>` blocks or handler attributes: values travel in `data-cr-init` / `data-cr-action` / `data-cr-*` attributes (ADR 0005). `docs/inline-javascript-in-views.md` lists the views still to migrate.
+- Migrated views carry no `<script>` blocks or handler attributes: values travel in `data-cr-init` / `data-cr-action` / `data-cr-*` attributes (ADR 0005). `docs/inline-javascript-in-views.md` describes the mechanism and the one exception (`wikitoolbar_for`).
 
 ### JavaScript static analysis (`eslint.config.js`, ESLint 10)
 

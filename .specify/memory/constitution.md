@@ -5,7 +5,7 @@ Modified principles:
   - VII. JavaScript Unit Tests with Coverage (jQuery tooling rules replaced: fetch stubs, no-JavaScript-library rule, data-attribute views)
 Added sections: none
 Removed sections: none
-Follow-up TODOs: AGENTS.md (jQuery tooling description) and docs/inline-javascript-in-views.md must be rewritten once the last jQuery code is removed from code_review.js (tasks T039-T043 of feature 007)
+Follow-up TODOs: none (AGENTS.md and docs/inline-javascript-in-views.md describe the jQuery-free state)
 -->
 
 ## Core Principles
