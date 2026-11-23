@@ -100,6 +100,19 @@ describe('diff view', () => {
       expect($('#review_span_3_0 img').length).toBe(1);
       expect($('th img').length).toBe(1);
     });
+
+    // Pins the emptiness check for `line`: jQuery's data() yields mixed types
+    // for data-txt (a number for numeric values, a string otherwise).
+    it('skips rows with an empty data-txt and places images on numeric ones', () => {
+      document.body.innerHTML += `
+        <table class="filecontent"><thead><tr><th class="filename">added.rb</th></tr></thead><tbody><tr><th data-txt=""></th><td>no line</td></tr><tr><th data-txt="2"></th><td>line two</td></tr></tbody></table>`;
+      expect(typeof $($('th[data-txt]')[1]).data('txt')).toBe('number');
+
+      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
+
+      expect($('th img').length).toBe(1);
+      expect($('#add_revew_img_2_0').length).toBe(1);
+    });
   });
 
   describe('clickPencil', () => {

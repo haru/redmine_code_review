@@ -9,3 +9,4 @@ File naming: `NNNN-short-title.md`, numbered sequentially (e.g. `0001-example-de
 - [0001 Adopt Playwright for end-to-end tests](0001-adopt-playwright-for-e2e-tests.md) — Accepted, 2026-11-22
 - [0002 Pin RuboCop with a dedicated Gemfile and update it with Renovate](0002-pin-rubocop-with-dedicated-gemfile-and-renovate.md) — Accepted, 2026-11-22
 - [0003 Adopt Vitest for JavaScript unit tests](0003-adopt-vitest-for-javascript-unit-tests.md) — Accepted, 2026-11-22
+- [0004 Adopt ESLint for JavaScript static analysis](0004-adopt-eslint-for-javascript-static-analysis.md) — Accepted, 2026-11-23
