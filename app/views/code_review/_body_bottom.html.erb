@@ -60,14 +60,12 @@ if project and controller and project.module_enabled?(:code_review)
             <div id="code_review">
             </div>
             <script type="text/javascript">
-                $(document).ready(function(){
-                    $('#code_review').load('<%=url%>', {
-                        rev: '<%=rev%>',
-                        path:'<%=path%>',
-                        review_id: '<%=review_id%>',
-                        action_type:'<%=action_name%>',
-                        rev_to: '<%=rev_to%>'});
-                });
+                loadOnReady('#code_review', '<%= j url %>', {
+                    rev: '<%= j rev %>',
+                    path: '<%= j path %>',
+                    review_id: '<%= j review_id %>',
+                    action_type: '<%= j action_name %>',
+                    rev_to: '<%= j rev_to %>'});
             </script>
           <% end %>
 

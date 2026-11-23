@@ -13,6 +13,7 @@ page files, not here.
 
 - [Pin RuboCop with a dedicated Gemfile and Renovate](./pages/rubocop-pinned-gemfile-and-renovate.md) — independent CI job, tools/rubocop lockfile, Renovate, rejected options
 - [RuboCop adoption and offense cleanup](./pages/rubocop-adoption-cleanup.md) — 1,623 baseline offenses, three-step fix, no todo file
+- [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, pinned jQuery, 95% line gate, view logic moved into code_review.js
 
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue
@@ -44,3 +45,4 @@ page files, not here.
 - [Run the E2E tests](./pages/run-e2e-tests.md) — run.sh, seed data, driving the review UI
 - [Install and enable the plugin](./pages/install-and-enable-plugin.md) — install, migrate, enable module, verify
 - [Run RuboCop](./pages/run-rubocop.md) — build-scripts/rubocop.sh, 0-target guard, parent-exclusion gotcha
+- [Run the JavaScript unit tests](./pages/run-javascript-unit-tests.md) — npm scripts, coverage output, CI job, test layout

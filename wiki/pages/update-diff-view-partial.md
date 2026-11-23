@@ -1,8 +1,8 @@
 ---
 title: update_diff_view partial
 type: component
-sources: [S003, S008, S023, S024, S033]
-updated: 2026-11-21
+sources: [S003, S008, S023, S024, S033, S038]
+updated: 2026-11-23
 ---
 
 # `_update_diff_view.html.erb`
@@ -21,7 +21,7 @@ The partial rendered by the controller's `update_diff_view` and `update_attachme
 4. Sets `showReviewUrl` and the open and closed review image tags (from the plugin's `review.png` and `closed_review.png`).
 5. For each loaded review calls `setShowReviewButton(line, id, is_closed?, file_count)`.
 6. If a `review_id` was requested, calls `popupReview(id)`.
-7. Moves the assign link just before the first `table.filecontent` (S023).
+7. Moves the assign link just before the first `table.filecontent` (S023). Feature 005 turns this inline DOM code into a call to `moveAssignLinkAboveFileContent()` in `code_review.js`; the rest stays as value hand-off (S038).
 
 ## What this means for S003's `updateDiff()`
 The refresh of the diff UI that S003 attributes to a JS function `updateDiff()` is done by this partial's inline script when it is loaded. For `diff`, `entry` and `annotate` pages with a known revision it is loaded by a script in `_body_bottom` (S024; see [When and how the review UI loads](./review-ui-activation.md)). I did not check whether the other `change_*` partials load it too.

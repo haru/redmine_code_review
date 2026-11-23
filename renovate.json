@@ -5,5 +5,11 @@
   ],
   "baseBranchPatterns": [
     "develop"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["jquery", "jquery-ui"],
+      "enabled": false
+    }
   ]
 }

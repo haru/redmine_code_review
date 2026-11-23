@@ -30,6 +30,10 @@ bundle exec rake redmine:plugins:test NAME=redmine_code_review TEST=plugins/redm
 plugins/redmine_code_review/test/e2e/run.sh                       # all specs; needs bash (not `sh`), works from any directory
 plugins/redmine_code_review/test/e2e/run.sh tests/review.spec.js  # one spec (args go to `npx playwright test`)
 
+# JavaScript unit tests (from the plugin directory; first time there: npm ci)
+npm test                       # vitest run
+npm run test:coverage          # vitest run --coverage; fails below 95% line coverage, writes coverage-js/
+
 # alternative: SimpleCov-instrumented runner (from the plugin directory; auto-copies fixtures, chdir's, requires every *test.rb)
 ruby plugins/redmine_code_review/test/test_runner.rb
 ```
@@ -83,6 +87,15 @@ Because these are monkey patches on core Redmine classes, changes here can affec
 - `test/test_helper.rb` requires the host Redmine's `test/test_helper`, then defines FactoryBot factories (`code_review`, `code_review_assignment`, `changeset`, `change`, `attachment`, `repository`, `issue`, `code_review_project_setting`) used across unit/functional tests — check here before adding ad hoc fixtures.
 - `test/exemplars/` + `test/code_review_object_daddy_helpers.rb` provide Object Daddy exemplars, an older fixture-generation style still used alongside FactoryBot.
 - `test/fixtures/*.yml` get copied into the host Redmine's `test/fixtures/` (by `post-create.sh` or `test_runner.rb`) — they must not collide with core Redmine fixture IDs.
+
+### JavaScript unit tests (`test/javascript/`, Vitest)
+
+A Node project at the plugin root (its own `package.json`, separate from `test/e2e/`). Rationale: `docs/adr/0003-adopt-vitest-for-javascript-unit-tests.md`.
+
+- `test/javascript/support/load_classic_script.js` loads `node_modules/jquery/dist/jquery.js`, then `node_modules/jquery-ui/dist/jquery-ui.js`, then `assets/javascripts/code_review.js` via `vm.runInThisContext` with a `filename`, so top-level declarations become globals exactly as in a browser and v8 coverage is attributed to the file. Paths resolve from `process.cwd()` (the plugin root), never via `import.meta.url` (Vite would rewrite it).
+- `jquery@3.7.1` and `jquery-ui@1.13.3` are pinned exact (Redmine-bundled versions) and excluded from Renovate updates. The loader sets `$.fx.off = true`; tests spy on `$.fn.load` (`vi.spyOn($.fn, "load")`) instead of letting Ajax run, and re-load the scripts in `beforeEach` to reset global state.
+- Coverage targets `assets/javascripts/**/*.js`, fails below 95% lines (`thresholds.lines`), and writes to `coverage-js/` (git-ignored, kept apart from SimpleCov's `coverage/`).
+- Views keep only value hand-off and function calls in their `<script>` blocks — see `docs/inline-javascript-in-views.md` for what remains and why.
 
 ### E2E tests (`test/e2e/`, Playwright)
 

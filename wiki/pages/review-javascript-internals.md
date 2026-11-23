@@ -1,8 +1,8 @@
 ---
 title: code_review.js internals
 type: component
-sources: [S021, S022, S026, S027, S028, S029, S032]
-updated: 2026-11-21
+sources: [S021, S022, S026, S027, S028, S029, S032, S038]
+updated: 2026-11-23
 ---
 
 # code_review.js internals
@@ -23,7 +23,7 @@ What `assets/javascripts/code_review.js` really does (S022). The overview is on 
 - `UpdateRevisionView` appends a list of a file's reviews under each `li.change`, using `code_reviews_map[path]` and skipping files without an entry (S022). The map and `urlprefix` are filled by the revision-page partial; a file with an empty list still gets an empty `<ul>` (S022, S028; see [Revision page integration](./review-revision-page-view.md)).
 - `$.fn.down` is defined here only if missing, to imitate Prototype's `down` (S022).
 
-## Dead or broken code (S022)
-- `getReviewObjById` loops with `for ... in` over `code_reviews_map`, which yields keys, so it never finds a review and always returns null. Its result is unused in `showReview`.
-- `deleteReview` and `changeImage` use jQuery selectors missing the `#` (`$('review_<id>')`), and `changeImage` also uses Prototype's `new Element`. `call_update_revisions` uses Prototype's `$$` and `Ajax.Updater`. They do not work in a jQuery-only page. The repository list page now loads the same action with jQuery instead (S026), so `call_update_revisions` looks superseded; I did not check for callers of any of the three.
-- `make_addreview_link` is jQuery code and is in use: the [entry-page partial](./review-entry-add-review-link.md) calls it (S027). Its first parameter is unused and its null check can never fire (S022).
+## Dead code removed and what remains
+- Feature 005 deletes `getReviewObjById` (with its call in `showReview`), `deleteReview`, `changeImage` and `call_update_revisions`: none had callers, and the last three depended on Prototype.js APIs (S038).
+- Still present on purpose: `make_addreview_link`'s null check never fires, and `clickPencil` uses `eval` (S022, S038). `make_addreview_link` is used by the [entry-page partial](./review-entry-add-review-link.md) (S027).
+- `code_review.js` now also holds logic moved out of the views, such as the settings-page functions, `change_option(url, flag)`, `loadOnReady` and `bindReviewFormTrackerChange` (S038); see [Why Vitest](./vitest-javascript-unit-tests.md).
