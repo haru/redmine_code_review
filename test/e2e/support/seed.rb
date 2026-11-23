@@ -12,7 +12,8 @@ unless db.start_with?(work_dir.to_s)
   raise "E2E seed: refusing to run against #{db}; expected a DB under #{work_dir} " \
         "(does config/database.yml honor DB_NAME?)"
 end
-raise "E2E seed: git is not available to Redmine (scm_git_command)" unless Repository::Git.scm_available
+# Ask the adapter, not Repository::Git.scm_available: Redmine master also requires scm_git_path_regexp there.
+raise "E2E seed: git is not available to Redmine (scm_git_command)" unless Redmine::Scm::Adapters::GitAdapter.client_available
 
 permissions = %i[view_code_review add_code_review edit_code_review
                  delete_code_review assign_code_review code_review_setting]
