@@ -13,7 +13,7 @@ The partial rendered by the controller's `show`, `reply` and `update` actions, a
 - A flash area: `error_messages_for` for `review` and `reply`, plus `@notice` and `@error` (set by the controller, for example the locking-conflict message) (S029, S008).
 - A toolbar. **Update** (shown if `authorize_for('code_review', 'update')`) reveals a hidden edit form. **Delete** (if `destroy`) is a remote link with a confirm, and on `ajax:complete` it reloads the whole page. The reload script is emitted even when the Delete link is not (S029).
 - A title linking to the issue (tracker, `#id`, status), the subject, an author avatar with created and updated times, and the comment rendered with `textilizable` (wiki markup) (S029).
-- The issue's journals, sorted by id, as a history. A branch for ChiliProject (`respond_to?('render_journal')`) and one for Redmine use different partials. Only the Redmine branch is relevant here, since the plugin requires Redmine >= 6.0 (>= 7.0 after feature 007) (S029, S005, S043).
+- The issue's journals, sorted by id, as a history. A branch for ChiliProject (`respond_to?('render_journal')`) and one for Redmine use different partials. Only the Redmine branch is relevant here, since the plugin requires Redmine >= 6.0 (S029, S005).
 - A reply form, shown if `authorize_for('code_review', 'reply')` (S029).
 
 ## Forms (S029)

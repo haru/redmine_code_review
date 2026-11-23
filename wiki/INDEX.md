@@ -15,7 +15,7 @@ page files, not here.
 - [RuboCop adoption and offense cleanup](./pages/rubocop-adoption-cleanup.md) — 1,623 baseline offenses, three-step fix, no todo file
 - [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, 95% line gate, view logic moved into code_review.js
 - [Why ESLint for JavaScript static analysis](./pages/eslint-javascript-static-analysis.md) — ESLint 10 + jsdoc, all-error, top-level var exception, ratchet limits, lint-javascript CI job
-- [Why plain JavaScript instead of jQuery](./pages/replace-jquery-with-plain-javascript.md) — fetch crLoad, own dialog, data-cr-* hand-off, four classic scripts, Redmine >= 7.0, rejected options
+- [Why plain JavaScript instead of jQuery](./pages/replace-jquery-with-plain-javascript.md) — fetch crLoad, own dialog, data-cr-* hand-off, four classic scripts, Redmine floor stays 6.0, rejected options
 
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue

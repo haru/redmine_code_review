@@ -9,7 +9,7 @@ updated: 2026-11-23
 
 Steps as described by S002 (a DeepWiki snapshot; check against the repo's `README` / `init.rb` where they differ):
 
-0. Requires Redmine >= 7.0.0 since feature 007; `requires_redmine` in `init.rb` was 6.0.0 before (S005, S043). S002 says 5.0.0+, which is outdated (see the conflict note in [Plugin overview](./plugin-overview.md)).
+0. Requires Redmine >= 6.0.0, as enforced by `requires_redmine` in `init.rb`; feature 007 keeps this floor (S005, S043). S002 says 5.0.0+, which is outdated (see the conflict note in [Plugin overview](./plugin-overview.md)).
 1. Clone into `plugins/` with the directory named `redmine_code_review` (S002).
 2. Run `bundle exec rake redmine:plugins:migrate RAILS_ENV=production`, then restart Redmine (S002).
 3. Per project, enable the **Code reviews** module under Project Settings → Modules (S002).

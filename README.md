@@ -2,7 +2,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/adc7bcbf7bfd8e80a97b/maintainability)](https://codeclimate.com/github/haru/redmine_code_review/maintainability)
 [![codecov](https://codecov.io/gh/haru/redmine_code_review/branch/develop/graph/badge.svg?token=37CJ55KBUU)](https://codecov.io/gh/haru/redmine_code_review)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/haru/redmine_code_review)
-![Redmine](https://img.shields.io/badge/redmine->=7.0-blue?logo=redmine&logoColor=%23B32024&labelColor=f0f0f0&link=https%3A%2F%2Fwww.redmine.org)
+![Redmine](https://img.shields.io/badge/redmine->=6.0-blue?logo=redmine&logoColor=%23B32024&labelColor=f0f0f0&link=https%3A%2F%2Fwww.redmine.org)
 
 # Redmine Code Review Plugin
 
@@ -21,7 +21,7 @@ A comprehensive code review plugin for Redmine that enables collaborative source
 
 ## Requirements
 
-- **Redmine**: Version 7.0.0 or higher
+- **Redmine**: Version 6.0.0 or higher
 - **Ruby**: Compatible with Redmine-supported Ruby versions
 - **Database**: Any database supported by Redmine (MySQL, PostgreSQL, SQLite)
 - **Repository**: Git, Subversion, or other VCS supported by Redmine

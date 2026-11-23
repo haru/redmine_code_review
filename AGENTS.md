@@ -4,7 +4,7 @@ This file provides guidance to coding agents (Claude Code, and other AGENTS.md-c
 
 ## What this is
 
-A Redmine plugin (`redmine_code_review`) that adds in-browser code review to the repository browser: reviewers annotate diffs/changesets/attachments, and each review is backed by a Redmine `Issue`. Requires Redmine >= 7.0 (see `init.rb`, which pins `requires_redmine`).
+A Redmine plugin (`redmine_code_review`) that adds in-browser code review to the repository browser: reviewers annotate diffs/changesets/attachments, and each review is backed by a Redmine `Issue`. Requires Redmine >= 6.0 (see `init.rb`, which pins `requires_redmine`).
 
 This directory (`plugins/redmine_code_review`) only works when mounted inside a full Redmine checkout at `plugins/redmine_code_review` — tests and rake tasks rely on that relative position (e.g. `test/test_runner.rb` requires `../../../test/test_helper`, i.e. the host Redmine's test helper).
 

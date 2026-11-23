@@ -12,8 +12,7 @@ calls and inline event attributes in the ERB views. Redmine 7.0 still ships jQue
 for its own use, but a plugin-side library dependency is a liability: the plugin
 carries and pins two libraries (ADR 0003) that the production browser bundle only
 needs for this one file, the dialogs rely on a jQuery UI theme CSS that Redmine may
-drop, and inline view scripts cannot be unit tested (Principle VII). The target
-Redmine version was raised to >= 7.0 in the same decision.
+drop, and inline view scripts cannot be unit tested (Principle VII).
 
 ## Decision
 
@@ -41,7 +40,8 @@ from the ERB views:
 - Vitest tests stub `fetch` (`vi.stubGlobal`) instead of spying on `$.fn.load`;
   `jquery` / `jquery-ui` are removed from `package.json` and from the Renovate
   ignore rules.
-- `init.rb` requires Redmine 7.0.0; CI drops the 6.0-stable / 6.1-stable jobs.
+- The supported Redmine range is unchanged (>= 6.0). The new code uses only
+  browser-standard APIs, not Redmine-version-specific ones.
 
 This supersedes the jQuery-related parts of ADR 0003: pinning `jquery` /
 `jquery-ui` to the Redmine-bundled versions and stubbing Ajax via
@@ -50,7 +50,8 @@ plugin must not depend on jQuery at all. Everything else in ADR 0003 (Vitest +
 jsdom + v8 coverage gate, `vm.runInThisContext` loader, classic scripts) stays in
 force.
 
-Stimulus was considered and rejected: it would add a build step or a runtime
+Stimulus was considered and rejected: it would require dropping Redmine 6.x
+support, and it would add a build step or a runtime
 dependency for state that the review UI already keeps in a handful of globals,
 while the two delegation mechanisms (`data-cr-init`, `data-cr-action`) cover the
 same need with no dependency. Keeping classic scripts also preserves the ADR 0003

@@ -29,7 +29,7 @@ The plugin adds collaborative code review to Redmine projects. Reviews cover rep
 `CodeReview` has the columns `project_id`, `updated_by_id`, `issue_id`, optional `change_id` / `attachment_id`, `action_type`, `line`, `file_path`, `rev`, `rev_to`, `diff_all`, `file_count`, `lock_version`, `status_changed_from`, `status_changed_to` and `repository_id` (S020). It has no `user_id` column: `user_id` is delegated to `issue.author_id` (S007, S020). S001 lists `user_id` as a field, which is outdated. `CodeReviewProjectSetting` holds `tracker_id`, `assignment_tracker_id`, `hide_code_review_tab`, `auto_relation` (an integer relation type), `tracker_in_review_dialog` and `auto_assign` (the auto-assignment settings as YAML text) (S004, S006). Details on [Project settings](./project-settings.md). Column lists and migration history: [Database schema](./database-schema.md) (S020).
 
 ## Requirements
-The plugin is version 1.2.2 and required Redmine >= 6.0.0 (`requires_redmine :version_or_higher => "6.0.0"`) (S005); feature 007 raises it to 7.0.0 and drops 6.0/6.1 from CI (S043). The DeepWiki pages S001 and S002 say 5.0.0+; they are outdated on this point, and S005 is authoritative.
+The plugin is version 1.2.2 and requires Redmine >= 6.0.0 (`requires_redmine :version_or_higher => "6.0.0"`) (S005); feature 007 keeps this floor (S043). The DeepWiki pages S001 and S002 say 5.0.0+; they are outdated on this point, and S005 is authoritative.
 
 Full list of project settings: [Project settings](./project-settings.md). Setup steps: [Install and enable the plugin](./install-and-enable-plugin.md).
 

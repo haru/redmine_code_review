@@ -1,6 +1,6 @@
 # redmine_code_review Constitution
 <!-- SYNC_IMPACT_REPORT
-Version change: 1.5.0 -> 1.6.0 (MINOR: Principle VII materially expanded/redefined, Additional Constraints version floor raised)
+Version change: 1.5.0 -> 1.6.0 (MINOR: Principle VII materially expanded/redefined; the Redmine >= 6.0 floor is unchanged)
 Modified principles:
   - VII. JavaScript Unit Tests with Coverage (jQuery tooling rules replaced: fetch stubs, no-JavaScript-library rule, data-attribute views)
 Added sections: none
@@ -117,7 +117,7 @@ undefined identifiers, unused variables and implicit coercion on every path, and
 and one pinned toolchain keep local and CI results identical.
 
 ## Additional Constraints
-- The plugin MUST work on Redmine >= 7.0, as pinned by `requires_redmine` in `init.rb`.
+- The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
 - Code, code comments and git commit messages MUST be written in English. Documents under
   `specs/` MUST be written in Japanese.
 - New migrations MUST use the Rails timestamp format.
