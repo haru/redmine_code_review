@@ -160,8 +160,12 @@ function setAddReviewButton() {
       if (!line) {
         return;
       }
-      th.innerHTML = `<span white-space="nowrap" id="review_span_${line}_${fileCount}">` +
-        (crDiff.readonly ? '' : crDiff.images.add) + '</span>';
+      // Build the span with DOM APIs so the data-txt value is never parsed as HTML.
+      const span = document.createElement('span');
+      span.setAttribute('white-space', 'nowrap');
+      span.id = `review_span_${line}_${fileCount}`;
+      span.innerHTML = crDiff.readonly ? '' : crDiff.images.add;
+      th.replaceChildren(span);
       const img = th.querySelector('img');
       if (img) {
         img.id = `add_revew_img_${line}_${fileCount}`;

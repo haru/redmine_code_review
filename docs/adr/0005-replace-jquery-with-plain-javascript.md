@@ -23,8 +23,9 @@ from the ERB views:
 
 - Partial loading is centralized in one `crLoad(target, url, { method, params })`
   function (`code_review_loader.js`) that reproduces the observable behavior of
-  `$.fn.load`: always send `X-Requested-With`, send `X-CSRF-Token` on POST (error
-  when the meta tag is missing), execute `<script>` elements of the response via
+  `$.fn.load`: always send `X-Requested-With`, send `X-CSRF-Token` on POST when
+  `meta[name="csrf-token"]` exists (omitted otherwise, as in the Rails test
+  environment, which renders no CSRF meta tag), execute `<script>` elements of the response via
   `createContextualFragment`, and show `div.flash.error.cr-load-error` on failure.
 - The jQuery UI dialog is replaced by a self-contained popup in the new
   `code_review_dialog.js` (non-modal, draggable, 8-direction resize, move-to-front,
@@ -65,5 +66,3 @@ test loader and the ADR 0004 lint setup unchanged.
   ESLint `no-restricted-globals` rule makes regressions fail lint.
 - View templates stay script-free (`wikitoolbar_for` aside), so all view-triggered
   logic is unit testable; the functional tests assert the `data-cr-*` contract.
-- Redmine 6.0 / 6.1 are no longer supported; installs on those versions must stay
-  on a plugin release before this change.

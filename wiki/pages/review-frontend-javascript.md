@@ -23,7 +23,7 @@ After feature 007 view templates carry no `<script>` blocks or inline handlers: 
 | the form's Apply button | `new` (POST, through `crLoad` with the serialized form) | submit a new review |
 | `showReview()` | `show` (POST, through `crLoad` with `{review_id}`) | display the review popup |
 
-There is no `updateDiff()` function. The diff UI is set up by the inline script of the [update_diff_view partial](./update-diff-view-partial.md) (S023), which `_body_bottom` loads through the `update_diff_view` action (S024; see [activation](./review-ui-activation.md)). S003 gives a different table, with `clickPencil()` as the POST and an `updateDiff()` function; the code shows otherwise (S022).
+There is no `updateDiff()` function. The diff UI is set up by `crInitDiffView` from the `diff-view` marker of the [update_diff_view partial](./update-diff-view-partial.md) (S022, S023), which `_body_bottom` loads through the `update_diff_view` action (S024; see [activation](./review-ui-activation.md)). S003 gives a different table, with `clickPencil()` as the POST and an `updateDiff()` function; the code shows otherwise (S022).
 
 ## Partials (S003)
 - `_new_form.html.erb`: the creation form, loaded by `addReview()`.

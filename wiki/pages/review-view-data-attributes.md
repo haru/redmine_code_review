@@ -1,7 +1,7 @@
 ---
 title: crLoad and data-cr-* attributes
 type: component
-sources: [S043, S044]
+sources: [S043, S044, S045, S046]
 updated: 2026-11-23
 ---
 
@@ -12,7 +12,7 @@ How the views talk to the plugin's scripts after [feature 007](./replace-jquery-
 ## crLoad
 `crLoad(target, url, options)` is the only way to load partial HTML (S043).
 - The caller states the method. Initial loads (`loadOnReady`), `showReview`, applying the new-review form, adding or updating filters and `change_option` are POST; `addReview`, tracker-change redisplay, the review popup's Apply and filter reordering are GET (S043).
-- It always sends `X-Requested-With: XMLHttpRequest`. On POST it sends `X-CSRF-Token` from `meta[name="csrf-token"]` and throws if the meta tag is missing (S043). The E2E notes say the test environment renders no CSRF tag; see [Run the E2E tests](./run-e2e-tests.md).
+- It always sends `X-Requested-With: XMLHttpRequest`. On POST it sends `X-CSRF-Token` from `meta[name="csrf-token"]` when that tag exists; without it the header is omitted and the request still goes out, never an error (S045, S046). Rails renders no CSRF meta tag when forgery protection is off, as in the test environment the E2E tests use (S045); see [Run the E2E tests](./run-e2e-tests.md).
 - Forms are serialized with `new URLSearchParams(new FormData(form))`. Names ending in `[]` are sent as a browser would send them (S043).
 - On failure the target keeps its content and a `div.flash.error.cr-load-error` shows `status statusText` (or the network error) (S043).
 - After inserting, it calls `crInitialize(target)` (S043).

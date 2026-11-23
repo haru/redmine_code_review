@@ -102,6 +102,15 @@ describe('diff view', () => {
       expect(document.querySelectorAll('table.filecontent img')).toHaveLength(1);
     });
 
+    it('never parses the data-txt value as HTML', () => {
+      const txt = '1"><img id="injected" src="x">';
+      render({}, `<table class="filecontent"><tbody>
+        <tr><th data-txt="${txt.replace(/"/g, '&quot;')}"></th></tr></tbody></table>`);
+
+      expect(document.getElementById('injected')).toBeNull();
+      expect(document.querySelector('table.filecontent span').id).toBe(`review_span_${txt}_0`);
+    });
+
     it('skips rows without a number cell', () => {
       render({}, '<table class="filecontent"><tbody><tr><td>no th</td></tr></tbody></table>');
 
