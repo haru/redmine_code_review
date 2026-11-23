@@ -13,3 +13,7 @@ tmp/*
 # Playwright E2E
 test/e2e/node_modules/
 test/e2e/test-results/
+
+# JavaScript unit tests (Vitest)
+/node_modules/
+/coverage-js/

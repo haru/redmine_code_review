@@ -29,7 +29,5 @@ url = url_for :controller => 'code_review', :action => 'update_attachment_view',
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function(){
-    $('#code_review').load('<%=url%>', {'attachment_id': '<%=id%>', 'review_id': '<%=review_id%>'});
-  });
+  loadOnReady('#code_review', '<%= j url %>', {'attachment_id': '<%= j id %>', 'review_id': '<%= j review_id %>'});
 </script>

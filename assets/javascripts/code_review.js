@@ -76,6 +76,7 @@ if (!$.fn.down)
   })(jQuery);
 
 function UpdateRevisionView() {
+  $('#changes-legend').after($('#code_review_assignments'));
   $('li.change').each(function () {
     var li = $(this);
     if (li.hasClass('folder')) return;
@@ -237,10 +238,9 @@ function showReview(url, review_id, x, y) {
     cur_win.hide();
     code_reviews_dialog_map[review_id] = null;
   }
-  $('#show_review_' + review_id).load(url, {
+  loadWithErrorDisplay($('#show_review_' + review_id), url, {
     review_id: review_id
   });
-  var review = getReviewObjById(review_id);
 
   var win = $('#show_review_' + review_id).dialog({
     show: {
@@ -259,19 +259,13 @@ function showReview(url, review_id, x, y) {
   return win
 }
 
-function getReviewObjById(review_id) {
-  for (var reviewlist in code_reviews_map) {
-    for (var i = 0; i < reviewlist.length; i++) {
-      var review = reviewlist[i];
-      if (review.id == review_id) {
-        return review;
-      }
-    }
-  }
-  return null;
-}
-
 function formPopup(x, y) {
+  // The dialog may still exist when it was closed with its own X button (hideForm was
+  // not called). It is the same element as the new one, so destroy it before reopening.
+  if (review_form_dialog != null) {
+    review_form_dialog.dialog('destroy');
+    review_form_dialog = null;
+  }
   //@see http://docs.jquery.com/UI/Effects/Scale
   var win = $('#review-form-frame').dialog({
     show: {
@@ -284,10 +278,6 @@ function formPopup(x, y) {
     title: add_form_title
   });
   //    win.getContent().style.background = "#ffffff";
-  if (review_form_dialog != null) {
-    review_form_dialog.destroy();
-    review_form_dialog = null;
-  }
   review_form_dialog = win;
   topZindex += 10;
   $('.ui-dialog').appendTo('#content');
@@ -304,28 +294,7 @@ function hideForm() {
 }
 
 function addReview(url) {
-  $('#review-form').load(url);
-}
-
-function deleteReview(review_id) {
-  $('show_review_' + review_id).remove();
-  $('review_' + review_id).remove();
-
-}
-
-function changeImage(review_id, is_closed) {
-  var span = $('review_' + review_id);
-  var new_image = null;
-  var dummy = new Element('span');
-  if (is_closed) {
-    dummy.insert(showClosedReviewImageTag);
-  } else {
-    dummy.insert(showReviewImageTag);
-  }
-  new_image = dummy.down().getAttribute('src');
-  //alert(new_image);
-  span.down('img').setAttribute('src', new_image);
-
+  loadWithErrorDisplay($('#review-form'), url);
 }
 
 function make_addreview_link(project, link) {
@@ -336,25 +305,6 @@ function make_addreview_link(project, link) {
   var a = alist[0];
   var p = a.parentNode.parentNode;
   p.innerHTML = p.innerHTML + link;
-}
-
-function call_update_revisions(url) {
-  var changeset_ids = '';
-  var links = $$('table.changesets tbody tr.changeset td.id a');
-  for (var i = 0; i < links.length; i++) {
-    var link = links[i];
-    var href = link.getAttribute('href');
-    var id = href.replace(/^.*\/revisions\//, '');
-    if (i > 0) {
-      changeset_ids += ',';
-    }
-    changeset_ids += id;
-  }
-  new Ajax.Updater('code_review_revisions', url, {
-    evalScripts: true,
-    method: 'get',
-    parameters: 'changeset_ids=' + encodeURI(changeset_ids)
-  });
 }
 
 $.fn.serialize2json = function () {
@@ -372,6 +322,69 @@ $.fn.serialize2json = function () {
   });
   return o;
 };
+
+function toggleBlind(form, flag) {
+  if (flag) {
+    form.show('blind');
+  }
+  else {
+    form.hide('blind');
+  }
+}
+
+function setAutoAssignSettingFormEnable() {
+  var form = $('#cr_auto_assign_settings');
+  var flag = $('#auto_assign_enabled').is(':checked');
+  // A required field inside the hidden block would silently block the form submission.
+  $('#auto_assign_author_id').prop('required', flag);
+  toggleBlind(form, flag);
+}
+
+function setAutoAssignSettingFiltersEnable() {
+  var form = $('#auto_assignment_filter_form');
+  toggleBlind(form, $('#auto_assign_filter_enabled').is(':checked'));
+}
+
+function is_valid_expression(field) {
+  var text = field[0].value;
+  if (text == '') {
+    field.addClass('error').focus();
+    return false;
+  }
+
+  try {
+    new RegExp(text);
+  }
+  catch (e) {
+    alert(e);
+    return false;
+  }
+
+  return true;
+}
+
+function add_assign_filter(url) {
+  if (!is_valid_expression($('#auto_assign_add_filter_expression'))) {
+    return false;
+  }
+  var args = $('#code_review_form').serialize2json();
+  loadWithErrorDisplay($('#auto_assignment_filters'), url, args);
+}
+
+function update_assign_filter(url, num) {
+  if (!is_valid_expression($('#auto_assign_edit_filter_' + num + '_expression'))) {
+    return false;
+  }
+  var args = $('#code_review_form').serialize2json();
+  args['num'] = num;
+  loadWithErrorDisplay($('#auto_assignment_filters'), url, args);
+}
+
+function cr_sort_filter(url, action, num) {
+  $('#auto_assign_filter_num').val(num);
+  $('#auto_assign_filter_move_to').val(action);
+  loadWithErrorDisplay($('#auto_assignment_filters'), url, $('#code_review_form').serialize());
+}
 // Redmine core binds ← / → on `document` to the previous/next file link and does not skip
 // input fields, so typing in a review dialog would navigate away. Dialogs are moved into
 // #content, so stop the event there, before it reaches `document`; without preventDefault
@@ -383,3 +396,50 @@ $(function () {
     }
   });
 });
+
+// jQuery's .load() leaves the target untouched when the request fails, so a 403/404/500
+// would be invisible. Show the HTTP status at the top of the target instead.
+function loadWithErrorDisplay(target, url, params) {
+  target.load(url, params, function (_responseText, status, xhr) {
+    if (status !== 'error') {
+      return;
+    }
+    target.children('.cr-load-error').remove();
+    target.prepend($('<div class="flash error cr-load-error">').text(xhr.status + ' ' + xhr.statusText));
+  });
+}
+
+function change_option(url, flag) {
+  loadWithErrorDisplay($('#content'), url, {
+    show_closed: flag
+  });
+}
+
+function loadOnReady(selector, url, params) {
+  $(function () {
+    loadWithErrorDisplay($(selector), url, params);
+  });
+}
+
+function bindReviewFormTrackerChange(url) {
+  $(function () {
+    $('#issue_tracker_id').change(function () {
+      loadWithErrorDisplay($('#review-form'), url + '?' + $('#review_form').serialize());
+    });
+  });
+}
+
+// Bound once here (the review partial is rendered on every popup load). Reload only when
+// the delete succeeded; a failed delete must not look like a success.
+$(document).on('ajax:success', '#delete-review-link', function () {
+  location.reload();
+});
+$(document).on('ajax:error', '#delete-review-link', function (e) {
+  // rails-ujs passes [response, statusText, xhr] as event.detail
+  var xhr = e.detail[2];
+  alert(xhr.status + ' ' + xhr.statusText);
+});
+
+function moveAssignLinkAboveFileContent() {
+  $('#content table.filecontent:first').before($('#code-review-assign-link'));
+}

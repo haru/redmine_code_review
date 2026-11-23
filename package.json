@@ -1,0 +1,19 @@
+{
+  "name": "redmine_code_review",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "jquery": "3.7.1",
+    "jquery-ui": "1.13.3",
+    "jsdom": "^31.0.1",
+    "vitest": "^3.2.4"
+  }
+}

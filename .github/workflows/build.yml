@@ -114,6 +114,7 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ruby
           fail_ci_if_error: true
       - name: Slack Notification on Failure
         uses: rtCamp/action-slack-notify@v2.0.2
@@ -121,4 +122,47 @@ jobs:
         env:
           SLACK_CHANNEL: plugin-code_review
           SLACK_TITLE: Test Failure
+          SLACK_COLOR: danger
+
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Test
+        run: npm run test:coverage -- --reporter=default --reporter=json --outputFile=vitest-results.json
+      - name: Test Summary
+        if: always() && hashFiles('vitest-results.json') != ''
+        run: |
+          set -o pipefail
+          test -f coverage-js/coverage-summary.json || { echo "coverage summary missing" >&2; exit 1; }
+          echo "## JavaScript unit tests" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "| Metric | Value |"
+            echo "| --- | --- |"
+            echo "| Test files | $(jq '.testResults | length' vitest-results.json) |"
+            echo "| Tests | $(jq '.numTotalTests' vitest-results.json) |"
+            echo "| Failed | $(jq '.numFailedTests' vitest-results.json) |"
+            echo "| Line coverage | $(jq '.total.lines.pct' coverage-js/coverage-summary.json) % |"
+            echo "| Statement coverage | $(jq '.total.statements.pct' coverage-js/coverage-summary.json) % |"
+            echo "| Function coverage | $(jq '.total.functions.pct' coverage-js/coverage-summary.json) % |"
+            echo "| Branch coverage | $(jq '.total.branches.pct' coverage-js/coverage-summary.json) % |"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: codecov/codecov-action@v5
+        with:
+          files: coverage-js/lcov.info
+          flags: javascript
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure() && env.SLACK_WEBHOOK != ''
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: JavaScript Test Failure
           SLACK_COLOR: danger

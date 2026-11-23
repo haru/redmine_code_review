@@ -47,14 +47,7 @@
         <label><b><%=h l(:label_tracker) %>:</b></label>
         <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
         <script type="text/javascript">
-
-            $(function(){
-                $('#issue_tracker_id').change(function(){
-                    var url = "<%= url_for(:controller => 'code_review', :action => 'new') -%>";
-                    url = url + '?' + $('#review_form').serialize();
-                    $('#review-form').load(url);
-                });
-            });
+            bindReviewFormTrackerChange('<%= j url_for(:controller => 'code_review', :action => 'new') %>');
         </script>
       </p>
     <% end %>
@@ -114,7 +107,7 @@
       <%
       submit_url = url_for(:controller => 'code_review', :action => 'new', :id=>@project)
       %>
-      <%= button_tag l(:button_apply), type: 'button', onclick: "$('#review-form').load('#{submit_url}', $('#review_form').serialize2json())" %>
+      <%= button_tag l(:button_apply), type: 'button', onclick: "$('#review-form').load('#{j submit_url}', $('#review_form').serialize2json())" %>
 
       <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
 
