@@ -58,9 +58,9 @@ One-line handlers in HTML attributes were left as-is: the spec targets `<script>
   `show()`/`hide()` table rows
 - `code_review/index.html.erb` — `onchange="change_option(url, flag)"`
 - `code_review/_new_form.html.erb` — `onclick="$('#review_parent_id').val(<id>)"` (parent issue
-  suggestion), `onclick="$('#review-form').load(url, $('#review_form').serialize2json())"` (apply),
+  suggestion), `onclick="loadWithErrorDisplay($('#review-form'), url, $('#review_form').serialize2json())"` (apply),
   `onclick="javascript:hideForm();"` (cancel)
-- `code_review/_show.html.erb` — `onclick="$('#show_review_<id>').load(url, ...)"` (apply/reply),
+- `code_review/_show.html.erb` — `onclick="loadWithErrorDisplay($('#show_review_<id>'), url, ...)"` (apply/reply),
   `onclick='$("#update-form-<id>").hide();'` (cancel)
 
 `escape_javascript` (`j`) is applied to every URL and string value these handlers embed
