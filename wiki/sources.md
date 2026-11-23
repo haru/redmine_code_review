@@ -26,7 +26,7 @@ Sources are immutable inputs — the wiki never edits them.
 | S019 | config/routes.rb | file | 2026-11-21 | 2026-11-21 | permissions.md, plugin-overview.md |
 | S020 | db/migrate (22 migration files) | directory | 2026-11-21 | 2026-11-21 | database-schema.md, plugin-overview.md, code-review-issue-delegation.md |
 | S021 | app/views/code_review/_new_form.html.erb | file | 2026-11-21 | 2026-11-21 | review-frontend-javascript.md, code-review-creation-flow.md, review-new-form-view.md |
-| S022 | assets/javascripts/code_review.js | file | 2026-11-21 | 2026-11-21 | review-javascript-internals.md, review-frontend-javascript.md |
+| S022 | assets/javascripts/code_review.js | file | 2026-11-21 | 2026-11-23 | review-javascript-internals.md, review-javascript-loading-errors.md, review-frontend-javascript.md |
 | S023 | app/views/code_review/_update_diff_view.html.erb | file | 2026-11-21 | 2026-11-21 | update-diff-view-partial.md, review-frontend-javascript.md, review-javascript-internals.md |
 | S024 | app/views/code_review/_body_bottom.html.erb | file | 2026-11-21 | 2026-11-21 | review-ui-activation.md, update-diff-view-partial.md, review-frontend-javascript.md, plugin-overview.md |
 | S025 | app/views/code_review/_html_header.html.erb | file | 2026-11-21 | 2026-11-21 | review-ui-activation.md, review-frontend-javascript.md, plugin-overview.md |
@@ -44,3 +44,6 @@ Sources are immutable inputs — the wiki never edits them.
 | S037 | specs/004-rubocop-ci/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | rubocop-pinned-gemfile-and-renovate.md, rubocop-adoption-cleanup.md |
 | S038 | specs/005-javascript-unit-tests-ci/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | vitest-javascript-unit-tests.md, run-javascript-unit-tests.md, review-javascript-internals.md, review-frontend-javascript.md, update-diff-view-partial.md |
 | S039 | specs/005-javascript-unit-tests-ci/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | vitest-javascript-unit-tests.md, run-javascript-unit-tests.md, review-frontend-javascript.md |
+| S040 | specs/006-javascript-static-analysis-ci/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | eslint-javascript-static-analysis.md, run-javascript-lint.md, vitest-javascript-unit-tests.md, run-javascript-unit-tests.md |
+| S041 | specs/006-javascript-static-analysis-ci/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | eslint-javascript-static-analysis.md, run-javascript-lint.md |
+| S042 | eslint.config.js | file | 2026-11-23 | 2026-11-23 | eslint-javascript-static-analysis.md, run-javascript-lint.md |

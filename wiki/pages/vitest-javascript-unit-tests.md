@@ -1,7 +1,7 @@
 ---
 title: Why Vitest for JavaScript unit tests
 type: decision
-sources: [S038, S039]
+sources: [S038, S039, S040]
 updated: 2026-11-23
 ---
 
@@ -16,7 +16,7 @@ Feature 005 adds unit tests for `assets/javascripts/code_review.js` and a CI job
 - **jQuery**: `jquery@3.7.1` and `jquery-ui@1.13.3` from npm, pinned exactly to the versions Redmine bundles, and excluded from Renovate updates so tests do not drift from production. Referencing Redmine's own files was rejected because the JS CI job does not check out Redmine; mocking jQuery was rejected because DOM and `dialog` behavior would go untested (S038).
 - **Ajax**: tests spy on `$.fn.load` and check the target element, URL and params; `$.ajax` is never called (S038).
 - **Separate Node project** at the plugin root, independent of `test/e2e/`; coverage goes to `coverage-js/`, apart from SimpleCov's `coverage/` (S038, S039).
-- **No lint** for JavaScript (a clarification in the spec) (S039).
+- **No lint** for JavaScript (a clarification in the spec) (S039). Superseded by feature 006: see [Why ESLint](./eslint-javascript-static-analysis.md) (S040).
 
 ## View logic moved into code_review.js
 Logic in the inline scripts of 14 templates (function definitions, event binding, `ready` loads, DOM manipulation) moved into `code_review.js`; value hand-off and ERB loops that export data stay in the views. Settings-page functions now take their URL as an argument (`add_assign_filter(url)`, `change_option(url, flag)`). New globals: `loadOnReady`, `bindReviewFormTrackerChange`, `moveAssignLinkAboveFileContent`. Values passed from ERB into JS string literals use `escape_javascript` in the moved call sites (S038, S039). Dead code was deleted: see [code_review.js internals](./review-javascript-internals.md).

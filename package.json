@@ -7,10 +7,17 @@
   },
   "scripts": {
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint --max-warnings 0 assets/javascripts test/javascript",
+    "lint:fix": "eslint --fix assets/javascripts test/javascript"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^10.15.0",
+    "eslint-plugin-jsdoc": "^65.5.2",
+    "espree": "^11.2.0",
+    "globals": "^17.14.0",
     "jquery": "3.7.1",
     "jquery-ui": "1.13.3",
     "jsdom": "^31.0.1",

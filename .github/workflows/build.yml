@@ -168,3 +168,23 @@ jobs:
           SLACK_CHANNEL: plugin-code_review
           SLACK_TITLE: JavaScript Test Failure
           SLACK_COLOR: danger
+
+  lint-javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure() && env.SLACK_WEBHOOK != ''
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: JavaScript Lint Failure
+          SLACK_COLOR: danger

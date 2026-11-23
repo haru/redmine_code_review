@@ -33,6 +33,8 @@ plugins/redmine_code_review/test/e2e/run.sh tests/review.spec.js  # one spec (ar
 # JavaScript unit tests (from the plugin directory; first time there: npm ci)
 npm test                       # vitest run
 npm run test:coverage          # vitest run --coverage; fails below 95% line coverage, writes coverage-js/
+npm run lint                   # eslint --max-warnings 0 assets/javascripts test/javascript; CI runs the same
+npm run lint:fix               # eslint --fix; applies only mechanical fixes (brace style, comment formatting)
 
 # alternative: SimpleCov-instrumented runner (from the plugin directory; auto-copies fixtures, chdir's, requires every *test.rb)
 ruby plugins/redmine_code_review/test/test_runner.rb
@@ -96,6 +98,16 @@ A Node project at the plugin root (its own `package.json`, separate from `test/e
 - `jquery@3.7.1` and `jquery-ui@1.13.3` are pinned exact (Redmine-bundled versions) and excluded from Renovate updates. The loader sets `$.fx.off = true`; tests spy on `$.fn.load` (`vi.spyOn($.fn, "load")`) instead of letting Ajax run, and re-load the scripts in `beforeEach` to reset global state.
 - Coverage targets `assets/javascripts/**/*.js`, fails below 95% lines (`thresholds.lines`), and writes to `coverage-js/` (git-ignored, kept apart from SimpleCov's `coverage/`).
 - Views keep only value hand-off and function calls in their `<script>` blocks — see `docs/inline-javascript-in-views.md` for what remains and why.
+
+### JavaScript static analysis (`eslint.config.js`, ESLint 10)
+
+Rationale: `docs/adr/0004-adopt-eslint-for-javascript-static-analysis.md`.
+
+- `npm run lint` inspects exactly two blocks — `assets/javascripts/**/*.js` (classic scripts) and `test/javascript/**/*.js` (ESM tests) — and CI runs the same command in the independent `lint-javascript` job. Every rule is an error (the jsdoc preset is the all-error `flat/recommended-error`, plus `--max-warnings 0` so any `warn` fails).
+- Top-level `var` in `code_review.js` is allowed on purpose (views assign those globals; the test harness re-runs the script per test); nested `var` is banned via `no-restricted-syntax` with `:not(Program) > VariableDeclaration[kind='var']`.
+- Test-block globals for the plugin's names are auto-registered by parsing `assets/javascripts/code_review.js` with `espree` at config load (throws when nothing is found) — never hand-maintain a global list.
+- Size/complexity limits (`max-lines`, `complexity`, ...) are ratchets measured from the current code: they may only be lowered; raising one requires a new ADR.
+- `npm run lint:fix` applies only mechanical fixes; the jsdoc fixers that insert empty comment stubs are disabled (`enableFixer: false`), so write real JSDoc instead.
 
 ### E2E tests (`test/e2e/`, Playwright)
 

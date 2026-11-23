@@ -14,6 +14,7 @@ page files, not here.
 - [Pin RuboCop with a dedicated Gemfile and Renovate](./pages/rubocop-pinned-gemfile-and-renovate.md) — independent CI job, tools/rubocop lockfile, Renovate, rejected options
 - [RuboCop adoption and offense cleanup](./pages/rubocop-adoption-cleanup.md) — 1,623 baseline offenses, three-step fix, no todo file
 - [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, pinned jQuery, 95% line gate, view logic moved into code_review.js
+- [Why ESLint for JavaScript static analysis](./pages/eslint-javascript-static-analysis.md) — ESLint 10 + jsdoc, all-error, top-level var exception, ratchet limits, lint-javascript CI job
 
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue
@@ -25,6 +26,7 @@ page files, not here.
 - [Auto-assignment filters](./pages/auto-assignment-filters.md) — ordered regex filters, first match wins
 - [Review creation flow](./pages/code-review-creation-flow.md) — `new` action: form defaults, relations, watchers
 - [code_review.js internals](./pages/review-javascript-internals.md) — pencil icons, dialogs, dead code
+- [code_review.js loading and error display](./pages/review-javascript-loading-errors.md) — loadWithErrorDisplay, delete handlers, JSDoc and let/const style
 - [Attachment page integration](./pages/review-attachment-page-view.md) — attachment partial, empty path and diff_all
 - [Add-review link on entry pages](./pages/review-entry-add-review-link.md) — no-revision partial and make_addreview_link
 - [Review index page](./pages/review-index-page.md) — list, show-closed toggle, sorting and pagination gotchas
@@ -46,3 +48,4 @@ page files, not here.
 - [Install and enable the plugin](./pages/install-and-enable-plugin.md) — install, migrate, enable module, verify
 - [Run RuboCop](./pages/run-rubocop.md) — build-scripts/rubocop.sh, 0-target guard, parent-exclusion gotcha
 - [Run the JavaScript unit tests](./pages/run-javascript-unit-tests.md) — npm scripts, coverage output, CI job, test layout
+- [Run the JavaScript lint](./pages/run-javascript-lint.md) — npm run lint / lint:fix, fixing rules, no blanket exceptions

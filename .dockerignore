@@ -1,0 +1,12 @@
+.git/
+node_modules/
+coverage/
+coverage-js/
+test/e2e/node_modules/
+test/e2e/test-results/
+test/tmp/
+tmp/
+log/
+*.log
+.env*
+.DS_Store
