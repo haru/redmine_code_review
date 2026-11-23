@@ -40,7 +40,10 @@ read; running `npx playwright test` directly raises a clear error.
 The `build` job of `.github/workflows/build.yml` runs the suite on every matrix row
 through `build-scripts/e2e.sh` (see `docs/adr/0006-run-e2e-tests-in-ci.md`). Do not
 change `run.sh` or `playwright.config.js` for CI needs: everything CI-specific lives in
-`build-scripts/e2e.sh`.
+`build-scripts/e2e.sh`. Redmine master (#43209) only enables Git when
+`scm_git_path_regexp` is set, so `e2e.sh` writes `config/configuration.yml` with
+`scm_git_path_regexp: .*` into the throwaway CI Redmine (and fails if one already
+exists). To run the suite locally against Redmine master, set that key yourself.
 
 When the `E2E` step of a row fails:
 

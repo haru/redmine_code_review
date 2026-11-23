@@ -21,6 +21,16 @@ cd $PATH_TO_REDMINE/plugins/$NAME_OF_PLUGIN/test/e2e
 npm ci
 npx playwright install --with-deps chromium
 
+# Redmine master (#43209) only enables an SCM whose scm_<type>_path_regexp is set.
+# The CI Redmine is throwaway and has no configuration.yml; refuse to overwrite one.
+CONFIG=$PATH_TO_REDMINE/config/configuration.yml
+if [ -e "$CONFIG" ]
+then
+  echo "$CONFIG already exists; e2e.sh will not overwrite it" >&2
+  exit 1
+fi
+printf 'default:\n  scm_git_path_regexp: .*\n' > "$CONFIG"
+
 # Empty the server log so the failure artifact holds only this E2E run.
 : > $PATH_TO_REDMINE/log/test.log
 

@@ -20,9 +20,12 @@ the E2E tests](./run-e2e-tests.md).
 2. In the plugin copy's `test/e2e/`: `npm ci` (lockfile-exact) and
    `npx playwright install --with-deps chromium`. No browser cache — `--with-deps`' apt
    step makes it low-value (YAGNI).
-3. Truncates `$PATH_TO_REDMINE/log/test.log` so the failure artifact holds only this run
+3. Writes `config/configuration.yml` with `scm_git_path_regexp: .*` (failing if the file
+   exists): Redmine master (#43209) enables an SCM only when its `scm_<type>_path_regexp`
+   is set, so without it the seed cannot create the Git repository (S050).
+4. Truncates `$PATH_TO_REDMINE/log/test.log` so the failure artifact holds only this run
    (this also discards the Minitest log of `Build` on that row).
-4. Runs `./run.sh --forbid-only --retries=0 --reporter=list,json` with
+5. Runs `./run.sh --forbid-only --retries=0 --reporter=list,json` with
    `PLAYWRIGHT_JSON_OUTPUT_FILE` at the checkout root; the step has a 20-minute timeout.
 
 ## Step order and conditions in build.yml (S050)
