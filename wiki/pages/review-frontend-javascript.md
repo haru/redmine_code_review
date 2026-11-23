@@ -1,7 +1,7 @@
 ---
 title: Review frontend (JavaScript and partials)
 type: component
-sources: [S003, S016, S021, S022, S023, S024, S025, S038, S039]
+sources: [S003, S016, S021, S022, S023, S024, S025, S038, S039, S043]
 updated: 2026-11-23
 ---
 
@@ -14,14 +14,14 @@ updated: 2026-11-23
 - State is held in `review_counts[]`, `code_reviews_map[]` and `code_reviews_dialog_map[]`, with dialogs for the review form and the review popup (S003).
 
 ## Inline view scripts
-View templates keep only value hand-off and function calls; handlers and DOM logic live in `code_review.js` and are unit tested (S038, S039). Details: [Why Vitest](./vitest-javascript-unit-tests.md), [Run the JavaScript unit tests](./run-javascript-unit-tests.md).
+After feature 007 view templates carry no `<script>` blocks or inline handlers: values travel in `data-cr-init` / `data-cr-action` attributes, see [crLoad and data attributes](./review-view-data-attributes.md) and [Why plain JavaScript](./replace-jquery-with-plain-javascript.md) (S043). Before it, templates kept only value hand-off and function calls; handlers and DOM logic live in `code_review.js` and are unit tested (S038, S039). Details: [Why Vitest](./vitest-javascript-unit-tests.md), [Run the JavaScript unit tests](./run-javascript-unit-tests.md).
 
 ## JS function → controller action (S021, S022)
 | Trigger | Action | Purpose |
 |---|---|---|
-| `addReview(url)`, called by `clickPencil()` | `new` (GET, through `.load`) | load the review form |
-| the form's Apply button | `new` (POST, through `.load` with the serialized form) | submit a new review |
-| `showReview()` | `show` (POST, through `.load` with `{review_id}`) | display the review popup |
+| `addReview(url)`, called by `clickPencil()` | `new` (GET, through `crLoad`; `.load` before feature 007) | load the review form |
+| the form's Apply button | `new` (POST, through `crLoad` with the serialized form) | submit a new review |
+| `showReview()` | `show` (POST, through `crLoad` with `{review_id}`) | display the review popup |
 
 There is no `updateDiff()` function. The diff UI is set up by the inline script of the [update_diff_view partial](./update-diff-view-partial.md) (S023), which `_body_bottom` loads through the `update_diff_view` action (S024; see [activation](./review-ui-activation.md)). S003 gives a different table, with `clickPencil()` as the POST and an `updateDiff()` function; the code shows otherwise (S022).
 

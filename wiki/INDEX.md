@@ -13,8 +13,9 @@ page files, not here.
 
 - [Pin RuboCop with a dedicated Gemfile and Renovate](./pages/rubocop-pinned-gemfile-and-renovate.md) — independent CI job, tools/rubocop lockfile, Renovate, rejected options
 - [RuboCop adoption and offense cleanup](./pages/rubocop-adoption-cleanup.md) — 1,623 baseline offenses, three-step fix, no todo file
-- [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, pinned jQuery, 95% line gate, view logic moved into code_review.js
+- [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, 95% line gate, view logic moved into code_review.js
 - [Why ESLint for JavaScript static analysis](./pages/eslint-javascript-static-analysis.md) — ESLint 10 + jsdoc, all-error, top-level var exception, ratchet limits, lint-javascript CI job
+- [Why plain JavaScript instead of jQuery](./pages/replace-jquery-with-plain-javascript.md) — fetch crLoad, own dialog, data-cr-* hand-off, four classic scripts, Redmine >= 7.0, rejected options
 
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue
@@ -35,6 +36,8 @@ page files, not here.
 - [Revision page integration](./pages/review-revision-page-view.md) — assignments block and per-file review data
 - [When and how the review UI loads](./pages/review-ui-activation.md) — body_bottom conditions, dispatch, AJAX load
 - [update_diff_view partial](./pages/update-diff-view-partial.md) — inline bootstrap script and containers
+- [crLoad and data-cr-* attributes](./pages/review-view-data-attributes.md) — fetch loader, methods per call, init/action delegation, remaining Redmine helpers
+- [Review dialog (code_review_dialog.js)](./pages/review-dialog-component.md) — non-modal popup replacing jQuery UI: move, resize, front, Esc
 - [Review frontend](./pages/review-frontend-javascript.md) — code_review.js, JS→action map, partials
 - [Project settings and configuration layers](./pages/project-settings.md) — CodeReviewProjectSetting attributes, settings controller, locking
 - [Permissions and menu registration](./pages/permissions.md) — permission→action map, menu condition, review macro

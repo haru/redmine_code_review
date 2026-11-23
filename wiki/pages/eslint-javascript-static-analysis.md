@@ -1,7 +1,7 @@
 ---
 title: Why ESLint for JavaScript static analysis
 type: decision
-sources: [S039, S040, S041, S042]
+sources: [S039, S040, S041, S042, S043]
 updated: 2026-11-23
 ---
 
@@ -16,7 +16,7 @@ Feature 006 adds static analysis for the plugin's JavaScript and an independent 
 - **JSDoc is required** on every function and constructor; the jsdoc fixers are disabled (`enableFixer: false`) so no empty stubs are generated (S040, S042).
 - **Top-level `var` stays**: the ERB views assign those globals by bare name and the Vitest loader re-runs the script per test, so a top-level `let`/`const` would throw "Identifier has already been declared". `no-var` is replaced by a `no-restricted-syntax` selector that bans only nested `var`, with the reason recorded in the config. Per-line disables and a file-wide disable were rejected (S040, S042).
 - **No `camelcase` rule**: 70 snake_case globals are referenced by name from the views, and renaming them would change the views (YAGNI) (S040).
-- **Globals**: browser globals plus read-only `jQuery` and `$`. For the ESM tests, the plugin's top-level names are collected by parsing `code_review.js` at config load (an exception if none are found), never hand-listed (S040, S042).
+- **Globals**: browser globals (the read-only `jQuery` and `$` list, `jqueryGlobals`, is deleted by feature 007 (S043)). For the ESM tests, the plugin's top-level names are collected by parsing `code_review.js` at config load (feature 007 widens this to every file in `assets/javascripts/`, the same list as the test loader's `DEFAULT_SCRIPTS`) (S043) (an exception if none are found), never hand-listed (S040, S042).
 - **Ratchet limits** (`max-lines`, `max-lines-per-function`, `complexity`, `max-depth`, `max-params`) start from measured maxima and may only be lowered. The research measured max-lines 360 and function length 60; the config now has 351 and 49 for assets (270 max-lines for tests) (S040, S042).
 - **Baseline**: 98 violations, all in `code_review.js` (25 JSDoc, 56 nested `var`, 5 unused args, 5 `curly`, 7 `eqeqeq`); fixed without changing behavior. Unused arguments are renamed with a leading `_` (S040, S041).
 

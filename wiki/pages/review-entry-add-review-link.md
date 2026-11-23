@@ -1,8 +1,8 @@
 ---
 title: Add-review link on entry pages
 type: component
-sources: [S008, S022, S024, S027]
-updated: 2026-11-21
+sources: [S008, S022, S024, S027, S043]
+updated: 2026-11-23
 ---
 
 # Add-review link on entry pages
@@ -15,7 +15,7 @@ updated: 2026-11-21
 3. Otherwise it builds an "Add review" link (`icon icon-edit`) to the controller's `forward_to_revision` action with `path`, `rev` and the repository identifier, and calls `make_addreview_link(project.name, link)` from a script.
 
 ## The JS side
-`make_addreview_link` finds `div.tabs ul li a#tab-entry` and appends the link HTML to that list. Its first parameter (the project name) is not used, its `alist == null` check can never be true for a jQuery result, and it throws if the tab is missing (S022). `forward_to_revision` redirects to the repository `entry` page for the latest revision of that path (S008).
+`make_addreview_link` finds `div.tabs ul li a#tab-entry` and appends the link HTML to that list. Its first parameter (the project name) is not used, its `alist == null` check could never be true for a jQuery result (S022); feature 007 replaces it with a `querySelector` null check that throws `Error('code_review: entry tab (#tab-entry) not found')` (S043). `forward_to_revision` redirects to the repository `entry` page for the latest revision of that path (S008).
 
 Gotchas: the link is inserted into a single-quoted JS string with `<%=link%>` (S027). Pages with no `path` get no link, so the root-level diff page offers no way in (S027).
 
