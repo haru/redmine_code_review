@@ -35,6 +35,36 @@ started through `run.sh`, which exports the workspace path, port and Rails envir
 `REDMINE_LANG`) that `playwright.config.js`, `support/helpers.js` and `support/seed.rb`
 read; running `npx playwright test` directly raises a clear error.
 
+## Running in CI
+
+The `build` job of `.github/workflows/build.yml` runs the suite on every matrix row
+through `build-scripts/e2e.sh` (see `docs/adr/0006-run-e2e-tests-in-ci.md`). Do not
+change `run.sh` or `playwright.config.js` for CI needs: everything CI-specific lives in
+`build-scripts/e2e.sh`. Redmine master (#43209) only enables Git when
+`scm_git_path_regexp` is set, so `e2e.sh` writes `config/configuration.yml` with
+`scm_git_path_regexp: .*` into the throwaway CI Redmine (and fails if one already
+exists). To run the suite locally against Redmine master, set that key yourself.
+
+When the `E2E` step of a row fails:
+
+1. Open the job's `E2E tests` summary table (Executed / Passed / Failed / Flaky /
+   Skipped / Duration) to see the counts. A row that fails only in `Build` or because
+   no test executed uploads no artifact.
+2. Download the `e2e-ruby<ruby>-<redmine>-<db>` artifact from the failed row (job
+   page → Artifacts, or `gh run download <id> -n e2e-...`). It is kept for 7 days;
+   paths inside it start at the CI workspace root (`testspace/redmine/...`) and it
+   contains:
+   - `testspace/redmine/plugins/<plugin>/test/e2e/test-results/` — screenshots and
+     `trace.zip` of the failed tests; open a trace with
+     `npx playwright show-trace <path>/trace.zip`;
+   - `testspace/redmine/log/test.log` — the Rails log of this E2E run only (it is
+     truncated before the run, so it also replaces the Minitest log of `Build`;
+     server-side exceptions behind a failing request show up here);
+   - `testspace/redmine/tmp/e2e/` — the workspace `run.sh` kept after the failure
+     (sqlite DB, test git repository, `seed.json`);
+   - `e2e-results.json` — the Playwright JSON report the summary table is built from.
+3. Reproduce locally with the same spec (`run.sh tests/<name>.spec.js`) when needed.
+
 ## How isolation works
 
 `run.sh`:

@@ -1,7 +1,7 @@
 ---
 title: Why Vitest for JavaScript unit tests
 type: decision
-sources: [S038, S039, S040, S043, S044]
+sources: [S038, S039, S040, S043, S044, S050]
 updated: 2026-11-23
 ---
 
@@ -10,7 +10,7 @@ updated: 2026-11-23
 Feature 005 adds unit tests for `assets/javascripts/code_review.js` and a CI job that enforces coverage. How to run them: [Run the JavaScript unit tests](./run-javascript-unit-tests.md). The browser-level suite is separate: [Why Playwright](./e2e-playwright-adoption.md).
 
 ## Decisions
-- **Runner**: Vitest with `@vitest/coverage-v8` and jsdom. Jest was rejected (more configuration, ESM flags). Playwright coverage was rejected because E2E is not in CI and is slower. A ratcheting threshold was rejected: 95% line coverage is enforced from the first run (S038).
+- **Runner**: Vitest with `@vitest/coverage-v8` and jsdom. Jest was rejected (more configuration, ESM flags). Playwright coverage was rejected because E2E was not in CI at that time and is slower (S038; E2E has run in CI since feature 008 (S050), see [Run the E2E tests in CI](./run-e2e-in-ci.md)). A ratcheting threshold was rejected: 95% line coverage is enforced from the first run (S038).
 - **Loading the script**: `code_review.js` is a classic script whose top-level `var`s and functions are globals that view scripts overwrite (`urlprefix`, `rev`, ...). An ESM `import()` would make them module-local. The test loader therefore runs the file with `vm.runInThisContext(source, { filename })`, leaving production code untouched; the filename makes v8 attribute coverage to the file. Rejected: appending `window.X = X` (breaks shared state), a namespace rewrite (too large, all ERB would change), `(0, eval)` (no filename, no coverage) (S038).
 - **Path gotcha**: `new URL(..., import.meta.url)` is rewritten by Vite and breaks, so paths are resolved from `process.cwd()` (S038).
 - **jQuery** (superseded by feature 007, see below): `jquery@3.7.1` and `jquery-ui@1.13.3` from npm, pinned exactly to the versions Redmine bundles, and excluded from Renovate updates so tests do not drift from production. Referencing Redmine's own files was rejected because the JS CI job does not check out Redmine; mocking jQuery was rejected because DOM and `dialog` behavior would go untested (S038).

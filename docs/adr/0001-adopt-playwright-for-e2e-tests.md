@@ -3,6 +3,10 @@
 - Status: Accepted
 - Date: 2026-11-22
 
+> Superseded in part by [ADR 0006](0006-run-e2e-tests-in-ci.md) (Run the E2E suite in CI inside the build job):
+> "CI integration is out of scope" is replaced by running the suite in the build
+> job.
+
 ## Context
 
 The plugin's UI (review annotation on diffs, review list) is driven by JavaScript

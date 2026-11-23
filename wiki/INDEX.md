@@ -48,6 +48,7 @@ page files, not here.
 
 ## howto
 - [Run the E2E tests](./pages/run-e2e-tests.md) — run.sh, seed data, driving the review UI
+- [Run the E2E tests in CI](./pages/run-e2e-in-ci.md) — build-scripts/e2e.sh, e2e-summary.js, step conditions, no-retry gates, failure artifacts
 - [Install and enable the plugin](./pages/install-and-enable-plugin.md) — install, migrate, enable module, verify
 - [Run RuboCop](./pages/run-rubocop.md) — build-scripts/rubocop.sh, 0-target guard, parent-exclusion gotcha
 - [Run the JavaScript unit tests](./pages/run-javascript-unit-tests.md) — npm scripts, coverage output, CI job, test layout

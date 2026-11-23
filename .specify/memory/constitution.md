@@ -1,11 +1,11 @@
 # redmine_code_review Constitution
 <!-- SYNC_IMPACT_REPORT
-Version change: 1.5.0 -> 1.6.0 (MINOR: Principle VII materially expanded/redefined; the Redmine >= 6.0 floor is unchanged)
+Version change: 1.6.0 -> 1.7.0 (MINOR: Principle III materially expanded — the E2E suite is now also a CI gate)
 Modified principles:
-  - VII. JavaScript Unit Tests with Coverage (jQuery tooling rules replaced: fetch stubs, no-JavaScript-library rule, data-attribute views)
+  - III. End-to-End Verification of the Review UI ("CI is out of scope; see ADR 0001" replaced by: CI runs the suite on every build-job matrix row via build-scripts/e2e.sh; see ADR 0006)
 Added sections: none
 Removed sections: none
-Follow-up TODOs: none (AGENTS.md and docs/inline-javascript-in-views.md describe the jQuery-free state)
+Follow-up TODOs: none
 -->
 
 ## Core Principles
@@ -27,7 +27,8 @@ Redmine itself; tests are the only safety net.
 ### III. End-to-End Verification of the Review UI
 The review UI is driven by JavaScript that Minitest cannot exercise, so it MUST be verified
 with the Playwright E2E suite in `test/e2e/`, run through `test/e2e/run.sh`. The suite MUST pass
-before a branch is proposed for merge (CI is out of scope; see ADR 0001). A change to review
+before a branch is proposed for merge, and CI MUST run it on every matrix row of the `build` job
+through `build-scripts/e2e.sh` (see ADR 0006). A change to review
 UI behavior (`assets/javascripts/`, the partials injected into repository pages) MUST add or
 update an E2E spec for the changed flow. E2E specs MUST:
 - run only against the isolated workspace (`tmp/e2e/`, its own DB), never the development DB;
@@ -142,4 +143,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.6.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23
+**Version**: 1.7.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23

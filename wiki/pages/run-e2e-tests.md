@@ -1,13 +1,16 @@
 ---
 title: Run the E2E tests
 type: howto
-sources: [S034, S035]
-updated: 2026-11-22
+sources: [S034, S035, S048]
+updated: 2026-11-23
 ---
 
 # Run the E2E tests
 
 Planned usage and seed data of the Playwright suite (S035). Design background: [E2E isolated environment](./e2e-isolated-environment.md), [Why Playwright for E2E tests](./e2e-playwright-adoption.md).
+
+In CI the suite runs through `build-scripts/e2e.sh` on every `build`-job matrix row; the
+local procedure below is unchanged (S048). See [Run the E2E tests in CI](./run-e2e-in-ci.md).
 
 ## Run
 - One command: `test/e2e/run.sh`; `npm test` in `test/e2e` maps to it (S035).

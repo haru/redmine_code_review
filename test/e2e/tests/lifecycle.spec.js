@@ -12,6 +12,16 @@ async function applyPopupForm(page, formSelector, action) {
   return response;
 }
 
+// Clicks Delete in the popup of review `id` (the confirmation must already be handled) and
+// waits for the destroy request: networkidle alone can resolve before the request starts.
+async function deleteReview(page, id) {
+  const [response] = await Promise.all([
+    page.waitForResponse((r) => new URL(r.url()).pathname.endsWith('/code_review/destroy')),
+    page.locator(`#show_review_${id}`).getByRole('link', { name: 'Delete' }).click(),
+  ]);
+  expect(response.status()).toBe(200);
+}
+
 // Creates a review as the seeded reviewer and opens its popup.
 async function createAndOpenReview(page, subject) {
   await login(page);
@@ -98,7 +108,7 @@ test('deletes a review after confirming and no longer shows it after reloading',
   const id = await createAndOpenReview(page, 'E2E lifecycle delete');
 
   page.once('dialog', (dialog) => dialog.accept());
-  await page.locator(`#show_review_${id}`).getByRole('link', { name: 'Delete' }).click();
+  await deleteReview(page, id);
   // The plugin reloads the diff after the delete request completes.
   await page.waitForLoadState('networkidle');
   await expect(page.locator(`#review_${id}`)).toHaveCount(0);
@@ -125,7 +135,7 @@ test('keeps the review when the delete confirmation is cancelled', async ({ page
 test('answers 404 for the show action of a deleted review', async ({ page }) => {
   const id = await createAndOpenReview(page, 'E2E lifecycle deleted show');
   page.once('dialog', (dialog) => dialog.accept());
-  await page.locator(`#show_review_${id}`).getByRole('link', { name: 'Delete' }).click();
+  await deleteReview(page, id);
   await page.waitForLoadState('networkidle');
 
   const response = await page.request.get(reviewShowUrl(id), { maxRedirects: 0 });

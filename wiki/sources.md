@@ -14,7 +14,7 @@ Sources are immutable inputs — the wiki never edits them.
 | S007 | app/models/code_review.rb | file | 2026-11-21 | 2026-11-21 | code-review-issue-delegation.md |
 | S008 | app/controllers/code_review_controller.rb | file | 2026-11-21 | 2026-11-21 | code-review-creation-flow.md, code-review-controller-actions.md, code-review-issue-delegation.md |
 | S009 | lib/code_review_auto_assign_settings.rb | file | 2026-11-21 | 2026-11-21 | auto-assignment-filters.md, auto-assignment-system.md |
-| S010 | app/models/code_review_assignment.rb | file | 2026-11-21 | 2026-11-21 | code-review-assignment-model.md, auto-assignment-system.md, auto-assignment-filters.md |
+| S010 | app/models/code_review_assignment.rb | file | 2026-11-21 | 2026-11-21 | code-review-assignment-model.md, auto-assignment-system.md |
 | S011 | lib/code_review_change_patch.rb | file | 2026-11-21 | 2026-11-21 | auto-assignment-system.md, auto-assignment-filters.md, code-review-assignment-model.md, auto-assignment-triggers.md, review-statistics-helpers.md |
 | S012 | app/controllers/code_review_settings_controller.rb | file | 2026-11-21 | 2026-11-21 | project-settings.md, auto-assignment-filters.md, permissions.md |
 | S013 | lib/code_review_changeset_patch.rb | file | 2026-11-21 | 2026-11-21 | auto-assignment-triggers.md, review-statistics-helpers.md, auto-assignment-system.md, auto-assignment-filters.md, plugin-overview.md |
@@ -27,12 +27,12 @@ Sources are immutable inputs — the wiki never edits them.
 | S020 | db/migrate (22 migration files) | directory | 2026-11-21 | 2026-11-21 | database-schema.md, plugin-overview.md, code-review-issue-delegation.md |
 | S021 | app/views/code_review/_new_form.html.erb | file | 2026-11-21 | 2026-11-21 | review-frontend-javascript.md, code-review-creation-flow.md, review-new-form-view.md |
 | S022 | assets/javascripts/code_review.js | file | 2026-11-21 | 2026-11-23 | review-javascript-internals.md, review-javascript-loading-errors.md, review-frontend-javascript.md, review-attachment-page-view.md, review-revision-page-view.md, review-index-page.md, review-ui-activation.md, update-diff-view-partial.md |
-| S023 | app/views/code_review/_update_diff_view.html.erb | file | 2026-11-21 | 2026-11-23 | update-diff-view-partial.md, review-frontend-javascript.md, review-javascript-internals.md |
+| S023 | app/views/code_review/_update_diff_view.html.erb | file | 2026-11-21 | 2026-11-23 | update-diff-view-partial.md, review-frontend-javascript.md |
 | S024 | app/views/code_review/_body_bottom.html.erb | file | 2026-11-21 | 2026-11-23 | review-ui-activation.md, update-diff-view-partial.md, review-frontend-javascript.md, plugin-overview.md |
 | S025 | app/views/code_review/_html_header.html.erb | file | 2026-11-21 | 2026-11-23 | review-ui-activation.md, review-frontend-javascript.md, plugin-overview.md |
 | S026 | app/views/code_review/_change_repository_view.html.erb | file | 2026-11-21 | 2026-11-23 | review-ui-activation.md, code-review-controller-actions.md |
-| S027 | app/views/code_review/_change_entry_norevision_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-entry-add-review-link.md, review-javascript-internals.md, review-ui-activation.md, code-review-controller-actions.md |
-| S028 | app/views/code_review/_change_revision_view.html.erb | file | 2026-11-21 | 2026-11-23 | review-revision-page-view.md, review-ui-activation.md, review-javascript-internals.md, code-review-controller-actions.md |
+| S027 | app/views/code_review/_change_entry_norevision_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-entry-add-review-link.md, review-javascript-internals.md, code-review-controller-actions.md |
+| S028 | app/views/code_review/_change_revision_view.html.erb | file | 2026-11-21 | 2026-11-23 | review-revision-page-view.md, review-javascript-internals.md, code-review-controller-actions.md |
 | S029 | app/views/code_review/_show.html.erb | file | 2026-11-21 | 2026-11-21 | review-popup-view.md, review-javascript-internals.md, code-review-controller-actions.md |
 | S030 | app/views/code_review/_issues_show_details_bottom.html.erb | file | 2026-11-21 | 2026-11-21 | manual-assignment-flow.md |
 | S031 | app/views/code_review/index.html.erb | file | 2026-11-21 | 2026-11-23 | review-index-page.md, code-review-controller-actions.md, install-and-enable-plugin.md |
@@ -52,3 +52,7 @@ Sources are immutable inputs — the wiki never edits them.
 | S045 | assets/javascripts/code_review_loader.js | file | 2026-11-23 | 2026-11-23 | review-view-data-attributes.md, review-ui-activation.md, review-attachment-page-view.md, review-index-page.md, review-javascript-loading-errors.md |
 | S046 | docs/adr/0005-replace-jquery-with-plain-javascript.md | file | 2026-11-23 | 2026-11-23 | review-view-data-attributes.md, plugin-overview.md |
 | S047 | test/javascript/ (Vitest test files and support/) | file | 2026-11-23 | 2026-11-23 | run-javascript-unit-tests.md |
+| S048 | specs/008-e2e-ci/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md, e2e-playwright-adoption.md, run-e2e-tests.md |
+| S049 | specs/008-e2e-ci/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md, e2e-playwright-adoption.md |
+| S050 | docs/adr/0006-run-e2e-tests-in-ci.md (with .github/workflows/build.yml, build-scripts/e2e.sh, test/e2e/README.md as revised after review) | file | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md, e2e-isolated-environment.md, vitest-javascript-unit-tests.md |
+| S051 | build-scripts/e2e-summary.js | file | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md |
