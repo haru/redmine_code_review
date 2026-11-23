@@ -14,7 +14,7 @@ test('keeps the dialog open with an error when the subject is empty', async ({ p
   await openReviewForm(page);
   const iconsBefore = await page.locator('span[id^="review_"] img').count();
   const response = await applyReview(page);
-  expect(await response.text()).not.toContain('var review_id');
+  expect(await response.text()).not.toContain('data-cr-review-id');
   await expect(page.locator('#errorExplanation')).toContainText('Subject');
   await expect(page.locator('#review_subject')).toBeVisible();
   await expect(page.locator('span[id^="review_"] img')).toHaveCount(iconsBefore);

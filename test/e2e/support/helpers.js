@@ -60,16 +60,10 @@ async function login(page, who = 'user') {
   await expect(page.locator('#content h2')).toContainText('My page');
 }
 
-// The dialogs open with a jQuery UI effect that rebuilds their content; text typed
-// before the animation ends is lost. Wait until no effect is running.
-async function waitForAnimations(page) {
-  await page.waitForFunction(() => window.jQuery(':animated').length === 0);
-}
-
 // Extracts the id of a freshly created review from the response of the create POST.
 // Raises with the body if the server re-rendered the form instead (it answers 200 then).
 function reviewIdFrom(body, subject) {
-  const match = body.match(/var review_id = (\d+);/);
+  const match = body.match(/data-cr-review-id="(\d+)"/);
   if (!match) {
     throw new Error(`review "${subject}" was not created; the server re-rendered the form:\n${body.slice(0, 500)}`);
   }
@@ -85,7 +79,7 @@ async function openReviewForm(page, diffUrl = fileDiffUrl()) {
   // The pencil icon id is spelled "add_revew_img_" in the plugin's JavaScript.
   await page.locator('img[id^="add_revew_img_"]').first().click();
   await expect(page.locator('#review_subject')).toBeVisible();
-  await waitForAnimations(page);
+  await expect(page.locator('#review_subject')).toBeEditable();
 }
 
 // Clicks Apply and returns the response of the POST that saves the review.
@@ -114,7 +108,6 @@ async function createReview(page, subject, diffUrl = fileDiffUrl()) {
 async function openReview(page, id) {
   await page.locator(`#review_${id} img`).click();
   await expect(page.locator(`#show_review_${id}`)).toBeVisible();
-  await waitForAnimations(page);
 }
 
 // Commits one file under auto/ to the shared test repository and returns the new revision.
@@ -173,6 +166,6 @@ async function firstTrackerId(page, project) {
 
 module.exports = {
   seed, fileDiffUrl, changesetDiffUrl, attachmentUrl, reviewShowUrl, login,
-  openReviewForm, applyReview, createReview, openReview, waitForAnimations, reviewIdFrom, commitFile, fetchChangesets,
+  openReviewForm, applyReview, createReview, openReview, reviewIdFrom, commitFile, fetchChangesets,
   resetCodeReviewSettings,
 };

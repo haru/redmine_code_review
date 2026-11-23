@@ -45,10 +45,8 @@
     <% if @setting.tracker_in_review_dialog %>
       <p>
         <label><b><%=h l(:label_tracker) %>:</b></label>
-        <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, :required => true %>
-        <script type="text/javascript">
-            bindReviewFormTrackerChange('<%= j url_for(:controller => 'code_review', :action => 'new') %>');
-        </script>
+        <%= select :issue, :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, {},
+          :required => true, :data => {:cr_action => 'reload-review-form', :cr_url => url_for(:controller => 'code_review', :action => 'new', :id => @project)} %>
       </p>
     <% end %>
     <p>
@@ -56,7 +54,7 @@
       <%= f.text_field :parent_id, :size => 10 %>
       <% if @parent_candidate %>
         <%= raw l(:label_parent_suggestion, {:issue_id => link_to_issue(@parent_candidate)}) %>
-        <input type="button" value="<%=h l(:general_text_Yes)%>" onclick="$('#review_parent_id').val(<%= @parent_candidate.id %>)"/>
+        <%= button_tag l(:general_text_Yes), :type => 'button', :data => {:cr_action => 'set-value', :cr_target => '#review_parent_id', :cr_value => @parent_candidate.id} %>
       <% end %>
     </p>
     <p>
@@ -107,9 +105,9 @@
       <%
       submit_url = url_for(:controller => 'code_review', :action => 'new', :id=>@project)
       %>
-      <%= button_tag l(:button_apply), type: 'button', onclick: "loadWithErrorDisplay($('#review-form'), '#{j submit_url}', $('#review_form').serialize2json())" %>
+      <%= button_tag l(:button_apply), type: 'button', data: { cr_action: 'submit-review-form', cr_url: submit_url } %>
 
-      <input type="button" value="<%=h l(:button_cancel) %> " onclick="javascript:hideForm();"/>
+      <%= button_tag l(:button_cancel), type: 'button', data: { cr_action: 'cancel-review-form' } %>
 
     </p>
 

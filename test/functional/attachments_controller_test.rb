@@ -62,4 +62,19 @@ class AttachmentsControllerTest < ActionController::TestCase
     assert_template "file"
     # assert_equal 'text/html', @response.content_type
   end
+
+  def test_show_text_file_loads_the_review_view_through_a_marker
+    @request.session[:user_id] = 1
+    attachment = FactoryBot.create(:attachment, filename: "test.rb")
+    CodeReviewProjectSetting.where(project_id: attachment.project.id).destroy_all
+    FactoryBot.create(:code_review_project_setting, project_id: attachment.project.id)
+    get :show, params: { id: attachment.id, type: "inline" }
+    assert_response :success
+    marker = cr_marker(response.body, "load")
+    params = JSON.parse(marker["data-cr-params"])
+    assert_equal attachment.id.to_s, params["attachment_id"]
+    assert_match(%r{/code_review/update_attachment_view}, marker["data-cr-url"])
+    assert_equal "code_review", marker["id"]
+    assert_no_inline_script(Nokogiri::HTML(response.body).at_css("#code_review").to_html)
+  end
 end

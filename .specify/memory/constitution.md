@@ -1,4 +1,12 @@
 # redmine_code_review Constitution
+<!-- SYNC_IMPACT_REPORT
+Version change: 1.5.0 -> 1.6.0 (MINOR: Principle VII materially expanded/redefined, Additional Constraints version floor raised)
+Modified principles:
+  - VII. JavaScript Unit Tests with Coverage (jQuery tooling rules replaced: fetch stubs, no-JavaScript-library rule, data-attribute views)
+Added sections: none
+Removed sections: none
+Follow-up TODOs: AGENTS.md (jQuery tooling description) and docs/inline-javascript-in-views.md must be rewritten once the last jQuery code is removed from code_review.js (tasks T039-T043 of feature 007)
+-->
 
 ## Core Principles
 
@@ -60,10 +68,14 @@ checked with `npm run test:coverage` from the plugin directory (the threshold is
 the Vitest config, so a drop fails the run). Unit tests MUST:
 - load scripts through `test/javascript/support/load_classic_script.js` so globals and coverage
   attribution match the browser, and reset global state in `beforeEach`;
-- stub Ajax (`vi.spyOn($.fn, "load")`) instead of making real requests;
-- keep `jquery` and `jquery-ui` pinned to the Redmine-bundled versions.
-View templates MUST keep only value hand-off and function calls in `<script>` blocks; logic
-belongs in `code_review.js` where it can be tested (`docs/inline-javascript-in-views.md`).
+- stub Ajax (`vi.stubGlobal('fetch', ...)`) instead of making real requests;
+- keep the plugin free of JavaScript library dependencies: code under `assets/javascripts/` MUST
+  NOT use jQuery (`$` / `jQuery`), jQuery UI, or `eval`, and new code MUST use browser-standard
+  APIs only (Redmine core may still load jQuery for its own use).
+View templates MUST NOT contain scripts: values are handed to the scripts through `data`-
+attributes (`data-cr-init` / `data-cr-action` markers) and logic belongs in
+`assets/javascripts/*.js` where it can be tested; the only exception is the core `wikitoolbar_for`
+helper, recorded in `docs/inline-javascript-in-views.md`.
 `npm test` MUST pass before a branch is proposed for merge. Vitest complements, and does not
 replace, the Playwright E2E suite of Principle III.
 Rationale: Minitest cannot reach browser-side logic, and E2E specs are too slow and coarse to
@@ -105,7 +117,7 @@ undefined identifiers, unused variables and implicit coercion on every path, and
 and one pinned toolchain keep local and CI results identical.
 
 ## Additional Constraints
-- The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
+- The plugin MUST work on Redmine >= 7.0, as pinned by `requires_redmine` in `init.rb`.
 - Code, code comments and git commit messages MUST be written in English. Documents under
   `specs/` MUST be written in Japanese.
 - New migrations MUST use the Rails timestamp format.
@@ -130,4 +142,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.5.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23
+**Version**: 1.6.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23

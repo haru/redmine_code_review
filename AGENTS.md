@@ -4,7 +4,7 @@ This file provides guidance to coding agents (Claude Code, and other AGENTS.md-c
 
 ## What this is
 
-A Redmine plugin (`redmine_code_review`) that adds in-browser code review to the repository browser: reviewers annotate diffs/changesets/attachments, and each review is backed by a Redmine `Issue`. Requires Redmine >= 6.0 (see `init.rb`, which pins `requires_redmine`).
+A Redmine plugin (`redmine_code_review`) that adds in-browser code review to the repository browser: reviewers annotate diffs/changesets/attachments, and each review is backed by a Redmine `Issue`. Requires Redmine >= 7.0 (see `init.rb`, which pins `requires_redmine`).
 
 This directory (`plugins/redmine_code_review`) only works when mounted inside a full Redmine checkout at `plugins/redmine_code_review` — tests and rake tasks rely on that relative position (e.g. `test/test_runner.rb` requires `../../../test/test_helper`, i.e. the host Redmine's test helper).
 
@@ -94,10 +94,10 @@ Because these are monkey patches on core Redmine classes, changes here can affec
 
 A Node project at the plugin root (its own `package.json`, separate from `test/e2e/`). Rationale: `docs/adr/0003-adopt-vitest-for-javascript-unit-tests.md`.
 
-- `test/javascript/support/load_classic_script.js` loads `node_modules/jquery/dist/jquery.js`, then `node_modules/jquery-ui/dist/jquery-ui.js`, then `assets/javascripts/code_review.js` via `vm.runInThisContext` with a `filename`, so top-level declarations become globals exactly as in a browser and v8 coverage is attributed to the file. Paths resolve from `process.cwd()` (the plugin root), never via `import.meta.url` (Vite would rewrite it).
-- `jquery@3.7.1` and `jquery-ui@1.13.3` are pinned exact (Redmine-bundled versions) and excluded from Renovate updates. The loader sets `$.fx.off = true`; tests spy on `$.fn.load` (`vi.spyOn($.fn, "load")`) instead of letting Ajax run, and re-load the scripts in `beforeEach` to reset global state.
+- `test/javascript/support/load_classic_script.js` loads (in the browser's order) `assets/javascripts/code_review_dialog.js`, `code_review_loader.js`, `code_review.js` and `code_review_settings.js` — preceded, until the migration's final cleanup (T039/T040), by `node_modules/jquery/dist/jquery.js` and `node_modules/jquery-ui/dist/jquery-ui.js` for the legacy code that is not migrated yet — via `vm.runInThisContext` with a `filename`, so top-level declarations become globals exactly as in a browser and v8 coverage is attributed to the file. Paths resolve from `process.cwd()` (the plugin root), never via `import.meta.url` (Vite would rewrite it).
+- New code uses no jQuery (ADR 0005): tests stub `fetch` (`vi.stubGlobal('fetch', ...)`) instead of letting requests run, and re-load the scripts in `beforeEach` to reset global state. Only the legacy, not yet migrated tests (`legacy_jquery.test.js`) still use `$.fn.load` spies; `jquery@3.7.1` / `jquery-ui@1.13.3` stay pinned exact and excluded from Renovate until T040 removes them.
 - Coverage targets `assets/javascripts/**/*.js`, fails below 95% lines (`thresholds.lines`), and writes to `coverage-js/` (git-ignored, kept apart from SimpleCov's `coverage/`).
-- Views keep only value hand-off and function calls in their `<script>` blocks — see `docs/inline-javascript-in-views.md` for what remains and why.
+- Migrated views carry no `<script>` blocks or handler attributes: values travel in `data-cr-init` / `data-cr-action` / `data-cr-*` attributes (ADR 0005). `docs/inline-javascript-in-views.md` lists the views still to migrate.
 
 ### JavaScript static analysis (`eslint.config.js`, ESLint 10)
 
@@ -116,7 +116,7 @@ A separate Node sub-project; Minitest never picks up `*.spec.js`. Rationale: `do
 - `run.sh` is the only entry point and the single source of the workspace path, port and Rails env (`E2E_*`, `RAILS_ENV=test`, `DB`, `DB_NAME`). `playwright.config.js`, `support/helpers.js` and `support/seed.rb` read them, so `npx playwright test` run directly fails by design.
 - It builds `<redmine>/tmp/e2e/` (throwaway git repo, sqlite DB `db.sqlite3_test`, seed data), lets Playwright's `webServer` boot Redmine on 4500, and deletes the workspace only after a successful run; after a failure it is kept for inspection.
 - All specs share one DB that is never reset (`workers: 1`). Specs must create their own data and assert on the ids they get back (`createReview` returns `{ id }`), never on "any review icon".
-- Gotchas in the plugin's UI that the helpers work around: the pencil id is spelled `add_revew_img_`; after `goto` wait for `networkidle` (the `update_diff_view` request redraws icons); after opening the dialog wait until `jQuery(':animated')` is empty, otherwise typed text is wiped and the server answers 200 with "Subject cannot be blank" (the form is re-rendered, so check the response body, not the status).
+- Gotchas in the plugin's UI that the helpers work around: the pencil id is spelled `add_revew_img_`; after `goto` wait for `networkidle` (the `update_diff_view` request redraws icons); after opening the dialog wait until the form fields are editable (`toBeEditable`) before typing; a submit that fails validation answers 200 with "Subject cannot be blank" (the form is re-rendered, so check the response body, not the status). Rails' test environment renders no CSRF meta tag; `crLoad` then sends no token.
 - Server-side exceptions go to `log/test.log` (shared with Minitest), not to Playwright's output.
 - Specs import `test`/`expect` from `support/fixtures.js`, never from `@playwright/test`: an auto fixture fails any test whose page throws an uncaught JavaScript exception.
 - The 39 covered operations and the scenario for each are tracked in `docs/e2e-operation-coverage.md`; update it with every new scenario or `init.rb` action. Settings/auto-assign scenarios run on the separate `e2e-settings` project and reset its settings first.

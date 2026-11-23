@@ -95,3 +95,68 @@ table.filecontent th.line-num img{
 li.code_review_summary {
     list-style-type: none;
 }
+
+/* Review popup (code_review_dialog.js) */
+.cr-dialog {
+    position: absolute;
+    box-sizing: border-box;
+    min-width: 150px;
+    min-height: 150px;
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    /* the content area follows the frame's height (resizing) */
+    display: flex;
+    flex-direction: column;
+}
+
+.cr-dialog-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    background: #628db6;
+    color: #fff;
+    border-radius: 3px 3px 0 0;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
+}
+
+.cr-dialog-title {
+    font-weight: bold;
+}
+
+.cr-dialog-close {
+    padding: 0 6px;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font-size: 1.2em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cr-dialog-content {
+    box-sizing: border-box;
+    padding: 8px;
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.cr-dialog-handle {
+    position: absolute;
+    user-select: none;
+    touch-action: none;
+}
+
+.cr-dialog-handle[data-cr-dir="n"] { top: -3px; left: 6px; right: 6px; height: 6px; cursor: n-resize; }
+.cr-dialog-handle[data-cr-dir="s"] { bottom: -3px; left: 6px; right: 6px; height: 6px; cursor: s-resize; }
+.cr-dialog-handle[data-cr-dir="e"] { right: -3px; top: 6px; bottom: 6px; width: 6px; cursor: e-resize; }
+.cr-dialog-handle[data-cr-dir="w"] { left: -3px; top: 6px; bottom: 6px; width: 6px; cursor: w-resize; }
+.cr-dialog-handle[data-cr-dir="ne"] { top: -3px; right: -3px; width: 10px; height: 10px; cursor: ne-resize; }
+.cr-dialog-handle[data-cr-dir="nw"] { top: -3px; left: -3px; width: 10px; height: 10px; cursor: nw-resize; }
+.cr-dialog-handle[data-cr-dir="se"] { bottom: -3px; right: -3px; width: 10px; height: 10px; cursor: se-resize; }
+.cr-dialog-handle[data-cr-dir="sw"] { bottom: -3px; left: -3px; width: 10px; height: 10px; cursor: sw-resize; }

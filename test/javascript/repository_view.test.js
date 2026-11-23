@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { loadClassicScripts, flushReady } from './support/load_classic_script.js';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { loadClassicScripts } from './support/load_classic_script.js';
 
 describe('repository view', () => {
   beforeEach(() => {
@@ -129,34 +129,4 @@ describe('repository view', () => {
     });
   });
 
-  describe('loadOnReady', () => {
-    beforeEach(async () => {
-      document.body.innerHTML = `
-        <div id="code_review"></div>
-        <div id="code_review_revisions"></div>`;
-      loadClassicScripts();
-      await flushReady();
-    });
-
-    it('loads the url into the selector when the DOM is ready', async () => {
-      const load = vi.spyOn($.fn, 'load');
-
-      loadOnReady('#code_review', '/code_review/update_revisions_view', { changeset_ids: '1,2' });
-      await flushReady();
-
-      expect(load).toHaveBeenCalledTimes(1);
-      expect(load).toHaveBeenCalledWith('/code_review/update_revisions_view', { changeset_ids: '1,2' }, expect.any(Function));
-      expect(load.mock.instances[0].attr('id')).toBe('code_review');
-    });
-
-    it('does not send any request when the selector matches nothing', async () => {
-      // The real $.fn.load decides; spying on it would bypass its empty-set guard.
-      const ajax = vi.spyOn($, 'ajax');
-
-      loadOnReady('#nothing', '/code_review/update_revisions_view');
-      await flushReady();
-
-      expect(ajax).not.toHaveBeenCalled();
-    });
-  });
 });

@@ -1,6 +1,6 @@
 const { test, expect } = require('../support/fixtures');
 const {
-  seed, login, resetCodeReviewSettings, commitFile, fetchChangesets, openReviewForm, applyReview, openReview, waitForAnimations, reviewIdFrom,
+  seed, login, resetCodeReviewSettings, commitFile, fetchChangesets, openReviewForm, applyReview, openReview, reviewIdFrom,
 } = require('../support/helpers');
 
 const settingsUrl = `/projects/${seed.settingsProject}/settings/code_review`;
@@ -236,7 +236,6 @@ test('lets the reviewer pick the tracker in the review dialog when enabled', asy
   // The dialog is redrawn with the chosen tracker and the typed subject kept.
   await expect(page.locator('#issue_tracker_id option:checked')).toHaveText(chosen);
   await expect(page.locator('#review_subject')).toHaveValue('E2E tracker switch');
-  await waitForAnimations(page);
 
   const id = reviewIdFrom(await (await applyReview(page)).text(), 'E2E tracker switch');
   await openReview(page, id);

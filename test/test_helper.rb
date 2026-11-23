@@ -159,3 +159,30 @@ FactoryBot.define do
 
   factory :enabled_module
 end
+
+# Assertions for the "no inline scripts in views" rule (ADR 0005): the plugin's views
+# carry no inline scripts or event handlers; values travel in `data-cr-*` attributes
+# (see docs/inline-javascript-in-views.md). The only script left is the one
+# `wikitoolbar_for` writes.
+module CodeReviewMarkupAssertions
+  def assert_no_inline_script(html)
+    doc = Nokogiri::HTML.fragment(html)
+    scripts = doc.css("script").reject { |s| s.text.include?("jsToolBar") }
+    assert_empty scripts.map(&:to_html), "unexpected inline <script>"
+    handlers = doc.css("*").flat_map { |el| el.attribute_nodes.map(&:name) }.grep(/\Aon/i)
+    assert_empty handlers, "unexpected on* attributes"
+  end
+
+  # Returns the element carrying data-cr-init="<name>" and fails when absent.
+  def cr_marker(html, name)
+    el = Nokogiri::HTML.fragment(html).at_css("[data-cr-init='#{name}']")
+    assert_not_nil el, "no data-cr-init=#{name} marker"
+    el
+  end
+
+  def cr_actions(html)
+    Nokogiri::HTML.fragment(html).css("[data-cr-action]").map { |el| el["data-cr-action"] }
+  end
+end
+
+ActiveSupport.on_load(:active_support_test_case) { include CodeReviewMarkupAssertions }

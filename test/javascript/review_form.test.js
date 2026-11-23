@@ -1,239 +1,169 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { loadClassicScripts, flushReady } from './support/load_classic_script.js';
+import { diffMarker, fileTable, pageWith } from './support/diff_fixture.js';
 
 describe('review form', () => {
   beforeEach(async () => {
-    // #content must exist before the script loads: the keydown guard is
-    // delegated on it inside a ready handler.
+    vi.stubGlobal('scrollTo', vi.fn());
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('<p>loaded</p>'))));
     document.body.innerHTML = '<div id="content"></div>';
     loadClassicScripts();
     await flushReady();
   });
 
-  describe('$.fn.serialize2json', () => {
-    it('collects same-name fields into an array and keeps empty values', () => {
-      document.body.innerHTML = `
-        <form id="review_form">
-          <input name="review[subject]" value="Fix bug">
-          <input name="issue[assigned_to_id]" value="">
-          <input name="auto_assign[assignable_list][]" value="1">
-          <input name="auto_assign[assignable_list][]" value="3">
-        </form>`;
+  const render = (overrides = {}, tables = fileTable()) => {
+    document.body.innerHTML = pageWith(diffMarker(overrides), tables);
+    crInitialize(document);
+  };
 
-      const data = $('#review_form').serialize2json();
+  const pressEscape = () =>
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
 
-      expect(data['review[subject]']).toBe('Fix bug');
-      expect(data['issue[assigned_to_id]']).toBe('');
-      expect(data['auto_assign[assignable_list][]']).toEqual(['1', '3']);
-    });
-  });
+  const formFrame = () => document.getElementById('review-form-frame');
 
-  describe('$.fn.down', () => {
-    it('returns the first element child, skipping text nodes', () => {
-      document.body.innerHTML = '<div id="wrapper">text<span id="first_child"></span></div>';
+  describe('clickPencil', () => {
+    it('loads the add form for the clicked line (GET) and opens the popup', async () => {
+      render();
 
-      expect($('#wrapper').down().attr('id')).toBe('first_child');
-    });
-
-    it('returns an empty set when there is no element child', () => {
-      document.body.innerHTML = '<div id="wrapper"></div>';
-
-      expect($('#wrapper').down().length).toBe(0);
-    });
-
-    it('does not override an existing definition', () => {
-      $.fn.down = function () {
-        return 'custom down';
-      };
-
-      loadClassicScripts(['assets/javascripts/code_review.js']);
-
-      expect($('#content').down()).toBe('custom down');
-    });
-  });
-
-  describe('make_addreview_link', () => {
-    it('appends the link to the tab list', () => {
-      document.body.innerHTML = `
-        <div class="tabs">
-          <ul>
-            <li><a href="/projects/demo/repository" id="tab-entry">Repository</a></li>
-          </ul>
-        </div>`;
-
-      make_addreview_link(null, '<li><a href="/projects/demo/code_review">Code review</a></li>');
-
-      expect($('div.tabs ul li').length).toBe(2);
-      expect($('div.tabs ul').html()).toContain('Code review');
-    });
-
-    it('documents a crash (not intended behavior): throws when there is no entry tab', () => {
-      document.body.innerHTML = '<div></div>';
-
-      expect(() => make_addreview_link(null, '<li>x</li>')).toThrow(TypeError);
-    });
-  });
-
-  describe('arrow keys in dialog inputs', () => {
-    beforeEach(() => {
-      $('#content').append('<div class="ui-dialog"><input id="comment"></div>');
-    });
-
-    it('stops ← / → from reaching document handlers', () => {
-      const fired = vi.fn();
-      $(document).on('keydown', fired);
-
-      $('#comment').trigger($.Event('keydown', { key: 'ArrowLeft' }));
-      $('#comment').trigger($.Event('keydown', { key: 'ArrowRight' }));
-
-      expect(fired).not.toHaveBeenCalled();
-    });
-
-    it('lets other keys propagate', () => {
-      const fired = vi.fn();
-      $(document).on('keydown', fired);
-
-      $('#comment').trigger($.Event('keydown', { key: 'ArrowUp' }));
-
-      expect(fired).toHaveBeenCalled();
-    });
-  });
-
-  describe('change_option', () => {
-    it('loads the list into #content with the show_closed flag', () => {
-      const load = vi.spyOn($.fn, 'load');
-
-      change_option('/projects/demo/code_review', true);
-
-      expect(load).toHaveBeenCalledWith('/projects/demo/code_review', { show_closed: true }, expect.any(Function));
-      expect(load.mock.instances[0].attr('id')).toBe('content');
-    });
-  });
-
-  describe('bindReviewFormTrackerChange', () => {
-    beforeEach(async () => {
-      document.body.innerHTML = `
-        <div id="content">
-          <div id="review-form"></div>
-          <form id="review_form">
-            <select id="issue_tracker_id" name="issue[tracker_id]">
-              <option value="1">Bug</option>
-              <option value="2">Feature</option>
-            </select>
-            <input name="review[subject]" value="Fix bug">
-          </form>
-        </div>`;
-      loadClassicScripts();
+      document.getElementById('add_revew_img_2_0').click();
       await flushReady();
-    });
 
-    it('reloads the form with the tracker on change', async () => {
-      const load = vi.spyOn($.fn, 'load');
-
-      bindReviewFormTrackerChange('/projects/demo/code_review/new');
-      await flushReady();
-      $('#issue_tracker_id').val('2');
-      $('#issue_tracker_id').trigger('change');
-
-      expect(load).toHaveBeenCalledTimes(1);
-      expect(load).toHaveBeenCalledWith(
-        '/projects/demo/code_review/new?issue%5Btracker_id%5D=2&review%5Bsubject%5D=Fix%20bug',
-        undefined,
-        expect.any(Function)
+      expect(fetch.mock.calls[0][0]).toBe(
+        '/code_review/new?change_id=5&action_type=entry&rev=1&rev_to=' +
+        '&attachment_id=&repository_id=repo1&path=%2Fsrc%2Fadded.rb&line=2&file_count=0'
       );
-      expect(load.mock.instances[0].attr('id')).toBe('review-form');
+      expect(fetch.mock.calls[0][1].method).toBe('GET');
+      expect(document.querySelector('.cr-dialog #review-form').textContent).toBe('loaded');
+      expect(document.querySelector('.cr-dialog-title').textContent).toBe('Add review');
     });
 
-    it('binds nothing when the tracker select is missing', async () => {
-      document.body.innerHTML = '<div id="review-form"></div>';
-      const load = vi.spyOn($.fn, 'load');
+    it.each([
+      ['spaces', 'my file.rb', 'my+file.rb'],
+      ['a hash', 'a#b.rb', 'a%23b.rb'],
+      ['Japanese', '日本語.rb', '%E6%97%A5%E6%9C%AC%E8%AA%9E.rb'],
+    ])('encodes a file name with %s and marks a full diff', (_label, name, encoded) => {
+      render({ path: '' }, fileTable([1], name));
 
-      expect(() => bindReviewFormTrackerChange('/projects/demo/code_review/new'))
-        .not.toThrow();
+      document.getElementById('add_revew_img_1_0').click();
+
+      expect(fetch.mock.calls[0][0].endsWith(`&line=1&file_count=0&path=${encoded}&diff_all=true`)).toBe(true);
+    });
+
+    it('uses the file index of the clicked file as a number', () => {
+      render({ path: '' }, fileTable([1], 'a.rb') + fileTable([1], 'b.rb'));
+
+      document.getElementById('add_revew_img_1_1').click();
+
+      expect(fetch.mock.calls[0][0]).toContain('&file_count=1&path=b.rb&diff_all=true');
+    });
+
+    it('throws when the diff has no file name for the clicked file', () => {
+      render({ path: '' }, fileTable([1], 'a.rb'));
+      crDiff.filenames = [];
+
+      expect(() => clickPencil({ target: { id: 'add_revew_img_1_0' }, preventDefault() {} }))
+        .toThrowError(/no file name for file 0/);
+      expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('prevents the default action of the click', () => {
+      render();
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+
+      document.getElementById('add_revew_img_1_0').dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(true);
+    });
+  });
+
+  describe('the add form popup', () => {
+    beforeEach(() => {
+      render();
+      document.getElementById('add_revew_img_1_0').click();
+    });
+
+    it.each([
+      ['the × button', () => document.querySelector('.cr-dialog-close').click()],
+      ['Esc', () => pressEscape()],
+      ['hideForm', () => hideForm()],
+      ['the cancel action', () => {
+        document.body.insertAdjacentHTML('beforeend', '<a href="#" id="c" data-cr-action="cancel-review-form"></a>');
+        document.getElementById('c').click();
+      }],
+    ])('is closed and emptied through %s', async (_label, close) => {
       await flushReady();
 
-      expect(load).not.toHaveBeenCalled();
+      close();
+
+      expect(document.querySelector('.cr-dialog')).toBeNull();
+      expect(formFrame().parentElement.id).toBe('code_review');
+      expect(document.getElementById('review-form').innerHTML).toBe('');
+    });
+
+    it('can be opened again after it was closed', async () => {
+      await flushReady();
+      document.querySelector('.cr-dialog-close').click();
+
+      document.getElementById('add_revew_img_1_0').click();
+      await flushReady();
+
+      expect(document.querySelectorAll('.cr-dialog')).toHaveLength(1);
+      expect(document.querySelector('.cr-dialog #review-form').textContent).toBe('loaded');
     });
   });
 
-  describe('delete review link', () => {
-    beforeEach(() => {
-      document.body.innerHTML = '<div id="delete-review-link"></div>';
-    });
+  describe('load errors', () => {
+    it('shows the HTTP status in the form when the request fails', async () => {
+      fetch.mockResolvedValue(new Response('boom', { status: 500, statusText: 'Server Error' }));
+      render();
 
-    it('reloads the page once when the delete succeeds, however many times the partial rendered', () => {
-      // jsdom cannot navigate and its location.reload cannot be spied on,
-      // so the global is replaced with a stub.
-      const reload = vi.fn();
-      vi.stubGlobal('location', { reload: reload });
+      document.getElementById('add_revew_img_1_0').click();
+      await flushReady();
 
-      $('#delete-review-link').trigger('ajax:success');
-
-      expect(reload).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not reload and shows the HTTP status when the delete fails', () => {
-      const reload = vi.fn();
-      const alertSpy = vi.fn();
-      vi.stubGlobal('location', { reload: reload });
-      vi.stubGlobal('alert', alertSpy);
-
-      $('#delete-review-link').trigger($.Event('ajax:error', {
-        detail: [null, 'error', { status: 403, statusText: 'Forbidden' }]
-      }));
-
-      expect(reload).not.toHaveBeenCalled();
-      expect(alertSpy).toHaveBeenCalledWith('403 Forbidden');
-    });
-
-    it('does nothing for other elements', () => {
-      const reload = vi.fn();
-      vi.stubGlobal('location', { reload: reload });
-
-      $('#content').trigger('ajax:success');
-
-      expect(reload).not.toHaveBeenCalled();
+      expect(document.querySelector('#review-form .cr-load-error').textContent).toBe('500 Server Error');
     });
   });
 
-  describe('loadWithErrorDisplay', () => {
-    const failWith = (status, statusText) =>
-      vi.spyOn($.fn, 'load').mockImplementation(function (url, params, callback) {
-        callback.call(this[0], '', 'error', { status: status, statusText: statusText });
-        return this;
-      });
+  describe('review-added', () => {
+    it('closes the form and shows the icon of the new review', () => {
+      render();
+      document.getElementById('add_revew_img_1_0').click();
+      document.body.insertAdjacentHTML('beforeend',
+        '<div data-cr-init="review-added" data-cr-review-id="9" data-cr-line="1" data-cr-file-count="0"></div>');
 
-    beforeEach(() => {
-      document.body.innerHTML = '<div id="target"><p>old</p></div>';
+      crInitialize(document);
+
+      expect(document.querySelector('.cr-dialog')).toBeNull();
+      expect(document.getElementById('review_9')).not.toBeNull();
     });
+  });
 
-    it('shows the HTTP status above the existing content when the request fails', () => {
-      failWith(500, 'Internal Server Error');
+  describe('review-added without a matching line', () => {
+    it('throws and keeps the form open instead of hiding the new review', () => {
+      render();
+      document.getElementById('add_revew_img_1_0').click();
+      document.body.insertAdjacentHTML('beforeend',
+        '<div data-cr-init="review-added" data-cr-review-id="9" data-cr-line="99" data-cr-file-count="0"></div>');
 
-      loadWithErrorDisplay($('#target'), '/x');
+      expect(() => crInitialize(document)).toThrowError(/no line 99 in file 0/);
 
-      expect($('#target > .flash.error').text()).toBe('500 Internal Server Error');
-      expect($('#target > p').text()).toBe('old');
+      expect(document.querySelector('.cr-dialog')).not.toBeNull();
     });
+  });
 
-    it('replaces the previous error instead of stacking them', () => {
-      failWith(404, 'Not Found');
+  describe('load marker', () => {
+    it('loads the marker content with POST and the given params', async () => {
+      document.body.innerHTML = `<meta name="csrf-token" content="T">
+        <div id="code_review" data-cr-init="load" data-cr-url="/code_review/update_diff_view"
+          data-cr-params='{"rev":"1","path":"a b"}'></div>`;
 
-      loadWithErrorDisplay($('#target'), '/x');
-      loadWithErrorDisplay($('#target'), '/x');
+      crInitialize(document);
+      await flushReady();
 
-      expect($('#target > .flash.error').length).toBe(1);
-    });
-
-    it('shows nothing when the request succeeds', () => {
-      vi.spyOn($.fn, 'load').mockImplementation(function (url, params, callback) {
-        callback.call(this[0], 'ok', 'success', {});
-        return this;
-      });
-
-      loadWithErrorDisplay($('#target'), '/x');
-
-      expect($('#target .flash').length).toBe(0);
+      const [url, init] = fetch.mock.calls[0];
+      expect(url).toBe('/code_review/update_diff_view');
+      expect(init.body).toBe('rev=1&path=a+b');
+      expect(document.getElementById('code_review').textContent).toBe('loaded');
     });
   });
 });

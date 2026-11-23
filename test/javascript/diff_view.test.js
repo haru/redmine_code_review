@@ -1,345 +1,189 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { loadClassicScripts } from './support/load_classic_script.js';
+import { loadClassicScripts, flushReady } from './support/load_classic_script.js';
+import { diffMarker, fileTable, pageWith } from './support/diff_fixture.js';
 
 describe('diff view', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.stubGlobal('scrollTo', vi.fn());
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('<p>loaded</p>'))));
+    document.body.innerHTML = '<div id="content"></div>';
     loadClassicScripts();
-    document.body.innerHTML = `
-      <div id="content">
-        <div id="code_review"></div>
-        <div id="review-form-frame"><div id="review-form"></div></div>
-      </div>`;
+    await flushReady();
+  });
+
+  const render = (overrides = {}, tables = fileTable()) => {
+    document.body.innerHTML = pageWith(diffMarker(overrides), tables);
+    crInitialize(document);
+  };
+
+  describe('diff-view initialization', () => {
+    it('builds the add-review URL from the data attributes', () => {
+      render({ 'rev-to': '2' });
+
+      expect(crDiff.addReviewUrl).toBe(
+        '/code_review/new?change_id=5&action_type=entry&rev=1&rev_to=2' +
+        '&attachment_id=&repository_id=repo1&path=%2Fsrc%2Fadded.rb'
+      );
+    });
+
+    it('omits path from the URL when the path is empty', () => {
+      render({ path: '' });
+
+      expect(crDiff.addReviewUrl).not.toContain('path=');
+    });
+
+    it('collects the file names of the diff', () => {
+      render({}, fileTable([1], 'a.rb') + fileTable([1], '  b.rb '));
+
+      expect(crDiff.filenames).toEqual(['a.rb', 'b.rb']);
+    });
+
+    it('does nothing again when initialized a second time', () => {
+      render();
+      const first = crDiff;
+
+      crInitialize(document);
+
+      expect(crDiff).toBe(first);
+    });
+
+    it.each([
+      ['readonly', 'yes'],
+      ['diff', '1'],
+    ])('throws naming the attribute when %s is not "true" or "false"', (name, value) => {
+      expect(() => render({ [name]: value })).toThrow(`data-cr-${name}`);
+    });
+
+    it('throws naming the attribute when a required one is missing', () => {
+      expect(() => render({ 'show-review-url': null })).toThrow('data-cr-show-review-url');
+    });
+
+    it('throws when the reviews are not valid JSON', () => {
+      expect(() => render({ reviews: '[oops' })).toThrow('data-cr-reviews');
+    });
   });
 
   describe('setAddReviewButton', () => {
-    const fileTable = `
-      <table class="filecontent">
-        <thead><tr><th class="filename">added.rb</th></tr></thead>
-        <tbody>
-          <tr><th data-txt="1"></th><td>line one</td></tr>
-          <tr><th data-txt="2"></th><td>line two</td></tr>
-        </tbody>
-      </table>`;
+    it('puts a pencil on each line number cell, with the legacy id', () => {
+      render();
 
-    it('builds addReviewUrl and puts a pencil image on each line number cell', () => {
-      document.body.innerHTML += fileTable;
-      action_type = 'entry';
-      rev = '1';
-      rev_to = '';
-      path = '/src/added.rb';
-      repository_id = 'repo1';
-
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
-
-      expect(addReviewUrl).toBe(
-        '/code_review/new?change_id=5&action_type=entry&rev=1&rev_to=' +
-        '&attachment_id=&repository_id=repo1&path=%2Fsrc%2Fadded.rb'
-      );
-      expect(filenames[0]).toBe('added.rb');
-      expect($('#review_span_1_0').length).toBe(1);
-      expect($('#review_span_2_0 img').length).toBe(1);
-      expect($('#add_revew_img_1_0').length).toBe(1);
-      expect($('#add_revew_img_2_0').length).toBe(1);
+      expect(document.querySelectorAll('#review_span_1_0 img')).toHaveLength(1);
+      expect(document.getElementById('add_revew_img_1_0')).not.toBeNull();
+      expect(document.getElementById('add_revew_img_2_0')).not.toBeNull();
     });
 
-    it('reads the line number from a link inside the cell when the cell has no data-txt', () => {
-      document.body.innerHTML += `
-        <table class="filecontent">
-          <thead><tr><th class="filename">linked.rb</th></tr></thead>
-          <tbody><tr><th><a data-txt="4"></a></th><td>line four</td></tr></tbody>
-        </table>`;
-      action_type = 'entry';
-      rev = '1';
-      rev_to = '';
-      path = '/src/linked.rb';
-      repository_id = 'repo1';
+    it('reads the line number from a link inside the cell', () => {
+      render({}, `<table class="filecontent"><thead><tr><th class="filename">l.rb</th></tr></thead>
+        <tbody><tr><th><a data-txt="4"></a></th><td>x</td></tr></tbody></table>`);
 
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
-
-      expect($('#add_revew_img_4_0').length).toBe(1);
+      expect(document.getElementById('add_revew_img_4_0')).not.toBeNull();
     });
 
-    it('does not place images when the view is readonly', () => {
-      document.body.innerHTML += fileTable;
+    it('places no pencil when the view is readonly', () => {
+      render({ readonly: 'true' });
 
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', true, false, '');
-
-      expect($('#review_span_1_0 img').length).toBe(0);
-      expect($('#review_span_2_0 img').length).toBe(0);
+      expect(document.getElementById('review_span_1_0')).not.toBeNull();
+      expect(document.querySelectorAll('#review_span_1_0 img')).toHaveLength(0);
     });
 
-    it('uses the second column for a side-by-side diff', () => {
-      document.body.innerHTML += `
-        <table class="filecontent">
-          <thead><tr><th class="filename">added.rb</th></tr></thead>
-          <tbody>
-            <tr><th data-txt="1"></th><th data-txt="1"></th></tr>
-          </tbody>
-        </table>`;
+    it('uses the second column for a diff', () => {
+      render({ diff: 'true' }, `<table class="filecontent"><thead><tr><th class="filename">d.rb</th></tr></thead>
+        <tbody><tr><th data-txt="1"></th><th data-txt="1"></th></tr></tbody></table>`);
 
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, true, '');
-
-      const tr = $('table.filecontent tbody tr:first');
-      expect(tr.find('th:nth-child(1) img').length).toBe(0);
-      expect(tr.find('th:nth-child(2) img').length).toBe(1);
-      expect(tr.find('th:nth-child(2) img').attr('id')).toBe('add_revew_img_1_0');
+      const cells = document.querySelectorAll('tbody th');
+      expect(cells[0].querySelector('img')).toBeNull();
+      expect(cells[1].querySelector('img').id).toBe('add_revew_img_1_0');
     });
 
-    it('skips rows whose number cell has no line number', () => {
-      document.body.innerHTML += `
-        <table class="filecontent">
-          <thead><tr><th class="filename">added.rb</th></tr></thead>
-          <tbody>
-            <tr><th></th><td>header line</td></tr>
-            <tr><th data-txt="3"></th><td>line three</td></tr>
-          </tbody>
-        </table>`;
+    it('skips a number cell whose data-txt is empty', () => {
+      render({}, `<table class="filecontent"><tbody>
+        <tr><th data-txt=""></th></tr><tr><th data-txt="3"></th></tr></tbody></table>`);
 
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
-
-      expect($('#review_span_3_0 img').length).toBe(1);
-      expect($('th img').length).toBe(1);
+      expect(document.querySelectorAll('table.filecontent img')).toHaveLength(1);
     });
 
-    // Pins the emptiness check for `line`: jQuery's data() yields mixed types
-    // for data-txt (a number for numeric values, a string otherwise), and the
-    // strict `=== ""` check treats the number 0 as a value, not as empty.
-    it('skips rows with an empty data-txt and places images on numeric ones', () => {
-      document.body.innerHTML += `
-        <table class="filecontent"><thead><tr><th class="filename">added.rb</th></tr></thead><tbody><tr><th data-txt=""></th><td>no line</td></tr><tr><th data-txt="2"></th><td>line two</td></tr><tr><th data-txt="0"></th><td>line zero</td></tr></tbody></table>`;
-      expect(typeof $($('th[data-txt]')[1]).data('txt')).toBe('number');
+    it('skips rows without a number cell', () => {
+      render({}, '<table class="filecontent"><tbody><tr><td>no th</td></tr></tbody></table>');
 
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
-
-      expect($('th img').length).toBe(2);
-      expect($('#add_revew_img_2_0').length).toBe(1);
-      expect($('#add_revew_img_0_0').length).toBe(1);
-    });
-  });
-
-  describe('clickPencil', () => {
-    beforeEach(() => {
-      document.body.innerHTML += `
-        <table class="filecontent">
-          <thead><tr><th class="filename">added.rb</th></tr></thead>
-          <tbody>
-            <tr><th data-txt="1"></th></tr>
-          </tbody>
-        </table>`;
-      action_type = 'entry';
-      rev = '1';
-      rev_to = '';
-      repository_id = 'repo1';
-    });
-
-    it('opens the review form for the clicked line and file', () => {
-      path = '/src/added.rb';
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
-      const load = vi.spyOn($.fn, 'load');
-
-      const e = $.Event('click', { pageX: 10, pageY: 20 });
-      $('#add_revew_img_1_0').trigger(e);
-
-      expect(e.isDefaultPrevented()).toBe(true);
-      expect(load).toHaveBeenCalledTimes(1);
-      expect(load).toHaveBeenCalledWith(
-        addReviewUrl + '&line=1&file_count=0',
-        undefined,
-        expect.any(Function)
-      );
-      const target = load.mock.instances[0];
-      expect(target.attr('id')).toBe('review-form');
-    });
-
-    it('adds the file path of the clicked line when the view is a full diff', () => {
-      path = '';
-      setAddReviewButton('/code_review/new', 5, '<img src="/images/edit.png">', false, false, '');
-      const load = vi.spyOn($.fn, 'load');
-
-      $('#add_revew_img_1_0').trigger('click');
-
-      expect(load).toHaveBeenCalledWith(
-        addReviewUrl + '&line=1&file_count=0&path=added.rb&diff_all=true',
-        undefined,
-        expect.any(Function)
-      );
+      expect(document.querySelectorAll('img')).toHaveLength(0);
     });
   });
 
   describe('setShowReviewButton', () => {
-    const reviewImageTag = '<img src="/images/review.png">';
-    const closedImageTag = '<img src="/images/closed_review.png">';
+    const reviews = (list) => JSON.stringify(list);
 
-    beforeEach(() => {
-      document.body.innerHTML += '<span id="review_span_1_0"></span>';
-      showReviewUrl = '/code_review/show';
-      showReviewImageTag = reviewImageTag;
-      showClosedReviewImageTag = closedImageTag;
-      review_dialog_title = 'Code review';
-    });
+    it('adds the review icon and an empty popup target for each review', () => {
+      render({ reviews: reviews([{ id: 7, line: 1, file_count: 0, closed: false }]) });
 
-    it('does nothing when the target span is missing', () => {
-      setShowReviewButton(9, 7, false, 9);
-
-      expect($('#review_7').length).toBe(0);
-      expect($('#show_review_7').length).toBe(0);
-    });
-
-    it('adds the review icon and popup target for an open review', () => {
-      setShowReviewButton(1, 7, false, 0);
-
-      expect($('#review_span_1_0 > span#review_7').length).toBe(1);
-      expect($('#review_7').html()).toBe(reviewImageTag);
-      expect($('#code_review > div#show_review_7').length).toBe(1);
-      expect($('#code_review > div#show_review_7').hasClass('draggable')).toBe(true);
+      expect(document.querySelector('#review_7 img').getAttribute('src')).toBe('/images/review.png');
+      expect(document.querySelector('#code_review > #show_review_7')).not.toBeNull();
     });
 
     it('uses the closed icon for a closed review', () => {
-      setShowReviewButton(1, 7, true, 0);
+      render({ reviews: reviews([{ id: 7, line: 2, file_count: 0, closed: true }]) });
 
-      expect($('#review_7').html()).toBe(closedImageTag);
+      expect(document.querySelector('#review_7 img').getAttribute('src')).toBe('/images/closed_review.png');
     });
 
-    it('loads and opens the review dialog when the icon is clicked', () => {
-      setShowReviewButton(1, 7, false, 0);
-      const load = vi.spyOn($.fn, 'load');
+    it('ignores a review whose line is not on the page', () => {
+      render({ reviews: reviews([{ id: 7, line: 99, file_count: 0, closed: false }]) });
 
-      $('#review_7 img').trigger('click');
-
-      expect(load).toHaveBeenCalledWith('/code_review/show', { review_id: '7' }, expect.any(Function));
-    });
-  });
-
-  describe('showReview', () => {
-    beforeEach(() => {
-      review_dialog_title = 'Code review';
+      expect(document.getElementById('review_7')).toBeNull();
     });
 
-    it('loads the review into #show_review_<id> and opens it as a dialog', () => {
-      document.body.innerHTML += '<div id="show_review_7"></div>';
-      const load = vi.spyOn($.fn, 'load');
+    it('loads and opens the review popup when the icon is clicked', async () => {
+      render({ reviews: reviews([{ id: 7, line: 1, file_count: 0, closed: false }]) });
 
-      const win = showReview('/code_review/show', 7, 15, 25);
+      document.querySelector('#review_7 img').click();
+      await flushReady();
 
-      expect(load).toHaveBeenCalledWith('/code_review/show', { review_id: 7 }, expect.any(Function));
-      expect(win).toBe(code_reviews_dialog_map[7]);
-      expect($('#content .ui-dialog').length).toBe(1);
-      expect($('.ui-dialog .ui-dialog-title').text()).toBe('Code review');
-    });
-
-    it('hides the existing dialog of the same review', () => {
-      document.body.innerHTML += '<div id="show_review_7"></div>';
-      const hide = vi.fn();
-      const oldDialog = { hide: hide };
-      code_reviews_dialog_map[7] = oldDialog;
-
-      showReview('/code_review/show', 7, 15, 25);
-
-      expect(hide).toHaveBeenCalledTimes(1);
-      expect(code_reviews_dialog_map[7]).not.toBe(oldDialog);
-      expect(code_reviews_dialog_map[7].is('#show_review_7')).toBe(true);
-    });
-
-    it('keeps the dialogs of other reviews untouched', () => {
-      document.body.innerHTML += '<div id="show_review_8"></div>';
-      const hide = vi.fn();
-      code_reviews_dialog_map[8] = { hide: hide };
-
-      showReview('/code_review/show', 7, 15, 25);
-
-      expect(hide).not.toHaveBeenCalled();
-      expect(code_reviews_dialog_map[8].hide).toBe(hide);
+      const [url, init] = fetch.mock.calls[0];
+      expect(url).toBe('/code_review/show');
+      expect(init.method).toBe('POST');
+      expect(init.body).toBe('review_id=7');
+      expect(document.querySelector('.cr-dialog #show_review_7').textContent).toBe('loaded');
+      expect(document.querySelector('.cr-dialog-title').textContent).toBe('Code review');
     });
   });
 
   describe('popupReview', () => {
-    it('scrolls to the review and shows it', () => {
-      document.body.innerHTML += '<span id="review_8"></span>';
-      showReviewUrl = '/code_review/show';
-      const showReviewSpy = vi.spyOn(globalThis, 'showReview');
+    it('scrolls to the icon and opens the popup for the review of the marker', async () => {
+      render({
+        reviews: JSON.stringify([{ id: 7, line: 1, file_count: 0, closed: false }]),
+        'popup-review-id': '7',
+      });
+      await flushReady();
 
-      popupReview(8);
-
-      expect(showReviewSpy).toHaveBeenCalledWith('/code_review/show', 8, 15, 0);
-    });
-  });
-
-  describe('formPopup and hideForm', () => {
-    beforeEach(() => {
-      add_form_title = 'Add review';
+      expect(window.scrollTo).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('.cr-dialog #show_review_7')).not.toBeNull();
     });
 
-    it('opens the review form as a dialog inside #content', () => {
-      const result = formPopup(10, 20);
-
-      expect(result).toBe(false);
-      expect($('#content > .ui-dialog').length).toBe(1);
-      expect($('.ui-dialog .ui-dialog-title').text()).toBe('Add review');
-      expect(review_form_dialog).not.toBeNull();
+    it('throws naming the review when its icon is not on the page', () => {
+      expect(() => render({
+        reviews: JSON.stringify([]),
+        'popup-review-id': '7',
+      })).toThrowError(/review 7 has no icon/);
     });
 
-    it('reopens the form when it was closed without hideForm (dialog X button)', () => {
-      formPopup(10, 20);
+    it('opens no popup without a popup-review-id', () => {
+      render();
 
-      expect(() => formPopup(10, 20)).not.toThrow();
-      expect($('#review-form-frame').dialog('isOpen')).toBe(true);
-      expect($('#content > .ui-dialog').length).toBe(1);
-    });
-
-    it('closes the dialog and clears the form', () => {
-      formPopup(10, 20);
-
-      hideForm();
-
-      expect($('#review-form-frame').dialog('isOpen')).toBe(false);
-      expect(review_form_dialog).toBeNull();
-      expect($('#review-form').html()).toBe('');
-    });
-
-    it('does nothing when the form was never opened', () => {
-      $('#review-form').html('<p>form</p>');
-
-      hideForm();
-
-      expect($('#review-form').html()).toBe('<p>form</p>');
-    });
-  });
-
-  describe('addReview', () => {
-    it('loads the review form', () => {
-      const load = vi.spyOn($.fn, 'load');
-
-      addReview('/code_review/new?change_id=5');
-
-      expect(load).toHaveBeenCalledTimes(1);
-      expect(load).toHaveBeenCalledWith('/code_review/new?change_id=5', undefined, expect.any(Function));
-      expect(load.mock.instances[0].attr('id')).toBe('review-form');
+      expect(document.querySelector('.cr-dialog')).toBeNull();
     });
   });
 
   describe('moveAssignLinkAboveFileContent', () => {
     it('moves the assign link before the first file content table', () => {
-      $('#content').append(`
-        <table class="filecontent"><tbody><tr><td>diff</td></tr></tbody></table>
-        <div id="code-review-assign-link"></div>
-        <table class="filecontent"><tbody><tr><td>diff 2</td></tr></tbody></table>`);
+      render();
 
-      moveAssignLinkAboveFileContent();
-
-      expect($('table.filecontent:first').prev().attr('id')).toBe('code-review-assign-link');
+      expect(document.querySelector('table.filecontent').previousElementSibling.id)
+        .toBe('code-review-assign-link');
     });
 
-    it('does nothing when the link is missing', () => {
-      $('#content').append('<table class="filecontent"><tbody><tr><td>diff</td></tr></tbody></table>');
+    it('leaves the page alone when there is no file content table', () => {
+      render({}, '');
 
-      expect(() => moveAssignLinkAboveFileContent()).not.toThrow();
-    });
-
-    it('does nothing when there is no file content table', () => {
-      $('#content').append('<div id="code-review-assign-link"></div>');
-
-      expect(() => moveAssignLinkAboveFileContent()).not.toThrow();
-      expect($('#content > div#code-review-assign-link').length).toBe(1);
+      expect(document.getElementById('code-review-assign-link')).not.toBeNull();
     });
   });
 });

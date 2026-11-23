@@ -29,11 +29,8 @@ if @changesets
   url = url_for :controller => 'code_review', :action => 'update_revisions_view', :id => project, :repository_id => repository_id
 %>
 
-  <div id="code_review_revisions"></div>
-
-
-  <script type="text/javascript">
-    loadOnReady('#code_review_revisions', '<%= j url %>', {changeset_ids: '<%= j changeset_ids %>'});
-  </script>
+  <%= content_tag :div, nil, id: 'code_review_revisions', data: {
+        cr_init: 'load', cr_url: url,
+        cr_params: { changeset_ids: changeset_ids }.to_json } %>
 
 <% end %>

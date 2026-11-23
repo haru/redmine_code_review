@@ -2,8 +2,7 @@ const { test, expect } = require('../support/fixtures');
 const { seed, fileDiffUrl, reviewShowUrl, login, createReview, openReview } = require('../support/helpers');
 
 // Clicks the Apply button of `formSelector` and waits for the popup to be redrawn by the
-// request to `action`. The popup's forms use jQuery's load() with a serialized string, which
-// sends a GET, so the method is not checked.
+// request to `action`. The popup's forms are sent with a GET, but the method is not checked.
 async function applyPopupForm(page, formSelector, action) {
   const [response] = await Promise.all([
     page.waitForResponse((r) => new URL(r.url()).pathname.endsWith(`/code_review/${action}`)),
@@ -61,7 +60,7 @@ test('edits the subject and comment of a review and keeps them after reloading',
   await expect(page.locator(`#update-form-${id}`)).toBeHidden();
   await popup.getByRole('link', { name: 'Update' }).click();
   await expect(page.locator(`#update-form-${id}`)).toBeVisible();
-  await page.locator(`#review_form_${id} input[type=button][value=Cancel]`).click();
+  await page.locator(`#review_form_${id} button[type=button]:has-text("Cancel")`).click();
   await expect(page.locator(`#update-form-${id}`)).toBeHidden();
 
   await popup.getByRole('link', { name: 'Update' }).click();
