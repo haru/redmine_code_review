@@ -108,16 +108,48 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install
+        id: install
         run: bash -x ./build-scripts/install.sh
       - name: Build
         run: bash -x ./build-scripts/build.sh
-      - name: Clean
-        run: bash -x ./build-scripts/cleanup.sh
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ruby
           fail_ci_if_error: true
+      # E2E runs even when the Ruby tests failed, so a Ruby regression cannot hide a
+      # broken UI; it is skipped only when install failed (no Redmine to test).
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: test/e2e/package-lock.json
+      - name: E2E
+        id: e2e
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: bash -x ./build-scripts/e2e.sh
+        timeout-minutes: 20
+      # Fails when the report is missing or malformed, or when no test executed
+      # (all skipped still exits 0 in Playwright).
+      - name: E2E Summary
+        if: ${{ !cancelled() && steps.e2e.outcome != 'skipped' }}
+        run: node build-scripts/e2e-summary.js e2e-results.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload E2E artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() && steps.e2e.outcome == 'failure' }}
+        with:
+          name: e2e-ruby${{ matrix.ruby_version }}-${{ matrix.redmine_version }}-${{ matrix.db }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            testspace/redmine/plugins/*/test/e2e/test-results/
+            testspace/redmine/log/test.log
+            testspace/redmine/tmp/e2e/
+            e2e-results.json
+      - name: Clean
+        run: bash -x ./build-scripts/cleanup.sh
       - name: Slack Notification on Failure
         uses: rtCamp/action-slack-notify@v2.0.2
         if: failure() && env.SLACK_WEBHOOK != ''

@@ -54,3 +54,5 @@ Sources are immutable inputs — the wiki never edits them.
 | S047 | test/javascript/ (Vitest test files and support/) | file | 2026-11-23 | 2026-11-23 | run-javascript-unit-tests.md |
 | S048 | specs/008-e2e-ci/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md, e2e-playwright-adoption.md, run-e2e-tests.md |
 | S049 | specs/008-e2e-ci/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md, e2e-playwright-adoption.md |
+| S050 | docs/adr/0006-run-e2e-tests-in-ci.md (with .github/workflows/build.yml, build-scripts/e2e.sh, test/e2e/README.md as revised after review) | file | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md, e2e-isolated-environment.md, vitest-javascript-unit-tests.md |
+| S051 | build-scripts/e2e-summary.js | file | 2026-11-23 | 2026-11-23 | run-e2e-in-ci.md |
