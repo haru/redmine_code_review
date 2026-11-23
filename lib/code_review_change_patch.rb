@@ -15,15 +15,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require_dependency 'change'
+require_dependency "change"
 
 module CodeReviewChangePatch
   def self.included(base) # :nodoc:
     base.send(:include, ChangeInstanceMethodsCodeReview)
 
     base.class_eval do
-      has_many :code_reviews, :dependent => :destroy
-      has_many :code_review_assignments, :dependent => :destroy
+      has_many :code_reviews, dependent: :destroy
+      has_many :code_review_assignments, dependent: :destroy
       after_save :review_auto_assign
     end
   end
@@ -81,7 +81,7 @@ module ChangeInstanceMethodsCodeReview
   end
 
   def review_auto_assign
-    return unless CodeReviewAssignment.where(:changeset_id => changeset.id).all.length == 0
+    return unless CodeReviewAssignment.where(changeset_id: changeset.id).all.length == 0
     return unless changeset.repository
     return unless changeset.repository.project
     setting = CodeReviewProjectSetting.find_or_create(changeset.repository.project)
@@ -92,4 +92,4 @@ module ChangeInstanceMethodsCodeReview
   end
 end
 
-Change.send(:include, CodeReviewChangePatch)
+Change.include CodeReviewChangePatch

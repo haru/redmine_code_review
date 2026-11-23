@@ -1,30 +1,37 @@
 #!/bin/sh
 cd /usr/local/redmine
 
-ln -s /workspaces/${PLUGIN_NAME} plugins/${PLUGIN_NAME}
+uv tool install specify-cli
+
 if [ -f plugins/${PLUGIN_NAME}/Gemfile_for_test ]
 then
-    cp plugins/${PLUGIN_NAME}/Gemfile_for_test plugins/${PLUGIN_NAME}/Gemfile 
+    cp plugins/${PLUGIN_NAME}/Gemfile_for_test plugins/${PLUGIN_NAME}/Gemfile
 fi
 cp plugins/${PLUGIN_NAME}/test/fixtures/*.yml test/fixtures
-ln -s /workspaces/${PLUGIN_NAME}/.devcontainer/launch.json .vscode/launch.json
 
-bundle install 
+
+bundle install
 bundle exec rake redmine:plugins:migrate
 bundle exec rake redmine:plugins:migrate RAILS_ENV=test
 
 initdb() {
-    bundle exec rake db:create
+    rm -f db/schema.rb
+    if [ $DB != "sqlite3" ]
+    then
+        bundle exec rake db:create
+    fi
     bundle exec rake db:migrate
     bundle exec rake redmine:plugins:migrate
 
+    rm -f db/schema.rb
+
     bundle exec rake db:drop RAILS_ENV=test
     bundle exec rake db:create RAILS_ENV=test
+
+
     bundle exec rake db:migrate RAILS_ENV=test
     bundle exec rake redmine:plugins:migrate RAILS_ENV=test
 }
-
-initdb
 
 export DB=mysql2
 export DB_NAME=redmine
@@ -42,4 +49,8 @@ export DB_PASSWORD=postgres
 export DB_HOST=postgres
 export DB_PORT=5432
 
+initdb
+
+rm -f db/redmine.sqlite3_test
+export DB=sqlite3
 initdb

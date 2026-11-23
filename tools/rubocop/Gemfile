@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+# Pinned RuboCop toolchain shared by CI and local runs (see build-scripts/rubocop.sh).
+# Versions are locked in Gemfile.lock and updated by Renovate.
+source "https://rubygems.org"
+
+gem "rubocop"
+gem "rubocop-factory_bot"
+gem "rubocop-performance"
+gem "rubocop-rails"

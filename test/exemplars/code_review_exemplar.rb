@@ -15,16 +15,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-class CodeReview < ActiveRecord::Base
-  #generator_for :issue, :method => :next_issue
-  #generator_for :subject, :method => :next_subject
-  #generator_for :comment => 'Comment'
-  generator_for :updated_by_id => 1
-  generator_for :action_type => 'diff'
-  generator_for :line => 30
+class CodeReview < ApplicationRecord
+  # generator_for :issue, :method => :next_issue
+  # generator_for :subject, :method => :next_subject
+  # generator_for :comment => 'Comment'
+  generator_for updated_by_id: 1
+  generator_for action_type: "diff"
+  generator_for line: 30
 
   def self.next_subject
-    @last_subject ||= 'Code Review 0'
+    @last_subject ||= "Code Review 0"
     @last_subject.succ!
     @last_subject
   end

@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 
 class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   fixtures :code_reviews, :projects, :users, :repositories,
@@ -27,11 +27,49 @@ class CodeReviewAtuoAssignSettingsTest < ActiveSupport::TestCase
   include CodeReviewAutoAssignSettings
 
   def startup
-    #DatabaseRewinder.clean_all
+    # DatabaseRewinder.clean_all
   end
 
   def teardown
-    #DatabaseRewinder.clean
+    # DatabaseRewinder.clean
+  end
+
+  context "AutoAssignSettings filters" do
+    setup do
+      @settings = AutoAssignSettings.new
+      @filter = AssignmentFilter.new
+      @filter.expression = "src/.*"
+      @filter.accept = true
+      @filter.order = 10
+      @changeset = Struct.new(:filechanges)
+    end
+
+    should "add_filter appends the filter attributes" do
+      @settings.add_filter(@filter)
+      assert_equal([ "src/.*" ], @settings.filters.map(&:expression))
+      assert @settings.filters.first.accept?
+    end
+
+    should "match_with_changeset? accept every changeset while filters are disabled" do
+      assert @settings.match_with_changeset?(@changeset.new([]))
+    end
+
+    context "with filters enabled" do
+      setup do
+        @settings.filter_enabled = true
+        @settings.add_filter(@filter)
+      end
+
+      should "match_with_changeset? be false when no change path is accepted" do
+        change = Struct.new(:path).new("doc/a.md")
+        assert_equal false, @settings.match_with_changeset?(@changeset.new([ change ]))
+      end
+
+      should "match_with_changeset? be true when a change path is accepted" do
+        change = Struct.new(:path).new("src/a.rb")
+        assert_equal true, @settings.match_with_changeset?(@changeset.new([ change ]))
+      end
+    end
   end
 
   context "AutoAssignSettings" do
@@ -53,7 +91,7 @@ EOF
       end
 
       should "return false if enabled is not setted." do
-        assert !@settings.enabled?
+        assert_not @settings.enabled?
       end
 
       should "return true if enabled is setted to true." do
@@ -63,7 +101,7 @@ EOF
 
       should "return false if enabled is setted to false" do
         @settings.enabled = false
-        assert !@settings.enabled?
+        assert_not @settings.enabled?
       end
     end
 
@@ -73,7 +111,7 @@ EOF
       end
 
       should "return false if accept_for_default is not setted." do
-        assert !@settings.accept_for_default
+        assert_not @settings.accept_for_default
       end
 
       should "return true if accept_for_default is setted to true." do
@@ -83,7 +121,7 @@ EOF
 
       should "return false if accept_for_default is setted to false" do
         @settings.accept_for_default = false
-        assert !@settings.accept_for_default
+        assert_not @settings.accept_for_default
       end
     end
 
@@ -98,7 +136,7 @@ EOF
       end
 
       should "return 4 if author_id is '4'" do
-        @settings.author_id = '4'
+        @settings.author_id = "4"
         assert_equal(4, @settings.author_id)
       end
 
@@ -108,7 +146,7 @@ EOF
       end
 
       should "return nil if author_id is empty string" do
-        @settings.author_id = ''
+        @settings.author_id = ""
         assert_nil @settings.author_id
       end
     end
@@ -120,26 +158,26 @@ EOF
 
       should "return false if assignable_list is nil" do
         @settings.assignable_list = nil
-        assert !@settings.assignable?(User.find(1))
+        assert_not @settings.assignable?(User.find(1))
       end
 
       should "return false if assignable_list is empty" do
         @settings.assignable_list = []
-        assert !@settings.assignable?(User.find(1))
+        assert_not @settings.assignable?(User.find(1))
       end
 
       should "return false if assignable_list hasn't specified user_id" do
-        @settings.assignable_list = [1, 3, 4, 5]
-        assert !@settings.assignable?(User.find(2))
+        @settings.assignable_list = [ 1, 3, 4, 5 ]
+        assert_not @settings.assignable?(User.find(2))
       end
 
       should "return true if assignable_list has specified user_id" do
-        @settings.assignable_list = [1, 2, 3, 4]
+        @settings.assignable_list = [ 1, 2, 3, 4 ]
         assert @settings.assignable?(User.find(3))
       end
 
       should "return true if assignable_list has specified user_id's string" do
-        @settings.assignable_list = ["1", "2", "3", "4"]
+        @settings.assignable_list = [ "1", "2", "3", "4" ]
         assert @settings.assignable?(User.find(3))
       end
     end
@@ -150,7 +188,7 @@ EOF
         @project = Project.find(1)
         members = []
         2.upto(5) { |i|
-          members << Member.new(:project => @project, :user_id => i)
+          members << Member.new(project: @project, user_id: i)
         }
         @project.members << members
       end
@@ -166,20 +204,20 @@ EOF
       end
 
       should "return user_id" do
-        @settings.assignable_list = [1, 2, 3, 4, 5]
+        @settings.assignable_list = [ 1, 2, 3, 4, 5 ]
         assert_not_nil @settings.select_assign_to(@project)
       end
 
       should "not return id that equals user.id" do
-        @settings.assignable_list = [1, 2]
+        @settings.assignable_list = [ 1, 2 ]
         user = User.find(1)
         assert_equal(2, @settings.select_assign_to(@project, user))
-        @settings.assignable_list = [1]
+        @settings.assignable_list = [ 1 ]
         assert_nil(@settings.select_assign_to(@project, user))
       end
 
       should "return nil if assignable_list has no project member" do
-        @settings.assignable_list = [51, 52, 53]
+        @settings.assignable_list = [ 51, 52, 53 ]
         assert_nil @settings.select_assign_to(@project)
       end
     end
@@ -195,8 +233,8 @@ EOF
       end
 
       should "return 'abc' if :description is 'abc'." do
-        @settings.description = 'abc'
-        assert_equal 'abc', @settings.description
+        @settings.description = "abc"
+        assert_equal "abc", @settings.description
       end
     end
 
@@ -206,8 +244,8 @@ EOF
       end
 
       should "return 'efg' if :subject is 'efg'" do
-        @settings.subject = 'efg'
-        assert_equal('efg', @settings.subject)
+        @settings.subject = "efg"
+        assert_equal("efg", @settings.subject)
       end
 
       should "return nil if :subject is nil" do
@@ -250,46 +288,46 @@ EOF
       filters << filter
       filter = AssignmentFilter.new
       filter.accept = true
-      filter.expression = '.*/redmine_code_review/.*'
+      filter.expression = ".*/redmine_code_review/.*"
       filters << filter
       @settings.filters = filters
       @settings.accept_for_default = true
 
       project = Project.find(1)
-      #project.repository.destroy if project.repository
-      #repository = Repository.new
-      #repository.project = project
-      @changeset = FactoryBot.create(:changeset, repository: project.repository)
-      #@changeset.repository = repository
+      # project.repository.destroy if project.repository
+      # repository = Repository.new
+      # repository.project = project
+      @changeset = create(:changeset, repository: project.repository)
+      # @changeset.repository = repository
     end
 
     should "return true if filters.length is 0 and accept_for_default is true." do
       @settings.filters = []
-      change = FactoryBot.create(:change, changeset: @changeset)
+      change = create(:change, changeset: @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return true if filter matches and accept? is true" do
       @settings.accept_for_default = false
-      change = FactoryBot.create(:change, path: '/aaa/bbb/ccc.rb', changeset: @changeset)
+      change = create(:change, path: "/aaa/bbb/ccc.rb", changeset: @changeset)
       assert @settings.match_with_change?(change)
-      change = FactoryBot.create(:change, path: '/trunk/plugins/redmine_code_review/lib/ccc.rb', changeset: @changeset)
+      change = create(:change, path: "/trunk/plugins/redmine_code_review/lib/ccc.rb", changeset: @changeset)
       assert @settings.match_with_change?(change)
     end
 
     should "return false if filter matches and accept? is false" do
-      change = FactoryBot.create(:change, path: '/aaa/bbb/ccctest.rb', changeset: @changeset)
-      assert !@settings.match_with_change?(change)
+      change = create(:change, path: "/aaa/bbb/ccctest.rb", changeset: @changeset)
+      assert_not @settings.match_with_change?(change)
     end
 
     should "return false if filter doesn't matches and accept_for_default is false" do
-      change = FactoryBot.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
+      change = create(:change, path: "/aaa/bbb/ccctest.html", changeset: @changeset)
       @settings.accept_for_default = false
-      assert !@settings.match_with_change?(change)
+      assert_not @settings.match_with_change?(change)
     end
 
     should "return true if filter doesn't matches and accept_for_default is true" do
-      change = FactoryBot.create(:change, path: '/aaa/bbb/ccctest.html', changeset: @changeset)
+      change = create(:change, path: "/aaa/bbb/ccctest.html", changeset: @changeset)
       @settings.accept_for_default = true
       assert @settings.match_with_change?(change)
     end
@@ -297,8 +335,8 @@ EOF
     should "return false if filters.length is 0 and accept_for_default is false." do
       @settings.filters = []
       @settings.accept_for_default = false
-      change = FactoryBot.create(:change, changeset: @changeset)
-      assert !@settings.match_with_change?(change)
+      change = create(:change, changeset: @changeset)
+      assert_not @settings.match_with_change?(change)
     end
   end
 
@@ -315,22 +353,22 @@ EOF
 
       should "return false if @accept is false" do
         @filter.accept = false
-        assert !@filter.accept?
+        assert_not @filter.accept?
       end
 
       should "return false if @accept is nil" do
         @filter.accept = nil
-        assert !@filter.accept?
+        assert_not @filter.accept?
       end
     end
 
     context "attributes" do
       should "return hash" do
         @filter.accept = true
-        @filter.expression = 'aaa'
+        @filter.expression = "aaa"
         attrs = @filter.attributes
         assert attrs[:accept]
-        assert_equal 'aaa', attrs[:expression]
+        assert_equal "aaa", attrs[:expression]
       end
     end
 
@@ -338,22 +376,22 @@ EOF
       should "set attributes from hash" do
         hash = Hash.new
         hash[:accept] = true
-        hash[:expression] = 'hoge'
+        hash[:expression] = "hoge"
         @filter.attributes = hash
         assert @filter.accept
-        assert_equal 'hoge', @filter.expression
+        assert_equal "hoge", @filter.expression
       end
     end
 
     context "match?" do
       should "return false if expression is nil" do
         @filter.expression = nil
-        assert !@filter.match?("/aaa/bbb")
+        assert_not @filter.match?("/aaa/bbb")
       end
 
       should "return false if path is nil" do
-        @filter.expression = 'abc'
-        assert !@filter.match?(nil)
+        @filter.expression = "abc"
+        assert_not @filter.match?(nil)
       end
 
       should "return true if expression matches." do
@@ -363,7 +401,7 @@ EOF
 
       should "return false if expression doesn't match." do
         @filter.expression = '.*\\.rb$'
-        assert !@filter.match?("/test/aaa/bbb/foo.java")
+        assert_not @filter.match?("/test/aaa/bbb/foo.java")
       end
     end
   end
@@ -375,12 +413,12 @@ EOF
 
     should "return false if filter_enabled is nil" do
       @settings.filter_enabled = nil
-      assert !@settings.filter_enabled?
+      assert_not @settings.filter_enabled?
     end
 
     should "return false if filter_enabled is false" do
       @settings.filter_enabled = false
-      assert !@settings.filter_enabled?
+      assert_not @settings.filter_enabled?
     end
 
     should "return true if filter_enabled is true" do
@@ -389,7 +427,7 @@ EOF
     end
 
     should "return true if filter_enabled is 'true'" do
-      @settings.filter_enabled = 'true'
+      @settings.filter_enabled = "true"
       assert @settings.filter_enabled?
     end
   end

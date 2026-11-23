@@ -33,9 +33,7 @@ if @changesets
 
 
   <script type="text/javascript">
-    $(document).ready(function(){
-      $('#code_review_revisions').load('<%=url%>', {changeset_ids: '<%=raw changeset_ids%>'});
-    });
+    loadOnReady('#code_review_revisions', '<%= j url %>', {changeset_ids: '<%= j changeset_ids %>'});
   </script>
 
 <% end %>

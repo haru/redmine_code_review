@@ -1,5 +1,19 @@
 coverage
 Gemfile
 Gemfile.lock
+!/tools/rubocop/Gemfile
+!/tools/rubocop/Gemfile.lock
 test/tmp/*
-CLAUDE.md
+tmp/*
+.specify/extensions/.cache/
+
+# Nested spec-kit repository
+/specs/
+
+# Playwright E2E
+test/e2e/node_modules/
+test/e2e/test-results/
+
+# JavaScript unit tests (Vitest)
+/node_modules/
+/coverage-js/

@@ -39,7 +39,6 @@ if @changeset
 <%- end -%>
 
   <script type="text/javascript">
-    $('#changes-legend').after($('#code_review_assignments'));
     urlprefix = '<%=urlprefix%>';
   <% @changeset.changes.each{|change| %>
     var reviewlist = [];

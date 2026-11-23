@@ -22,8 +22,12 @@
 
   -%>
   <%= javascript_include_tag("code_review.js", plugin: "redmine_code_review") %>
-  <%= javascript_include_tag('jstoolbar/jstoolbar') %>
-  <%= javascript_include_tag("jstoolbar/lang/jstoolbar-#{@project.current_language.to_s.downcase}.js") %>
+  <%# A page with its own wiki toolbar already loads jstoolbar.js and its language file; loading jstoolbar.js twice is a SyntaxError.
+      Newer Redmine versions no longer ship the legacy toolbar at all, so there is nothing to load. -%>
+  <% if !@heads_for_wiki_formatter_included && File.exist?(Rails.root.join('app/assets/javascripts/jstoolbar/jstoolbar.js')) %>
+    <%= javascript_include_tag('jstoolbar/jstoolbar') %>
+    <%= javascript_include_tag("jstoolbar/lang/jstoolbar-#{@project.current_language.to_s.downcase}.js") %>
+  <% end %>
 
   <%= include_calendar_headers_tags %>
   <%= stylesheet_link_tag("code_review.css", plugin: "redmine_code_review") %>

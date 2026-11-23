@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class CodeReviewSettingsController < ApplicationController
-  layout 'base'
+  layout "base"
   menu_item :code_review
   include CodeReviewAutoAssignSettings
 
@@ -28,7 +28,7 @@ class CodeReviewSettingsController < ApplicationController
 
       @setting.attributes = params.require(:setting).permit(:tracker_id, :assignment_tracker_id, :hide_code_review_tab, :auto_relation, :tracker_in_review_dialog, :auto_assign)
       @setting.updated_by = @user.id
-      params[:auto_assign][:filters] = params[:auto_assign][:filters].values if !params[:auto_assign].blank? && !params[:auto_assign][:filters].blank?
+      params[:auto_assign][:filters] = params[:auto_assign][:filters].values if params[:auto_assign].present? && params[:auto_assign][:filters].present?
       @setting.auto_assign_settings = params[:auto_assign].to_yaml
 
       @setting.save!
@@ -38,13 +38,13 @@ class CodeReviewSettingsController < ApplicationController
       # Optimistic locking exception
       flash[:error] = l(:notice_locking_conflict)
     end
-    redirect_to :controller => 'projects', :action => "settings", :id => @project, :tab => 'code_review'
+    redirect_to controller: "projects", action: "settings", id: @project, tab: "code_review"
   end
 
   def add_filter
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
+    filters = params[:auto_assign][:filters].values if params[:auto_assign][:filters].present?
     filters = [] unless filters
     filters << params[:auto_assign_add_filter]
 
@@ -53,16 +53,17 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
-    @auto_assign.filter_enabled = true
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   def edit_filter
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    num = params[:num].to_i
-    filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
+    filters = params[:auto_assign][:filters].values if params[:auto_assign][:filters].present?
     filters = [] unless filters
+    num = filter_row_number(params[:num], filters)
+    return head :bad_request unless num
+
     i = 0
     @auto_assign.filters = filters.collect { |f|
       filter = AssignmentFilter.new
@@ -74,24 +75,25 @@ class CodeReviewSettingsController < ApplicationController
       i = i + 1
       filter
     }
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   def sort
     setting = CodeReviewProjectSetting.find_or_create(@project)
     @auto_assign = setting.auto_assign_settings
-    filters = params[:auto_assign][:filters].values unless params[:auto_assign][:filters].blank?
+    filters = params[:auto_assign][:filters].values if params[:auto_assign][:filters].present?
     filters = [] unless filters
-    num = params[:auto_assign_filter][:num].to_i
+    num = filter_row_number(params[:auto_assign_filter][:num], filters)
     move_to = params[:auto_assign_filter][:move_to]
+    return head :bad_request unless num
 
-    if move_to == 'highest'
+    if move_to == "highest"
       filters[num][:order] = 0
-    elsif move_to == 'higher'
+    elsif move_to == "higher"
       filters[num][:order] = filters[num][:order].to_i - 15
-    elsif move_to == 'lower'
+    elsif move_to == "lower"
       filters[num][:order] = filters[num][:order].to_i + 15
-    elsif move_to == 'lowest'
+    elsif move_to == "lowest"
       filters[num][:order] = 999999999
     end
 
@@ -100,11 +102,25 @@ class CodeReviewSettingsController < ApplicationController
       filter.attributes = f
       filter
     }
-
-    render :partial => "code_review_settings/filters"
+    render_filters
   end
 
   private
+
+  # The row number comes from the request; return it only when it is a valid index into the
+  # submitted list, otherwise nil. to_i would map "abc" to 0 and filters[-1] would select the
+  # last row.
+  def filter_row_number(raw, filters)
+    num = Integer(raw.to_s, 10, exception: false)
+    num if num && num >= 0 && filters[num]
+  end
+
+  # The filter partials are only requested from the visible filter block, so the
+  # block must stay enabled even when the saved setting still has it disabled.
+  def render_filters
+    @auto_assign.filter_enabled = true
+    render partial: "code_review_settings/filters"
+  end
 
   def find_project
     # @project variable must be set before calling the authorize filter

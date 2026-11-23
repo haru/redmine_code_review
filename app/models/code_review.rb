@@ -14,66 +14,61 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-class CodeReview < ActiveRecord::Base
+class CodeReview < ApplicationRecord
   include Redmine::SafeAttributes
   belongs_to :project
   belongs_to :change
   belongs_to :issue
-  belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
+  belongs_to :updated_by, class_name: "User"
   belongs_to :attachment
 
-  validates_presence_of :project_id, :user_id, :updated_by_id, :issue,
-    :subject, :action_type, :line
+  validates :project_id, :user_id, :updated_by_id, :issue,
+    :subject, :action_type, :line, presence: true
 
   STATUS_OPEN = 0
   STATUS_CLOSED = 1
 
-  def before_create
-    issue = Issue.new unless issue
-  end
-
   def is_closed?
     issue.closed?
-    #self.root.status == STATUS_CLOSED
+    # self.root.status == STATUS_CLOSED
   end
 
   def close
     issue.status = IssueStatus.find(5)
-    #self.root.status = STATUS_CLOSED
+    # self.root.status = STATUS_CLOSED
   end
 
   def reopen
     issue.status = IssueStatus.find(1)
-    #self.root.status = STATUS_OPEN
+    # self.root.status = STATUS_OPEN
   end
 
   def committer
-    return changeset.author if changeset
+    changeset.author if changeset
   end
 
   def path
-    begin
-      return file_path if file_path
-      return @path if @path
-      if attachment_id
-        @path = attachment.filename
-        return @path
-      end
-      repository = changeset.repository
-      url = repository.url
-      root_url = repository.root_url
-      if (url == nil || root_url == nil)
-        @path = change.path
-        return @path
-      end
-      rootpath = url[root_url.length, url.length - root_url.length]
-      if rootpath == '/' || rootpath.blank?
-        @path = change.path
-      else
-        @path = change.path[rootpath.length, change.path.length - rootpath.length]
-      end
-    rescue => ex
-      return ex.to_s
+    return file_path if file_path
+    return @path if @path
+    if attachment_id
+      @path = attachment.filename
+      return @path
+    end
+    # A review that is not saved yet has no change to resolve a path from
+    return unless changeset
+
+    repository = changeset.repository
+    url = repository.url
+    root_url = repository.root_url
+    if url == nil || root_url == nil
+      @path = change.path
+      return @path
+    end
+    rootpath = url[root_url.length, url.length - root_url.length]
+    if rootpath == "/" || rootpath.blank?
+      @path = change.path
+    else
+      @path = change.path[rootpath.length, change.path.length - rootpath.length]
     end
   end
 
@@ -130,13 +125,9 @@ class CodeReview < ActiveRecord::Base
     issue.author if issue
   end
 
-  def subject=(s)
-    issue.subject = s
-  end
+  delegate :subject=, to: :issue
 
-  def subject
-    issue.subject
-  end
+  delegate :subject, to: :issue
 
   def parent_id=(p)
     issue.parent_issue_id = p
@@ -146,13 +137,9 @@ class CodeReview < ActiveRecord::Base
     issue.parent_issue_id
   end
 
-  def status_id=(s)
-    issue.status_id = s
-  end
+  delegate :status_id=, to: :issue
 
-  def status_id
-    issue.status_id
-  end
+  delegate :status_id, to: :issue
 
   def open_assignment_issues(user_id)
     issues = []

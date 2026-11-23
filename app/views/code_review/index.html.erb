@@ -17,12 +17,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
 
-<script>
-function change_option(flag) {
-  var url = "<%= raw url_for(:controller => 'code_review', :action=>'index', :id => @project) %>";
-  $('#content').load(url, {'show_closed': flag});
-}
-</script>
 <div id="code_review_list">
   <h2>
     <%=h l(:code_reviews) %>
@@ -30,8 +24,9 @@ function change_option(flag) {
 
   <% if @all_review_count > 0 %>
     <p>
+      <% index_url = url_for(:controller => 'code_review', :action=>'index', :id => @project) %>
       <%= form_tag({:controller => 'code_review', :action=>'index', :id => @project}, :id => 'optionform') do %>
-        <%= check_box_tag 'show_closed', 'true', @show_closed, :onchange => "change_option($('#show_closed').is(':checked'));"%> <%=h l(:label_show_closed_reviews) %>
+        <%= check_box_tag 'show_closed', 'true', @show_closed, :onchange => "change_option('#{j index_url}', $('#show_closed').is(':checked'));"%> <%=h l(:label_show_closed_reviews) %>
       <% end %>
       <%# observe_field 'show_closed', :with => 'show_closed', :update => 'content' %>
     </p>

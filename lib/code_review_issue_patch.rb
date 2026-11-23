@@ -15,15 +15,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-require_dependency 'issue'
+require_dependency "issue"
 
 module CodeReviewIssuePatch
   def self.included(base) # :nodoc:
     base.send(:include, IssueInstanceMethodsCodeReview)
 
     base.class_eval do
-      has_one :code_review, :dependent => :destroy
-      has_one :code_review_assignment, :dependent => :destroy
+      has_one :code_review, dependent: :destroy
+      has_one :code_review_assignment, dependent: :destroy
     end
   end
 end
@@ -31,4 +31,4 @@ end
 module IssueInstanceMethodsCodeReview
 end
 
-Issue.send(:include, CodeReviewIssuePatch)
+Issue.include CodeReviewIssuePatch

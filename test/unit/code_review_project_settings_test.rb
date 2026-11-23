@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
 
 class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
   fixtures :code_review_project_settings, :projects, :users, :trackers
@@ -26,7 +26,7 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
     end
 
     should "return false if project_id is nil." do
-      assert !@setting.save
+      assert_not @setting.save
     end
 
     should "return true if project_id is setted." do
@@ -44,9 +44,9 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
 
     should "be saved if auto_assign is setted." do
       project = Project.find(1)
-      setting = FactoryBot.create(:code_review_project_setting, project: project)
+      setting = create(:code_review_project_setting, project: project)
       id = setting.id
-      assert !setting.auto_assign_settings.enabled?
+      assert_not setting.auto_assign_settings.enabled?
       setting.auto_assign_settings.enabled = true
       assert setting.save
       setting = CodeReviewProjectSetting.find(id)
@@ -97,12 +97,12 @@ class CodeReviewProjectSettingsTest < ActiveSupport::TestCase
 
     should "return false if auto_relation is CodeReviewProjectSetting::AUTORELATION_TYPE_NONE" do
       @setting.auto_relation = CodeReviewProjectSetting::AUTORELATION_TYPE_NONE
-      assert !(@setting.issue_relation_type)
+      assert_not(@setting.issue_relation_type)
     end
 
     should "return false if auto_relation is nil" do
       @setting.auto_relation = nil
-      assert !(@setting.issue_relation_type)
+      assert_not(@setting.issue_relation_type)
     end
   end
 end

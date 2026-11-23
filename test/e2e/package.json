@@ -1,0 +1,12 @@
+{
+  "name": "redmine-code-review-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright E2E tests for the redmine_code_review plugin",
+  "scripts": {
+    "test": "./run.sh"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}

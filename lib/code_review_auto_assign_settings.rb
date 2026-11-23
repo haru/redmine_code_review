@@ -18,7 +18,7 @@
 module CodeReviewAutoAssignSettings
   class AutoAssignSettings
     def initialize(yml_string = nil)
-      yml_string = {:enabled => false}.to_yaml if yml_string.blank?
+      yml_string = { enabled: false }.to_yaml if yml_string.blank?
       load_yml(yml_string)
     end
 
@@ -32,7 +32,7 @@ module CodeReviewAutoAssignSettings
 
     def enabled?
       return false unless yml
-      yml[:enabled] == true or yml[:enabled] == 'true'
+      yml[:enabled] == true or yml[:enabled] == "true"
     end
 
     def author_id=(id)
@@ -40,7 +40,7 @@ module CodeReviewAutoAssignSettings
     end
 
     def author_id
-      yml[:author_id].to_i unless yml[:author_id].blank?
+      yml[:author_id].presence&.to_i
     end
 
     def assignable_list=(list)
@@ -83,17 +83,17 @@ module CodeReviewAutoAssignSettings
     end
 
     def filter_enabled?
-      yml[:filter_enabled] == true or yml[:filter_enabled] == 'true'
+      yml[:filter_enabled] == true or yml[:filter_enabled] == "true"
     end
 
     def to_s
-      return YAML.dump(yml)
-      nil
+      YAML.dump(yml)
     end
 
     def filters=(list)
       unless list
-        return yml[:filters] = nil
+        yml[:filters] = nil
+        return
       end
       yml[:filters] = list.collect do |filter|
         filter.attributes
@@ -120,15 +120,15 @@ module CodeReviewAutoAssignSettings
     end
 
     def accept_for_default
-      yml[:accept_for_default] == true or yml[:accept_for_default] == 'true'
+      yml[:accept_for_default] == true or yml[:accept_for_default] == "true"
     end
 
     def match_with_changeset?(changeset)
       return true unless filter_enabled?
       changeset.filechanges.each { |change|
-        return if match_with_change?(change)
+        return true if match_with_change?(change)
       }
-      return false
+      false
     end
 
     def match_with_change?(change)
@@ -136,7 +136,7 @@ module CodeReviewAutoAssignSettings
         next unless filter.match?(change.path)
         return filter.accept?
       }
-      return accept_for_default
+      accept_for_default
     end
 
     def attributes
@@ -147,14 +147,14 @@ module CodeReviewAutoAssignSettings
 
     def yml
       unless @yml
-        yml_string = {:enabled => false}.to_yaml
+        yml_string = { enabled: false }.to_yaml
         load_yml(yml_string)
       end
       @yml
     end
 
     def load_yml(yml_string)
-      if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
+      if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.0.0")
         @yml = YAML.unsafe_load(yml_string)
       else
         @yml = YAML.load(yml_string)
@@ -190,14 +190,14 @@ module CodeReviewAutoAssignSettings
     end
 
     def accept?
-      @accept == true or @accept == 'true'
+      @accept == true or @accept == "true"
     end
 
     def attributes=(attrs)
       attrs ||= {}
       @accept = attrs[:accept]
       @expression = attrs[:expression]
-      @order = attrs[:order].to_i unless attrs[:order].blank?
+      @order = attrs[:order].to_i if attrs[:order].present?
     end
 
     def attributes

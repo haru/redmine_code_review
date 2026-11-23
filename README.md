@@ -2,7 +2,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/adc7bcbf7bfd8e80a97b/maintainability)](https://codeclimate.com/github/haru/redmine_code_review/maintainability)
 [![codecov](https://codecov.io/gh/haru/redmine_code_review/branch/develop/graph/badge.svg?token=37CJ55KBUU)](https://codecov.io/gh/haru/redmine_code_review)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/haru/redmine_code_review)
-![Redmine](https://img.shields.io/badge/redmine->=5.1-blue?logo=redmine&logoColor=%23B32024&labelColor=f0f0f0&link=https%3A%2F%2Fwww.redmine.org)
+![Redmine](https://img.shields.io/badge/redmine->=6.0-blue?logo=redmine&logoColor=%23B32024&labelColor=f0f0f0&link=https%3A%2F%2Fwww.redmine.org)
 
 # Redmine Code Review Plugin
 
@@ -11,7 +11,7 @@ A comprehensive code review plugin for Redmine that enables collaborative source
 ## Features
 
 - **In-browser Code Review**: Annotate and review source code directly in Redmine's repository browser
-- **Issue Integration**: Link code reviews to Redmine issues for comprehensive project tracking  
+- **Issue Integration**: Link code reviews to Redmine issues for comprehensive project tracking
 - **Reviewer Assignment**: Automatic and manual reviewer assignment with notification support
 - **Project Configuration**: Per-project settings for trackers and auto-assignment rules
 - **Permission Control**: Granular permissions integrated with Redmine's role-based access control
@@ -21,7 +21,7 @@ A comprehensive code review plugin for Redmine that enables collaborative source
 
 ## Requirements
 
-- **Redmine**: Version 5.1.0 or higher
+- **Redmine**: Version 6.0.0 or higher
 - **Ruby**: Compatible with Redmine-supported Ruby versions
 - **Database**: Any database supported by Redmine (MySQL, PostgreSQL, SQLite)
 - **Repository**: Git, Subversion, or other VCS supported by Redmine
@@ -107,7 +107,7 @@ Restart your Redmine application server (Apache, Nginx, Passenger, etc.).
 
 The plugin sends email notifications for:
 - New review assignments
-- Review comments and replies  
+- Review comments and replies
 - Review status changes
 - Assignment changes
 
@@ -150,7 +150,7 @@ ruby test/test_runner.rb
 The `build-scripts/` directory contains useful development tools:
 
 - `install.sh` - Set up development environment
-- `build.sh` - Run tests with coverage reporting  
+- `build.sh` - Run tests with coverage reporting
 - `cleanup.sh` - Clean up after test runs
 - `env.sh` - Environment configuration
 
@@ -186,7 +186,7 @@ The plugin extends Redmine through:
 
 The plugin creates several database tables:
 - `code_reviews` - Main review data
-- `code_review_assignments` - Reviewer assignments  
+- `code_review_assignments` - Reviewer assignments
 - `code_review_project_settings` - Project configuration
 - `code_review_user_settings` - User preferences
 
@@ -234,5 +234,3 @@ See [GPL.txt](GPL.txt) for the full license text.
 - Various bug fixes and improvements
 
 For detailed changelog, see the commit history on GitHub.
-
-

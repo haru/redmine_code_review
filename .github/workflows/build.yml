@@ -5,40 +5,82 @@ on:
       - '**'
     branches:
       - '**'
+    paths-ignore:
+      - 'wiki/**'
+      - 'docs/**'
+      - 'specs/**'
+      - '.claude/**'
+      - '.specify/**'
+      - '.devcontainer/**'
+      - 'travis/**'
+      - '.github/copilot-instructions.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '**.md'
+      - 'GPL.txt'
+      - 'version.rb'
   pull_request:
+    paths-ignore:
+      - 'wiki/**'
+      - 'docs/**'
+      - 'specs/**'
+      - '.claude/**'
+      - '.specify/**'
+      - '.devcontainer/**'
+      - 'travis/**'
+      - '.github/copilot-instructions.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '**.md'
+      - 'GPL.txt'
+      - 'version.rb'
+permissions:
+  contents: read
 env:
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    container: ruby:4.0
+    steps:
+      - uses: actions/checkout@v4
+      - name: RuboCop
+        run: ./build-scripts/rubocop.sh
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure() && env.SLACK_WEBHOOK != ''
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: RuboCop Failure
+          SLACK_COLOR: danger
+
   build:
     runs-on: ubuntu-latest
     # Supported Matrix:
-    # Redmine 5.0-stable: Ruby 2.7, 3.0, 3.1
-    # Redmine 5.1-stable: Ruby 2.7, 3.0, 3.1, 3.2
     # Redmine 6.0-stable: Ruby 3.1, 3.2, 3.3
     # Redmine 6.1-stable: Ruby 3.2, 3.3, 3.4
-    # Redmine master: Ruby 3.2, 3.3, 3.4
+    # Redmine 7.0-stable: Ruby 3.2, 3.3, 3.4, 4.0
+    # Redmine master: Ruby 3.2, 3.3, 3.4, 4.0
+    #
+    # To keep CI time short, only a minimal set of combinations is tested so that
+    # every Ruby version, Redmine version, and DB is covered at least once.
     strategy:
+      fail-fast: false
       matrix:
-        db: [sqlite3, mysql, postgres]
-        ruby_version: ["3.0", "3.1", "3.2", "3.3", "3.4"]
-        redmine_version: [5.1-stable, 6.0-stable, master]
-        exclude:
+        include:
+          - ruby_version: "3.1"
+            redmine_version: 6.0-stable
+            db: sqlite3
+          - ruby_version: "3.2"
+            redmine_version: 6.0-stable
+            db: postgres
           - ruby_version: "3.3"
-            redmine_version: 5.1-stable
-          - ruby_version: "3.4"
-            redmine_version: 5.1-stable
-          - ruby_version: "3.0"
-            redmine_version: 6.0-stable
-          - ruby_version: "3.4"
-            redmine_version: 6.0-stable
-          - ruby_version: "3.0"
             redmine_version: 6.1-stable
-          - ruby_version: "3.1"
-            redmine_version: 6.1-stable
-          - ruby_version: "3.0"
+            db: mysql
+          - ruby_version: "3.4"
+            redmine_version: 7.0-stable
+            db: sqlite3
+          - ruby_version: "4.0"
             redmine_version: master
-          - ruby_version: "3.1"
-            redmine_version: master
+            db: mysql
     services:
       mysql:
         image: mysql:5.7
@@ -74,6 +116,7 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ruby
           fail_ci_if_error: true
       - name: Slack Notification on Failure
         uses: rtCamp/action-slack-notify@v2.0.2
@@ -81,4 +124,67 @@ jobs:
         env:
           SLACK_CHANNEL: plugin-code_review
           SLACK_TITLE: Test Failure
+          SLACK_COLOR: danger
+
+  javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Test
+        run: npm run test:coverage -- --reporter=default --reporter=json --outputFile=vitest-results.json
+      - name: Test Summary
+        if: always() && hashFiles('vitest-results.json') != ''
+        run: |
+          set -o pipefail
+          test -f coverage-js/coverage-summary.json || { echo "coverage summary missing" >&2; exit 1; }
+          echo "## JavaScript unit tests" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "| Metric | Value |"
+            echo "| --- | --- |"
+            echo "| Test files | $(jq '.testResults | length' vitest-results.json) |"
+            echo "| Tests | $(jq '.numTotalTests' vitest-results.json) |"
+            echo "| Failed | $(jq '.numFailedTests' vitest-results.json) |"
+            echo "| Line coverage | $(jq '.total.lines.pct' coverage-js/coverage-summary.json) % |"
+            echo "| Statement coverage | $(jq '.total.statements.pct' coverage-js/coverage-summary.json) % |"
+            echo "| Function coverage | $(jq '.total.functions.pct' coverage-js/coverage-summary.json) % |"
+            echo "| Branch coverage | $(jq '.total.branches.pct' coverage-js/coverage-summary.json) % |"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: codecov/codecov-action@v5
+        with:
+          files: coverage-js/lcov.info
+          flags: javascript
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure() && env.SLACK_WEBHOOK != ''
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: JavaScript Test Failure
+          SLACK_COLOR: danger
+
+  lint-javascript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2.0.2
+        if: failure() && env.SLACK_WEBHOOK != ''
+        env:
+          SLACK_CHANNEL: plugin-code_review
+          SLACK_TITLE: JavaScript Lint Failure
           SLACK_COLOR: danger

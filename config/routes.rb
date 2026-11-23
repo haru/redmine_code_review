@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 RedmineApp::Application.routes.draw do
-  #map.connect 'projects/:id/code_review/:action', :controller => 'code_review'
-  match 'projects/:id/code_review/:action', :controller => 'code_review', :via => [:get, :post]
-  match 'projects/:id/code_review_settings/:action', :controller => 'code_review_settings', :via => [:get, :post, :put, :patch]
+  # map.connect 'projects/:id/code_review/:action', :controller => 'code_review'
+  match "projects/:id/code_review/:action", controller: "code_review", via: [ :get, :post ]
+  match "projects/:id/code_review_settings/:action", controller: "code_review_settings", via: [ :get, :post, :put, :patch ]
 end
