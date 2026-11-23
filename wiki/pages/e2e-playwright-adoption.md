@@ -1,8 +1,8 @@
 ---
 title: Why Playwright for E2E tests
 type: decision
-sources: [S034, S035]
-updated: 2026-11-22
+sources: [S034, S035, S048, S049]
+updated: 2026-11-23
 ---
 
 # Why Playwright for E2E tests
@@ -14,7 +14,7 @@ The review UI is driven by JavaScript that the Minitest suite cannot exercise, s
 - Tests are plain JavaScript (CommonJS), Chromium only, installed with `npx playwright install --with-deps chromium` (S034).
 - `AGENTS.md` and the ADR record it: the new Node/Playwright toolchain was judged architecturally significant, so it is ADR 0001 (`docs/adr/0001-adopt-playwright-for-e2e-tests.md`) and listed in `docs/adr/README.md` (S034).
 - Tooling is not installed silently: `run.sh` checks for `git`, `node` and `test/e2e/node_modules` and fails with a message, in line with the project's "no easy fallbacks" rule. A missing browser is left to Playwright's own error with install instructions (S034).
-- CI integration is out of scope for now (S035).
+- CI integration was initially out of scope (S035); feature 008 later added it: the suite runs on every `build`-job matrix row via `build-scripts/e2e.sh` (ADR 0006). See [Run the E2E tests in CI](./run-e2e-in-ci.md) (S048, S049).
 
 ## Why it fits
 - Keeping everything in `test/e2e/` keeps Node files out of the plugin root (S034).
