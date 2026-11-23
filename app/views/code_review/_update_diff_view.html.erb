@@ -36,7 +36,6 @@
   assignments = @change.code_review_assignments if @change
   attachment_id = @attachment.id if @attachment
   assignments = @attachment.code_review_assignments if @attachment
-  escaped_path = @path.gsub("'"){"\\'"} if @path
   -%>
 
   <%- if User.current.allowed_to?(:assign_code_review, @project) -%>
@@ -44,36 +43,24 @@
   <%- end -%>
 </div>
 
-<script type="text/javascript">
-  repository_id = "<%= @repository_id %>";
-  add_form_title = "<%= l(:label_add_review) %>";
-  review_dialog_title = "<%= l(:code_review) %>";
-  var addReviewUrl = '<%= url_for :controller => 'code_review', :action => 'new', :id => @project %>';
-  var is_readonly = true;
-  <% if authorize_for('code_review', 'new') -%>
-    is_readonly = false;
-  <% end %>
-  var is_diff = false;
-  <% if @action_type == 'diff' or (@attachment and @attachment.is_diff?) -%>
-    is_diff = true;
-  <% end %>
-  action_type = '<%= @action_type %>';
-  rev = '<%= @rev %>';
-  rev_to = '<%= @rev_to %>';
-  path = '<%= escaped_path -%>';
-
-  setAddReviewButton(addReviewUrl, '<%= @change.id if @change %>', '<%= image_tag('edit.png', :alt => l(:label_add_review), :title => l(:label_add_review)) %>', is_readonly, is_diff, '<%= @attachment_id%>' );
-
-  showReviewUrl = '<%= url_for :controller => 'code_review', :action => 'show', :id=>@project %>';
-  showReviewImageTag = '<%= image_tag('review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
-  showClosedReviewImageTag = '<%= image_tag('closed_review.png', :plugin => 'redmine_code_review', :alt => l(:label_show_review), :title => l(:label_show_review)) %>';
-
-  <% for review in @reviews do %>
-    setShowReviewButton(<%= review.line %>, <%= review.id %>, <%= review.is_closed? %>, <%= review.file_count %> );
-  <% end %>
-
-  <% if @show_review_id -%>
-    popupReview(<%= @show_review_id %>);
-  <% end -%>
-  moveAssignLinkAboveFileContent();
-</script>
+<%= content_tag :div, nil, data: {
+  cr_init: 'diff-view',
+  cr_add_review_url: url_for(controller: 'code_review', action: 'new', id: @project),
+  cr_show_review_url: url_for(controller: 'code_review', action: 'show', id: @project),
+  cr_add_image: image_tag('edit.png', alt: l(:label_add_review), title: l(:label_add_review)),
+  cr_show_image: image_tag('review.png', plugin: 'redmine_code_review', alt: l(:label_show_review), title: l(:label_show_review)),
+  cr_show_closed_image: image_tag('closed_review.png', plugin: 'redmine_code_review', alt: l(:label_show_review), title: l(:label_show_review)),
+  cr_add_form_title: l(:label_add_review),
+  cr_review_dialog_title: l(:code_review),
+  cr_repository_id: @repository_id.to_s,
+  cr_action_type: @action_type.to_s,
+  cr_rev: @rev.to_s,
+  cr_rev_to: @rev_to.to_s,
+  cr_path: @path.to_s,
+  cr_change_id: change_id.to_s,
+  cr_attachment_id: @attachment_id.to_s,
+  cr_readonly: (!authorize_for('code_review', 'new')).to_s,
+  cr_diff: (@action_type == 'diff' || @attachment&.is_diff? == true).to_s,
+  cr_reviews: @reviews.map { |review| { id: review.id, line: review.line, file_count: review.file_count, closed: review.is_closed? } }.to_json,
+  cr_popup_review_id: @show_review_id
+} %>

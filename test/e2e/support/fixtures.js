@@ -1,7 +1,8 @@
 // Drop-in replacement for `@playwright/test`: every spec imports `test` and `expect` from
 // here so that an uncaught JavaScript exception on any page, or a 5xx answer of the
-// server, fails the test. The plugin loads most of its UI with jQuery `.load()`, which
-// shows nothing when the request fails, so a server error would otherwise go unnoticed.
+// server, fails the test. The plugin loads its UI with partial requests whose failure is
+// only shown as a small flash message in the page, so a server error would otherwise
+// go unnoticed.
 const base = require('@playwright/test');
 
 const test = base.test.extend({

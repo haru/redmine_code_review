@@ -13,8 +13,9 @@ page files, not here.
 
 - [Pin RuboCop with a dedicated Gemfile and Renovate](./pages/rubocop-pinned-gemfile-and-renovate.md) — independent CI job, tools/rubocop lockfile, Renovate, rejected options
 - [RuboCop adoption and offense cleanup](./pages/rubocop-adoption-cleanup.md) — 1,623 baseline offenses, three-step fix, no todo file
-- [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, pinned jQuery, 95% line gate, view logic moved into code_review.js
+- [Why Vitest for JavaScript unit tests](./pages/vitest-javascript-unit-tests.md) — vm loader for the classic script, 95% line gate, view logic moved into code_review.js
 - [Why ESLint for JavaScript static analysis](./pages/eslint-javascript-static-analysis.md) — ESLint 10 + jsdoc, all-error, top-level var exception, ratchet limits, lint-javascript CI job
+- [Why plain JavaScript instead of jQuery](./pages/replace-jquery-with-plain-javascript.md) — fetch crLoad, own dialog, data-cr-* hand-off, four classic scripts, Redmine floor stays 6.0, rejected options
 
 ## component
 - [Review ↔ Issue delegation](./pages/code-review-issue-delegation.md) — CodeReview delegates to Issue
@@ -26,15 +27,17 @@ page files, not here.
 - [Auto-assignment filters](./pages/auto-assignment-filters.md) — ordered regex filters, first match wins
 - [Review creation flow](./pages/code-review-creation-flow.md) — `new` action: form defaults, relations, watchers
 - [code_review.js internals](./pages/review-javascript-internals.md) — pencil icons, dialogs, dead code
-- [code_review.js loading and error display](./pages/review-javascript-loading-errors.md) — loadWithErrorDisplay, delete handlers, JSDoc and let/const style
+- [code_review.js loading and error display](./pages/review-javascript-loading-errors.md) — crLoad error flash, delete-link handlers, JSDoc and let/const style
 - [Attachment page integration](./pages/review-attachment-page-view.md) — attachment partial, empty path and diff_all
 - [Add-review link on entry pages](./pages/review-entry-add-review-link.md) — no-revision partial and make_addreview_link
 - [Review index page](./pages/review-index-page.md) — list, show-closed toggle, sorting and pagination gotchas
 - [New-review form (_new_form partial)](./pages/review-new-form-view.md) — fields, hidden values, submission
 - [Review popup (_show partial)](./pages/review-popup-view.md) — dialog layout, edit and reply forms, permissions
-- [Revision page integration](./pages/review-revision-page-view.md) — assignments block and per-file review data
+- [Revision page integration](./pages/review-revision-page-view.md) — assignments block and revision-view marker with per-file review data
 - [When and how the review UI loads](./pages/review-ui-activation.md) — body_bottom conditions, dispatch, AJAX load
-- [update_diff_view partial](./pages/update-diff-view-partial.md) — inline bootstrap script and containers
+- [update_diff_view partial](./pages/update-diff-view-partial.md) — diff-view marker, crInitDiffView order and containers
+- [crLoad and data-cr-* attributes](./pages/review-view-data-attributes.md) — fetch loader, methods per call, init/action delegation, remaining Redmine helpers
+- [Review dialog (code_review_dialog.js)](./pages/review-dialog-component.md) — non-modal popup replacing jQuery UI: move, resize, front, Esc
 - [Review frontend](./pages/review-frontend-javascript.md) — code_review.js, JS→action map, partials
 - [Project settings and configuration layers](./pages/project-settings.md) — CodeReviewProjectSetting attributes, settings controller, locking
 - [Permissions and menu registration](./pages/permissions.md) — permission→action map, menu condition, review macro

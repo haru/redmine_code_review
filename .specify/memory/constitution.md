@@ -1,4 +1,12 @@
 # redmine_code_review Constitution
+<!-- SYNC_IMPACT_REPORT
+Version change: 1.5.0 -> 1.6.0 (MINOR: Principle VII materially expanded/redefined; the Redmine >= 6.0 floor is unchanged)
+Modified principles:
+  - VII. JavaScript Unit Tests with Coverage (jQuery tooling rules replaced: fetch stubs, no-JavaScript-library rule, data-attribute views)
+Added sections: none
+Removed sections: none
+Follow-up TODOs: none (AGENTS.md and docs/inline-javascript-in-views.md describe the jQuery-free state)
+-->
 
 ## Core Principles
 
@@ -60,10 +68,14 @@ checked with `npm run test:coverage` from the plugin directory (the threshold is
 the Vitest config, so a drop fails the run). Unit tests MUST:
 - load scripts through `test/javascript/support/load_classic_script.js` so globals and coverage
   attribution match the browser, and reset global state in `beforeEach`;
-- stub Ajax (`vi.spyOn($.fn, "load")`) instead of making real requests;
-- keep `jquery` and `jquery-ui` pinned to the Redmine-bundled versions.
-View templates MUST keep only value hand-off and function calls in `<script>` blocks; logic
-belongs in `code_review.js` where it can be tested (`docs/inline-javascript-in-views.md`).
+- stub Ajax (`vi.stubGlobal('fetch', ...)`) instead of making real requests;
+- keep the plugin free of JavaScript library dependencies: code under `assets/javascripts/` MUST
+  NOT use jQuery (`$` / `jQuery`), jQuery UI, or `eval`, and new code MUST use browser-standard
+  APIs only (Redmine core may still load jQuery for its own use).
+View templates MUST NOT contain scripts: values are handed to the scripts through `data`-
+attributes (`data-cr-init` / `data-cr-action` markers) and logic belongs in
+`assets/javascripts/*.js` where it can be tested; the only exception is the core `wikitoolbar_for`
+helper, recorded in `docs/inline-javascript-in-views.md`.
 `npm test` MUST pass before a branch is proposed for merge. Vitest complements, and does not
 replace, the Playwright E2E suite of Principle III.
 Rationale: Minitest cannot reach browser-side logic, and E2E specs are too slow and coarse to
@@ -86,6 +98,24 @@ that was skipped or failed MUST be rerun or replaced by creating the branch by h
 Rationale: feature work has repeatedly landed directly on `develop`, which forced history rewrites
 and made the work impossible to review or discard as a unit.
 
+### IX. JavaScript Static Analysis Clean (NON-NEGOTIABLE)
+All JavaScript under `assets/javascripts/` and `test/javascript/` MUST pass ESLint with no
+errors and no warnings. ESLint MUST be run only through `npm run lint` from the plugin
+directory (the same command the `lint-javascript` CI job uses); it MUST NOT be invoked with ad
+hoc paths or options. Lint rules MUST be:
+- `error` severity only, with `--max-warnings 0` kept in the script so a `warn` rule fails;
+- applied to exactly those two directories, never to `test/e2e/` or `app/views/`;
+- configured in `eslint.config.js` with versions pinned in `package.json` (ADR 0004).
+Unavoidable exceptions MUST be recorded individually with a reason (an inline
+`eslint-disable-next-line <rule> -- reason` or a scoped entry in `eslint.config.js`); blanket
+`/* eslint-disable */`, disabling a rule globally, and a hand-maintained globals list MUST NOT
+be added. The size and complexity limits (`max-lines`, `complexity`, ...) are ratchets: they
+MAY be lowered, and raising one MUST be recorded in a new ADR. New or changed functions MUST
+carry real JSDoc; stub comments inserted only to satisfy the linter MUST NOT be committed.
+Rationale: Vitest and E2E only find defects on executed paths; static analysis catches
+undefined identifiers, unused variables and implicit coercion on every path, and one command
+and one pinned toolchain keep local and CI results identical.
+
 ## Additional Constraints
 - The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
 - Code, code comments and git commit messages MUST be written in English. Documents under
@@ -100,7 +130,7 @@ and made the work impossible to review or discard as a unit.
 - Architecturally significant decisions MUST be recorded as an ADR under `docs/adr/` and listed in
   `docs/adr/README.md`. ADRs are append-only: a changed decision gets a new, superseding ADR.
 - The wiki under `wiki/` MUST be changed only through the `speckit-wiki-*` skills.
-- Before merge, `build-scripts/rubocop.sh` and `npm run lint` MUST report no offenses, the
+- Before merge, `build-scripts/rubocop.sh` and `npm run lint` (Principle IX) MUST report no offenses, the
   Minitest suite, the Vitest suite (`npm run test:coverage`) and the E2E suite MUST pass, and the
   change SHOULD be reviewed with `/speckit-review-run`.
 
@@ -112,4 +142,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.4.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23
+**Version**: 1.6.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23

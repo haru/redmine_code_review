@@ -1,13 +1,13 @@
 ---
 title: Review popup (_show partial)
 type: component
-sources: [S005, S007, S008, S029]
-updated: 2026-11-21
+sources: [S005, S007, S008, S029, S043]
+updated: 2026-11-23
 ---
 
 # Review popup (`_show.html.erb`)
 
-The partial rendered by the controller's `show`, `reply` and `update` actions, and shown in a dialog by `showReview` (S029, S008; see [code_review.js internals](./review-javascript-internals.md)).
+The partial rendered by the controller's `show`, `reply` and `update` actions, and shown in a [dialog](./review-dialog-component.md) by `showReview` (S029, S008; see [code_review.js internals](./review-javascript-internals.md)).
 
 ## Layout (S029)
 - A flash area: `error_messages_for` for `review` and `reply`, plus `@notice` and `@error` (set by the controller, for example the locking-conflict message) (S029, S008).
@@ -17,7 +17,7 @@ The partial rendered by the controller's `show`, `reply` and `update` actions, a
 - A reply form, shown if `authorize_for('code_review', 'reply')` (S029).
 
 ## Forms (S029)
-- **Edit:** hidden `review[lock_version]`, `issue[lock_version]` and `review_id`; subject; a status select if the user has allowed statuses; comment. Apply runs `.load(update_url, form.serialize())`, a POST. Cancel hides the form.
+- **Edit:** hidden `review[lock_version]`, `issue[lock_version]` and `review_id`; subject; a status select if the user has allowed statuses; comment. Apply loads `update_url` with the serialized form (`.load(...)` in the original; `crLoad` after feature 007, which keeps GET for update and reply) (S043). Cancel hides the form.
 - **Reply:** the same hidden fields, an optional status select (`review[status_id]`), and `reply[comment]`. Apply loads `reply` the same way.
 - The controller reads `params[:issue][:lock_version]` for optimistic locking, which is why both forms carry it. A stale value makes it set `@error` and re-render this partial (S008).
 

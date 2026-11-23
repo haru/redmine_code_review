@@ -18,8 +18,6 @@
     "eslint-plugin-jsdoc": "^65.5.2",
     "espree": "^11.2.0",
     "globals": "^17.14.0",
-    "jquery": "3.7.1",
-    "jquery-ui": "1.13.3",
     "jsdom": "^31.0.1",
     "vitest": "^3.2.4"
   }

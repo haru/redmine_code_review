@@ -24,10 +24,8 @@ return '' unless attachment.is_text? or attachment.is_diff?
 review_id = parameters[:review_id] unless parameters[:review_id].blank?
 url = url_for :controller => 'code_review', :action => 'update_attachment_view', :id => project
 -%>
-<div id="code_review">
-  <div id="review_comment"/>
-</div>
-
-<script type="text/javascript">
-  loadOnReady('#code_review', '<%= j url %>', {'attachment_id': '<%= j id %>', 'review_id': '<%= j review_id %>'});
-</script>
+<%= content_tag :div, id: 'code_review', data: {
+      cr_init: 'load', cr_url: url,
+      cr_params: { attachment_id: id.to_s, review_id: review_id.to_s }.to_json } do %>
+  <div id="review_comment"></div>
+<% end %>

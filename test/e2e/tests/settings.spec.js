@@ -1,6 +1,6 @@
 const { test, expect } = require('../support/fixtures');
 const {
-  seed, login, resetCodeReviewSettings, commitFile, fetchChangesets, openReviewForm, applyReview, openReview, waitForAnimations, reviewIdFrom,
+  seed, login, resetCodeReviewSettings, commitFile, fetchChangesets, openReviewForm, applyReview, openReview, reviewIdFrom,
 } = require('../support/helpers');
 
 const settingsUrl = `/projects/${seed.settingsProject}/settings/code_review`;
@@ -132,7 +132,7 @@ test('reorders filters and keeps the order after saving', async ({ page }) => {
   const sort = async (rowIndex, direction) => {
     const [response] = await Promise.all([
       page.waitForResponse((r) => new URL(r.url()).pathname.endsWith('/code_review_settings/sort')),
-      page.locator(`#auto_assign_tr_${rowIndex} a[onclick*="'${direction}'"]`).click(),
+      page.locator(`#auto_assign_tr_${rowIndex} a[data-cr-direction="${direction}"]`).click(),
     ]);
     expect(response.status()).toBe(200);
   };
@@ -236,7 +236,6 @@ test('lets the reviewer pick the tracker in the review dialog when enabled', asy
   // The dialog is redrawn with the chosen tracker and the typed subject kept.
   await expect(page.locator('#issue_tracker_id option:checked')).toHaveText(chosen);
   await expect(page.locator('#review_subject')).toHaveValue('E2E tracker switch');
-  await waitForAnimations(page);
 
   const id = reviewIdFrom(await (await applyReview(page)).text(), 'E2E tracker switch');
   await openReview(page, id);

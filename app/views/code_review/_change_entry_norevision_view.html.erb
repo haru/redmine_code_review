@@ -31,9 +31,7 @@ unless path.blank? or path.empty?
       :class => 'icon icon-edit')
   %>
 
-    <script type="text/javascript">
-      make_addreview_link('<%=project.name%>', '<%=link%>');
-    </script>
+    <%= content_tag :div, nil, data: { cr_init: 'entry-link', cr_link: link } %>
   <% end %>
 
 <% end %>

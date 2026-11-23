@@ -17,115 +17,58 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-var topZindex = 1000;
-var action_type = '';
-var rev = '';
-var rev_to = '';
-var path = '';
-var urlprefix = '';
-var review_form_dialog = null;
-var add_form_title = null;
-var review_dialog_title = null;
-var repository_id = null;
-var filenames = [];
+// ---- Repository screens: changeset list, revision view, entry tab, review index ----
 
 /**
- * Holds the review counters shown for a revision in the changeset list.
- * @class
- * @param {number} total - Total number of reviews for the revision.
- * @param {number} open - Number of still-open reviews.
- * @param {string} progress - HTML snippet of the progress bar.
+ * Adds the review progress column to the repository changeset table. The
+ * progress HTML is rendered by the server (progress bar and assign link).
+ * @param {Element} el - The `revisions-view` marker element.
  */
-var ReviewCount = function (total, open, progress) {
-  this.total = total;
-  this.open = open;
-  this.closed = total - open;
-  this.progress = progress
-};
-
-/**
- * A single code review shown next to a changed file.
- * @class
- * @param {number} id - Id of the review issue.
- */
-var CodeReview = function (id) {
-  this.id = id;
-  this.path = '';
-  this.line = 0;
-  this.url = '';
-  this.is_closed = false;
-};
-
-var review_counts = new Array();
-var code_reviews_map = new Array();
-var code_reviews_dialog_map = new Array();
-
-/**
- * Adds the review progress column to the repository changeset table.
- * @param {string} title - Header text of the new column.
- */
-function UpdateRepositoryView(title) {
-  const header = $("table.changesets thead tr:first");
-  const th = $('<th></th>');
-  th.html(title);
+function crInitRevisionsView(el) {
+  const counts = crAttrJson(el, 'data-cr-review-counts');
+  const header = crQuery('table.changesets thead tr');
+  const th = document.createElement('th');
+  th.textContent = crData(el, 'column-title');
   header.append(th);
-  $('tr.changeset td.id a:first-child').each(function () {
-    let revision = this.getAttribute("href");
-    revision = revision.substr(revision.lastIndexOf("/") + 1);
-    const review = review_counts['revision_' + revision];
-    const td = $('<td/>', {
-      'class': 'progress'
-    });
-    td.html(review.progress);
-    $(this.parentNode.parentNode).append(td);
+  document.querySelectorAll('tr.changeset td.id a:first-child').forEach((link) => {
+    const href = link.getAttribute('href');
+    const revision = href.slice(href.lastIndexOf('/') + 1);
+    if (!(revision in counts)) {
+      throw new Error(`code_review: no review count for revision ${revision}`);
+    }
+    const td = document.createElement('td');
+    td.className = 'progress';
+    td.innerHTML = counts[revision].progress;
+    link.closest('tr').append(td);
   });
-}
-//add function $.down
-if (!$.fn.down) {
-  (function ($) {
-    /**
-     * jQuery extension returning the first element child as a jQuery object
-     * (the Prototype.js helper some templates still rely on). Any selector
-     * argument is ignored, unlike Prototype's down(selector).
-     * @returns {jQuery} The first element child of the matched element.
-     */
-    $.fn.down = function () {
-      let el = this[0] && this[0].firstChild;
-      while (el && el.nodeType !== 1) {
-        el = el.nextSibling;
-      }
-      return $(el);
-    };
-  })(jQuery);
 }
 
 /**
  * Lists the reviews of each changed file under the revision view entries.
+ * @param {Element} el - The `revision-view` marker element.
  */
-function UpdateRevisionView() {
-  $('#changes-legend').after($('#code_review_assignments'));
-  $('li.change').each(function () {
-    const li = $(this);
-    if (li.hasClass('folder')) { return; }
-
-    // Entries without a link (the legend, deleted files) start with a bare icon;
-    // down() ignores its selector, so look for the link among the children instead.
-    const a = li.children('a').first();
-    if (a.length === 0) { return; }
-    const href = a.attr('href');
-    const path = href.replace(urlprefix, '').replace(/\?.*$/, '');
-
-    const reviewlist = code_reviews_map[path];
-    if (reviewlist == null) { return; }
-
-    const ul = $('<ul></ul>');
-    for (let j = 0; j < reviewlist.length; j++) {
-      const review = reviewlist[j];
-      const icon = review.is_closed ? 'icon-closed-review' : 'icon-review';
-      const item = $('<li></li>', {
-        'class': 'icon ' + icon + ' code_review_summary'
-      });
-      item.html(review.url);
+function crInitRevisionView(el) {
+  const urlprefix = crData(el, 'urlprefix');
+  const reviews = crAttrJson(el, 'data-cr-reviews');
+  const assignments = document.getElementById('code_review_assignments');
+  if (assignments) {
+    crQuery('#changes-legend').after(assignments);
+  }
+  document.querySelectorAll('li.change').forEach((li) => {
+    // Entries without a link (the legend, deleted files) start with a bare icon.
+    const link = li.querySelector(':scope > a');
+    if (li.classList.contains('folder') || !link) {
+      return;
+    }
+    const path = link.getAttribute('href').replace(urlprefix, '').replace(/\?.*$/, '');
+    if (!(path in reviews)) {
+      return;
+    }
+    const ul = document.createElement('ul');
+    for (const review of reviews[path]) {
+      const item = document.createElement('li');
+      item.className = 'icon ' + (review.closed ? 'icon-closed-review' : 'icon-review') + ' code_review_summary';
+      item.innerHTML = review.link;
       ul.append(item);
     }
     li.append(ul);
@@ -133,451 +76,386 @@ function UpdateRevisionView() {
 }
 
 /**
- * Places the "add review" pencil on every line number cell of the diff.
- * @param {string} url - Base URL of the add-review form.
- * @param {string} change_id - Id of the reviewed change, empty when an
- *   attachment is reviewed.
- * @param {string} image_tag - HTML of the pencil image.
- * @param {boolean} is_readonly - True when the user may not add reviews.
- * @param {boolean} is_diff - True for a diff (a whole-changeset diff or a patch
- *   attachment), where the 2nd column holds the line numbers.
- * @param {string} attachment_id - Id of the reviewed attachment, empty for changes.
+ * Appends the "add review" link to the repository entry tab list.
+ * @param {Element} el - The `entry-link` marker element.
  */
-function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id) {
-  const filetables = $('table.filecontent').toArray();
-  $('table.filecontent th.filename').each(function (index) {
-    filenames[index] = $.trim($(this).text());
+function crInitEntryLink(el) {
+  const tab = document.querySelector('div.tabs ul li a#tab-entry');
+  if (!tab) {
+    throw new Error('code_review: entry tab (#tab-entry) not found');
+  }
+  tab.parentNode.parentNode.insertAdjacentHTML('beforeend', crData(el, 'link'));
+}
+
+/**
+ * Reloads the content with closed reviews shown or hidden.
+ * @param {Element} el - The `show_closed` checkbox.
+ * @returns {Promise<void>} Resolves after the content was displayed.
+ */
+function crActionToggleClosed(el) {
+  return crLoad(crQuery('#content'), crAttr(el, 'data-cr-url'),
+    { method: 'POST', params: { show_closed: el.checked } });
+}
+
+// ---- Diff / revision / file view: reviews on the line number cells ----------
+
+// State of the diff view currently on the page. Top-level var:
+// the test harness re-runs this script per test.
+var crDiff = null;
+
+/**
+ * Reads the diff view state from the `diff-view` marker.
+ * @param {Element} el - The `diff-view` marker element.
+ * @returns {object} The DiffViewState.
+ */
+function crReadDiffState(el) {
+  const query = new URLSearchParams({
+    change_id: crData(el, 'change-id'),
+    action_type: crData(el, 'action-type'),
+    rev: crData(el, 'rev'),
+    rev_to: crData(el, 'rev-to'),
+    attachment_id: crData(el, 'attachment-id'),
+    repository_id: crData(el, 'repository-id')
   });
-  addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
-    '&rev=' + rev + '&rev_to=' + rev_to +
-    '&attachment_id=' + attachment_id + '&repository_id=' + encodeURIComponent(repository_id);
-  if (path != null && path.length > 0) {
-    addReviewUrl = addReviewUrl + '&path=' + encodeURIComponent(path);
+  const path = crData(el, 'path');
+  if (path !== '') {
+    query.set('path', path);
   }
-  let num = 0;
-  if (is_diff) {
-    num = 1;
+  return {
+    addReviewUrl: crData(el, 'add-review-url') + '?' + query,
+    showReviewUrl: crData(el, 'show-review-url'),
+    images: { add: crData(el, 'add-image'), show: crData(el, 'show-image'), showClosed: crData(el, 'show-closed-image') },
+    titles: { addForm: crData(el, 'add-form-title'), reviewDialog: crData(el, 'review-dialog-title') },
+    path,
+    readonly: crAttrBool(el, 'data-cr-readonly'),
+    diff: crAttrBool(el, 'data-cr-diff'),
+    filenames: Array.from(document.querySelectorAll('table.filecontent th.filename'),
+      (th) => th.textContent.trim())
+  };
+}
+
+/**
+ * Reads the line number of a number cell, from the cell itself or its link.
+ * @param {Element} th - Number cell of the diff table.
+ * @returns {string} The line number, empty when the cell has none.
+ */
+function crLineOf(th) {
+  const own = th.getAttribute('data-txt');
+  if (own) {
+    return own;
   }
-  for (let i = 0; i < filetables.length; i++) {
-    const table = filetables[i];
-    const trs = table.getElementsByTagName('tr');
+  const link = th.querySelector('a');
+  return (link && link.getAttribute('data-txt')) || '';
+}
 
-    for (let j = 0; j < trs.length; j++) {
-      const tr = trs[j];
-      const ths = tr.getElementsByTagName('th');
-
-      const th = ths[num];
-      if (th == null) {
-        continue;
+/**
+ * Puts the "add review" pencil on every line number cell of the diff.
+ */
+function setAddReviewButton() {
+  const column = crDiff.diff ? 1 : 0;
+  document.querySelectorAll('table.filecontent').forEach((table, fileCount) => {
+    table.querySelectorAll('tr').forEach((tr) => {
+      const th = tr.querySelectorAll('th')[column];
+      const line = th && crLineOf(th);
+      if (!line) {
+        return;
       }
-
-      let line = $(th).data('txt');
-      if (line == null || line === "") {
-        const a = $(th).find('a');
-        if (a.length > 0) {
-          line = $(a).data('txt');
-        }
+      // Build the span with DOM APIs so the data-txt value is never parsed as HTML.
+      const span = document.createElement('span');
+      span.setAttribute('white-space', 'nowrap');
+      span.id = `review_span_${line}_${fileCount}`;
+      span.innerHTML = crDiff.readonly ? '' : crDiff.images.add;
+      th.replaceChildren(span);
+      const img = th.querySelector('img');
+      if (img) {
+        img.id = `add_revew_img_${line}_${fileCount}`;
+        img.addEventListener('click', clickPencil);
       }
-      if (line == null || line === "") {
-        continue;
-      }
-
-      let span_html = '<span white-space="nowrap" id="review_span_' + line + '_' + i + '">';
-
-      if (!is_readonly) {
-        span_html += image_tag;
-      }
-      span_html += '</span>';
-      th.innerHTML = span_html;
-
-      const img = th.getElementsByTagName('img')[0];
-      if (img != null) {
-        img.id = 'add_revew_img_' + line + '_' + i;
-        $(img).click(clickPencil);
-      }
-    }
-  }
-
-
+    });
+  });
 }
 
 /**
  * Opens the review form popup for the clicked diff line.
- * @param {jQuery.Event} e - Click event fired on the pencil image.
+ * @param {Event} event - Click event fired on the pencil image.
  */
-function clickPencil(e) {
-  //    alert('$(e.target).attr("id") = ' + $(e.target).attr("id"));
-  const result = $(e.target).attr("id").match(/([0-9]+)_([0-9]+)/);
-  const line = result[1];
-  const file_count = eval(result[2]);
-  let url = addReviewUrl + '&line=' + line + '&file_count=' + file_count;
-
-  if (path == null || path.length === 0) {
-    url = url + '&path=' + encodeURIComponent(filenames[file_count]) + '&diff_all=true';
+function clickPencil(event) {
+  const [, line, fileIndex] = event.target.id.match(/([0-9]+)_([0-9]+)/);
+  const fileCount = Number.parseInt(fileIndex, 10);
+  const query = new URLSearchParams({ line, file_count: fileCount });
+  if (crDiff.path === '') {
+    const filename = crDiff.filenames[fileCount];
+    if (filename === undefined) {
+      throw new Error(`code_review: no file name for file ${fileCount} in the diff`);
+    }
+    query.set('path', filename);
+    query.set('diff_all', 'true');
   }
-  addReview(url);
-  formPopup(e.pageX, e.pageY);
-  e.preventDefault();
+  addReview(crDiff.addReviewUrl + '&' + query);
+  formPopup();
+  event.preventDefault();
 }
-var addReviewUrl = null;
-var showReviewUrl = null;
-var showReviewImageTag = null;
-var showClosedReviewImageTag = null;
 
 /**
  * Places the review icon on the diff line and wires it to the review popup.
  * @param {number|string} line - Line number the review belongs to.
- * @param {number} review_id - Id of the review issue.
- * @param {boolean} is_closed - True when the review is closed.
- * @param {number} file_count - Index of the file within the diff.
+ * @param {number} reviewId - Id of the review issue.
+ * @param {boolean} isClosed - True when the review is closed.
+ * @param {number} fileCount - Index of the file within the diff.
  */
-function setShowReviewButton(line, review_id, is_closed, file_count) {
-  //alert('file_count = ' + file_count);
-  const span = $('#review_span_' + line + '_' + file_count);
-  if (span.length === 0) {
+function setShowReviewButton(line, reviewId, isClosed, fileCount) {
+  const span = document.getElementById(`review_span_${line}_${fileCount}`);
+  if (!span) {
     return;
   }
-  const innerSpan = $('<span></span>', {
-    id: 'review_' + review_id
-  });
-  span.append(innerSpan);
-  innerSpan.html(is_closed ? showClosedReviewImageTag : showReviewImageTag);
-  const div = $('<div></div>', {
-    'class': 'draggable',
-    id: 'show_review_' + review_id
-  });
-  $('#code_review').append(div);
-  innerSpan.down('img').click(function (e) {
-    const review_id = $(e.target).parent().attr('id').match(/[0-9]+/)[0];
-    const span = $('#review_' + review_id); // span element of view review button
-    const pos = span.offset();
-    showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top + 25);
-  });
+  const inner = document.createElement('span');
+  inner.id = `review_${reviewId}`;
+  inner.innerHTML = isClosed ? crDiff.images.showClosed : crDiff.images.show;
+  span.append(inner);
+  const popup = document.createElement('div');
+  popup.id = `show_review_${reviewId}`;
+  document.getElementById('code_review').append(popup);
+  const img = inner.querySelector('img');
+  if (img) {
+    img.addEventListener('click', () => showReview(reviewId));
+  }
 }
 
 /**
  * Scrolls to the review icon and opens the review popup.
- * @param {number} review_id - Id of the review issue.
+ * @param {number} reviewId - Id of the review issue.
  */
-function popupReview(review_id) {
-  const span = $('#review_' + review_id); // span element of view review button
-  const pos = span.offset();
-  $('html,body').animate({
-    scrollTop: pos.top
-  }, {
-    duration: 'fast',
-    /**
-     * Opens the review popup once the scroll animation finished.
-     */
-    complete: function () {
-      showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top)
-    }
-  });
-  // position and show popup dialog
-  // create popup dialog
-  //var win = showReview(showReviewUrl, review_id, pos.left + 10 + 5, pos.top);
-  //    win.toFront();
-}
-
-/**
- * Loads the review into a dialog and shows it.
- * @param {string} url - URL that renders the review.
- * @param {number} review_id - Id of the review issue.
- * @returns {jQuery} The opened dialog element.
- */
-function showReview(url, review_id) {
-  if (code_reviews_dialog_map[review_id] != null) {
-    const cur_win = code_reviews_dialog_map[review_id];
-    cur_win.hide();
-    code_reviews_dialog_map[review_id] = null;
+function popupReview(reviewId) {
+  const icon = document.getElementById(`review_${reviewId}`);
+  if (!icon) {
+    throw new Error(`code_review: review ${reviewId} has no icon on this page`);
   }
-  loadWithErrorDisplay($('#show_review_' + review_id), url, {
-    review_id: review_id
-  });
-
-  const win = $('#show_review_' + review_id).dialog({
-    show: {
-      effect: 'scale'
-    }, // ? 'top-left'
-    //position: [x, y + 5],
-    width: 640,
-    zIndex: topZindex,
-    title: review_dialog_title
-  });
-  //    win.getContent().style.color = "#484848";
-  //    win.getContent().style.background = "#ffffff";
-  topZindex++;
-  code_reviews_dialog_map[review_id] = win;
-  $('.ui-dialog').appendTo('#content');
-  return win
+  window.scrollTo(0, icon.getBoundingClientRect().top + window.scrollY);
+  showReview(reviewId);
 }
 
 /**
- * Opens the add-review form dialog.
- * @returns {boolean} Always false, so callers can use it to stop event handling.
+ * Loads the review into its popup and shows it.
+ * @param {number} reviewId - Id of the review issue.
+ * @returns {Promise<void>} Resolves after the review was displayed.
+ */
+function showReview(reviewId) {
+  const el = document.getElementById(`show_review_${reviewId}`);
+  crOpenDialog(el, { title: crDiff.titles.reviewDialog });
+  return crLoad(el, crDiff.showReviewUrl, { method: 'POST', params: { review_id: reviewId } });
+}
+
+/**
+ * Empties the add-review form; runs whenever its popup closes.
+ */
+function crClearReviewForm() {
+  document.getElementById('review-form').innerHTML = '';
+}
+
+/**
+ * Opens the add-review form popup. Closing it by any route empties the form.
  */
 function formPopup() {
-  // The dialog may still exist when it was closed with its own X button (hideForm was
-  // not called). It is the same element as the new one, so destroy it before reopening.
-  if (review_form_dialog != null) {
-    review_form_dialog.dialog('destroy');
-    review_form_dialog = null;
-  }
-  //@see http://docs.jquery.com/UI/Effects/Scale
-  const win = $('#review-form-frame').dialog({
-    show: {
-      effect: 'scale',
-      direction: 'both'
-    }, // ? 'top-left'
-    //        position: [x, y + 5],
-    width: 640,
-    zIndex: topZindex,
-    title: add_form_title
+  crOpenDialog(document.getElementById('review-form-frame'), {
+    title: crDiff.titles.addForm,
+    onClose: crClearReviewForm
   });
-  //    win.getContent().style.background = "#ffffff";
-  review_form_dialog = win;
-  topZindex += 10;
-  $('.ui-dialog').appendTo('#content');
-  return false;
 }
 
 /**
- * Closes the add-review form dialog and empties its form.
+ * Closes the add-review form popup and empties its form.
  */
 function hideForm() {
-  if (review_form_dialog == null) {
-    return;
-  }
-  review_form_dialog.dialog('close');
-  review_form_dialog = null;
-  $('#review-form').html('');
+  crCloseDialog(document.getElementById('review-form-frame'));
 }
 
 /**
  * Loads the add-review form into the popup frame.
  * @param {string} url - URL that renders the form.
+ * @returns {Promise<void>} Resolves after the form was displayed.
  */
 function addReview(url) {
-  loadWithErrorDisplay($('#review-form'), url);
+  return crLoad(document.getElementById('review-form'), url, { method: 'GET' });
 }
-
-/**
- * Appends a link to the repository entry tab.
- * @param {string} project - Unused; kept so call sites keep their argument order.
- * @param {string} link - HTML of the link to append.
- */
-function make_addreview_link(project, link) {
-  const alist = $('div.tabs ul li a#tab-entry');
-  if (alist == null) {
-    return;
-  }
-  const a = alist[0];
-  const p = a.parentNode.parentNode;
-  p.innerHTML = p.innerHTML + link;
-}
-
-/**
- * jQuery extension serializing the form fields into an object; repeated
- * names become arrays of values.
- * @returns {object} Field name/value pairs of the form.
- */
-$.fn.serialize2json = function () {
-  const o = {};
-  const a = this.serializeArray();
-  $.each(a, function () {
-    if (o[this.name]) {
-      if (!o[this.name].push) {
-        o[this.name] = [o[this.name]];
-      }
-      o[this.name].push(this.value || '');
-    } else {
-      o[this.name] = this.value || '';
-    }
-  });
-  return o;
-};
-
-/**
- * Shows or hides an element with the jQuery UI "blind" effect.
- * @param {jQuery} form - Element to show or hide.
- * @param {boolean} flag - True to show, false to hide.
- */
-function toggleBlind(form, flag) {
-  if (flag) {
-    form.show('blind');
-  }
-  else {
-    form.hide('blind');
-  }
-}
-
-/**
- * Shows the auto-assign settings block only while it is enabled, and makes
- * the author select required only while the block is visible.
- */
-function setAutoAssignSettingFormEnable() {
-  const form = $('#cr_auto_assign_settings');
-  const flag = $('#auto_assign_enabled').is(':checked');
-  // A required field inside the hidden block would silently block the form submission.
-  $('#auto_assign_author_id').prop('required', flag);
-  toggleBlind(form, flag);
-}
-
-/**
- * Shows the auto-assign filter block only while the filter is enabled.
- */
-function setAutoAssignSettingFiltersEnable() {
-  const form = $('#auto_assignment_filter_form');
-  toggleBlind(form, $('#auto_assign_filter_enabled').is(':checked'));
-}
-
-/**
- * Validates that the filter expression field is non-empty and holds a
- * parseable regular expression.
- * @param {jQuery} field - Input field holding the expression.
- * @returns {boolean} True when the expression is usable.
- */
-function is_valid_expression(field) {
-  const text = field[0].value;
-  if (text === '') {
-    field.addClass('error').focus();
-    return false;
-  }
-
-  try {
-    new RegExp(text);
-  }
-  catch (e) {
-    alert(e);
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Reloads the filter list after adding the filter from the add form.
- * @param {string} url - URL that renders the filter list.
- * @returns {boolean} True when the reload was started, false when the new
- *   filter expression is invalid.
- */
-function add_assign_filter(url) {
-  if (!is_valid_expression($('#auto_assign_add_filter_expression'))) {
-    return false;
-  }
-  const args = $('#code_review_form').serialize2json();
-  loadWithErrorDisplay($('#auto_assignment_filters'), url, args);
-  return true;
-}
-
-/**
- * Reloads the filter list after updating the filter at the given position.
- * @param {string} url - URL that renders the filter list.
- * @param {number} num - Position of the filter to update.
- * @returns {boolean} True when the reload was started, false when the new
- *   filter expression is invalid.
- */
-function update_assign_filter(url, num) {
-  if (!is_valid_expression($('#auto_assign_edit_filter_' + num + '_expression'))) {
-    return false;
-  }
-  const args = $('#code_review_form').serialize2json();
-  args['num'] = num;
-  loadWithErrorDisplay($('#auto_assignment_filters'), url, args);
-  return true;
-}
-
-/**
- * Moves the filter at the given position by loading the filter list with the
- * serialized settings form and the move request.
- * @param {string} url - URL that renders the filter list.
- * @param {'highest'|'higher'|'lower'|'lowest'} action - Direction to move the filter.
- * @param {number} num - Position of the filter to move.
- */
-function cr_sort_filter(url, action, num) {
-  $('#auto_assign_filter_num').val(num);
-  $('#auto_assign_filter_move_to').val(action);
-  loadWithErrorDisplay($('#auto_assignment_filters'), url, $('#code_review_form').serialize());
-}
-// Redmine core binds ← / → on `document` to the previous/next file link and does not skip
-// input fields, so typing in a review dialog would navigate away. Dialogs are moved into
-// #content, so stop the event there, before it reaches `document`; without preventDefault
-// the caret still moves.
-$(function () {
-  $('#content').on('keydown', '.ui-dialog :input', function (e) {
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      e.stopPropagation();
-    }
-  });
-});
-
-/**
- * Loads `url` into the target via jQuery.load, showing the HTTP status at
- * the top of the target when the request fails (plain .load() would leave
- * it unchanged and the error invisible).
- * @param {jQuery} target - Element to load the response into.
- * @param {string} url - URL to load.
- * @param {object | string} [params] - Request parameters passed to jQuery.load.
- */
-function loadWithErrorDisplay(target, url, params) {
-  target.load(url, params, function (_responseText, status, xhr) {
-    if (status !== 'error') {
-      return;
-    }
-    target.children('.cr-load-error').remove();
-    target.prepend($('<div class="flash error cr-load-error">').text(xhr.status + ' ' + xhr.statusText));
-  });
-}
-
-/**
- * Reloads the content with closed reviews shown or hidden.
- * @param {string} url - URL that renders the content.
- * @param {boolean} flag - True to show closed reviews.
- */
-function change_option(url, flag) {
-  loadWithErrorDisplay($('#content'), url, {
-    show_closed: flag
-  });
-}
-
-/**
- * Loads `url` into the element matched by `selector` on document ready.
- * @param {string} selector - Selector of the target element.
- * @param {string} url - URL to load.
- * @param {object | string} [params] - Request parameters passed to jQuery.load.
- */
-function loadOnReady(selector, url, params) {
-  $(function () {
-    loadWithErrorDisplay($(selector), url, params);
-  });
-}
-
-/**
- * Reloads the review form when the tracker select changes.
- * @param {string} url - URL that renders the review form.
- */
-function bindReviewFormTrackerChange(url) {
-  $(function () {
-    $('#issue_tracker_id').change(function () {
-      loadWithErrorDisplay($('#review-form'), url + '?' + $('#review_form').serialize());
-    });
-  });
-}
-
-// Bound once here (the review partial is rendered on every popup load). Reload only when
-// the delete succeeded; a failed delete must not look like a success.
-$(document).on('ajax:success', '#delete-review-link', function () {
-  location.reload();
-});
-$(document).on('ajax:error', '#delete-review-link', function (e) {
-  // rails-ujs passes [response, statusText, xhr] as event.detail
-  const xhr = e.detail[2];
-  alert(xhr.status + ' ' + xhr.statusText);
-});
 
 /**
  * Moves the code-review assignment link above the file content table.
  */
 function moveAssignLinkAboveFileContent() {
-  $('#content table.filecontent:first').before($('#code-review-assign-link'));
+  const table = document.querySelector('#content table.filecontent');
+  const link = document.getElementById('code-review-assign-link');
+  if (table && link) {
+    table.before(link);
+  }
 }
+
+/**
+ * Initializes the diff view from its `diff-view` marker.
+ * @param {Element} el - The marker element.
+ */
+function crInitDiffView(el) {
+  crDiff = crReadDiffState(el);
+  setAddReviewButton();
+  for (const review of crAttrJson(el, 'data-cr-reviews')) {
+    setShowReviewButton(review.line, review.id, review.closed, review.file_count);
+  }
+  if (el.hasAttribute('data-cr-popup-review-id')) {
+    popupReview(crAttrInt(el, 'data-cr-popup-review-id'));
+  }
+  moveAssignLinkAboveFileContent();
+}
+
+/**
+ * Handles the `review-added` marker: closes the form and shows the new icon.
+ * @param {Element} el - The marker element.
+ */
+function crInitReviewAdded(el) {
+  const line = crAttrInt(el, 'data-cr-line');
+  const fileCount = crAttrInt(el, 'data-cr-file-count');
+  if (!document.getElementById(`review_span_${line}_${fileCount}`)) {
+    throw new Error(`code_review: no line ${line} in file ${fileCount} to show the new review on`);
+  }
+  hideForm();
+  setShowReviewButton(line, crAttrInt(el, 'data-cr-review-id'), false, fileCount);
+}
+
+/**
+ * Handles the `load` marker: loads the marker's content with POST.
+ * @param {Element} el - The marker element, also the load target.
+ */
+function crInitLoad(el) {
+  crLoad(el, crAttr(el, 'data-cr-url'), { method: 'POST', params: crAttrJson(el, 'data-cr-params') });
+}
+
+/**
+ * Shows or hides the elements named by `data-cr-show` / `data-cr-hide`.
+ * @param {Element} el - The action element.
+ */
+function crActionDisplay(el) {
+  if (el.hasAttribute('data-cr-show')) {
+    crTarget(el, 'data-cr-show').style.display = '';
+  }
+  if (el.hasAttribute('data-cr-hide')) {
+    crTarget(el, 'data-cr-hide').style.display = 'none';
+  }
+}
+
+/**
+ * Toggles the `data-cr-target` element and focuses `data-cr-focus` when shown.
+ * @param {Element} el - The action element.
+ */
+function crActionToggle(el) {
+  const target = crTarget(el, 'data-cr-target');
+  const show = target.style.display === 'none';
+  target.style.display = show ? '' : 'none';
+  if (show && el.hasAttribute('data-cr-focus')) {
+    crTarget(el, 'data-cr-focus').focus();
+  }
+}
+
+/**
+ * Sends a form with crLoad and shows the response in a target.
+ * @param {string} formSelector - Selector of the form to send.
+ * @param {string} targetSelector - Selector of the element showing the response.
+ * @param {string} url - URL to send the form to.
+ * @param {'GET'|'POST'} method - HTTP method.
+ * @returns {Promise<void>} Resolves after the response was displayed.
+ */
+function crSubmitForm(formSelector, targetSelector, url, method) {
+  return crLoad(crQuery(targetSelector), url, { method, params: new FormData(crQuery(formSelector)) });
+}
+
+/**
+ * Sets the value of the `data-cr-target` element to `data-cr-value`.
+ * @param {Element} el - The action element.
+ */
+function crActionSetValue(el) {
+  crTarget(el, 'data-cr-target').value = crAttr(el, 'data-cr-value');
+}
+
+/**
+ * Sends the review form with POST and shows the result in the popup.
+ * @param {Element} el - The action element.
+ * @returns {Promise<void>} Resolves after the result was displayed.
+ */
+function crActionSubmitReviewForm(el) {
+  return crSubmitForm('#review_form', '#review-form', crAttr(el, 'data-cr-url'), 'POST');
+}
+
+/**
+ * Reloads the review form (GET) keeping the values typed so far.
+ * @param {Element} el - The action element.
+ * @returns {Promise<void>} Resolves after the form was displayed.
+ */
+function crActionReloadReviewForm(el) {
+  return crSubmitForm('#review_form', '#review-form', crAttr(el, 'data-cr-url'), 'GET');
+}
+
+/**
+ * Sends an update or reply form of a shown review (GET) and shows the result.
+ * @param {Element} el - The action element.
+ * @returns {Promise<void>} Resolves after the result was displayed.
+ */
+function crActionApplyPopupForm(el) {
+  return crSubmitForm('#' + crAttr(el, 'data-cr-form'), '#show_review_' + crAttr(el, 'data-cr-review-id'),
+    crAttr(el, 'data-cr-url'), 'GET');
+}
+
+// Document-level listeners, bound once (the review partial is rendered on every
+// popup load): the delete link's rails-ujs result (reload only when the delete
+// succeeded; a failed delete must not look like a success) and the arrow-key
+// guard for the review dialogs.
+if (!globalThis.crDiffListenersBound) {
+  globalThis.crDiffListenersBound = true;
+  document.addEventListener('ajax:success', (event) => crOnDeleteResult(event, true));
+  document.addEventListener('ajax:error', (event) => crOnDeleteResult(event, false));
+  crReady(() => document.body.addEventListener('keydown', crKeepArrowKeysInDialog));
+}
+
+/**
+ * Handles the outcome of the delete link.
+ * @param {CustomEvent} event - rails-ujs `ajax:success` / `ajax:error` event.
+ * @param {boolean} succeeded - True for `ajax:success`.
+ */
+function crOnDeleteResult(event, succeeded) {
+  if (!event.target.closest('#delete-review-link')) {
+    return;
+  }
+  if (succeeded) {
+    location.reload();
+    return;
+  }
+  // rails-ujs passes [response, statusText, xhr] as event.detail
+  const xhr = event.detail[2];
+  // status 0 means the request never got an answer (network failure)
+  alert(xhr.status === 0 ? 'Network error' : xhr.status + ' ' + xhr.statusText);
+}
+
+/**
+ * Redmine core binds ← / → on `document` to the previous/next file link and
+ * does not skip input fields, so typing in a review dialog would navigate
+ * away. Stop the event below `document`; without preventDefault the caret
+ * still moves.
+ * @param {KeyboardEvent} event - keydown event.
+ */
+function crKeepArrowKeysInDialog(event) {
+  if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') &&
+      event.target.closest('.cr-dialog') && event.target.matches('input, textarea, select')) {
+    event.stopPropagation();
+  }
+}
+
+crRegisterInit('diff-view', crInitDiffView);
+crRegisterInit('revisions-view', crInitRevisionsView);
+crRegisterInit('revision-view', crInitRevisionView);
+crRegisterInit('entry-link', crInitEntryLink);
+crRegisterInit('review-added', crInitReviewAdded);
+crRegisterInit('load', crInitLoad);
+crRegisterAction('display', 'click', crActionDisplay);
+crRegisterAction('toggle-closed', 'change', crActionToggleClosed);
+crRegisterAction('toggle', 'click', crActionToggle);
+crRegisterAction('cancel-review-form', 'click', hideForm);
+crRegisterAction('set-value', 'click', crActionSetValue);
+crRegisterAction('submit-review-form', 'click', crActionSubmitReviewForm);
+crRegisterAction('reload-review-form', 'change', crActionReloadReviewForm);
+crRegisterAction('apply-popup-form', 'click', crActionApplyPopupForm);

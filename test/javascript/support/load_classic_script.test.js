@@ -5,17 +5,16 @@ describe('loadClassicScripts', () => {
   it('exposes the globals of code_review.js', () => {
     loadClassicScripts();
 
-    expect(ReviewCount).toBeTypeOf('function');
-    expect(CodeReview).toBeTypeOf('function');
-    expect(UpdateRepositoryView).toBeTypeOf('function');
-    expect(UpdateRevisionView).toBeTypeOf('function');
+    expect(crInitRevisionsView).toBeTypeOf('function');
+    expect(crInitRevisionView).toBeTypeOf('function');
     expect(setAddReviewButton).toBeTypeOf('function');
   });
 
-  it('disables jQuery animations', () => {
+  it('loads the plugin scripts only, no jQuery', () => {
     loadClassicScripts();
 
-    expect($.fx.off).toBe(true);
+    expect(globalThis.$).toBeUndefined();
+    expect(globalThis.jQuery).toBeUndefined();
   });
 
   it('fails loudly when a dependency file is missing', () => {

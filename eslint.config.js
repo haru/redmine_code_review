@@ -14,38 +14,56 @@ import js from '@eslint/js';
 import jsdoc from 'eslint-plugin-jsdoc';
 import globals from 'globals';
 
-// The unit tests are ESM but use the classic script's top-level names as bare
-// globals (load_classic_script.js runs the asset script in the test context).
+// The unit tests are ESM but use the classic scripts' top-level names as bare
+// globals (load_classic_script.js runs the asset scripts in the test context).
 // Instead of hand-maintaining a duplicate list of names (DRY), collect them
-// from the script itself: every top-level declaration of a classic script is
-// visible by bare name. Only the file the test loader runs is scanned, so a
+// from the scripts themselves: every top-level declaration of a classic script is
+// visible by bare name. All scripts the test loader runs are scanned, so a
 // name can never count as defined in the tests without being defined there
-// (keep it in sync with DEFAULT_SCRIPTS in load_classic_script.js). The path
-// is resolved from this file, not from the working directory. Failing loudly
+// (keep in sync with DEFAULT_SCRIPTS in load_classic_script.js). The paths are
+// resolved from this file, not from the working directory. Failing loudly
 // when the scan finds nothing keeps an empty registration from silently
 // passing `no-undef` violations in the tests. The names are registered
 // writable because the tests intentionally reassign them to set up state.
-const loadedScript = path.join(import.meta.dirname, 'assets/javascripts/code_review.js');
-const pluginGlobals = (() => {
-  const program = parse(fs.readFileSync(loadedScript, 'utf8'), {
+const assetsDir = path.join(import.meta.dirname, 'assets/javascripts');
+const declaredNames = (file) => {
+  const source = fs.readFileSync(path.join(assetsDir, file), 'utf8');
+  const program = parse(source, {
     ecmaVersion: 'latest',
     sourceType: 'script',
   });
-  const names = new Set();
+  const names = [];
   for (const node of program.body) {
     if (node.type === 'VariableDeclaration') {
-      node.declarations.forEach((declaration) => names.add(declaration.id.name));
+      node.declarations.forEach((declaration) => names.push(declaration.id.name));
     } else if (node.type === 'FunctionDeclaration' || node.type === 'ClassDeclaration') {
-      names.add(node.id.name);
+      names.push(node.id.name);
     }
   }
-  if (names.size === 0) {
-    throw new Error(`eslint.config.js: no top-level declaration found in ${loadedScript}`);
+  return names;
+};
+const namesByFile = Object.fromEntries(
+  fs.readdirSync(assetsDir).filter((name) => name.endsWith('.js')).sort()
+    .map((file) => [file, declaredNames(file)]),
+);
+const asGlobals = (names) => Object.fromEntries(names.map((name) => [name, 'writable']));
+const pluginGlobals = (() => {
+  const names = Object.values(namesByFile).flat();
+  if (names.length === 0) {
+    throw new Error(`eslint.config.js: no top-level declaration found in ${assetsDir}`);
   }
-  return Object.fromEntries(Array.from(names).map((name) => [name, 'writable']));
+  return asGlobals(names);
 })();
+// An asset script sees the names declared by the other scripts (they share one
+// global scope in the browser) but not its own, which `no-redeclare` would flag.
+const globalsFromOtherScripts = (file) => asGlobals(
+  Object.entries(namesByFile).filter(([name]) => name !== file).flatMap(([, names]) => names),
+);
 
-const jqueryGlobals = { jQuery: 'readonly', $: 'readonly' };
+// The plugin uses no jQuery (ADR 0005): `$` / `jQuery` are not declared as
+// globals and are rejected outright, so a regression fails lint.
+const noJquery = ['error', { name: '$', message: 'jQuery is not used (ADR 0005)' },
+  { name: 'jQuery', message: 'jQuery is not used (ADR 0005)' }];
 
 // Rules shared by the assets and the tests.
 const sharedRules = {
@@ -87,6 +105,7 @@ const assetsRules = {
   // second run). Only `var` nested inside functions, blocks and for-loops is
   // banned by the selector below.
   'no-restricted-syntax': ['error', ":not(Program) > VariableDeclaration[kind='var']"],
+  'no-restricted-globals': noJquery,
   // Ratchets (see above): may only be lowered.
   'max-lines': ['error', { max: 351, skipBlankLines: true, skipComments: true }],
   'max-lines-per-function': ['error', { max: 49, skipBlankLines: true, skipComments: true }],
@@ -111,20 +130,20 @@ const testRules = {
 };
 
 export default [
-  {
-    files: ['assets/javascripts/**/*.js'],
+  ...Object.keys(namesByFile).map((file) => ({
+    files: [`assets/javascripts/${file}`],
     languageOptions: {
       sourceType: 'script',
-      globals: { ...globals.browser, ...jqueryGlobals },
+      globals: { ...globals.browser, ...globalsFromOtherScripts(file) },
     },
     plugins: { jsdoc },
     rules: assetsRules,
-  },
+  })),
   {
     files: ['test/javascript/**/*.js'],
     languageOptions: {
       sourceType: 'module',
-      globals: { ...globals.browser, ...globals.node, ...jqueryGlobals, ...pluginGlobals },
+      globals: { ...globals.browser, ...globals.node, ...pluginGlobals },
     },
     rules: testRules,
   },

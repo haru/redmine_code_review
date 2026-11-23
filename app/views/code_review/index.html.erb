@@ -26,7 +26,7 @@
     <p>
       <% index_url = url_for(:controller => 'code_review', :action=>'index', :id => @project) %>
       <%= form_tag({:controller => 'code_review', :action=>'index', :id => @project}, :id => 'optionform') do %>
-        <%= check_box_tag 'show_closed', 'true', @show_closed, :onchange => "change_option('#{j index_url}', $('#show_closed').is(':checked'));"%> <%=h l(:label_show_closed_reviews) %>
+        <%= check_box_tag 'show_closed', 'true', @show_closed, :data => { :cr_action => 'toggle-closed', :cr_url => index_url } %> <%=h l(:label_show_closed_reviews) %>
       <% end %>
       <%# observe_field 'show_closed', :with => 'show_closed', :update => 'content' %>
     </p>

@@ -26,17 +26,17 @@ Sources are immutable inputs — the wiki never edits them.
 | S019 | config/routes.rb | file | 2026-11-21 | 2026-11-21 | permissions.md, plugin-overview.md |
 | S020 | db/migrate (22 migration files) | directory | 2026-11-21 | 2026-11-21 | database-schema.md, plugin-overview.md, code-review-issue-delegation.md |
 | S021 | app/views/code_review/_new_form.html.erb | file | 2026-11-21 | 2026-11-21 | review-frontend-javascript.md, code-review-creation-flow.md, review-new-form-view.md |
-| S022 | assets/javascripts/code_review.js | file | 2026-11-21 | 2026-11-23 | review-javascript-internals.md, review-javascript-loading-errors.md, review-frontend-javascript.md |
-| S023 | app/views/code_review/_update_diff_view.html.erb | file | 2026-11-21 | 2026-11-21 | update-diff-view-partial.md, review-frontend-javascript.md, review-javascript-internals.md |
-| S024 | app/views/code_review/_body_bottom.html.erb | file | 2026-11-21 | 2026-11-21 | review-ui-activation.md, update-diff-view-partial.md, review-frontend-javascript.md, plugin-overview.md |
-| S025 | app/views/code_review/_html_header.html.erb | file | 2026-11-21 | 2026-11-21 | review-ui-activation.md, review-frontend-javascript.md, plugin-overview.md |
-| S026 | app/views/code_review/_change_repository_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-ui-activation.md, code-review-controller-actions.md |
+| S022 | assets/javascripts/code_review.js | file | 2026-11-21 | 2026-11-23 | review-javascript-internals.md, review-javascript-loading-errors.md, review-frontend-javascript.md, review-attachment-page-view.md, review-revision-page-view.md, review-index-page.md, review-ui-activation.md, update-diff-view-partial.md |
+| S023 | app/views/code_review/_update_diff_view.html.erb | file | 2026-11-21 | 2026-11-23 | update-diff-view-partial.md, review-frontend-javascript.md, review-javascript-internals.md |
+| S024 | app/views/code_review/_body_bottom.html.erb | file | 2026-11-21 | 2026-11-23 | review-ui-activation.md, update-diff-view-partial.md, review-frontend-javascript.md, plugin-overview.md |
+| S025 | app/views/code_review/_html_header.html.erb | file | 2026-11-21 | 2026-11-23 | review-ui-activation.md, review-frontend-javascript.md, plugin-overview.md |
+| S026 | app/views/code_review/_change_repository_view.html.erb | file | 2026-11-21 | 2026-11-23 | review-ui-activation.md, code-review-controller-actions.md |
 | S027 | app/views/code_review/_change_entry_norevision_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-entry-add-review-link.md, review-javascript-internals.md, review-ui-activation.md, code-review-controller-actions.md |
-| S028 | app/views/code_review/_change_revision_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-revision-page-view.md, review-ui-activation.md, review-javascript-internals.md, code-review-controller-actions.md |
+| S028 | app/views/code_review/_change_revision_view.html.erb | file | 2026-11-21 | 2026-11-23 | review-revision-page-view.md, review-ui-activation.md, review-javascript-internals.md, code-review-controller-actions.md |
 | S029 | app/views/code_review/_show.html.erb | file | 2026-11-21 | 2026-11-21 | review-popup-view.md, review-javascript-internals.md, code-review-controller-actions.md |
 | S030 | app/views/code_review/_issues_show_details_bottom.html.erb | file | 2026-11-21 | 2026-11-21 | manual-assignment-flow.md |
-| S031 | app/views/code_review/index.html.erb | file | 2026-11-21 | 2026-11-21 | review-index-page.md, code-review-controller-actions.md, install-and-enable-plugin.md |
-| S032 | app/views/code_review/_change_attachement_view.html.erb | file | 2026-11-21 | 2026-11-21 | review-attachment-page-view.md, review-ui-activation.md, review-javascript-internals.md |
+| S031 | app/views/code_review/index.html.erb | file | 2026-11-21 | 2026-11-23 | review-index-page.md, code-review-controller-actions.md, install-and-enable-plugin.md |
+| S032 | app/views/code_review/_change_attachement_view.html.erb | file | 2026-11-21 | 2026-11-23 | review-attachment-page-view.md, review-ui-activation.md, review-javascript-internals.md |
 | S033 | app/helpers/code_review_helper.rb | file | 2026-11-21 | 2026-11-21 | manual-assignment-flow.md, update-diff-view-partial.md |
 | S034 | specs/001-playwright-e2e-tests/research.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md |
 | S035 | specs/001-playwright-e2e-tests/plan.md | feature-artifact | 2026-11-22 | 2026-11-22 | e2e-playwright-adoption.md, e2e-isolated-environment.md, run-e2e-tests.md, plugin-overview.md |
@@ -47,3 +47,8 @@ Sources are immutable inputs — the wiki never edits them.
 | S040 | specs/006-javascript-static-analysis-ci/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | eslint-javascript-static-analysis.md, run-javascript-lint.md, vitest-javascript-unit-tests.md, run-javascript-unit-tests.md |
 | S041 | specs/006-javascript-static-analysis-ci/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | eslint-javascript-static-analysis.md, run-javascript-lint.md |
 | S042 | eslint.config.js | file | 2026-11-23 | 2026-11-23 | eslint-javascript-static-analysis.md, run-javascript-lint.md |
+| S043 | specs/007-jquery-to-plain-js/research.md | feature-artifact | 2026-11-23 | 2026-11-23 | replace-jquery-with-plain-javascript.md, review-view-data-attributes.md, review-dialog-component.md, review-javascript-internals.md, review-frontend-javascript.md, vitest-javascript-unit-tests.md, install-and-enable-plugin.md, plugin-overview.md, review-popup-view.md, eslint-javascript-static-analysis.md, review-new-form-view.md, review-entry-add-review-link.md |
+| S044 | specs/007-jquery-to-plain-js/plan.md | feature-artifact | 2026-11-23 | 2026-11-23 | replace-jquery-with-plain-javascript.md, review-view-data-attributes.md, review-dialog-component.md, vitest-javascript-unit-tests.md |
+| S045 | assets/javascripts/code_review_loader.js | file | 2026-11-23 | 2026-11-23 | review-view-data-attributes.md, review-ui-activation.md, review-attachment-page-view.md, review-index-page.md, review-javascript-loading-errors.md |
+| S046 | docs/adr/0005-replace-jquery-with-plain-javascript.md | file | 2026-11-23 | 2026-11-23 | review-view-data-attributes.md, plugin-overview.md |
+| S047 | test/javascript/ (Vitest test files and support/) | file | 2026-11-23 | 2026-11-23 | run-javascript-unit-tests.md |

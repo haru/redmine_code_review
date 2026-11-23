@@ -3,6 +3,10 @@
 - Status: Accepted
 - Date: 2026-11-22
 
+> Superseded in part by ADR 0005 (Replace jQuery with plain JavaScript): the
+> jquery / jquery-ui pinning and the `$.fn.load` Ajax stub are replaced by
+> `fetch` stubs and a no-JavaScript-library rule.
+
 ## Context
 
 The review UI logic lives in `assets/javascripts/code_review.js` as a classic

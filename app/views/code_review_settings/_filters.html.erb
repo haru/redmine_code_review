@@ -18,13 +18,13 @@
 -%>
 <p>
   <label><%=h l(:label_auto_assignment_filters)%></label>
-  <%= check_box_tag 'auto_assign[filter_enabled]', true, @auto_assign.filter_enabled?, :onchange => 'setAutoAssignSettingFiltersEnable();' %><%=h l(:button_activate)%>
+  <%= check_box_tag 'auto_assign[filter_enabled]', true, @auto_assign.filter_enabled?, :data => { :cr_action => 'auto-assign-filter-enabled' } %><%=h l(:button_activate)%>
 
 </p>
 <div id="auto_assignment_filter_form" style="display: <%=  @auto_assign.filter_enabled? ? 'true' : 'none'%>;">
   <div style="padding: 5px 0 8px 180px;">
     <div class="contextual">
-      <%= link_to_function(l(:button_add), "$('#add_filter_form').show('blind');", :class => 'icon icon-add') %>
+      <%= link_to(l(:button_add), '#', :class => 'icon icon-add', :data => { :cr_action => 'display', :cr_show => '#add_filter_form' }) %>
     </div>
     <table class="list">
       <thead>
@@ -55,18 +55,18 @@
 
               -%>
               <%=
-              link_to(image_tag('2uparrow.png',  :plugin => 'redmine_code_review', :alt => l(:label_sort_highest)), '#', :onclick => "cr_sort_filter('#{j sorturl}', 'highest', #{i})", :title => l(:label_sort_highest)) +
-                link_to(image_tag('1uparrow.png',   :plugin => 'redmine_code_review', :alt => l(:label_sort_higher)), '#', :onclick => "cr_sort_filter('#{j sorturl}', 'higher', #{i})", :title => l(:label_sort_higher)) +
-                link_to(image_tag('1downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lower)), '#', :onclick => "cr_sort_filter('#{j sorturl}', 'lower', #{i})", :title => l(:label_sort_lower)) +
-                link_to(image_tag('2downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lowest)), '#', :onclick => "cr_sort_filter('#{j sorturl}', 'lowest', #{i})", :title => l(:label_sort_lowest))
+              link_to(image_tag('2uparrow.png',  :plugin => 'redmine_code_review', :alt => l(:label_sort_highest)), '#', :data => { :cr_action => 'sort-filter', :cr_url => sorturl, :cr_direction => 'highest', :cr_num => i }, :title => l(:label_sort_highest)) +
+                link_to(image_tag('1uparrow.png',   :plugin => 'redmine_code_review', :alt => l(:label_sort_higher)), '#', :data => { :cr_action => 'sort-filter', :cr_url => sorturl, :cr_direction => 'higher', :cr_num => i }, :title => l(:label_sort_higher)) +
+                link_to(image_tag('1downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lower)), '#', :data => { :cr_action => 'sort-filter', :cr_url => sorturl, :cr_direction => 'lower', :cr_num => i }, :title => l(:label_sort_lower)) +
+                link_to(image_tag('2downarrow.png', :plugin => 'redmine_code_review', :alt => l(:label_sort_lowest)), '#', :data => { :cr_action => 'sort-filter', :cr_url => sorturl, :cr_direction => 'lowest', :cr_num => i }, :title => l(:label_sort_lowest))
               -%>
 
             </td>
             <td class="buttons">
               <span class="icon icon-del">
-                <%= link_to_function(l(:button_delete), "$('#auto_assign_tr_#{i}').remove();")%>
+                <%= link_to(l(:button_delete), '#', :data => { :cr_action => 'remove', :cr_target => "#auto_assign_tr_#{i}" })%>
               </span><span class="icon icon-edit">
-                <%= link_to_function(l(:button_edit), "$('#auto_assign_tr_#{i}').hide();$('#auto_assign_edit_tr_#{i}').show()")%>
+                <%= link_to(l(:button_edit), '#', :data => { :cr_action => 'display', :cr_hide => "#auto_assign_tr_#{i}", :cr_show => "#auto_assign_edit_tr_#{i}" })%>
               </span>
 
             </td>
@@ -84,8 +84,8 @@
             </td>
             <td></td>
             <td style="white-space: nowrap">
-              <%= button_tag(l(:button_apply), type: 'button', onclick: "update_assign_filter('#{j editurl}', #{i})", :condition => "is_valid_expression($('#auto_assign_edit_filter_#{i}_expression'))") %>
-              <%= button_tag(l(:button_cancel), type: 'button', onclick: "$('#auto_assign_tr_#{i}').show();$('#auto_assign_edit_tr_#{i}').hide()") %>
+              <%= button_tag(l(:button_apply), type: 'button', data: { cr_action: 'update-filter', cr_url: editurl, cr_num: i }) %>
+              <%= button_tag(l(:button_cancel), type: 'button', data: { cr_action: 'display', cr_show: "#auto_assign_tr_#{i}", cr_hide: "#auto_assign_edit_tr_#{i}" }) %>
             </td>
           </tr>
         <% end -%>
@@ -101,16 +101,14 @@
           <td></td>
           <td style="white-space: nowrap;">
             <% addurl = url_for({:controller => 'code_review_settings', :action => 'add_filter', :id => @project}) -%>
-            <%= button_tag(l(:button_apply), type: 'button', onclick: "add_assign_filter('#{j addurl}')") %>
-            <%= button_tag(l(:button_cancel), type: 'button', onclick:"$('#add_filter_form').hide()") %>
+            <%= button_tag(l(:button_apply), type: 'button', data: { cr_action: 'add-filter', cr_url: addurl }) %>
+            <%= button_tag(l(:button_cancel), type: 'button', data: { cr_action: 'display', cr_hide: '#add_filter_form' }) %>
 
           </td>
 
         </tr>
       </tbody>
     </table>
-    <%= hidden_field_tag "auto_assign_filter[num]", 0, :id => 'auto_assign_filter_num' %>
-    <%= hidden_field_tag "auto_assign_filter[move_to]", 'highest', :id => 'auto_assign_filter_move_to' %>
 
   </div>
   <p>

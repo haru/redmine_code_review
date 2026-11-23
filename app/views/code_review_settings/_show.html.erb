@@ -61,7 +61,7 @@
         @auto_assign.subject = l(:code_review_requrest) if @auto_assign.subject.blank?
       -%>
         <label><%=h l(:label_auto_assign_settings)%></label>
-        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :onchange => 'setAutoAssignSettingFormEnable();'%><%=h l(:button_activate)%>
+        <%= check_box_tag "auto_assign[enabled]", true, @auto_assign.enabled?, :data => { :cr_action => 'auto-assign-enabled' }%><%=h l(:button_activate)%>
       </p>
       <div id="cr_auto_assign_settings" style="display: <%=  @auto_assign.enabled? ? 'true' : 'none'%>;">
         <p>

@@ -240,9 +240,7 @@ class CodeReviewControllerTest < ActionController::TestCase
     assert_response :success
     # The box shown by the Update link is #update-form-<id>; hiding only the form inside it
     # would leave an empty frame behind.
-    assert_select "div#update-form-9 input[type=button][value=Cancel]" do |buttons|
-      assert_includes buttons.first["onclick"], '$("#update-form-9").hide()'
-    end
+    assert_select "div#update-form-9 button[data-cr-action=display][data-cr-hide='#update-form-9']", text: "Cancel"
   end
 
   def test_reply_lock_error
@@ -444,6 +442,109 @@ class CodeReviewControllerTest < ActionController::TestCase
       @request.session[:user_id] = 1
       post :update_diff_view, params: { id: 1, rev: 1 }
       assert_response :success
+    end
+  end
+
+  context "view markup (no inline scripts, values in data-cr-* attributes)" do
+    setup do
+      @request.session[:user_id] = 1
+    end
+
+    should "render update_revisions_view as a revisions-view marker with the counts per revision" do
+      get :update_revisions_view, params: { id: 1, changeset_ids: "1,2,3" }
+      assert_response :success
+      assert_no_inline_script(response.body)
+      marker = cr_marker(response.body, "revisions-view")
+      assert_not_empty marker["data-cr-column-title"]
+      counts = JSON.parse(marker["data-cr-review-counts"])
+      assert_equal 3, counts.size
+      counts.each_value do |count|
+        assert_equal %w[open progress total], count.keys.sort
+      end
+    end
+
+    should "render the review index with the toggle action instead of an onchange handler" do
+      get :index, params: { id: 1 }
+      assert_response :success
+      assert_select "#code_review_list script", 0
+      assert_select "#code_review_list [onchange]", 0
+      assert_select "input#show_closed[data-cr-action=?][data-cr-url]", "toggle-closed"
+    end
+
+    should "render update_diff_view as a diff-view marker" do
+      post :update_diff_view, params: { id: 1, rev: 1, path: "/a b/it's \"q\" 日本語.rb", action_type: "diff" }
+      assert_response :success
+      assert_no_inline_script(response.body)
+      marker = cr_marker(response.body, "diff-view")
+      assert_equal "/a b/it's \"q\" 日本語.rb", marker["data-cr-path"]
+      assert_equal "diff", marker["data-cr-action-type"]
+      assert_equal "false", marker["data-cr-readonly"]
+      assert_equal "true", marker["data-cr-diff"]
+      assert_kind_of Array, JSON.parse(marker["data-cr-reviews"])
+      assert_match(%r{/code_review/new\z}, marker["data-cr-add-review-url"])
+      assert_match(/<img/, marker["data-cr-add-image"])
+    end
+
+    should "mark a view without the diff action type as not a diff" do
+      post :update_diff_view, params: { id: 1, rev: 1, path: "/a.rb", action_type: "entry" }
+      assert_equal "false", cr_marker(response.body, "diff-view")["data-cr-diff"]
+    end
+
+    should "mark the view readonly for a user who may not add reviews" do
+      @request.session[:user_id] = 2
+      post :update_diff_view, params: { id: 1, rev: 1, path: "/a.rb", action_type: "diff" }
+      assert_response :success
+      assert_equal "true", cr_marker(response.body, "diff-view")["data-cr-readonly"]
+    end
+
+    should "pass the reviews of the file with id, line, file_count and closed" do
+      review = create(:code_review, project: Project.find(1), rev: "1", file_path: "/test/some/path/in/the/repo",
+                                    action_type: "diff", repository_id: 1)
+      post :update_diff_view, params: { id: 1, review_id: review.id, rev: 1, path: "/test/some/path/in/the/repo" }
+      reviews = JSON.parse(cr_marker(response.body, "diff-view")["data-cr-reviews"])
+      assert_not_empty reviews
+      reviews.each do |entry|
+        assert_equal %w[closed file_count id line], entry.keys.sort
+      end
+    end
+
+    should "render add_success as a review-added marker" do
+      post :new, params: { id: 1, review: { line: 3, change_id: 1, comment: "aaa", subject: "bbb" }, action_type: "diff" }
+      assert_template "_add_success"
+      assert_no_inline_script(response.body)
+      marker = cr_marker(response.body, "review-added")
+      assert_match(/\A\d+\z/, marker["data-cr-review-id"])
+      assert_equal "3", marker["data-cr-line"]
+      assert_match(/\A\d+\z/, marker["data-cr-file-count"])
+    end
+
+    should "render the new form with actions instead of handlers" do
+      get :new, params: { id: 1, action_type: "diff", rev: 5, path: "it's a path" }
+      assert_no_inline_script(response.body)
+      actions = cr_actions(response.body)
+      assert_includes actions, "submit-review-form"
+      assert_includes actions, "cancel-review-form"
+      assert_equal "submit-review-form", Nokogiri::HTML.fragment(response.body).at_css("[data-cr-action='submit-review-form']")["data-cr-action"]
+    end
+
+    should "offer a tracker reload action when the tracker is chosen in the dialog" do
+      CodeReviewProjectSetting.where(project_id: 1).update_all(tracker_in_review_dialog: true)
+      get :new, params: { id: 1, action_type: "diff", rev: 5 }
+      assert_no_inline_script(response.body)
+      assert_includes cr_actions(response.body), "reload-review-form"
+    end
+
+    should "render show with actions instead of link_to_function" do
+      get :show, params: { id: 1, review_id: 9 }, xhr: true
+      assert_no_inline_script(response.body)
+      actions = cr_actions(response.body)
+      %w[display toggle apply-popup-form].each { |name| assert_includes actions, name }
+    end
+
+    should "render update_attachment_view as a diff-view marker" do
+      post :update_attachment_view, params: { id: 1, attachment_id: 1 }
+      assert_no_inline_script(response.body)
+      assert_equal "1", cr_marker(response.body, "diff-view")["data-cr-attachment-id"]
     end
   end
 end

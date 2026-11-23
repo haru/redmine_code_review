@@ -16,12 +16,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -%>
-<%= javascript_tag do %>
-
-var line = <%= @review.line %>;
-var review_id = <%= @review.id %>;
-var file_count = <%= @review.file_count %>;
-hideForm();
-setShowReviewButton(line, review_id, false, file_count);
-
-<% end %>
+<%= content_tag :div, nil, data: {
+  cr_init: 'review-added',
+  cr_review_id: @review.id,
+  cr_line: @review.line,
+  cr_file_count: @review.file_count
+} %>

@@ -125,7 +125,7 @@ test('moves to the previous attachment again after the review dialog was closed'
   const secondUrl = page.url();
 
   await openReviewForm(page, secondUrl);
-  await page.locator('.ui-dialog:has(#review-form-frame) .ui-dialog-titlebar-close').click();
+  await page.locator('.cr-dialog:has(#review-form-frame) .cr-dialog-close').click();
   await expect(page.locator('#review_subject')).toBeHidden();
   // Closing leaves focus in the hidden dialog's field; take it away from there.
   await page.evaluate(() => document.activeElement.blur());
