@@ -1,4 +1,3 @@
-
 # redmine_code_review Constitution
 
 ## Core Principles
@@ -70,6 +69,23 @@ replace, the Playwright E2E suite of Principle III.
 Rationale: Minitest cannot reach browser-side logic, and E2E specs are too slow and coarse to
 pin down every branch; fast unit tests keep the JavaScript refactorable.
 
+### VIII. Never Develop on `develop` or `main` (NON-NEGOTIABLE)
+Work MUST NOT start, and nothing MUST be edited or committed, while `develop` or `main` is checked
+out. These are integration branches that change only by merging a reviewed branch. Before the
+first edit, commit or spec-kit step of any task, session or resumed session (including after
+`/clear`), the agent MUST run `git branch --show-current` and confirm:
+- the branch is a git-flow work branch (`feature/*`, `bugfix/*`, `release/*` or `hotfix/*`);
+- for spec-kit work, the branch matches the feature directory in `.specify/feature.json`
+  (`specs/006-example` -> `feature/006-example`).
+
+If the check fails, the agent MUST stop, create or switch to the correct branch from `develop`
+(from `main` for `hotfix/*`), and only then continue; carrying uncommitted changes over is
+allowed, committing them on `develop` or `main` is not. Review, read-only analysis and answering
+questions are exempt as long as no file is changed. A branch-creating hook (`speckit.git.feature`)
+that was skipped or failed MUST be rerun or replaced by creating the branch by hand, never ignored.
+Rationale: feature work has repeatedly landed directly on `develop`, which forced history rewrites
+and made the work impossible to review or discard as a unit.
+
 ## Additional Constraints
 - The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
 - Code, code comments and git commit messages MUST be written in English. Documents under
@@ -79,13 +95,14 @@ pin down every branch; fast unit tests keep the JavaScript refactorable.
 
 ## Development Workflow
 - Branching follows git-flow: `feature/*` and `bugfix/*` branch from and merge into `develop`;
-  `release/*` merges into `main` and `develop`; `hotfix/*` branches from `main`.
+  `release/*` merges into `main` and `develop`; `hotfix/*` branches from `main`. Direct work on
+  `develop` and `main` is forbidden (Principle VIII).
 - Architecturally significant decisions MUST be recorded as an ADR under `docs/adr/` and listed in
   `docs/adr/README.md`. ADRs are append-only: a changed decision gets a new, superseding ADR.
 - The wiki under `wiki/` MUST be changed only through the `speckit-wiki-*` skills.
-- Before merge, `build-scripts/rubocop.sh` MUST report no offenses, the Minitest suite, the
-  Vitest suite (`npm run test:coverage`) and the E2E suite MUST pass, and the change SHOULD be reviewed
-  with `/speckit-review-run`.
+- Before merge, `build-scripts/rubocop.sh` and `npm run lint` MUST report no offenses, the
+  Minitest suite, the Vitest suite (`npm run test:coverage`) and the E2E suite MUST pass, and the
+  change SHOULD be reviewed with `/speckit-review-run`.
 
 ## Governance
 This constitution supersedes other practices. Amendments MUST be made through
@@ -95,4 +112,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.3.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23
+**Version**: 1.4.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23
