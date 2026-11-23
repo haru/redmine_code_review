@@ -5,7 +5,7 @@
 
 ## Context
 
-Feature 0003 gave the plugin JavaScript unit tests with a coverage gate, but
+Feature 005 (ADR 0003) gave the plugin JavaScript unit tests with a coverage gate, but
 nothing statically checks the JavaScript itself. Undefined identifiers, unused
 variables, nested `var`, loose equality, implicit coercion and missing JSDoc
 were only caught by review or at runtime. CI already runs independent jobs for
@@ -25,15 +25,19 @@ created by ADR 0003:
   passes only these directories to eslint, so `test/e2e/`, `app/views/` and
   build output are never scanned. ESLint fails when a passed pattern matches no
   file, which keeps an accidentally emptied target a loud failure.
-- Every rule is an `error`. The rules of `js.configs.recommended` and the jsdoc
-  `flat/recommended` preset are promoted `warn` → `error` in bulk via
-  `Object.entries`, and the lint command runs with `--max-warnings 0`, so a
-  preset update cannot silently reintroduce warnings-as-success.
-- `jsdoc/require-jsdoc` requires a documented JSDoc comment on every function
+- Every rule is an `error`. `js.configs.recommended` ships no `warn` rules and
+  the jsdoc preset used is `flat/recommended-error`, so no promotion code is
+  needed; the lint command runs with `--max-warnings 0`, so a preset update
+  that introduces a `warn` rule fails CI instead of passing as a warning.
+- `jsdoc/require-jsdoc` requires a JSDoc comment on every function
   declaration, function expression (including `var X = function () {}`
-  constructors), method, class and arrow function. The top-level names are
-  globals the ERB views call by bare name, so documenting them at the
-  definition site is the only place the contract can live.
+  constructors), method, class and arrow function; the preset's
+  `require-param` and related rules check the tags it contains. Lint verifies
+  that the comment exists and is consistent with the signature, not that its
+  prose is meaningful. The top-level names are globals the ERB views call by
+  bare name, so documenting them at the definition site is the only place the
+  contract can live. The fixers of `require-jsdoc` and `require-param` are
+  disabled (`enableFixer: false`) because they only insert empty stubs.
 - **Top-level `var` is allowed, nested `var` is not.** `no-var` would flag the
   ~20 top-level declarations that views overwrite (`urlprefix`, `rev`, ...)
   and that the test harness re-executes per test to reset state — converting
@@ -42,12 +46,15 @@ created by ADR 0003:
   Instead of per-line disables, one selector bans the nested cases:
   `no-restricted-syntax: [":not(Program) > VariableDeclaration[kind='var']"]`,
   with the reason recorded in a config comment.
-- Test-block globals are auto-registered: the config scans the asset scripts
-  with `fs.globSync` and registers every top-level `var`/`function` name
-  (`writable`, because tests assign them). A hand-maintained duplicate list
-  would drift; if the scan finds nothing, loading the config throws.
+- Test-block globals are auto-registered: the config parses
+  `assets/javascripts/code_review.js` (the file the test loader runs) with
+  `espree`, a direct devDependency, and registers every top-level declaration
+  (`writable`, because tests assign them). The path is resolved from the
+  config file, so linting works from any working directory. A hand-maintained
+  duplicate list would drift; if the scan finds nothing, loading the config
+  throws.
 - Size and complexity limits are **ratchets measured from the current code**
-  (`max-lines` 360 assets / 270 tests, `max-lines-per-function` 60 assets only,
+  (`max-lines` 351 assets / 270 tests, `max-lines-per-function` 49 assets only,
   `complexity` 14/3, `max-depth` 4/1, `max-params` 6/3). They may only be
   lowered; raising one requires a new ADR recording why. `max-lines-per-function`
   is omitted for tests because every test file is one `describe()` callback.
@@ -73,9 +80,9 @@ created by ADR 0003:
   its own globals and dependencies and is out of scope; the unconfigured area
   would either need ignores (forbidden) or fail.
 - **Fixing everything with `eslint --fix` alone**: jsdoc rules also auto-insert
-  empty comment stubs, which would fake the documentation requirement; `--fix`
-  is used only where the result equals a real fix (brace style, comment
-  formatting).
+  empty comment stubs, which would fake the documentation requirement; those
+  fixers are disabled, so `--fix` applies only where the result equals a real
+  fix (brace style, comment formatting).
 - **Starting with "ideal" limits (e.g. 30-line functions)**: would require a
   big refactor at introduction and violate the no-behavior-change constraint of
   this feature. Measured ratchets fix the baseline now and tighten over time.
@@ -89,6 +96,5 @@ created by ADR 0003:
   declaration.
 - The ratchet limits are lower bounds of code health: they start at the
   measured maximum and may only decrease.
-- The jsdoc presets are promoted in bulk, so a preset update that adds rules
-  applies the "all errors" policy automatically, and a tool update that
-  surfaces new violations fails CI in the Renovate PR.
+- A preset update that adds `error` rules, or a `warn` rule (rejected by
+  `--max-warnings 0`), fails CI in the Renovate PR instead of being ignored.

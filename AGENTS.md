@@ -103,11 +103,11 @@ A Node project at the plugin root (its own `package.json`, separate from `test/e
 
 Rationale: `docs/adr/0004-adopt-eslint-for-javascript-static-analysis.md`.
 
-- `npm run lint` inspects exactly two blocks — `assets/javascripts/**/*.js` (classic scripts) and `test/javascript/**/*.js` (ESM tests) — and CI runs the same command in the independent `lint-javascript` job. Every rule is an error (presets are promoted `warn` → `error` in bulk, plus `--max-warnings 0`).
+- `npm run lint` inspects exactly two blocks — `assets/javascripts/**/*.js` (classic scripts) and `test/javascript/**/*.js` (ESM tests) — and CI runs the same command in the independent `lint-javascript` job. Every rule is an error (the jsdoc preset is the all-error `flat/recommended-error`, plus `--max-warnings 0` so any `warn` fails).
 - Top-level `var` in `code_review.js` is allowed on purpose (views assign those globals; the test harness re-runs the script per test); nested `var` is banned via `no-restricted-syntax` with `:not(Program) > VariableDeclaration[kind='var']`.
-- Test-block globals for the plugin's names are auto-registered by scanning the asset scripts at config load (throws when nothing is found) — never hand-maintain a global list.
+- Test-block globals for the plugin's names are auto-registered by parsing `assets/javascripts/code_review.js` with `espree` at config load (throws when nothing is found) — never hand-maintain a global list.
 - Size/complexity limits (`max-lines`, `complexity`, ...) are ratchets measured from the current code: they may only be lowered; raising one requires a new ADR.
-- `npm run lint:fix` applies only mechanical fixes; jsdoc rules would otherwise insert empty comment stubs, so write real JSDoc instead.
+- `npm run lint:fix` applies only mechanical fixes; the jsdoc fixers that insert empty comment stubs are disabled (`enableFixer: false`), so write real JSDoc instead.
 
 ### E2E tests (`test/e2e/`, Playwright)
 

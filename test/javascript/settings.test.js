@@ -106,7 +106,7 @@ describe('code_review_settings UI', () => {
       $('#auto_assign_add_filter_expression').val('app/.*\\.rb');
       const load = vi.spyOn($.fn, 'load');
 
-      add_assign_filter(addUrl);
+      expect(add_assign_filter(addUrl)).toBe(true);
 
       expect(load).toHaveBeenCalledTimes(1);
       expect(load).toHaveBeenCalledWith(addUrl, expect.objectContaining({
@@ -131,7 +131,7 @@ describe('code_review_settings UI', () => {
       $('#auto_assign_edit_filter_0_expression').val('lib/.*\\.rb');
       const load = vi.spyOn($.fn, 'load');
 
-      update_assign_filter(editUrl, 0);
+      expect(update_assign_filter(editUrl, 0)).toBe(true);
 
       expect(load).toHaveBeenCalledTimes(1);
       expect(load).toHaveBeenCalledWith(editUrl, expect.objectContaining({

@@ -69,7 +69,7 @@ function UpdateRepositoryView(title) {
   const th = $('<th></th>');
   th.html(title);
   header.append(th);
-  $('tr.changeset td.id a:first-child').each(function (_i) {
+  $('tr.changeset td.id a:first-child').each(function () {
     let revision = this.getAttribute("href");
     revision = revision.substr(revision.lastIndexOf("/") + 1);
     const review = review_counts['revision_' + revision];
@@ -85,7 +85,8 @@ if (!$.fn.down) {
   (function ($) {
     /**
      * jQuery extension returning the first element child as a jQuery object
-     * (the Prototype.js helper some templates still rely on).
+     * (the Prototype.js helper some templates still rely on). Any selector
+     * argument is ignored, unlike Prototype's down(selector).
      * @returns {jQuery} The first element child of the matched element.
      */
     $.fn.down = function () {
@@ -134,25 +135,18 @@ function UpdateRevisionView() {
 /**
  * Places the "add review" pencil on every line number cell of the diff.
  * @param {string} url - Base URL of the add-review form.
- * @param {number} change_id - Id of the change (or attachment) under review.
+ * @param {string} change_id - Id of the reviewed change, empty when an
+ *   attachment is reviewed.
  * @param {string} image_tag - HTML of the pencil image.
  * @param {boolean} is_readonly - True when the user may not add reviews.
- * @param {boolean} is_diff - True for a whole-changeset diff, where the 2nd
- *   column holds the line numbers.
+ * @param {boolean} is_diff - True for a diff (a whole-changeset diff or a patch
+ *   attachment), where the 2nd column holds the line numbers.
  * @param {string} attachment_id - Id of the reviewed attachment, empty for changes.
  */
 function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, attachment_id) {
-  const filetables = [];
-  let j = 0;
-  $('table').each(function () {
-    if ($(this).hasClass('filecontent')) {
-      filetables[j++] = this;
-    }
-  });
-  j = 0;
-  $('table.filecontent th.filename').each(function () {
-    filenames[j] = $.trim($(this).text());
-    j++;
+  const filetables = $('table.filecontent').toArray();
+  $('table.filecontent th.filename').each(function (index) {
+    filenames[index] = $.trim($(this).text());
   });
   addReviewUrl = url + '?change_id=' + change_id + '&action_type=' + action_type +
     '&rev=' + rev + '&rev_to=' + rev_to +
@@ -164,12 +158,11 @@ function setAddReviewButton(url, change_id, image_tag, is_readonly, is_diff, att
   if (is_diff) {
     num = 1;
   }
-  let i, l, tl;
-  for (i = 0, tl = filetables.length; i < tl; i++) {
+  for (let i = 0; i < filetables.length; i++) {
     const table = filetables[i];
     const trs = table.getElementsByTagName('tr');
 
-    for (j = 0, l = trs.length; j < l; j++) {
+    for (let j = 0; j < trs.length; j++) {
       const tr = trs[j];
       const ths = tr.getElementsByTagName('th');
 
@@ -290,11 +283,9 @@ function popupReview(review_id) {
  * Loads the review into a dialog and shows it.
  * @param {string} url - URL that renders the review.
  * @param {number} review_id - Id of the review issue.
- * @param {number} _x - Unused; kept so call sites keep their argument order.
- * @param {number} _y - Unused; kept so call sites keep their argument order.
  * @returns {jQuery} The opened dialog element.
  */
-function showReview(url, review_id, _x, _y) {
+function showReview(url, review_id) {
   if (code_reviews_dialog_map[review_id] != null) {
     const cur_win = code_reviews_dialog_map[review_id];
     cur_win.hide();
@@ -323,11 +314,9 @@ function showReview(url, review_id, _x, _y) {
 
 /**
  * Opens the add-review form dialog.
- * @param {number} _x - Unused; kept so call sites keep their argument order.
- * @param {number} _y - Unused; kept so call sites keep their argument order.
  * @returns {boolean} Always false, so callers can use it to stop event handling.
  */
-function formPopup(_x, _y) {
+function formPopup() {
   // The dialog may still exist when it was closed with its own X button (hideForm was
   // not called). It is the same element as the new one, so destroy it before reopening.
   if (review_form_dialog != null) {
@@ -469,7 +458,8 @@ function is_valid_expression(field) {
 /**
  * Reloads the filter list after adding the filter from the add form.
  * @param {string} url - URL that renders the filter list.
- * @returns {boolean} False when the new filter expression is invalid.
+ * @returns {boolean} True when the reload was started, false when the new
+ *   filter expression is invalid.
  */
 function add_assign_filter(url) {
   if (!is_valid_expression($('#auto_assign_add_filter_expression'))) {
@@ -484,7 +474,8 @@ function add_assign_filter(url) {
  * Reloads the filter list after updating the filter at the given position.
  * @param {string} url - URL that renders the filter list.
  * @param {number} num - Position of the filter to update.
- * @returns {boolean} False when the new filter expression is invalid.
+ * @returns {boolean} True when the reload was started, false when the new
+ *   filter expression is invalid.
  */
 function update_assign_filter(url, num) {
   if (!is_valid_expression($('#auto_assign_edit_filter_' + num + '_expression'))) {
@@ -497,10 +488,10 @@ function update_assign_filter(url, num) {
 }
 
 /**
- * Moves the filter at the given position by submitting the settings form
- * with the move request.
+ * Moves the filter at the given position by loading the filter list with the
+ * serialized settings form and the move request.
  * @param {string} url - URL that renders the filter list.
- * @param {string} action - Direction to move the filter.
+ * @param {'highest'|'higher'|'lower'|'lowest'} action - Direction to move the filter.
  * @param {number} num - Position of the filter to move.
  */
 function cr_sort_filter(url, action, num) {
@@ -520,8 +511,6 @@ $(function () {
   });
 });
 
-// jQuery's .load() leaves the target untouched when the request fails, so a 403/404/500
-// would be invisible. Show the HTTP status at the top of the target instead.
 /**
  * Loads `url` into the target via jQuery.load, showing the HTTP status at
  * the top of the target when the request fails (plain .load() would leave

@@ -4,64 +4,69 @@
 // browser (assets/javascripts/) and the Vitest unit tests (test/javascript/).
 // `npm run lint` passes exactly these two directories to eslint, so files
 // outside them (test/e2e/, app/views/, node_modules/, coverage-js/) are never
-// scanned. Every rule is an error; running with `--max-warnings 0` additionally
-// fails on any warning a future preset might introduce.
+// scanned. Every rule is an error: the presets used here ship no `warn` rules
+// (the jsdoc preset is the `-error` variant), and `--max-warnings 0` fails on
+// any warning a future preset might introduce.
 import fs from 'node:fs';
+import path from 'node:path';
+import { parse } from 'espree';
 import js from '@eslint/js';
 import jsdoc from 'eslint-plugin-jsdoc';
 import globals from 'globals';
 
 // The unit tests are ESM but use the classic script's top-level names as bare
-// globals (load_classic_script.js runs the asset files in the test context).
+// globals (load_classic_script.js runs the asset script in the test context).
 // Instead of hand-maintaining a duplicate list of names (DRY), collect them
-// from the asset scripts themselves: a declaration at column 0 of a classic
-// script is a top-level `var` or `function` and therefore a global. Failing
-// loudly when the scan finds nothing keeps an empty registration from
-// silently passing `no-undef` violations in the tests. They are registered
+// from the script itself: every top-level declaration of a classic script is
+// visible by bare name. Only the file the test loader runs is scanned, so a
+// name can never count as defined in the tests without being defined there
+// (keep it in sync with DEFAULT_SCRIPTS in load_classic_script.js). The path
+// is resolved from this file, not from the working directory. Failing loudly
+// when the scan finds nothing keeps an empty registration from silently
+// passing `no-undef` violations in the tests. The names are registered
 // writable because the tests intentionally reassign them to set up state.
+const loadedScript = path.join(import.meta.dirname, 'assets/javascripts/code_review.js');
 const pluginGlobals = (() => {
-  const files = fs.globSync('assets/javascripts/**/*.js');
-  if (files.length === 0) {
-    throw new Error('eslint.config.js: no files matched assets/javascripts/**/*.js');
-  }
+  const program = parse(fs.readFileSync(loadedScript, 'utf8'), {
+    ecmaVersion: 'latest',
+    sourceType: 'script',
+  });
   const names = new Set();
-  for (const file of files) {
-    const source = fs.readFileSync(file, 'utf8');
-    for (const match of source.matchAll(/^(?:var|function)\s+([A-Za-z_$][A-Za-z0-9_$]*)/gm)) {
-      names.add(match[1]);
+  for (const node of program.body) {
+    if (node.type === 'VariableDeclaration') {
+      node.declarations.forEach((declaration) => names.add(declaration.id.name));
+    } else if (node.type === 'FunctionDeclaration' || node.type === 'ClassDeclaration') {
+      names.add(node.id.name);
     }
   }
   if (names.size === 0) {
-    throw new Error('eslint.config.js: no top-level var/function declaration found in assets/javascripts/**/*.js');
+    throw new Error(`eslint.config.js: no top-level declaration found in ${loadedScript}`);
   }
   return Object.fromEntries(Array.from(names).map((name) => [name, 'writable']));
 })();
 
-// Promote every `warn` of the recommended presets to `error` in bulk. Adding a
-// rule name here per preset update would be error-prone; converting whatever
-// the preset ships keeps the "all violations are errors" policy automatically
-// when a preset gains rules.
-const promoteWarningsToErrors = (rules) =>
-  Object.fromEntries(
-    Object.entries(rules).map(([name, setting]) => {
-      if (setting === 'warn') {
-        return [name, 'error'];
-      }
-      if (Array.isArray(setting) && setting[0] === 'warn') {
-        return [name, ['error', ...setting.slice(1)]];
-      }
-      return [name, setting];
-    }),
-  );
+const jqueryGlobals = { jQuery: 'readonly', $: 'readonly' };
+
+// Rules shared by the assets and the tests.
+const sharedRules = {
+  ...js.configs.recommended.rules,
+  'prefer-const': 'error',
+  'eqeqeq': ['error', 'smart'],
+  'curly': 'error',
+  'no-implicit-coercion': 'error',
+};
 
 // Size and complexity limits are ratchets measured from the current code.
 // They may only be lowered; raising one requires a new ADR recording why.
 const assetsRules = {
-  ...promoteWarningsToErrors(js.configs.recommended.rules),
-  ...promoteWarningsToErrors(jsdoc.configs['flat/recommended'].rules),
+  ...sharedRules,
+  ...jsdoc.configs['flat/recommended-error'].rules,
+  // The fixers are disabled because they would insert empty comment stubs,
+  // which fake the documentation requirement; write real JSDoc instead.
   'jsdoc/require-jsdoc': [
     'error',
     {
+      enableFixer: false,
       require: {
         FunctionDeclaration: true,
         FunctionExpression: true,
@@ -71,6 +76,7 @@ const assetsRules = {
       },
     },
   ],
+  'jsdoc/require-param': ['error', { enableFixer: false }],
   // `vars: "local"` keeps view-called top-level functions from being reported
   // as unused; locals and arguments inside functions are still checked.
   'no-unused-vars': ['error', { vars: 'local', argsIgnorePattern: '^_' }],
@@ -81,13 +87,9 @@ const assetsRules = {
   // second run). Only `var` nested inside functions, blocks and for-loops is
   // banned by the selector below.
   'no-restricted-syntax': ['error', ":not(Program) > VariableDeclaration[kind='var']"],
-  'prefer-const': 'error',
-  'eqeqeq': ['error', 'smart'],
-  'curly': 'error',
-  'no-implicit-coercion': 'error',
   // Ratchets (see above): may only be lowered.
-  'max-lines': ['error', { max: 360, skipBlankLines: true, skipComments: true }],
-  'max-lines-per-function': ['error', { max: 60, skipBlankLines: true, skipComments: true }],
+  'max-lines': ['error', { max: 351, skipBlankLines: true, skipComments: true }],
+  'max-lines-per-function': ['error', { max: 49, skipBlankLines: true, skipComments: true }],
   'complexity': ['error', { max: 14 }],
   'max-depth': ['error', { max: 4 }],
   'max-params': ['error', { max: 6 }],
@@ -97,12 +99,8 @@ const assetsRules = {
 };
 
 const testRules = {
-  ...promoteWarningsToErrors(js.configs.recommended.rules),
+  ...sharedRules,
   'no-var': 'error',
-  'prefer-const': 'error',
-  'eqeqeq': ['error', 'smart'],
-  'curly': 'error',
-  'no-implicit-coercion': 'error',
   // Ratchets (see above): may only be lowered. `max-lines-per-function` is
   // intentionally omitted: each test file is one describe() callback, so its
   // function length is just the file length and not a maintainability signal.
@@ -117,7 +115,7 @@ export default [
     files: ['assets/javascripts/**/*.js'],
     languageOptions: {
       sourceType: 'script',
-      globals: { ...globals.browser, jQuery: 'readonly', $: 'readonly' },
+      globals: { ...globals.browser, ...jqueryGlobals },
     },
     plugins: { jsdoc },
     rules: assetsRules,
@@ -126,7 +124,7 @@ export default [
     files: ['test/javascript/**/*.js'],
     languageOptions: {
       sourceType: 'module',
-      globals: { ...globals.browser, ...globals.node, jQuery: 'readonly', $: 'readonly', ...pluginGlobals },
+      globals: { ...globals.browser, ...globals.node, ...jqueryGlobals, ...pluginGlobals },
     },
     rules: testRules,
   },
