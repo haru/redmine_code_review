@@ -1,7 +1,7 @@
 ---
 title: Run the JavaScript unit tests
 type: howto
-sources: [S038, S039]
+sources: [S038, S039, S040]
 updated: 2026-11-23
 ---
 
@@ -21,5 +21,6 @@ From the plugin root (not the Redmine root): `npm ci`, then `npm test` or `npm r
 - Spy on `$.fn.load` instead of letting Ajax run.
 
 ## Related
+- Static analysis of the same files: [Run the JavaScript lint](./run-javascript-lint.md) (S040).
 - RuboCop is unaffected: it excludes `node_modules/**/*` by default (S038); see [Run RuboCop](./run-rubocop.md).
 - Browser-level checks: [Run the E2E tests](./run-e2e-tests.md).
