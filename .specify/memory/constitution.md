@@ -1,3 +1,4 @@
+
 # redmine_code_review Constitution
 
 ## Core Principles
@@ -12,6 +13,7 @@ monkey patches on core classes make every extra layer costly.
 ### II. Test-First with Coverage (NON-NEGOTIABLE)
 The failing test MUST be written before the implementation. Statement (C0) coverage of the
 Minitest suite MUST stay at or above 95%, checked in `coverage/` after a run.
+JavaScript is held to the same rule; see Principle VII.
 Rationale: a plugin that patches `Change`, `Changeset`, `Issue` and `Attachment` can break
 Redmine itself; tests are the only safety net.
 
@@ -52,6 +54,22 @@ MUST stay pinned in `tools/rubocop/Gemfile.lock`.
 Rationale: one script and one pinned version make local and CI results identical, and
 per-cop reasons keep exceptions reviewable instead of silently accumulating.
 
+### VII. JavaScript Unit Tests with Coverage (NON-NEGOTIABLE)
+Logic in `assets/javascripts/` MUST be covered by Vitest unit tests under `test/javascript/`
+(see ADR 0003), written before the implementation. Line coverage MUST stay at or above 95%,
+checked with `npm run test:coverage` from the plugin directory (the threshold is enforced in
+the Vitest config, so a drop fails the run). Unit tests MUST:
+- load scripts through `test/javascript/support/load_classic_script.js` so globals and coverage
+  attribution match the browser, and reset global state in `beforeEach`;
+- stub Ajax (`vi.spyOn($.fn, "load")`) instead of making real requests;
+- keep `jquery` and `jquery-ui` pinned to the Redmine-bundled versions.
+View templates MUST keep only value hand-off and function calls in `<script>` blocks; logic
+belongs in `code_review.js` where it can be tested (`docs/inline-javascript-in-views.md`).
+`npm test` MUST pass before a branch is proposed for merge. Vitest complements, and does not
+replace, the Playwright E2E suite of Principle III.
+Rationale: Minitest cannot reach browser-side logic, and E2E specs are too slow and coarse to
+pin down every branch; fast unit tests keep the JavaScript refactorable.
+
 ## Additional Constraints
 - The plugin MUST work on Redmine >= 6.0, as pinned by `requires_redmine` in `init.rb`.
 - Code, code comments and git commit messages MUST be written in English. Documents under
@@ -65,8 +83,8 @@ per-cop reasons keep exceptions reviewable instead of silently accumulating.
 - Architecturally significant decisions MUST be recorded as an ADR under `docs/adr/` and listed in
   `docs/adr/README.md`. ADRs are append-only: a changed decision gets a new, superseding ADR.
 - The wiki under `wiki/` MUST be changed only through the `speckit-wiki-*` skills.
-- Before merge, `build-scripts/rubocop.sh` MUST report no offenses, the Minitest suite and the
-  E2E suite MUST pass, and the change SHOULD be reviewed
+- Before merge, `build-scripts/rubocop.sh` MUST report no offenses, the Minitest suite, the
+  Vitest suite (`npm run test:coverage`) and the E2E suite MUST pass, and the change SHOULD be reviewed
   with `/speckit-review-run`.
 
 ## Governance
@@ -77,4 +95,4 @@ expanded; PATCH: clarification only). Every plan MUST be checked against these p
 any deviation MUST be justified in the plan's Complexity Tracking. `AGENTS.md` holds the
 day-to-day commands and architecture and MUST stay consistent with this document.
 
-**Version**: 1.2.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-22
+**Version**: 1.3.0 | **Ratified**: 2026-11-22 | **Last Amended**: 2026-11-23
